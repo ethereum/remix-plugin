@@ -1,0 +1,17 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+      "baseUrl": "./src",
+      "outDir": "./dist",
+      "sourceMap": false,
+      "declaration": false,
+      "module": "commonjs",
+      "strict": true,
+      "target": "es5",
+      "lib": [
+        "dom",
+        "es2018"
+      ]
+    }
+  }
+  

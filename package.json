@@ -1,0 +1,41 @@
+{
+  "name": "remix-extension",
+  "version": "0.0.1",
+  "description": "Ethereum IDE and tools for the web",
+  "contributors": [
+    {
+      "name": "Yann Levreau",
+      "email": "yann@ethdev.com"
+    },
+    {
+      "name": "François Guezengar"
+    }
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "remix-lib": "^0.3.10"
+  },
+  "devDependencies": {
+    "prettier": "^1.15.2",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  },
+  "standard": {
+    "ignore": [
+      "node_modules/*"
+    ],
+    "parser": "babel-eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "author": "cpp-ethereum team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "homepage": "https://github.com/ethereum/remix-plugin#readme"
+}
