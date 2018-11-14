@@ -1,6 +1,4 @@
-plugin api
-
-# current APIs:
+# Remix Plugin api
 
 ## 1) notifications
 

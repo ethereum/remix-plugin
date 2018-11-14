@@ -21,7 +21,7 @@ export interface Notif {
     }
 }
 
-export type NotifKeys = keyof Notif
+export type NotifKeys = 'app' | 'compiler' | 'txlistener'
 
 export type NotifTypes =
     | keyof Notif['app']
@@ -33,7 +33,7 @@ export type NotifTypes =
  * REQUESTS
 ***********/
 
-export type RequestKeys = keyof Request
+export type RequestKeys = 'app' | 'compiler' | 'config' | 'udapp' | 'editor'
 
 export type RequestTypes =
     | keyof Request['app']
@@ -120,6 +120,15 @@ export interface Request extends RequestInterface {
     }
 }
 
+/*********
+ * MESSAGE
+ *********/
+export interface RequestMsg {
+    id: number,
+    key: RequestKeys,
+    type: RequestTypes,
+    value: any
+}
 
 
 /*********

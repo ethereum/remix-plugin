@@ -1,7 +1,6 @@
 import { EventListener, Tx, Network } from '../types'
 import { execution } from 'remix-lib'
 
-const SourceHighlighter = require('../editor/sourceHighlighter')
 const { executionContext } = execution
 
 /*
@@ -16,6 +15,7 @@ export class PluginAPI {
     private _fileManager: EventListener,
     private _compiler: EventListener,
     private _udapp: EventListener,
+    private SourceHighlighter: any
   ) {}
 
   /** App */
@@ -165,6 +165,7 @@ export class PluginAPI {
         cb(null, path)
       }
     },
+
     getFile: (moduleName: string, path: string, cb: Function) => {
       const provider = this._fileManager.fileProviderOf(path)
       if (provider) {
@@ -205,7 +206,7 @@ export class PluginAPI {
         return cb(e.message)
       }
       if (!this.highlighters[moduleName]) {
-        this.highlighters[moduleName] = new SourceHighlighter()
+        this.highlighters[moduleName] = new this.SourceHighlighter()
       }
       this.highlighters[moduleName].currentSourceLocation(null)
       this.highlighters[moduleName].currentSourceLocationFromfileName(

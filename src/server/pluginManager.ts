@@ -1,11 +1,13 @@
 import {
-    CompilationResult,
+  CompilationResult,
   Tx,
   RequestTypes,
+  RequestKeys,
   EventListener,
   PluginList,
   PluginDesc,
   OriginList,
+  RequestMsg
 } from '../types'
 
 import { EventManager } from 'remix-lib'
@@ -101,6 +103,7 @@ export class PluginManager {
     fileProviders: EventListener,
     fileManager: EventListener,
     udapp: EventListener,
+    SourceHighlighter: any,
   ) {
     const pluginAPI = new PluginAPI(
       this,
@@ -108,6 +111,7 @@ export class PluginManager {
       fileManager,
       compiler,
       udapp,
+      SourceHighlighter,
     )
     this._components = { pluginAPI }
     fileManager.event.register(
@@ -179,18 +183,21 @@ export class PluginManager {
           }),
         )
         this.inFocus = tabName
-        pluginAPI.compiler.getCompilationResult(tabName, (error: string, data: CompilationResult) => {
-          if (!error) return
-          this.post(
-            tabName,
-            JSON.stringify({
-              action: 'notification',
-              key: 'compiler',
-              type: 'compilationData',
-              value: [data],
-            }),
-          )
-        })
+        pluginAPI.compiler.getCompilationResult(
+          tabName,
+          (error: string, data: CompilationResult) => {
+            if (!error) return
+            this.post(
+              tabName,
+              JSON.stringify({
+                action: 'notification',
+                key: 'compiler',
+                type: 'compilationData',
+                value: [data],
+              }),
+            )
+          },
+        )
       }
     })
 
@@ -202,26 +209,31 @@ export class PluginManager {
         if (!extension) return
 
         const response = (
-          key: keyof Request,
-          type: RequestTypes,
-          id: number,
-          error: string,
-          result: any,
+          _key: RequestKeys,
+          _type: RequestTypes,
+          _id: number,
+          _error: string,
+          _result: any,
         ) => {
-          const action = 'response'
-          const value = [result]
           this.postToOrigin(
             event.origin,
-            JSON.stringify({ id, action, key, type, error, value }),
+            JSON.stringify({
+              id: _id,
+              action: 'response',
+              key: _key,
+              type: _type,
+              error: _error,
+              value: [_result],
+            }),
           )
         }
-        const { key, type, id, value } = JSON.parse(event.data)
+        const { key, type, id, value } = JSON.parse(event.data) as RequestMsg
         value.unshift(extension)
         value.push((error: string, result: any) => {
           response(key, type, id, error, result)
         })
-        if (pluginAPI[key] && pluginAPI[key][type]) {
-          pluginAPI[key][type].apply({}, value)
+        if (pluginAPI[key] && (pluginAPI[key] as any)[type]) {
+            (pluginAPI[key] as any)[type].apply({}, value)
         } else {
           response(key, type, id, `Endpoint ${key}/${type} not present`, null)
         }
@@ -253,7 +265,11 @@ export class PluginManager {
     }
   }
 
-  public receivedDataFrom(methodName: string, mod: string, argumentsArray: any) {
+  public receivedDataFrom(
+    methodName: string,
+    mod: string,
+    argumentsArray: any,
+  ) {
     // TODO check whether 'mod' as right to do that
     console.log(argumentsArray)
     this.event.trigger(methodName, argumentsArray)
