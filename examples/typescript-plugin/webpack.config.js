@@ -6,10 +6,13 @@ module.exports = {
     mode: 'development',
   entry: path.resolve(__dirname, 'src/main.ts'),
   devtool: 'inline-source-map',
+  devServer: {
+      contentBase: './dist'
+  },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
-      title: 'Simple Plugin',
+      title: 'Typescript Plugin',
     }),
   ],
   module: {

@@ -1,4 +1,4 @@
-import { RemixExtension } from '../../../src/client'
+import { RemixExtension } from 'remix-plugin'
 
 const extension = new RemixExtension()
 
