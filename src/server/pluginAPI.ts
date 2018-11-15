@@ -43,12 +43,12 @@ export class PluginAPI {
       })
     },
 
-    addProvider: (mod: string, name: string, url: string, cb: Function) => {
+    addProvider: (moduleName: string, name: string, url: string, cb: Function) => {
       executionContext.addProvider({ name, url })
       cb()
     },
 
-    removeProvider: (mod: string, name: string, cb: Function) => {
+    removeProvider: (moduleName: string, name: string, cb: Function) => {
       executionContext.removeProvider(name)
       cb()
     },

@@ -183,6 +183,7 @@ export class PluginManager {
           }),
         )
         this.inFocus = tabName
+        // Get compilation result when tab change
         pluginAPI.compiler.getCompilationResult(
           tabName,
           (error: string, data: CompilationResult) => {
@@ -201,10 +202,13 @@ export class PluginManager {
       }
     })
 
+    // TODO : Add Handshake here
+
     window.addEventListener(
       'message',
       event => {
         if (event.type !== 'message') return
+        // TODO : Check of origins
         const extension = this.origins[event.origin]
         if (!extension) return
 
