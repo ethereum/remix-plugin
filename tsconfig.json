@@ -9,6 +9,7 @@
       "strict": true,
       "noImplicitAny": false,
       "target": "es5",
+      "typeRoots": ["node_modules/@types"],
       "lib": [
         "dom",
         "es2018"
