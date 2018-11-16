@@ -1,4 +1,4 @@
-import { EventListener, Tx, Network } from '../types'
+import { EventListener, Tx, Network } from '../models'
 import { execution } from 'remix-lib'
 
 const { executionContext } = execution
@@ -33,7 +33,7 @@ export class PluginAPI {
     },
 
     updateTitle: (moduleName: string, title: string, cb: Function) => {
-      this.highlighters.plugins[moduleName].modal.setTitle(title)
+      this._pluginManager.plugins[moduleName].modal.setTitle(title)
       if (cb) cb()
     },
 
@@ -85,7 +85,7 @@ export class PluginAPI {
       data: any,
       cb: Function,
     ) => {
-      this.highlighters.receivedDataFrom('sendCompilationResult', moduleName, [
+      this._pluginManager.receivedDataFrom('sendCompilationResult', moduleName, [
         file,
         source,
         languageVersion,
@@ -144,8 +144,8 @@ export class PluginAPI {
       this._udapp.createVMAccount(
         privateKey,
         balance,
-        (error: string, address: string) => {
-          cb(error, address)
+        (err: string, address: string) => {
+          cb(err, address)
         },
       )
     },

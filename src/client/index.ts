@@ -1,4 +1,4 @@
-import { Request, Notif } from '../types'
+import { Request, Notif } from '../models'
 
 export class RemixExtension {
 

@@ -8,7 +8,7 @@ import {
   PluginDesc,
   OriginList,
   RequestMsg
-} from '../types'
+} from '../models'
 
 import { EventManager } from 'remix-lib'
 import { PluginAPI } from './pluginAPI'
@@ -202,8 +202,6 @@ export class PluginManager {
       }
     })
 
-    // TODO : Add Handshake here
-
     window.addEventListener(
       'message',
       event => {
@@ -255,9 +253,11 @@ export class PluginManager {
   public register(desc: PluginDesc, modal: any, content: string) {
     this.plugins[desc.title] = { content, modal, origin: desc.url }
     this.origins[desc.url] = desc.title
+    // TODO : Add Handshake here
   }
 
   public broadcast(value: string) {
+      // TODO : broadcast only to the one who listen to this
     for (const plugin in this.plugins) {
       this.post(plugin, value)
     }
