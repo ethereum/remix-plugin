@@ -2,153 +2,178 @@ import { EventManager } from 'remix-lib'
 
 /****************
  *  NOTIFICATIONS
-*****************/
+ *****************/
 export interface Notif {
-    app: {
-        unfocus(): any,
-        focus(): any,
-    },
-    compiler: {
-        compilationFinished(params: {
-            success: boolean,
-            data: CompilationResult['contracts'],
-            source: CompilationResult['sources']
-        }): any,
-        compilationData(params: {compilationResult: object}): any
-    },
-    txlistener: {
-        newTransaction(params: {tx: object}): any
-    }
+  app: {
+    unfocus(): any
+    focus(): any
+  }
+  compiler: {
+    compilationFinished(params: {
+      success: boolean
+      data: CompilationResult['contracts']
+      source: CompilationResult['sources']
+    }): any
+    compilationData(params: { compilationResult: object }): any
+  }
+  txlistener: {
+    newTransaction(params: { tx: object }): any
+  }
+  editor: {
+    currentFileChanged(params: { file: string }): any
+  }
 }
 
-export type NotifKeys = 'app' | 'compiler' | 'txlistener'
+export type NotifKeys = 'app' | 'compiler' | 'txlistener' | 'editor'
 
 export type NotifTypes =
-    | keyof Notif['app']
-    | keyof Notif['compiler']
-    | keyof Notif['txlistener']
-
+  | keyof Notif['app']
+  | keyof Notif['compiler']
+  | keyof Notif['txlistener']
+  | keyof Notif['editor']
 
 /**********
  * REQUESTS
-***********/
+ ***********/
 
 export type RequestKeys = 'app' | 'compiler' | 'config' | 'udapp' | 'editor'
 
 export type RequestTypes =
-    | keyof Request['app']
-    | keyof Request['compiler']
-    | keyof Request['config']
-    | keyof Request['udapp']
-    | keyof Request['editor']
+  | keyof Request['app']
+  | keyof Request['compiler']
+  | keyof Request['config']
+  | keyof Request['udapp']
+  | keyof Request['editor']
 
 export interface RequestInterface {
-    [key: string]: {
-        [type: string]: {
-            params: object,
-            cb: Function
-        }
+  [key: string]: {
+    [type: string]: {
+      params: object
+      cb: Function
     }
+  }
 }
 
 export interface Request extends RequestInterface {
-    app: {
-        getExecutionContextProvider: {
-            params: {},
-            cb: (params: { provider: 'injected' | 'web3' | 'vm' }) => any
-        },
-        getProviderEndpoint: {
-            params: {}
-            cb: (params: {  }) => any
-        },
-        updateTitle: {
-            params: { title: string },
-            cb: () => any
-        }
-    },
-    compiler: {
-        getCompilationResult: {
-            params: {},
-            cb: (params: { compilationResult: object }) => any
-        }
+  app: {
+    getExecutionContextProvider: {
+      params: {}
+      cb: (params: { provider: 'injected' | 'web3' | 'vm' }) => any
     }
-    config: {
-        setConfig: {
-            params: { path: string, content: string }
-            cb: () => any
-        },
-        getConfig: {
-            params: { path: string },
-            cb: (params: { config: string }) => any
-        },
-        removeConfig: {
-            params: { path: string }
-            cb: () => any
-        }
-    },
-    udapp: {
-        runTx: {
-            params: { tx: object },
-            cb: () => any
-        },
-        getAccounts: {
-            params: {},
-            cb: (params: { accounts: string[] }) => any
-        },
-        createVMAccount: {
-            params: { privateKey: string, balance: string },
-            cb: () => any
-        }
-    },
-    editor: {
-        getCurrentFile: {
-            params: {},
-            cb: (params: { name: string }) => any
-        },
-        getFile: {
-            params: { path: string },
-            cb: (params: { content: string }) => any
-        },
-        setFile: {
-            params: { path: string, content: string },
-            cb: () => any
-        },
-        highlight: {
-            params: { lineColumnPos: object, filePath: string, hexcolor: string },
-            cb: () => any
-        }
+    getProviderEndpoint: {
+      params: {}
+      cb: (params: {}) => any
     }
+    updateTitle: {
+      params: { title: string }
+      cb: () => any
+    }
+  }
+  compiler: {
+    getCompilationResult: {
+      params: {}
+      cb: (params: { compilationResult: object }) => any
+    }
+  }
+  config: {
+    setConfig: {
+      params: { path: string; content: string }
+      cb: () => any
+    }
+    getConfig: {
+      params: { path: string }
+      cb: (params: { config: string }) => any
+    }
+    removeConfig: {
+      params: { path: string }
+      cb: () => any
+    }
+  }
+  udapp: {
+    runTx: {
+      params: { tx: object }
+      cb: () => any
+    }
+    getAccounts: {
+      params: {}
+      cb: (params: { accounts: string[] }) => any
+    }
+    createVMAccount: {
+      params: { privateKey: string; balance: string }
+      cb: () => any
+    }
+  }
+  editor: {
+    getCurrentFile: {
+      params: {}
+      cb: (params: { name: string }) => any
+    }
+    getFile: {
+      params: { path: string }
+      cb: (params: { content: string }) => any
+    }
+    setFile: {
+      params: { path: string; content: string }
+      cb: () => any
+    }
+    highlight: {
+      params: { lineColumnPos: object; filePath: string; hexcolor: string }
+      cb: () => any
+    }
+  }
 }
 
 /*********
  * MESSAGE
  *********/
-export interface RequestMsg {
-    id: number,
-    key: RequestKeys,
-    type: RequestTypes,
-    value: any
+export interface Message {
+  action: 'request' | 'response' | 'notification'
+  key: RequestKeys | NotifKeys
+  type: RequestTypes | NotifTypes
 }
 
+export interface NotifMsg extends Message {
+  action: 'notification',
+  key: NotifKeys,
+  type: NotifTypes
+  value: any[]
+}
+
+export interface RequestMsg extends Message {
+  id: number,
+  action: 'request',
+  key: RequestKeys,
+  type: RequestTypes,
+  value: any[],
+}
+
+export interface ResponseMsg extends Message {
+  id: number,
+  action: 'response',
+  key: RequestKeys,
+  type: RequestTypes,
+  value: any[] | null,
+  error: string | undefined
+}
 
 /*********
  * PLUGINS
  *********/
 export interface PluginList {
-    [name: string]: {
-        content: any,
-        modal: any,
-        origin: any
-    }
+  [name: string]: {
+    content: any
+    modal: any
+    origin: any
+  }
 }
 
 export interface OriginList {
-    [name: string]: any
+  [name: string]: any
 }
 
 export interface PluginDesc {
-    title: string,
-    url: string
+  title: string
+  url: string
 }
 
 /***************
@@ -156,16 +181,16 @@ export interface PluginDesc {
  **************/
 // TODO : To remove when remix-lib is written in typescript
 export interface EventListener {
-    event: EventManager
-    [key: string]: any
+  event: EventManager
+  [key: string]: any
 }
 
 /*********
  * NETWORK
  ********/
 export interface Network {
-    id: string
-    name: string
+  id: string
+  name: string
 }
 
 /****************
@@ -244,32 +269,32 @@ export interface ABIDefinition {
   anonymous?: boolean
   inputs?: ABIInput[]
   name?: string
-  stateMutability?: "view" | "pure" | "payable" | "nonpayable"
+  stateMutability?: 'view' | 'pure' | 'payable' | 'nonpayable'
   outputs?: ABIOutput[]
-  type: "function" | "constructor" | "event" | "fallback"
+  type: 'function' | 'constructor' | 'event' | 'fallback'
 }
 
-export type ABIDataTypes = "uint256" | "boolean" | "string" | "bytes" | string // TODO complete list
+export type ABIDataTypes = 'uint256' | 'boolean' | 'string' | 'bytes' | string // TODO complete list
 
 export interface ABIInput {
-    name: string,
-    type: ABIDataTypes,
-    indexed?: boolean
+  name: string
+  type: ABIDataTypes
+  indexed?: boolean
 }
 
 export interface ABIOutput {
-    name: string,
-    type: ABIDataTypes
+  name: string
+  type: ABIDataTypes
 }
 
 /*************
  * TRANSACTION
  *************/
 export interface Tx {
-    to: string
-    nonce: number
-    gasLimit: string
-    gasPrice: string
-    data: string
-    value: string
+  to: string
+  nonce: number
+  gasLimit: string
+  gasPrice: string
+  data: string
+  value: string
 }
