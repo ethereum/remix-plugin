@@ -8,7 +8,7 @@ import {
   PluginDesc,
   OriginList,
   RequestMsg
-} from '../types'
+} from '../models'
 
 import { EventManager } from 'remix-lib'
 import { PluginAPI } from './pluginAPI'
@@ -183,6 +183,7 @@ export class PluginManager {
           }),
         )
         this.inFocus = tabName
+        // Get compilation result when tab change
         pluginAPI.compiler.getCompilationResult(
           tabName,
           (error: string, data: CompilationResult) => {
@@ -205,6 +206,7 @@ export class PluginManager {
       'message',
       event => {
         if (event.type !== 'message') return
+        // TODO : Check of origins
         const extension = this.origins[event.origin]
         if (!extension) return
 
@@ -251,9 +253,11 @@ export class PluginManager {
   public register(desc: PluginDesc, modal: any, content: string) {
     this.plugins[desc.title] = { content, modal, origin: desc.url }
     this.origins[desc.url] = desc.title
+    // TODO : Add Handshake here
   }
 
   public broadcast(value: string) {
+      // TODO : broadcast only to the one who listen to this
     for (const plugin in this.plugins) {
       this.post(plugin, value)
     }
