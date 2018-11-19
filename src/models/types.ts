@@ -132,14 +132,14 @@ export interface Message {
   type: RequestTypes | NotifTypes
 }
 
-export interface NotifMsg extends Message {
+export interface NotifMsg {
   action: 'notification',
   key: NotifKeys,
   type: NotifTypes
   value: any[]
 }
 
-export interface RequestMsg extends Message {
+export interface RequestMsg {
   id: number,
   action: 'request',
   key: RequestKeys,
@@ -147,7 +147,7 @@ export interface RequestMsg extends Message {
   value: any[],
 }
 
-export interface ResponseMsg extends Message {
+export interface ResponseMsg {
   id: number,
   action: 'response',
   key: RequestKeys,
@@ -155,6 +155,8 @@ export interface ResponseMsg extends Message {
   value: any[] | null,
   error: string | undefined
 }
+
+export type Msg = NotifMsg | RequestMsg | ResponseMsg
 
 /*********
  * PLUGINS

@@ -1,6 +1,5 @@
-import { NotifMsg, ResponseMsg } from './models/types'
 import { PluginAPI } from './server/pluginAPI'
-import { Message, RequestMsg } from './models'
+import { Message, RequestMsg, NotifMsg, Msg } from './models'
 
 export interface Bridge<Plugin> {
   plugins: Plugin[]
@@ -32,6 +31,7 @@ export class PostMessage implements Bridge<IframePlugin> {
 
         const { key, type, id, value } = JSON.parse(event.data) as RequestMsg
         const action = 'response'
+
         value.unshift(title)
         value.push((error: string, result: any) => {
           this.send({ id, action, key, type, value: [result], error }, event.origin)
@@ -67,7 +67,7 @@ export class PostMessage implements Bridge<IframePlugin> {
     this.plugins.forEach(({url}) => this.send(message, url))
   }
 
-  public send(message: NotifMsg | ResponseMsg, target: string) {
+  public send(message: Msg, target: string) {
     const msg = JSON.stringify(message)
     const { content } = this.getPlugin(target)
     const iframe = content.querySelector('iframe')
