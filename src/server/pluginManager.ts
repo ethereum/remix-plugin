@@ -7,11 +7,12 @@ import {
   PluginList,
   PluginDesc,
   OriginList,
-  RequestMsg
+  RequestMsg,
 } from '../models'
 
 import { EventManager } from 'remix-lib'
 import { PluginAPI } from './pluginAPI'
+import { PostMessage } from './../post-message'
 
 /**
  * Register and Manage plugin:
@@ -95,6 +96,7 @@ export class PluginManager {
   public plugins: PluginList = {}
   public origins: OriginList = {}
   public inFocus = ''
+  public messenger: PostMessage
 
   constructor(
     app: EventListener,
@@ -113,18 +115,19 @@ export class PluginManager {
       udapp,
       SourceHighlighter,
     )
+
+    this.messenger = new PostMessage(pluginAPI)
+
     this._components = { pluginAPI }
     fileManager.event.register(
       'currentFileChanged',
       (file: string, provider: object) => {
-        this.broadcast(
-          JSON.stringify({
-            action: 'notification',
-            key: 'editor',
-            type: 'currentFileChanged',
-            value: [file],
-          }),
-        )
+        this.messenger.broadcast({
+          action: 'notification',
+          key: 'editor',
+          type: 'currentFileChanged',
+          value: [file],
+        })
       },
     )
 
@@ -135,52 +138,48 @@ export class PluginManager {
         data: CompilationResult['contracts'],
         source: CompilationResult['sources'],
       ) => {
-        this.broadcast(
-          JSON.stringify({
-            action: 'notification',
-            key: 'compiler',
-            type: 'compilationFinished',
-            value: [success, data, source],
-          }),
-        )
+        this.messenger.broadcast({
+          action: 'notification',
+          key: 'compiler',
+          type: 'compilationFinished',
+          value: [success, data, source],
+        })
       },
     )
 
     txlistener.event.register('newTransaction', (tx: Tx) => {
-      this.broadcast(
-        JSON.stringify({
-          action: 'notification',
-          key: 'txlistener',
-          type: 'newTransaction',
-          value: [tx],
-        }),
-      )
+      this.messenger.broadcast({
+        action: 'notification',
+        key: 'txlistener',
+        type: 'newTransaction',
+        value: [tx],
+      })
     })
 
     app.event.register('tabChanged', (tabName: string) => {
       // TODO Fix this cause this event is no longer triggered
       if (this.inFocus && this.inFocus !== tabName) {
         // trigger unfocus
-        this.post(
-          this.inFocus,
-          JSON.stringify({
+        this.messenger.send(
+          {
             action: 'notification',
             key: 'app',
             type: 'unfocus',
             value: [],
-          }),
+          },
+          this.inFocus,
         )
       }
       if (this.plugins[tabName]) {
         // trigger focus
-        this.post(
-          tabName,
-          JSON.stringify({
+        this.messenger.send(
+          {
             action: 'notification',
             key: 'app',
             type: 'focus',
             value: [],
-          }),
+          },
+          tabName,
         )
         this.inFocus = tabName
         // Get compilation result when tab change
@@ -188,90 +187,33 @@ export class PluginManager {
           tabName,
           (error: string, data: CompilationResult) => {
             if (!error) return
-            this.post(
-              tabName,
-              JSON.stringify({
+            this.messenger.send(
+              {
                 action: 'notification',
                 key: 'compiler',
                 type: 'compilationData',
                 value: [data],
-              }),
+              },
+              tabName,
             )
           },
         )
       }
     })
-
-    window.addEventListener(
-      'message',
-      event => {
-        if (event.type !== 'message') return
-        // TODO : Check of origins
-        const extension = this.origins[event.origin]
-        if (!extension) return
-
-        const response = (
-          _key: RequestKeys,
-          _type: RequestTypes,
-          _id: number,
-          _error: string,
-          _result: any,
-        ) => {
-          this.postToOrigin(
-            event.origin,
-            JSON.stringify({
-              id: _id,
-              action: 'response',
-              key: _key,
-              type: _type,
-              error: _error,
-              value: [_result],
-            }),
-          )
-        }
-        const { key, type, id, value } = JSON.parse(event.data) as RequestMsg
-        value.unshift(extension)
-        value.push((error: string, result: any) => {
-          response(key, type, id, error, result)
-        })
-        if (pluginAPI[key] && (pluginAPI[key] as any)[type]) {
-            (pluginAPI[key] as any)[type].apply({}, value)
-        } else {
-          response(key, type, id, `Endpoint ${key}/${type} not present`, null)
-        }
-      },
-      false,
-    )
   }
 
-  public unregister(desc: PluginDesc) {
-    this._components.pluginAPI.editor.discardHighlight(desc.title, () => {})
-    delete this.plugins[desc.title]
-    delete this.origins[desc.url]
+  public unregister({title}: PluginDesc) {
+    this._components.pluginAPI.editor.discardHighlight(title, () => {})
+    this.messenger.removePlugin(title)
   }
 
-  public register(desc: PluginDesc, modal: any, content: string) {
-    this.plugins[desc.title] = { content, modal, origin: desc.url }
-    this.origins[desc.url] = desc.title
-    // TODO : Add Handshake here
-  }
-
-  public broadcast(value: string) {
-      // TODO : broadcast only to the one who listen to this
-    for (const plugin in this.plugins) {
-      this.post(plugin, value)
-    }
-  }
-
-  public postToOrigin(origin: string, value: string) {
-    if (this.origins[origin]) {
-      this.post(this.origins[origin], value)
-    }
+  public register(desc: PluginDesc, modal: any, content: any) {
+    this.messenger.addPlugin({ ...desc, content })
   }
 
   public receivedDataFrom(
     methodName: string,
-    mod: string,
+    moduleName: string,
     argumentsArray: any,
   ) {
     // TODO check whether 'mod' as right to do that
@@ -279,11 +221,4 @@ export class PluginManager {
     this.event.trigger(methodName, argumentsArray)
   }
 
-  public post(name: string, value: string) {
-    if (this.plugins[name]) {
-      this.plugins[name].content
-        .querySelector('iframe')
-        .contentWindow.postMessage(value, this.plugins[name].origin)
-    }
-  }
 }

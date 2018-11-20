@@ -67,5 +67,3 @@ export class RemixExtension {
 
 }
 
-// if (window) (window as any).RemixExtension = RemixExtension
-// if (module && module.exports) module.exports = RemixExtension
