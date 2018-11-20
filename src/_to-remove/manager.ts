@@ -1,10 +1,9 @@
 export class Manager {
-
   private pendingRequest: Map<number, Function> = new Map()
   private plugins: { [type: string]: IframePlugin | ModulePlugin } = {}
 
   constructor() {
-    window.addEventListener('message', (event) => {
+    window.addEventListener('message', event => {
       // TODO: Check origins
       if (typeof event.data !== 'string') return
       if (!this.findByOrigin(event.origin)) {
@@ -20,7 +19,6 @@ export class Manager {
     }
     return undefined
   }
-
 
   private exportKey(type: string, key: string) {
     return this.plugins[type].exports.includes(method => method.key === key)
@@ -42,29 +40,67 @@ export class Manager {
     delete this.plugins[title]
   }
 
-  public async getRequestFromModule() {
-    //
+  /**
+   * Handle a request from a Module
+   */
+  public async getRequestFromModule(msg: Message) {
+    const { type, id, key, value } = msg
+    const targetPlugin = this.plugins[type]
+
+    const createResponse = (result) => ({
+      ...msg, action: 'response', value: result
+    })
+
+    switch (targetPlugin.kind) {
+      case 'module': {
+        if (!targetPlugin[key]) {
+          throw new Error(`${key} is not a available in ${type}`)
+        }
+        const result = targetPlugin[key](value)
+        return createResponse(result)
+      }
+      case 'iframe': {
+        if (!this.exportKey(type, key)) {
+          throw new Error(`${key} is not a available in ${type}`)
+        }
+        const target = targetPlugin.url
+        const src = targetPlugin.source
+        this.sendToIframe(src, msg, target)
+        return new Promise((res, rej) => {
+          // TOOD : Handle Errror
+          this.pendingRequest[id] = (result) => {
+            const response = createResponse(result)
+            res(response)
+          }
+        })
+      }
+      default: {
+        throw new Error('Plugin should be a "module" or "iframe"')
+      }
+    }
   }
 
-  /** A plugin send a request to another plugin */
+  /**
+   * Handle requests coming from Iframes
+   */
   public getRequestFromIframe({ data, origin, source }: MessageEvent) {
-    const msg = JSON.parse(data)
+    const msg = JSON.parse(data) as Message
     const { type, key, id, value } = msg
 
     // Add a response to the pending list
-    const addPendingResponse = () => (result: any) => {
+    const responseToOrigin = (result: any) => {
       const action = 'response'
       this.sendToIframe(
         source as Window,
         { ...msg, value: result, action },
-        origin
+        origin,
       )
     }
 
     // Return a post message with the error inside
     const throwError = (error: string) => {
       const action = 'response'
-      this.sendToIframe(source as Window, {...msg, action, error }, origin)
+      this.sendToIframe(source as Window, { ...msg, action, error }, origin)
     }
 
     const targetPlugin = this.plugins[type]
@@ -77,12 +113,10 @@ export class Manager {
 
     switch (targetPlugin.kind) {
       case 'module': {
-        if (!targetPlugin[key]) {
-          this.pendingRequest[id] = addPendingResponse()
+        if (!!targetPlugin[key]) {
           // Modules methods must be a Promise
           targetPlugin[key](value)
-            .then(res => this.pendingRequest[id](res))
-            .then(_ => delete this.pendingRequest[id])
+            .then(res => responseToOrigin(res))
             .catch(err => throwError(err))
         } else {
           throwError(`${key} is not a available in ${type}`)
@@ -91,35 +125,43 @@ export class Manager {
       }
       case 'iframe': {
         if (this.exportKey(type, key)) {
-          this.pendingRequest[id] = addPendingResponse()
+          this.pendingRequest[id] = (res) => responseToOrigin(res)
           const target = targetPlugin.url
-          const src = targetPlugin.source
-          this.sendToIframe(src, msg, target)
+          const targetSrc = targetPlugin.source
+          this.sendToIframe(targetSrc, msg, target)
         } else {
           throwError(`${key} is not a available in ${type}`)
         }
         break
       }
       default: {
-        throw new Error('Plugin should be a "module" or "iframe"  ')
+        throwError('Plugin should be a "module" or "iframe"')
       }
     }
   }
-
 }
 
 export interface Plugin {
-  kind: 'iframe' | 'module',
-  title: string,
-  url: string,
+  kind: 'iframe' | 'module'
+  title: string
+  url: string
   exports: any[]
 }
 
 export interface IframePlugin extends Plugin {
-  kind: 'iframe',
+  kind: 'iframe'
   source: Window
 }
 
 export interface ModulePlugin extends Plugin {
-  kind: 'module',
+  kind: 'module'
+}
+
+export interface Message {
+  id: number
+  action: 'response' | 'request' | 'notification'
+  type: string
+  key: string
+  value: any
+  error: string
 }
