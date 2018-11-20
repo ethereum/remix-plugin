@@ -1,6 +1,6 @@
 export class Manager {
-  public pendingRequest: Map<number, Function> = new Map()
-  public plugins: { [type: string]: IframePlugin | ModulePlugin } = {}
+  public pendingRequest: RequestMap = {}
+  public plugins: PluginMap = {}
 
   constructor() {}
 
@@ -210,7 +210,11 @@ export interface IframePlugin extends Plugin {
 }
 
 export interface ModulePlugin extends Plugin {
-  kind: 'module'
+  kind: 'module',
+}
+
+export interface PluginMap {
+  [type: string]: IframePlugin | ModulePlugin
 }
 
 export interface Message {
@@ -220,4 +224,8 @@ export interface Message {
   key: string
   value: any
   error: string
+}
+
+export interface RequestMap {
+  [id: number]: (result: any) => any
 }
