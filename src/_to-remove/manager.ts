@@ -13,21 +13,33 @@ export class Manager {
     })
   }
 
+  /** Find a plugin by it origin */
   private findByOrigin(origin: string) {
-    for (const key in this.plugins) {
-      if (this.plugins[key].url) return this.plugins[key]
+    for (const type in this.plugins) {
+      const plugin = this.plugins[type]
+      if (plugin.kind === 'iframe' && plugin.url === origin) {
+        return this.plugins[type]
+      }
     }
     return undefined
   }
 
+  /** Check if the plugin[type] exposes a specific key */
   private exportKey(type: string, key: string) {
     return this.plugins[type].exports.includes(method => method.key === key)
   }
 
-  private sendToIframe(source: Window, message: any, target: string) {
+  /** Send a message to an iframe */
+  private send(source: Window, message: any, target: string) {
     source.postMessage(JSON.stringify(message), target)
   }
 
+  /**
+   * Register an Iframe plugin to the manager
+   * @param json the description of the plugin
+   * @param modal The modal element where the iframe lives
+   * @param content The HTML element that hold the iframe
+   */
   public registerIframe(json: any, modal: any, content: HTMLElement) {
     const iframe = content.querySelector('iframe')
     if (!iframe) throw new Error('No iframe found for this plugin')
@@ -36,12 +48,26 @@ export class Manager {
     this.plugins[json.title] = { ...json, source, kind: 'iframe' }
   }
 
+  /**
+   * Register a module plugin to the manager
+   * @param json The description of module
+   * @param api The API functions to call
+   */
+  public registerModule(json: any, api: any) {
+    this.plugins[json.title] = { ...json, ...api }
+  }
+
+  /**
+   * Remove a plugin
+   * @param title The title (or type) of the plugin
+   */
   public unregister(title: string) {
     delete this.plugins[title]
   }
 
   /**
    * Handle a request from a Module
+   * @param msg The request message coming from the module
    */
   public async getRequestFromModule(msg: Message) {
     const { type, id, key, value } = msg
@@ -65,7 +91,7 @@ export class Manager {
         }
         const target = targetPlugin.url
         const src = targetPlugin.source
-        this.sendToIframe(src, msg, target)
+        this.send(src, msg, target)
         return new Promise((res, rej) => {
           // TOOD : Handle Errror
           this.pendingRequest[id] = (result) => {
@@ -90,7 +116,7 @@ export class Manager {
     // Add a response to the pending list
     const responseToOrigin = (result: any) => {
       const action = 'response'
-      this.sendToIframe(
+      this.send(
         source as Window,
         { ...msg, value: result, action },
         origin,
@@ -100,7 +126,7 @@ export class Manager {
     // Return a post message with the error inside
     const throwError = (error: string) => {
       const action = 'response'
-      this.sendToIframe(source as Window, { ...msg, action, error }, origin)
+      this.send(source as Window, { ...msg, action, error }, origin)
     }
 
     const targetPlugin = this.plugins[type]
@@ -128,7 +154,7 @@ export class Manager {
           this.pendingRequest[id] = (res) => responseToOrigin(res)
           const target = targetPlugin.url
           const targetSrc = targetPlugin.source
-          this.sendToIframe(targetSrc, msg, target)
+          this.send(targetSrc, msg, target)
         } else {
           throwError(`${key} is not a available in ${type}`)
         }
@@ -144,13 +170,13 @@ export class Manager {
 export interface Plugin {
   kind: 'iframe' | 'module'
   title: string
-  url: string
   exports: any[]
 }
 
 export interface IframePlugin extends Plugin {
-  kind: 'iframe'
-  source: Window
+  kind: 'iframe',
+  source: Window,
+  url: string
 }
 
 export interface ModulePlugin extends Plugin {
