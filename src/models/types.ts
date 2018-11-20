@@ -153,7 +153,7 @@ export interface ResponseMsg {
   key: RequestKeys,
   type: RequestTypes,
   value: any[] | null,
-  error: string | undefined
+  error: string | null
 }
 
 export type Msg = NotifMsg | RequestMsg | ResponseMsg

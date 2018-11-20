@@ -1,4 +1,4 @@
-import { PostMessage } from './../post-message'
+import { PostMessage, Bridge } from './../post-message'
 export interface JsonPlugin {
   title: string
   url?: string
@@ -7,7 +7,7 @@ export interface JsonPlugin {
   imports: {
     type: string
     key: string
-  }[],
+  }[]
   exports: {
     notifications: {
       action: 'notification'
@@ -24,12 +24,12 @@ export interface JsonPlugin {
   }
 }
 
+
 function PluginAPIFactory(plugin: JsonPlugin, messenger: PostMessage) {
   const notifs = plugin.exports.notifications.reduce(
     (acc, { key, params }) => ({
       ...acc,
-      [key]: (parameters: typeof params) => console.log('notifs')
-
+      [key]: (parameters: typeof params) => console.log('notifs'),
     }),
     {},
   )
@@ -37,7 +37,7 @@ function PluginAPIFactory(plugin: JsonPlugin, messenger: PostMessage) {
   const requests = plugin.exports.requests.reduce(
     (acc, { key, params }) => ({
       ...acc,
-      [key]: (parameters: typeof params, cb: Function) => {
+      [key]: (parameters: typeof params) =>
         messenger.send(
           {
             action: 'request',
@@ -46,8 +46,7 @@ function PluginAPIFactory(plugin: JsonPlugin, messenger: PostMessage) {
             value: parameters,
           },
           plugin.url,
-        )
-      },
+        ),
     }),
     {},
   )
@@ -59,6 +58,6 @@ function PluginAPIFactory(plugin: JsonPlugin, messenger: PostMessage) {
     hash,
     version,
     notifs,
-    requests,
+    ...requests,
   }
 }
