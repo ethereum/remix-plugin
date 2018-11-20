@@ -165,7 +165,6 @@ export class ModuleManager {
 
   constructor(private manager: Manager) {}
 
-
   /**
    * Register a module plugin to the manager
    * @param json The description of module
@@ -173,6 +172,14 @@ export class ModuleManager {
    */
   public register(json: any, api: any) {
     this.manager.register({ ...json, ...api, kind: 'module' })
+  }
+
+  /**
+   * Broadcast a message to all plugins listening on it
+   * @param msg A Notification message to broadcast
+   */
+  public notify(msg: Message) {
+    this.manager.broadcast(msg)
   }
 
   /**
