@@ -21,7 +21,7 @@ export class Manager {
         if (plugin.kind === 'iframe') {
           this.sendToIframe(plugin.source, msg, plugin.url)
         } else if (plugin.kind === 'module') {
-          plugin.on[msg.key](msg)
+          plugin.on[type][msg.key](msg)
         }
       }
     }
@@ -97,6 +97,7 @@ export class IframeManager {
 
   /**
    * Handle requests coming from Iframes
+   * @param event The message event received
    */
   public request({ data, origin, source }: MessageEvent) {
     const msg = JSON.parse(data) as Message
@@ -246,7 +247,9 @@ export interface ModulePlugin extends Plugin {
   },
   /** Methods to call when receiving a notification */
   on: {
-    [key: string]: (message: Message) => any
+    [type: string]: {
+      [key: string]: (message: Message) => any
+    }
   }
 }
 
