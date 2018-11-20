@@ -9,6 +9,23 @@ export class Manager {
     return this.plugins[type].exports.includes(method => method.key === key)
   }
 
+  public importKey(type: string, key: string) {
+    return this.plugins[type].imports.includes(method => method.key === key)
+  }
+
+  /** Broadcast an notification to every plugin listening */
+  public broadcast(msg: Message) {
+    for (const type in this.plugins) {
+      if (this.importKey(type, msg.key)) {
+        const plugin = this.plugins[type]
+        if (plugin.kind === 'iframe') {
+          this.sendToIframe(plugin.source, msg, plugin.url)
+        } else if (plugin.kind === 'module') {
+          plugin.on[msg.key](msg)
+        }
+      }
+    }
+  }
 
   /** Send a message to an iframe */
   public sendToIframe(source: Window, message: any, target: string) {
@@ -42,8 +59,12 @@ export class IframeManager {
       if (!this.findByOrigin(event.origin)) {
         throw new Error('This plugin is not registered')
       }
-      // TODO : Check action
-      this.request(event)
+      const msg = JSON.parse(event.data) as Message
+      if (msg.action === 'request' || msg.action === 'response') {
+        this.request(event)
+      } else if (msg.action === 'notification') {
+        this.manager.broadcast(msg)
+      }
     })
   }
 
@@ -77,7 +98,7 @@ export class IframeManager {
   /**
    * Handle requests coming from Iframes
    */
-  private request({ data, origin, source }: MessageEvent) {
+  public request({ data, origin, source }: MessageEvent) {
     const msg = JSON.parse(data) as Message
     const { type, key, id, value } = msg
 
@@ -110,7 +131,7 @@ export class IframeManager {
       case 'module': {
         if (!!targetPlugin[key]) {
           // Modules methods must be a Promise
-          targetPlugin[key](value)
+          targetPlugin.call[key](value)
             .then(res => responseToOrigin(res))
             .catch(err => throwError(err))
         } else {
@@ -171,7 +192,7 @@ export class ModuleManager {
         if (!targetPlugin[key]) {
           throw new Error(`${key} is not a available in ${type}`)
         }
-        const result = targetPlugin[key](value)
+        const result = await targetPlugin.call[key](value)
         return createResponse(result)
       }
       case 'iframe': {
@@ -200,7 +221,8 @@ export class ModuleManager {
 export interface Plugin {
   kind: 'iframe' | 'module'
   title: string
-  exports: any[]
+  exports: any[],
+  imports: any[]
 }
 
 export interface IframePlugin extends Plugin {
@@ -211,6 +233,14 @@ export interface IframePlugin extends Plugin {
 
 export interface ModulePlugin extends Plugin {
   kind: 'module',
+  /** Methods to call when receiving a request */
+  call: {
+    [key: string]: (value?: any) => Promise<any>
+  },
+  /** Methods to call when receiving a notification */
+  on: {
+    [key: string]: (message: Message) => any
+  }
 }
 
 export interface PluginMap {
