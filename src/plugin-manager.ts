@@ -1,4 +1,4 @@
-import { RemixPlugin } from './plugins/remix-plugin'
+import { RemixPlugin } from './plugins'
 import { ModuleManager } from './module-manager'
 
 export interface PluginMap {
