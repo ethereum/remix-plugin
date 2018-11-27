@@ -8,11 +8,12 @@
     "module": "commonjs",
     "strict": true,
     "noImplicitAny": false,
+    "strictPropertyInitialization": false,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],
     "lib": ["dom", "es2018"],
     "paths": {
-        "remix-plugin": ["client"]
+        "remix-plugin": ["./"]
     }
   }
 }
