@@ -1,2 +1,2 @@
-export * from './remix-plugin'
+export * from './types'
 export * from './webview.plugin'

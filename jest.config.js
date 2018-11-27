@@ -3,6 +3,6 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: ["**/tests/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
-    "remix-plugin": "<rootDir>/src"
+    "remix-plugin": "<rootDir>/src/index"
   },
 };

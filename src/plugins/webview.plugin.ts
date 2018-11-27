@@ -1,4 +1,4 @@
-import { RemixPlugin } from "./remix-plugin"
+import { RemixPlugin } from "./types"
 import { ModuleManager } from "../module-manager"
 
 export interface WebviewService {
