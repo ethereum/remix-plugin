@@ -16,15 +16,15 @@ export class PluginManager {
   /** Register a plugin */
   public register(plugin: RemixPlugin) {
     if (this.plugins[plugin.type]) {
-      throw new Error('Plugin already registered')
+      throw new Error(`Plugin "${plugin.type}" is already registered`)
     }
     this.plugins[plugin.type] = plugin
   }
 
   /** Activate lazily a plugin */
   public activate(type: string) {
-    if (this.plugins[type]) {
-      throw new Error('Plugin already registered')
+    if (!this.plugins[type]) {
+      throw new Error(`Plugin "${type}" isn't registered`)
     }
     this.plugins[type].activate(this.moduleManager)
   }

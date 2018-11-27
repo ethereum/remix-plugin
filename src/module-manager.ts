@@ -22,6 +22,7 @@ export class ModuleManager {
   /** Store a request that a plugin exposes */
   public addMethod(type: string, key: string, cb: Function) {
     // TODO : Should we allow rewritting ?
+    if (!this.methods[type]) this.methods[type] = {}
     this.methods[type][key] = (value: any, err?: Error) => {
       if (err) return Promise.reject(err)
       return Promise.resolve(cb(value))

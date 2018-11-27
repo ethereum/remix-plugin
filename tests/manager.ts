@@ -4,6 +4,7 @@ import { HelloWorldPlugin } from 'examples'
 let moduleManager: ModuleManager
 let pluginManager: PluginManager
 
+
 beforeEach(() => {
   moduleManager = new ModuleManager()
   pluginManager = new PluginManager(moduleManager)
@@ -12,8 +13,22 @@ beforeEach(() => {
 test('Create module manager', () => expect(moduleManager).toBeDefined())
 test('Create plugin manager', () => expect(pluginManager).toBeDefined())
 
-test('Register the AppApi', () => {
-  const helloWorld = new HelloWorldPlugin()
-  pluginManager.register(helloWorld)
-  expect(pluginManager['plugins'][helloWorld.type]).toBeDefined()
+describe('Test Hello World Plugin', () => {
+  let helloWorld: HelloWorldPlugin
+
+  beforeEach(() => {
+    helloWorld = new HelloWorldPlugin()
+  })
+
+  test('Register', () => {
+    pluginManager.register(helloWorld)
+    expect(pluginManager['plugins'][helloWorld.type]).toBeDefined()
+  })
+
+  test('Activate', () => {
+    const spy = jest.spyOn(helloWorld, 'activate')
+    pluginManager.register(helloWorld)
+    pluginManager.activate(helloWorld.type)
+    expect(spy).toHaveBeenCalled()
+  })
 })
