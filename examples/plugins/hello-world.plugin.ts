@@ -1,5 +1,4 @@
 import { ModuleManager, RemixPlugin } from 'remix-plugin'
-import { execution } from 'remix-lib'
 
 export class HelloWorldPlugin extends RemixPlugin {
 
@@ -12,9 +11,7 @@ export class HelloWorldPlugin extends RemixPlugin {
   public activate(manager: ModuleManager) {
     this.manager = manager
 
-    this.addMethod('log', () => {
-      return 'Hello World'
-    })
+    this.addMethod('log', () => 'Hello World')
   }
 
   public deactivate() {}
