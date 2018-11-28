@@ -13,7 +13,8 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["dom", "es2018"],
     "paths": {
-        "remix-plugin": ["./"]
+        "remix-plugin": ["./"],
+        "examples": ["../examples/plugins"],
     }
   }
 }

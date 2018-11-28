@@ -1,16 +1,34 @@
-import { txlistener, compiler, fileManager, app, fileProviders, udapp } from './modules'
+import { ModuleManager, PluginManager } from 'remix-plugin'
+import { HelloWorldPlugin } from 'examples'
+
+let moduleManager: ModuleManager
+let pluginManager: PluginManager
 
 
-txlistener.event.trigger('newTransaction', [
-  {}, // TX
-])
-fileManager.event.trigger('currentFileChanged', [
-  '', // File
-  {}, // Provider
-])()
-compiler.event.trigger('compilationFinished', [
-  true, // Success
-  {}, // Compilation Result contracts
-  {}, // Compilation Result sources
-])
-app.event.trigger('tabChanged', ['compiler'])
+beforeEach(() => {
+  moduleManager = new ModuleManager()
+  pluginManager = new PluginManager(moduleManager)
+})
+
+test('Create module manager', () => expect(moduleManager).toBeDefined())
+test('Create plugin manager', () => expect(pluginManager).toBeDefined())
+
+describe('Test Hello World Plugin', () => {
+  let helloWorld: HelloWorldPlugin
+
+  beforeEach(() => {
+    helloWorld = new HelloWorldPlugin()
+  })
+
+  test('Register', () => {
+    pluginManager.register(helloWorld)
+    expect(pluginManager['plugins'][helloWorld.type]).toBeDefined()
+  })
+
+  test('Activate', () => {
+    const spy = jest.spyOn(helloWorld, 'activate')
+    pluginManager.register(helloWorld)
+    pluginManager.activate(helloWorld.type)
+    expect(spy).toHaveBeenCalled()
+  })
+})

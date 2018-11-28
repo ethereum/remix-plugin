@@ -1,5 +1,9 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  testMatch: ["**/test/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"]
+  testMatch: ["**/tests/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
+  moduleNameMapper: {
+    "remix-plugin": "<rootDir>/src",
+    "example": "<rootDir>/examples/plugins"
+  },
 };
