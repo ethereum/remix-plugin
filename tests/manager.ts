@@ -31,4 +31,11 @@ describe('Test Hello World Plugin', () => {
     pluginManager.activate(helloWorld.type)
     expect(spy).toHaveBeenCalled()
   })
+
+  test('Add Log Method', () => {
+    const spy = jest.spyOn(moduleManager, 'addMethod')
+    pluginManager.register(helloWorld)
+    pluginManager.activate(helloWorld.type)
+    expect(spy).toHaveBeenCalled()
+  })
 })
