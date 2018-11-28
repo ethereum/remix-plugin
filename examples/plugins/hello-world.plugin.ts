@@ -1,18 +1,13 @@
-import { ModuleManager, RemixPlugin } from 'remix-plugin'
+import { RemixPlugin, Plugin } from 'remix-plugin'
 
+@Plugin({
+  type: 'hello-world'
+})
 export class HelloWorldPlugin extends RemixPlugin {
 
-  protected manager: ModuleManager
-
-  constructor() {
-    super('hello-world')
+  log() {
+    return 'hello world'
   }
 
-  public activate(manager: ModuleManager) {
-    this.manager = manager
-
-    this.addMethod('log', () => 'Hello World')
-  }
-
-  public deactivate() {}
 }
+
