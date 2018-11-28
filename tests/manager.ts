@@ -1,5 +1,5 @@
 import { ModuleManager, PluginManager } from 'remix-plugin'
-import { HelloWorldPlugin } from 'examples'
+import { HelloWorldPlugin, Es6HelloWorldPlugin } from 'examples'
 
 let moduleManager: ModuleManager
 let pluginManager: PluginManager
@@ -14,10 +14,10 @@ test('Create module manager', () => expect(moduleManager).toBeDefined())
 test('Create plugin manager', () => expect(pluginManager).toBeDefined())
 
 describe('Test Hello World Plugin', () => {
-  let helloWorld: HelloWorldPlugin
+  let helloWorld: Es6HelloWorldPlugin
 
   beforeEach(() => {
-    helloWorld = new HelloWorldPlugin()
+    helloWorld = new Es6HelloWorldPlugin()
   })
 
   test('Register', () => {
