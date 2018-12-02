@@ -1,5 +1,4 @@
 export * from './iframe.module'
-export * from './iframe.service'
 export * from './internal.module'
 export * from './module-manager'
 export * from './remix-module'

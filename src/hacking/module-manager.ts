@@ -1,4 +1,11 @@
-import { Message, RemixModule } from './remix-module'
+import { Message, RemixModule, ModuleApi, ModuleProfile } from './remix-module'
+import { InternalModule } from './internal.module'
+import { IframeModule, IframeProfile } from './iframe.module'
+
+export interface ManagerConfiguration {
+  internals: {module: ModuleProfile, api: ModuleApi<any>}[],
+  externals: IframeProfile[]
+}
 
 export class ModuleManager {
 
@@ -13,6 +20,21 @@ export class ModuleManager {
       }
     }
   } = {}
+
+  /**
+   * Create a Module Manager and instanciate all the modules
+   * @param config List of module profile
+   */
+  static create(config: ManagerConfiguration) {
+    const manager = new ModuleManager()
+    config.internals.forEach(({module, api}) => {
+      manager.addModule(new InternalModule(module, manager, api))
+    })
+    config.externals.forEach((module) => {
+      manager.addModule(new IframeModule(module, manager))
+    })
+    return manager
+  }
 
   /** Add a module to the module manager */
   public addModule(module: RemixModule) {

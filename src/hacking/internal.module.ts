@@ -1,12 +1,12 @@
 import { RemixModule, ModuleProfile, Message, ModuleApi } from "./remix-module"
 import { ModuleManager } from "./module-manager"
 
-export class InternalModule<T extends ModuleProfile> extends RemixModule {
+export class InternalModule extends RemixModule {
 
   constructor(
-    json: T,
+    json: ModuleProfile,
     private manager: ModuleManager,
-    private api: ModuleApi<T>
+    private api: ModuleApi<any>
   ) {
     super(json)
 
