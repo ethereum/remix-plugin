@@ -1,3 +1,4 @@
+/*
 import { ModuleManager, PluginManager } from 'remix-plugin'
 import { HelloWorldPlugin, Es6HelloWorldPlugin } from 'examples'
 
@@ -39,3 +40,5 @@ describe('Test Hello World Plugin', () => {
     expect(spy).toHaveBeenCalled()
   })
 })
+
+*/

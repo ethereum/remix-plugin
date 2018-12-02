@@ -34,6 +34,8 @@ export class WebviewApi extends RemixPlugin {
       this.webViews[origin] = new Webview(source, origin)
       return this.webViews[origin]
     })
+
+    this.manager.request('blue-bar', 'addBlueStuff', { name: 'webview' })
   }
 
   public deactivate() {

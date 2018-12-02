@@ -1,12 +1,11 @@
 import { Request, Notif } from '../models'
 
 export class RemixExtension {
+  private _notifications: any
+  private _pendingRequests: any
+  private _id: number
 
-    private _notifications: any
-    private _pendingRequests: any
-    private _id: number
-
-  constructor () {
+  constructor() {
     this._notifications = {}
     this._pendingRequests = {}
     this._id = 0
@@ -14,8 +13,8 @@ export class RemixExtension {
   }
 
   private _newMessage(event: MessageEvent) {
-    if (!event.data) { return }
-    if (typeof event.data !== 'string') { return }
+    if (!event.data) return
+    if (typeof event.data !== 'string') return
 
     let msg
     try {
@@ -23,13 +22,13 @@ export class RemixExtension {
     } catch (e) {
       return console.log('unable to parse data')
     }
-    const {action, key, type, value} = msg
+    const { action, key, type, value } = msg
     if (action === 'notification') {
       if (this._notifications[key] && this._notifications[key][type]) {
         this._notifications[key][type](value)
       }
     } else if (action === 'response') {
-      const {id, error} = msg
+      const { id, error } = msg
       if (this._pendingRequests[id]) {
         this._pendingRequests[id](error, value)
         delete this._pendingRequests[id]
@@ -37,33 +36,34 @@ export class RemixExtension {
     }
   }
 
- public listen<
+  public listen<
     Key extends keyof Notif,
     Type extends keyof Notif[Key],
     CB extends Notif[Key][Type]
->(key: Key, type: Type, callback: CB) {
-    if (!this._notifications[key]) { this._notifications[key] = {} }
+  >(key: Key, type: Type, callback: CB) {
+    if (!this._notifications[key]) {
+      this._notifications[key] = {}
+    }
     this._notifications[key][type] = callback
-}
-
+  }
 
   public call<
     Key extends keyof Request,
     Type extends keyof Request[Key],
     Params extends Request[Key][Type]['params'],
-    CB extends Request[Key][Type]['cb'],
+    CB extends Request[Key][Type]['cb']
   >(key: Key, type: Type, params: Params, callback: CB) {
     this._id++
     this._pendingRequests[this._id] = callback
-    window.parent.postMessage(JSON.stringify({
-      action: 'request',
-      key,
-      type,
-      value: params,
-      id: this._id
-    }), '*')
+    window.parent.postMessage(
+      JSON.stringify({
+        action: 'request',
+        key,
+        type,
+        value: params,
+        id: this._id,
+      }),
+      '*',
+    )
   }
-
-
 }
-
