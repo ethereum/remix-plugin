@@ -1,19 +1,16 @@
-/*
-import { ModuleManager, PluginManager } from 'remix-plugin'
+import { ModuleManager } from 'remix-plugin'
 import { HelloWorldPlugin, Es6HelloWorldPlugin } from 'examples'
 
+test('Create module manager', () => expect(ModuleManager.create()).toBeDefined())
+
 let moduleManager: ModuleManager
-let pluginManager: PluginManager
-
-
 beforeEach(() => {
-  moduleManager = new ModuleManager()
-  pluginManager = new PluginManager(moduleManager)
+  moduleManager = ModuleManager.create()
 })
 
-test('Create module manager', () => expect(moduleManager).toBeDefined())
-test('Create plugin manager', () => expect(pluginManager).toBeDefined())
 
+
+/*
 describe('Test Hello World Plugin', () => {
   let helloWorld: Es6HelloWorldPlugin
 
@@ -40,5 +37,4 @@ describe('Test Hello World Plugin', () => {
     expect(spy).toHaveBeenCalled()
   })
 })
-
 */

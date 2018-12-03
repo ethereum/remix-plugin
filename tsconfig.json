@@ -1,6 +1,6 @@
 {
   "compileOnSave": false,
-  "include": ["./src/hacking/*"],
+  "include": ["./src"],
   "exclude": ["./dist"],
   "compilerOptions": {
     "baseUrl": "./src",

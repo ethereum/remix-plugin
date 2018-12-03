@@ -1,54 +1,78 @@
-export interface MethodsMap {
-  [type: string]: {
-    [key: string]: (value: any, err?: Error) => Promise<any>
-  }
+import { Message, RemixModule, ModuleApi, ModuleProfile } from './remix-module'
+import { InternalModule } from './internal.module'
+import { IframeModule, IframeProfile } from './iframe.module'
+
+export interface ManagerConfiguration {
+  internals?: {module: ModuleProfile, api: ModuleApi<any>}[],
+  externals?: IframeProfile[]
 }
 
-export interface EventsMap {
-  [originType: string]: {
-    [type: string]: {
-      [key: string]: Function
-    }
-  }
-}
-
-/**
- * Handle connexion between modules
- */
 export class ModuleManager {
-  private methods: MethodsMap = {}
-  private events: EventsMap = {}
 
-  /** Store a request that a plugin exposes */
-  public addMethod(type: string, key: string, cb: Function) {
-    // TODO : Should we allow rewritting ?
-    if (!this.methods[type]) this.methods[type] = {}
-    this.methods[type][key] = (value: any, err?: Error) => {
-      if (err) return Promise.reject(err)
-      return Promise.resolve(cb(value))
+  public modules: {
+    [type: string]: RemixModule
+  } = {}
+
+  public events: {
+    [origin: string]: {
+      [type: string]: {
+        [key: string]: (value: any) => any
+      }
     }
+  } = {}
+
+  /**
+   * Create a Module Manager and instanciate all the modules
+   * @param config List of module profile
+   */
+  static create(config: ManagerConfiguration = { internals: [], externals: []}) {
+    const manager = new ModuleManager()
+    if (config.internals) {
+      config.internals.forEach(({module, api}) => {
+        manager.addModule(new InternalModule(module, manager, api))
+      })
+    }
+    if (config.externals) {
+      config.externals.forEach((module) => {
+        manager.addModule(new IframeModule(module, manager))
+      })
+    }
+
+    return manager
   }
 
-  /** Trigger a request exposed by the a plugin */
-  public request(type: string, key: string, value: any): Promise<any> {
-    if (!this.methods[type]) throw new Error('No module for this request')
-    if (!this.methods[type][key]) throw new Error('Request is not registered')
-    return this.methods[type][key](value)
+  /** Add a module to the module manager */
+  public addModule(module: RemixModule) {
+    this.modules[module.type] = module
   }
 
-  /** A plugin "origin" listen on the notification "key" of the plugin "type" */
-  public addEvent(origin: string, type: string, key: string, cb: Function) {
-    // TODO : Should we allow rewritting ?
+  /** Remove a module from the module manager */
+  public removeModule(module: RemixModule) {
+    delete this.modules[module.type]
+  }
+
+  /** Add an event listen from a module to another */
+  public addEvent(origin: string, type: string, key: string, cb: (value: any) => any) {
     this.events[origin][type][key] = cb
   }
 
-  /** Trigger a notification and broadcast to all plugins listening */
-  public notify(type: string, key: string, value: any) {
-    for (const origin in this.events) {
-      const plugin = this.events[origin][type]
-      if (plugin && plugin[key]) {
-        plugin[key](value)
+  /** Remove an event listen from a module */
+  public removeEvent(origin: string, type: string, key: string) {
+    delete this.events[origin][type][key]
+  }
+
+  /** Call a specific module */
+  public call(message: Message): Promise<any> {
+    return this.modules[message.type].call(message)
+  }
+
+  /** Broadcast an event to all module listening */
+  public broadcast({ type, key, value }: Message) {
+    Object.keys(this.events).forEach(origin => {
+      const module = this.events[origin][type]
+      if (!!module && !!module[key]) {
+        this.events[origin][type][key](value)
       }
-    }
+    })
   }
 }
