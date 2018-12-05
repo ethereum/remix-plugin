@@ -1,31 +1,44 @@
-import { CompilerProfile, compilerProfile, CompilerService } from './../src/api/compiler.api'
-import { AppManager, ProfileConfig } from './../src/index'
+import {
+  AppManager,
+  ProfileConfig,
+  CompilerProfile,
+  compilerProfile,
+  CompilerService,
+} from './../src'
 
 test('Create module manager', () => expect(AppManager.create()).toBeDefined())
 
 // MOCKS
 // Compiler
-class Compiler implements CompilerService  {
+class Compiler implements CompilerService {
   event = {
     registered: {},
     unregister(e: 'compilationFinished') {
       delete this.register[e]
     },
-    register(e: 'compilationFinished', cb: (value: {success: boolean, data: any, source: any}) => any) {
+    register(
+      e: 'compilationFinished',
+      cb: (value: { success: boolean; data: any; source: any }) => any,
+    ) {
       this.registered[e] = cb
     },
-    trigger(e: 'compilationFinished', params: {success: boolean, data: any, source: any}) {
+    trigger(
+      e: 'compilationFinished',
+      params: { success: boolean; data: any; source: any },
+    ) {
       this.registered[e](params)
-    }
+    },
   }
-  lastCompilationResult() { return 'last' }
+  lastCompilationResult() {
+    return 'last'
+  }
 }
 
 interface Manager {
   modules: {
-    compiler: CompilerProfile,
-  },
-  plugins: {},
+    compiler: CompilerProfile
+  }
+  plugins: {}
   providers: {}
 }
 
@@ -37,7 +50,7 @@ describe('Compiler', () => {
     service = new Compiler()
     const config: ProfileConfig<Manager> = {
       providers: { compiler: service },
-      modules: { compiler: compilerProfile }
+      modules: { compiler: compilerProfile },
     }
     manager = AppManager.create(config)
   })
@@ -56,8 +69,12 @@ describe('Compiler', () => {
     const spy = jest.spyOn(manager, 'broadcast')
     const compiler = manager.modules.compiler
     compiler.activate()
-    const value = {success: true, data: [], source: []}
+    const value = { success: true, data: [], source: [] }
     service.event.trigger('compilationFinished', value)
-    expect(spy).toBeCalledWith({type: compiler.type, key: 'compilationFinished', value})
+    expect(spy).toBeCalledWith({
+      type: compiler.type,
+      key: 'compilationFinished',
+      value,
+    })
   })
 })
