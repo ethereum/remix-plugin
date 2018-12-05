@@ -1,16 +1,16 @@
-import { ModuleManager } from '../module-manager'
+import { AppManager } from '../module-manager'
 
 
 export abstract class RemixPlugin {
 
   public type: string
-  protected manager: ModuleManager
+  protected manager: AppManager
 
   /**
    * Activate lazily the plugin
    * @param manager The global module Manager
    */
-  public async activate(manager: ModuleManager) {}
+  public async activate(manager: AppManager) {}
 
   /** Deactivate the plugin and all the methods it exposes */
   public async deactivate() {}

@@ -1,56 +1,45 @@
 import { Profile } from './../src/remix-module'
 import { CompilerProfile, compilerProfile, CompilerService } from './../src/api/compiler.api'
-import { ModuleManager, InternalModule, ModuleProfile, ProfileConfig } from './../src/index'
+import { AppManager, Module, ModuleProfile, ProfileConfig } from './../src/index'
 
-test('Create module manager', () => expect(ModuleManager.create({})).toBeDefined())
-
-export interface OtherProfile extends ModuleProfile {
-  displayName: 'Solidity Compiler',
-  icon: 'compiler',
-  type: 'sol-compiler',
-  methods: {
-    toto(): string
-  },
-  notifications: []
-}
-export const otherProfile: Profile<OtherProfile> = {
-  displayName: 'Solidity Compiler',
-  icon: 'compiler',
-  type: 'sol-compiler',
-  methods: ['toto'],
-  notifications: []
-}
+test('Create module manager', () => expect(AppManager.create()).toBeDefined())
 
 // MOCKS
 // Compiler
 class Compiler implements CompilerService  {
-  lastCompilationResult: 'last'
   event = {
-    _listener: {},
+    registered: {},
+    unregister(e: 'compilationFinished') {
+      delete this.register[e]
+    },
     register(e: 'compilationFinished', cb: (params: {success: boolean, data: any, source: any}) => void) {
-      this._listener[e] = cb
+      this.registered[e] = cb
     },
     trigger(e: 'compilationFinished', params: {success: boolean, data: any, source: any}) {
-      this._listener[e](params)
+      this.registered[e](params)
     }
   }
+  lastCompilationResult() { return 'last' }
 }
 
 interface Manager {
-  internals: {
+  modules: {
     compiler: CompilerProfile,
   },
-  externals: {}
+  plugins: {},
+  providers: {}
 }
 
 describe('Compiler', () => {
-  let manager: ModuleManager<Manager>
+  let manager: AppManager<Manager>
 
   beforeEach(() => {
+    const service = new Compiler()
     const config: ProfileConfig<Manager> = {
-      internals: { compiler: compilerProfile }
+      providers: { compiler: service },
+      modules: { compiler: compilerProfile }
     }
-    manager = ModuleManager.create(config)
+    manager = AppManager.create(config)
   })
 
   test('Module Manager has Compiler', () => {
@@ -58,10 +47,9 @@ describe('Compiler', () => {
   })
 
   test('Compiler is activated', async () => {
-    const service = new Compiler()
     const compiler = manager.modules.compiler
-    compiler.activate(service)
-    expect(compiler.calls.lastCompilationResult).toBeDefined()
+    compiler.activate()
+    expect(compiler.calls.lastCompilationResult()).toEqual('last')
   })
 })
 
@@ -88,7 +76,7 @@ describe('Test Hello World Plugin', () => {
   })
 
   test('Add Log Method', () => {
-    const spy = jest.spyOn(moduleManager, 'addMethod')
+    const spy = jest.spyOn(AppManager, 'addMethod')
     pluginManager.register(helloWorld)
     pluginManager.activate(helloWorld.type)
     expect(spy).toHaveBeenCalled()

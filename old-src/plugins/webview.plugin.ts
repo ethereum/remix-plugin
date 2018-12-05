@@ -1,5 +1,5 @@
 import { RemixPlugin } from "./types"
-import { ModuleManager } from "../module-manager"
+import { AppManager } from "../module-manager"
 
 export interface WebviewService {
   create(url: string, hash: string): { source: Window, origin: string }
@@ -10,7 +10,7 @@ export interface WebviewService {
  */
 export class WebviewApi extends RemixPlugin {
 
-  protected manager: ModuleManager
+  protected manager: AppManager
   private webViews: { [origin: string]: Webview } = {}
 
   private messageListener = ({ data, origin }) => {
@@ -24,7 +24,7 @@ export class WebviewApi extends RemixPlugin {
   }
 
 
-  public async activate(manager: ModuleManager) {
+  public async activate(manager: AppManager) {
     this.manager = manager
     window.addEventListener('message', this.messageListener, false)
 

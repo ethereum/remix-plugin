@@ -4,6 +4,7 @@ export abstract class RemixModule<T extends ModuleProfile = any>  {
   public type: string
   public methods: [keyof T['methods']]
   public notifications: {type: string, key: string}[]
+  public abstract activate: () => void
 
   constructor(json: Profile<T>) {
     this.type = json.type
@@ -37,6 +38,9 @@ export interface ModuleProfile {
   methods: {
     [key: string]: (params: any) => any
   }
+  events: {
+    [key: string]: any
+  }
   notifications: {type: string, key: string}[],
 }
 
@@ -45,6 +49,7 @@ export interface Profile<T extends ModuleProfile> {
   icon: T['icon'],
   type: T['type'],
   methods: [keyof T['methods']],
+  events: [keyof T['events']],
   notifications: T['notifications']
 }
 

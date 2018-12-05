@@ -1,5 +1,5 @@
 import { RemixPlugin } from './plugins'
-import { ModuleManager } from './module-manager'
+import { AppManager } from './module-manager'
 
 export interface PluginMap {
   [type: string]: RemixPlugin
@@ -11,7 +11,7 @@ export interface PluginMap {
 export class PluginManager {
   private plugins: PluginMap = {}
 
-  constructor(private moduleManager: ModuleManager) {}
+  constructor(private AppManager: AppManager) {}
 
   /** Register a plugin */
   public register(plugin: RemixPlugin) {
@@ -26,6 +26,6 @@ export class PluginManager {
     if (!this.plugins[type]) {
       throw new Error(`Plugin "${type}" isn't registered`)
     }
-    this.plugins[type].activate(this.moduleManager)
+    this.plugins[type].activate(this.AppManager)
   }
 }

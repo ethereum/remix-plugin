@@ -1,18 +1,18 @@
-import { RemixPlugin, ModuleManager } from 'remix-plugin'
+import { RemixPlugin, AppManager } from 'remix-plugin'
 
 /**
  * A simple Plugin that creates an Iframe
  */
 export class SimpleIframePlugin extends RemixPlugin {
 
-  protected manager: ModuleManager
+  protected manager: AppManager
 
   constructor() {
     super('simple')
   }
 
   /** When activated by the PluginManager */
-  async activate(manager: ModuleManager) {
+  async activate(manager: AppManager) {
     this.manager = manager
     // Init
     const webview = await this.manager.request('webview', 'create', {

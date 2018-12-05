@@ -1,6 +1,6 @@
-export * from './iframe.module'
-export * from './internal.module'
-export * from './module-manager'
+export * from './plugin'
+export * from './module'
+export * from './app-manager'
 export * from './remix-module'
 export * from './extension'
 

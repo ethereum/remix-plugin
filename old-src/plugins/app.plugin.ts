@@ -1,4 +1,4 @@
-import { ModuleManager } from '../module-manager'
+import { AppManager } from '../module-manager'
 import { RemixPlugin } from './types'
 import { execution } from 'remix-lib'
 
@@ -6,13 +6,13 @@ const { executionContext } = execution
 
 export class AppApi extends RemixPlugin {
 
-  protected manager: ModuleManager
+  protected manager: AppManager
 
   constructor(private service) {
     super('app')
   }
 
-  public activate(manager: ModuleManager) {
+  public activate(manager: AppManager) {
     this.manager = manager
 
     this.addMethod('getExecutionContextProvider', () => {

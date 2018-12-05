@@ -1,4 +1,4 @@
-import { ModuleManager } from '../module-manager'
+import { AppManager } from '../module-manager'
 
 /**
  * Decorator around plugin classes
@@ -10,7 +10,7 @@ export function Plugin(config: {type: string}) {
     return class extends constructor {
       public type = config.type
 
-      activate(manager: ModuleManager) {
+      activate(manager: AppManager) {
         // For each method of the plugin add it to the manager
         Object.keys(constructor.prototype).forEach(key => {
           manager.addMethod(config.type, key, constructor.prototype[key])

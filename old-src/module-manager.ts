@@ -15,7 +15,7 @@ export interface EventsMap {
 /**
  * Handle connexion between modules
  */
-export class ModuleManager {
+export class AppManager {
   private methods: MethodsMap = {}
   private events: EventsMap = {}
 
