@@ -1,51 +1,13 @@
-# Remix Plugin api
+# Remix Plugin and Modules
 
-## 1) notifications
+This project aims to build an interoperable way of communicating amongst the IDE developped on top of Remix technologies. It's based on modules communicating with each other through an `AppManager`.
 
-### app (key: app)
- 
- - unfocus `[]`
- - focus `[]`
+## Module vs Plugins
 
-### compiler (key: compiler)
+- Modules: Internal logic, build by the core team, that runs inside the IDE.
+- Plugin: External logic, build by the community, that runs inside iframes.
 
- - compilationFinished `[success (bool), data (obj), source (obj)]`
- - compilationData `[compilationResult]`
- 
-### transaction listener (key: txlistener)
+## AppManager
 
- - newTransaction `tx (obj)`
+Modules and Plugins communicates with each other through the `AppManager`.
 
-## 2) interactions
-
-### app
-
- - getExecutionContextProvider `@return {String} provider (injected | web3 | vm)`
- - getProviderEndpoint `@return {String} url`
- - updateTitle `@param {String} title`
- - detectNetWork `@return {Object} {name, id}`
- - addProvider `@param {String} name, @param {String} url`
- - removeProvider `@return {String} name`
- 
-### config
-
- - setConfig `@param {String} path, @param {String} content`
- - getConfig `@param {String} path`
- - removeConfig `@param {String} path`
-
-### compiler
- - getCompilationResult `@return {Object} compilation result`
-
-### udapp (only VM)
- - runTx `@param {Object} tx`
- - getAccounts `@return {Array} acccounts`
- - createVMAccount `@param {String} privateKey, @param {String} balance (hex)`
- 
-### editor
- - getFilesFromPath `@param {Array} [path]`
- - getCurrentFile `@return {String} path`
- - getFile `@param {String} path`
- - setFile `@param {String} path, @param {String} content`
- - highlight `@param {Object} lineColumnPos {start: {line, column}, end: {line, column}}, @param {String} path, @param {String} hexColor`
- - discardHighlight
- 
