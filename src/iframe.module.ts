@@ -1,12 +1,17 @@
 import { ModuleManager } from './module-manager'
-import { RemixModule, ModuleProfile, Message } from './remix-module'
+import { RemixModule, ModuleProfile, Message, Profile } from './remix-module'
 
 export interface IframeProfile extends ModuleProfile {
   url: string
   load: { type: string, key: string }
 }
 
-export class IframeModule extends RemixModule {
+export interface ExternalProfile<I extends IframeProfile> extends Profile<I> {
+  url: I['url']
+  load: I['load']
+}
+
+export class IframeModule<T extends IframeProfile> extends RemixModule<T> {
   private id = 0
   private iframe: HTMLIFrameElement
   private source: Window
@@ -21,7 +26,7 @@ export class IframeModule extends RemixModule {
   public deactivate: () => void
 
   constructor(
-    json: IframeProfile,
+    json: ExternalProfile<T>,
     private manager: ModuleManager
   ) {
     super(json)
@@ -88,7 +93,7 @@ export class IframeModule extends RemixModule {
   }
 
   /** Create an iframe element */
-  private async create({url, load}: IframeProfile) {
+  private async create({url, load}: ExternalProfile<T>) {
     // Create
     try {
       const { type, key } = load

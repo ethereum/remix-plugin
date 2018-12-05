@@ -1,12 +1,14 @@
 
-export abstract class RemixModule {
+export abstract class RemixModule<T extends ModuleProfile = any>  {
 
   public type: string
-  public methods: string[]
+  public methods: [keyof T['methods']]
+  public notifications: {type: string, key: string}[]
 
-  constructor(json: ModuleProfile) {
+  constructor(json: Profile<T>) {
     this.type = json.type
     this.methods = json.methods
+    this.notifications = json.notifications
   }
 
   protected checkMethod(message: Message) {
@@ -18,16 +20,6 @@ export abstract class RemixModule {
   abstract call(message: Message): Promise<any>
 
 }
-
-export type ModuleApiMethods<T extends ModuleProfile> = {
-  [P in keyof T['methods']]: (...params: any[]) => any
-}
-
-export type ModuleApiEvents<T extends ModuleProfile> = {
-  [P in keyof T['notifications']]: (...params: any[]) => any
-}
-
-export type ModuleApi<T extends ModuleProfile> = ModuleApiMethods<T> & ModuleApiEvents<T>
 
 export interface Message {
   id: number,
@@ -42,6 +34,17 @@ export interface ModuleProfile {
   displayName: string,
   icon: string,
   type: string,
-  methods: string[]
+  methods: {
+    [key: string]: (params: any) => any
+  }
   notifications: {type: string, key: string}[],
 }
+
+export interface Profile<T extends ModuleProfile> {
+  displayName: T['displayName'],
+  icon: T['icon'],
+  type: T['type'],
+  methods: [keyof T['methods']],
+  notifications: T['notifications']
+}
+

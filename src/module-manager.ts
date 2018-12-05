@@ -1,17 +1,59 @@
-import { Message, RemixModule, ModuleApi, ModuleProfile } from './remix-module'
+import { Message, RemixModule, ModuleProfile, Profile } from './remix-module'
 import { InternalModule } from './internal.module'
-import { IframeModule, IframeProfile } from './iframe.module'
+import { IframeModule, IframeProfile, ExternalProfile } from './iframe.module'
 
-export interface ManagerConfiguration {
-  internals?: {module: ModuleProfile, api: ModuleApi<any>}[],
-  externals?: IframeProfile[]
+
+
+
+
+export interface InternalModuleConfig<T extends ModuleProfile = any> {
+  [type: string]: T
+}
+export interface ExternalModuleConfig<T extends IframeProfile = any> {
+  [type: string]: T
 }
 
-export class ModuleManager {
+export interface ManagerConfig {
+  internals: InternalModuleConfig
+  externals: ExternalModuleConfig
+}
 
-  public modules: {
-    [type: string]: RemixModule
-  } = {}
+/* Config */
+export type InternalConfig<C extends ManagerConfig> = {
+  [key in keyof C['internals']]: Profile<C['internals'][key]>
+}
+export type ExternalConfig<C extends ManagerConfig> = {
+  [key in keyof C['externals']]: ExternalProfile<C['externals'][key]>
+}
+export interface ProfileConfig<C extends ManagerConfig> {
+  internals?: InternalConfig<C>
+  externals?: ExternalConfig<C>
+}
+
+/* Methods */
+export type InternalMethods<C extends ManagerConfig> = {
+  [key in keyof C['internals']]: C['internals'][key]['methods']
+}
+export type ExternalMethods<C extends ManagerConfig> = {
+  [key in keyof C['externals']]: C['externals'][key]['methods']
+}
+export type ManagerMethods<C extends ManagerConfig> = InternalMethods<C> & ExternalMethods<C>
+
+
+/* Module Instances */
+export type InternalDefinition<C extends ManagerConfig> = {
+  [key in keyof C['internals']]: InternalModule<C['internals'][key]>
+}
+export type ExternalDefinition<C extends ManagerConfig> = {
+  [key in keyof C['externals']]: IframeModule<C['externals'][key]>
+}
+export type ManagerDefinition<C extends ManagerConfig> = InternalDefinition<C> & ExternalDefinition<C>
+
+
+export class ModuleManager<C extends ManagerConfig = any> {
+
+  public calls: ManagerMethods<C>
+  public modules: ManagerDefinition<C>
 
   public events: {
     [origin: string]: {
@@ -21,21 +63,29 @@ export class ModuleManager {
     }
   } = {}
 
+  constructor() {}
+
   /**
    * Create a Module Manager and instanciate all the modules
    * @param config List of module profile
    */
-  static create(config: ManagerConfiguration = { internals: [], externals: []}) {
-    const manager = new ModuleManager()
+  static create<Config extends ManagerConfig>(config: ProfileConfig<Config>) {
+    const manager = new ModuleManager<Config>()
+    manager.modules = {} as any
+    manager.calls = {} as any
     if (config.internals) {
-      config.internals.forEach(({module, api}) => {
-        manager.addModule(new InternalModule(module, manager, api))
-      })
+      for (const type in config.internals) {
+        const module = new InternalModule(config.internals[type], manager) as any
+        manager.modules[type] = module
+        manager.calls[type] = module.calls
+      }
     }
     if (config.externals) {
-      config.externals.forEach((module) => {
-        manager.addModule(new IframeModule(module, manager))
-      })
+      for (const type in config.externals) {
+        const module = new IframeModule(config.externals[type], manager) as any
+        manager.modules[type] = module
+        manager.calls[type] = module.calls
+      }
     }
 
     return manager
@@ -43,7 +93,7 @@ export class ModuleManager {
 
   /** Add a module to the module manager */
   public addModule(module: RemixModule) {
-    this.modules[module.type] = module
+    this.modules[module.type] = module as any
   }
 
   /** Remove a module from the module manager */

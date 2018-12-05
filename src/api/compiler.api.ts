@@ -1,32 +1,27 @@
-import { ModuleProfile, ModuleApi } from '../remix-module'
+import { ModuleProfile, Profile } from '../remix-module'
 
-export const CompilerProfile: ModuleProfile = {
+export interface CompilerProfile extends ModuleProfile {
   displayName: 'Solidity Compiler',
   icon: 'compiler',
   type: 'sol-compiler',
-  methods: [],
+  methods: {
+    lastCompilationResult(): string
+  },
   notifications: []
 }
 
-export interface Compiler {
-  lastCompilationResult: any,
-  event: {
-    register(event: 'compilationFinished', cb)
-  }
+export const compilerProfile: Profile<CompilerProfile> = {
+  displayName: 'Solidity Compiler',
+  icon: 'compiler',
+  type: 'sol-compiler',
+  methods: ['lastCompilationResult'],
+  notifications: []
 }
 
-export class CompilerApi {
-
-  constructor(private service: Compiler) {
-    this.service.event.register('compilationFinished', this.compilationFinished)
+export interface CompilerService {
+  lastCompilationResult: string
+  event: {
+    register(event: 'compilationFinished', cb: (params: {success: boolean, data: any, source: any}) => void)
+    trigger(event: 'compilationFinished', params: {success: boolean, data: any, source: any})
   }
-
-  public compilationFinished(success, data, source) {
-    return { success, data, source }
-  }
-
-  public async getCompilationResult() {
-    return this.service.lastCompilationResult
-  }
-
 }

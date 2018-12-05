@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "include": ["./src"],
-  "exclude": ["./dist"],
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "./dist",
@@ -17,7 +16,7 @@
     "lib": ["dom", "es2018"],
     "paths": {
         "remix-plugin": ["./"],
-        "examples": ["../examples/plugins"],
+        "examples": ["./examples/plugins"],
     }
   }
 }
