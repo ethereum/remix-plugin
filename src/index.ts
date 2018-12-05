@@ -4,4 +4,4 @@ export * from './app-manager'
 export * from './remix-module'
 export * from './extension'
 
-export * from './api'
+export * from './modules'
