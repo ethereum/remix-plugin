@@ -1,6 +1,5 @@
-import { Profile } from './../src/remix-module'
 import { CompilerProfile, compilerProfile, CompilerService } from './../src/api/compiler.api'
-import { AppManager, Module, ModuleProfile, ProfileConfig } from './../src/index'
+import { AppManager, ProfileConfig } from './../src/index'
 
 test('Create module manager', () => expect(AppManager.create()).toBeDefined())
 
@@ -12,7 +11,7 @@ class Compiler implements CompilerService  {
     unregister(e: 'compilationFinished') {
       delete this.register[e]
     },
-    register(e: 'compilationFinished', cb: (params: {success: boolean, data: any, source: any}) => void) {
+    register(e: 'compilationFinished', cb: (value: {success: boolean, data: any, source: any}) => any) {
       this.registered[e] = cb
     },
     trigger(e: 'compilationFinished', params: {success: boolean, data: any, source: any}) {
@@ -32,9 +31,10 @@ interface Manager {
 
 describe('Compiler', () => {
   let manager: AppManager<Manager>
+  let service: Compiler
 
   beforeEach(() => {
-    const service = new Compiler()
+    service = new Compiler()
     const config: ProfileConfig<Manager> = {
       providers: { compiler: service },
       modules: { compiler: compilerProfile }
@@ -51,35 +51,13 @@ describe('Compiler', () => {
     compiler.activate()
     expect(compiler.calls.lastCompilationResult()).toEqual('last')
   })
-})
 
-
-
-/*
-describe('Test Hello World Plugin', () => {
-  let helloWorld: Es6HelloWorldPlugin
-
-  beforeEach(() => {
-    helloWorld = new Es6HelloWorldPlugin()
-  })
-
-  test('Register', () => {
-    pluginManager.register(helloWorld)
-    expect(pluginManager['plugins'][helloWorld.type]).toBeDefined()
-  })
-
-  test('Activate', () => {
-    const spy = jest.spyOn(helloWorld, 'activate')
-    pluginManager.register(helloWorld)
-    pluginManager.activate(helloWorld.type)
-    expect(spy).toHaveBeenCalled()
-  })
-
-  test('Add Log Method', () => {
-    const spy = jest.spyOn(AppManager, 'addMethod')
-    pluginManager.register(helloWorld)
-    pluginManager.activate(helloWorld.type)
-    expect(spy).toHaveBeenCalled()
+  test('Compiler broadcast event', async () => {
+    const spy = jest.spyOn(manager, 'broadcast')
+    const compiler = manager.modules.compiler
+    compiler.activate()
+    const value = {success: true, data: [], source: []}
+    service.event.trigger('compilationFinished', value)
+    expect(spy).toBeCalledWith({type: compiler.type, key: 'compilationFinished', value})
   })
 })
-*/

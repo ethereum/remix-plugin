@@ -31,6 +31,12 @@ export interface Message {
   error?: Error
 }
 
+export interface EventMessage {
+  type: string,
+  key: string,
+  value: any,
+}
+
 export interface ModuleProfile {
   displayName: string,
   icon: string,
@@ -49,7 +55,7 @@ export interface Profile<T extends ModuleProfile> {
   icon: T['icon'],
   type: T['type'],
   methods: [keyof T['methods']],
-  events: [keyof T['events']],
+  events: [Extract<keyof T['events'], string>],
   notifications: T['notifications']
 }
 

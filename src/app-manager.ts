@@ -1,4 +1,4 @@
-import { Message, RemixModule, ModuleProfile, Profile } from './remix-module'
+import { Message, EventMessage, RemixModule, ModuleProfile, Profile } from './remix-module'
 import { Module } from './module'
 import { Plugin, IframeProfile, ExternalProfile } from './plugin'
 
@@ -27,6 +27,7 @@ export class AppManager<C extends AppConfig = any> {
     if (!config) return manager
     manager.modules = {} as any
     manager.calls = {} as any
+    // Create Modules
     if (config.modules) {
       for (const type in config.modules) {
         const module = new Module(config.modules[type], manager, config.providers[type]) as any
@@ -34,6 +35,7 @@ export class AppManager<C extends AppConfig = any> {
         manager.calls[type] = module.calls
       }
     }
+    // Create Plugins
     if (config.plugins) {
       for (const type in config.plugins) {
         const module = new Plugin(config.plugins[type], manager) as any
@@ -71,7 +73,7 @@ export class AppManager<C extends AppConfig = any> {
   }
 
   /** Broadcast an event to all module listening */
-  public broadcast({ type, key, value }: Message) {
+  public broadcast({ type, key, value }: EventMessage) {
     Object.keys(this.events).forEach(origin => {
       const module = this.events[origin][type]
       if (!!module && !!module[key]) {

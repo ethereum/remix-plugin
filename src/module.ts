@@ -13,10 +13,20 @@ export class Module<T extends ModuleProfile> extends RemixModule<T> {
     super(json)
 
     this.activate = () => {
+      // Add Methods to the  AppManager
       this.calls = this.methods.reduce(
         (acc, method) => ({ ...acc, [method]: service[method] }),
         {},
       ) as ModuleMethods<T>
+
+      // Add Events to the AppManager
+      json.events.forEach(key => {
+        service.event.register(key, (value) => {
+          manager.broadcast({type: this.type, key, value})
+        })
+      })
+
+      // Add Notifications to the AppManager
       this.notifications.forEach(({ type, key }) => {
         this.manager.addEvent(this.type, type, key, value =>
           service.event.trigger(key, value),
