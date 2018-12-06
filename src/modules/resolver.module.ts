@@ -15,7 +15,7 @@ export interface ResolverProfile extends ModuleProfile {
 
 export interface ResolverService extends ModuleService<ResolverProfile> {}
 
-export const compilerProfile: Profile<ResolverProfile> = {
+export const resolverProfile: Profile<ResolverProfile> = {
   displayName: 'Solidity Import Resolver',
   icon: '<link to icon>',
   type: 'sol-resolver',

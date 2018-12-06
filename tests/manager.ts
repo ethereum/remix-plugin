@@ -42,7 +42,7 @@ interface Manager {
   providers: {}
 }
 
-describe('Compiler', () => {
+describe('Compiler Module', () => {
   let manager: AppManager<Manager>
   let service: Compiler
 
@@ -61,14 +61,12 @@ describe('Compiler', () => {
 
   test('Compiler is activated', async () => {
     const compiler = manager.modules.compiler
-    compiler.activate()
     expect(compiler.calls.lastCompilationResult()).toEqual('last')
   })
 
   test('Compiler broadcast event', async () => {
     const spy = jest.spyOn(manager, 'broadcast')
     const compiler = manager.modules.compiler
-    compiler.activate()
     const value = { success: true, data: [], source: [] }
     service.event.trigger('compilationFinished', value)
     expect(spy).toBeCalledWith({

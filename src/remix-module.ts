@@ -3,13 +3,14 @@ export abstract class RemixModule<T extends ModuleProfile = any>  {
 
   public type: string
   public methods: (keyof T['methods'])[]
+  public events: (Extract<keyof T['events'], string>)[]
   public notifications: {type: string, key: string}[]
-  public abstract activate: () => void
 
   constructor(json: Profile<T>) {
     this.type = json.type
-    this.methods = json.methods
-    this.notifications = json.notifications
+    this.methods = json.methods || []
+    this.events = json.events || []
+    this.notifications = json.notifications || []
   }
 
   protected checkMethod(message: Message) {
@@ -55,7 +56,7 @@ export interface Profile<T extends ModuleProfile> {
   icon: T['icon'],
   type: T['type'],
   methods?: (keyof T['methods'])[],
-  events?: [Extract<keyof T['events'], string>],
+  events?: (Extract<keyof T['events'], string>)[],
   notifications?: T['notifications']
 }
 
