@@ -1,29 +1,24 @@
 import {
   AppManager,
   ProfileConfig,
-  ResolverProfile,
-  resolverProfile,
-  ResolverService,
 } from './../src'
 
-// MOCKS
-// Resolver
-const resolverService: ResolverService = {
-  combineSource(path: string) {
-    console.log(path)
-  },
-  getFile(url: string): string {
-    return 'myFile'
-  }
-}
+import {
+  resolverProfile,
+  ResolverProfile,
+  IResolverService,
+  resolverService
+} from '../examples/modules'
 
 // AppManager Interface
 interface Manager {
+  providers: {
+    solResolver: IResolverService
+  }
   modules: {
     solResolver: ResolverProfile
   }
   plugins: {}
-  providers: {}
 }
 
 describe('Resolver Module', () => {

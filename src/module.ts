@@ -6,7 +6,7 @@ export class Module<T extends ModuleProfile> extends RemixModule<T> {
 
   constructor(
     json: Profile<T>,
-    private manager: AppManager,
+    manager: AppManager,
     service: ModuleService<T>,
   ) {
     super(json)
@@ -31,7 +31,7 @@ export class Module<T extends ModuleProfile> extends RemixModule<T> {
 
     // Add Notifications to the AppManager
     this.notifications.forEach(({ type, key }) => {
-      this.manager.addEvent(this.type, type, key, (value) => {
+      manager.addEvent(this.type, type, key, (value) => {
         if (!service.event) throw new Error('The service provided does not implements the events')
         service.event.trigger(key, value)
       })

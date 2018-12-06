@@ -1,2 +1,2 @@
-export * from './hello-world.plugin'
-export * from './hello-world-es6.plugin'
+export * from './compiler.module'
+export * from './resolver.module'

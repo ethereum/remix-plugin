@@ -1,11 +1,9 @@
 {
-  "compileOnSave": false,
-  "include": ["./src"],
   "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist",
+    "baseUrl": ".",
+    "outDir": "dist",
     "sourceMap": false,
-    "declaration": false,
+    "declaration": true,
     "module": "commonjs",
     "strict": true,
     "noImplicitAny": false,
@@ -15,8 +13,9 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["dom", "es2018"],
     "paths": {
-        "remix-plugin": ["./"],
-        "examples": ["./examples/plugins"],
+        "remix-plugin": ["src"],
+        "examples": ["../examples"],
     }
-  }
+  },
+  "include": ["src"]
 }

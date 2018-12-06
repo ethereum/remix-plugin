@@ -1,5 +1,4 @@
-import { ModuleProfile, Profile } from '../remix-module'
-import { ModuleService } from '../module'
+import { ModuleProfile, Profile, ModuleService } from '../../src'
 
 export interface ResolverProfile extends ModuleProfile {
   displayName: 'Solidity Import Resolver',
@@ -13,11 +12,27 @@ export interface ResolverProfile extends ModuleProfile {
   notifications: []
 }
 
-export interface ResolverService extends ModuleService<ResolverProfile> {}
+export interface IResolverService extends ModuleService<ResolverProfile> {}
+
+/**
+ * Profile
+ */
 
 export const resolverProfile: Profile<ResolverProfile> = {
   displayName: 'Solidity Import Resolver',
   icon: '<link to icon>',
   type: 'sol-resolver',
   methods: ['combineSource', 'getFile'],
+}
+
+/**
+ * Service as a constant
+ */
+export const resolverService: IResolverService = {
+  combineSource(path: string) {
+    console.log(path)
+  },
+  getFile(url: string): string {
+    return 'myFile'
+  }
 }

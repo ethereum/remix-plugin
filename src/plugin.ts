@@ -1,16 +1,6 @@
 import { AppManager } from './app-manager'
 import { RemixModule, ModuleProfile, Message, Profile } from './remix-module'
 
-export interface IframeProfile extends ModuleProfile {
-  url: string
-  load: { type: string, key: string }
-}
-
-export interface ExternalProfile<I extends IframeProfile> extends Profile<I> {
-  url: I['url']
-  load: I['load']
-}
-
 export class Plugin<T extends IframeProfile> extends RemixModule<T> {
   private id = 0
   private iframe: HTMLIFrameElement
@@ -37,7 +27,7 @@ export class Plugin<T extends IframeProfile> extends RemixModule<T> {
     this.activate = async () => {
       await this.create(json)
       window.addEventListener('message', getMessage, false)
-      json.notifications.forEach(({ type, key }) => {
+      this.notifications.forEach(({ type, key }) => {
         this.manager.addEvent(json.type, type, key, (value: any) => {
           this.postMessage({ type, key, value })
         })
@@ -48,7 +38,7 @@ export class Plugin<T extends IframeProfile> extends RemixModule<T> {
     this.deactivate = () => {
       this.iframe.remove()
       window.removeEventListener('message', getMessage, false)
-      json.notifications.forEach(({ type, key }) => {
+      this.notifications.forEach(({ type, key }) => {
         this.manager.removeEvent(json.type, type, key)
       })
     }
@@ -125,4 +115,15 @@ export class Plugin<T extends IframeProfile> extends RemixModule<T> {
     })
   }
 
+}
+
+
+export interface IframeProfile extends ModuleProfile {
+  url: string
+  load: { type: string, key: string }
+}
+
+export interface ExternalProfile<I extends IframeProfile> extends Profile<I> {
+  url: I['url']
+  load: I['load']
 }
