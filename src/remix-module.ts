@@ -2,7 +2,7 @@
 export abstract class RemixModule<T extends ModuleProfile = any>  {
 
   public type: string
-  public methods: [keyof T['methods']]
+  public methods: (keyof T['methods'])[]
   public notifications: {type: string, key: string}[]
   public abstract activate: () => void
 
@@ -54,8 +54,8 @@ export interface Profile<T extends ModuleProfile> {
   displayName: T['displayName'],
   icon: T['icon'],
   type: T['type'],
-  methods: [keyof T['methods']],
-  events: [Extract<keyof T['events'], string>],
-  notifications: T['notifications']
+  methods?: (keyof T['methods'])[],
+  events?: [Extract<keyof T['events'], string>],
+  notifications?: T['notifications']
 }
 
