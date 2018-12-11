@@ -1,5 +1,7 @@
 import { ModuleProfile, Profile, ModuleService } from '../../src'
 
+/* ------- TYPES ------- */
+
 export interface ResolverProfile extends ModuleProfile {
   displayName: 'Solidity Import Resolver',
   icon: '<link to icon>',
@@ -13,6 +15,8 @@ export interface ResolverProfile extends ModuleProfile {
 }
 
 export interface IResolverService extends ModuleService<ResolverProfile> {}
+
+/* ------- IMPLEMENTATION ------- */
 
 /**
  * Profile

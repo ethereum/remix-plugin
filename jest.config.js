@@ -4,6 +4,6 @@ module.exports = {
   testMatch: ["**/tests/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
     "remix-plugin": "<rootDir>/src",
-    "example": "<rootDir>/examples/plugins"
+    "examples": "<rootDir>/examples/modules"
   },
 };

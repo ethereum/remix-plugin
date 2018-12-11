@@ -1,5 +1,7 @@
 import { ModuleProfile, Profile, ModuleService } from '../../src'
 
+/* ------- TYPES ------- */
+
 export interface CompilerProfile extends ModuleProfile {
   displayName: 'Solidity Compiler'
   icon: 'compiler'
@@ -14,6 +16,8 @@ export interface CompilerProfile extends ModuleProfile {
 }
 
 export interface ICompilerService extends ModuleService<CompilerProfile> {}
+
+/* ------- IMPLEMENTATION ------- */
 
 /**
  * PROFILE

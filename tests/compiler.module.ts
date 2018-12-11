@@ -36,12 +36,12 @@ describe('Compiler Module', () => {
     expect(manager.modules.compiler).toBeDefined()
   })
 
-  test('Compiler is activated', async () => {
+  test('Compiler trigger method : lastCompilationResult', async () => {
     const compiler = manager.modules.compiler
     expect(compiler.calls.lastCompilationResult()).toEqual('last')
   })
 
-  test('Compiler broadcast event', async () => {
+  test('Compiler broadcast event: compilationFinished', async () => {
     const spy = jest.spyOn(manager, 'broadcast')
     const compiler = manager.modules.compiler
     const value = { success: true, data: [], source: [] }
