@@ -36,12 +36,12 @@ describe('Resolver Module', () => {
     expect(manager.modules.solResolver).toBeDefined()
   })
 
-  test('Resolver is activated', async () => {
+  test('Resolver calls method : getFile', async () => {
     const resolver = manager.modules.solResolver
     expect(resolver.calls.getFile('url')).toEqual('myFile')
   })
 
-  test('Resolver Combine Source', async () => {
+  test('Resolver calls method : combineSource', async () => {
     const resolver = manager.modules.solResolver
     const spy = jest.spyOn(resolver.calls, 'combineSource')
     manager.calls.solResolver.combineSource('path')

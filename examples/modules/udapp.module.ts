@@ -1,4 +1,4 @@
-import { ModuleProfile, Profile, ModuleService } from '../../src'
+import { AppManager, ModuleProfile, Profile, ModuleService } from '../../src'
 import { Transaction } from './types'
 
 /* ------- TYPES ------- */
@@ -36,8 +36,11 @@ export const resolverProfile: Profile<UdappProfile> = {
  * Service as a constant
  */
 export class UdappService implements IUdappService {
+
+  constructor(private appManager: AppManager) {}
+
   public runTx(transaction: Transaction) {
-    console.log('transaction pass')
+    this.appManager.broadcast({ type: 'txlistener', key: 'newTransaction', value: transaction })
   }
 
   public getAccounts() {
