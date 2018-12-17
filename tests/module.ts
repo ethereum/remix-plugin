@@ -16,8 +16,8 @@ describe('Module', () => {
   })
   test('is added to app', () => expect(app[api.type]).toBeDefined())
   test('method is added to app', () => {
-    const displayTx = app[api.type].displayTx()
-    expect(displayTx).toEqual('hello world')
+    const lastCompilationResult = app[api.type].lastCompilationResult()
+    expect(lastCompilationResult).toEqual('compilation')
   })
 })
 

@@ -1,14 +1,17 @@
 import { Plugin, AppManager } from '../src'
 import { ResolverApi, ResolverProfile } from '../examples/modules'
-import { EthdocProfile } from '../examples/plugins'
+
+const EthdocProfile = {
+  type: 'ethdoc',
+  methods: ['getDoc'],
+  url: ''
+}
 
 describe('Method', () => {
-
   let app: AppManager
   let module: ResolverApi
   let plugin: Plugin
   beforeAll(() => {
-    console.log({EthdocProfile})
     module = new ResolverApi()
     plugin = new Plugin(EthdocProfile)
     app = new AppManager({
@@ -22,4 +25,5 @@ describe('Method', () => {
     plugin.request({ type: module.type, key: 'getFile', value: 'Ballot.sol' })
     expect(spy).toBeCalledWith('Ballot.sol')
   })
+
 })

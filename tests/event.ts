@@ -1,6 +1,12 @@
 import { Plugin, AppManager } from '../src'
 import { TxlistenerApi, TxlistenerProfile, TxEmitter } from '../examples/modules'
-import { EthdocProfile } from '../examples/plugins'
+
+const EthdocProfile = {
+  type: 'ethdoc',
+  methods: ['getDoc'],
+  notifications: [{type: 'txlistener', key : 'newTransaction'}],
+  url: ''
+}
 
 describe('Event', () => {
   let app: AppManager
@@ -22,17 +28,11 @@ describe('Event', () => {
     expect(spy).toBeCalledWith(module.type, 'newTransaction', {data: '0x'})
   })
 
-  /*
   test('event is received', () => {
     const spy = spyOn(plugin, 'postMessage' as any)
-    module.createTx('transaction')
-    expect(spy).toBeCalledWith({type: module.type, key: 'newTx', value: 'transaction'})
+    txemitter.createTx('0x')
+    expect(spy).toBeCalledWith({type: module.type, key: 'newTransaction', value: {data: '0x'}})
   })
 
-  test('call a method from plugin api', () => {
-    const spy = spyOn(app[module.type], 'displayTx')
-    plugin.request({ type: module.type, key: 'displayTx', value: {} })
-    expect(spy).toBeCalled()
-  })
-  */
+
 })

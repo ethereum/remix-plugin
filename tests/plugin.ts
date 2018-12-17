@@ -1,6 +1,10 @@
 import { Plugin, AppManager } from '../src'
-import { EthdocProfile } from './../examples/plugins/ethdoc'
 
+const EthdocProfile = {
+  type: 'ethdoc',
+  methods: ['getDoc'],
+  url: ''
+}
 
 describe('Plugin', () => {
   let app: AppManager
