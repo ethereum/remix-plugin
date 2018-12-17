@@ -16,14 +16,25 @@ export const TxlistenerProfile: ModuleProfile<Txlistener> = {
 
 // API
 export class TxlistenerApi extends API<Txlistener> implements Txlistener {
-  constructor() {
+  // In this implementation of the API, Txlistener depends on an external class
+  constructor(private emitter: TxEmitter) {
     super('txlistener')
   }
 
-  public newTransaction = new EventEmitter<Transaction>('newTransaction')
+  public newTransaction = this.emitter.newTx
 
   public lastCompilationResult() {
     return 'compilation'
   }
 
+}
+
+// External class
+export class TxEmitter {
+
+  newTx = new EventEmitter<Transaction>('newTransaction')
+
+  createTx(data: string) {
+    this.newTx.emit({data})
+  }
 }
