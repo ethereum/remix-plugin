@@ -1,46 +1,35 @@
-import { AppManager, ModuleProfile, Profile, ModuleService } from '../../src'
+import { ModuleProfile, Api, API } from '../../src'
 import { Transaction } from './types'
 
-/* ------- TYPES ------- */
-
-export interface UdappProfile extends ModuleProfile {
-  displayName: 'Universal Dapp',
-  icon: '<link to icon>',
-  type: 'udapp',
-  methods: {
-    runTx(transaction: Transaction): void,
-    getAccounts(): string
-    createVMAccount(newAccount: {privateKey: string, balance: number}): string
-  },
-  events: {}
-  notifications: []
+// Type
+export interface Udapp extends Api {
+  type: 'udapp'
+  runTx(transaction: Transaction): void,
+  getAccounts(): string
+  createVMAccount(newAccount: {privateKey: string, balance: number}): string
 }
 
-export interface IUdappService extends ModuleService<UdappProfile> {}
-
-
-/* ------- IMPLEMENTATION ------- */
-
-/**
- * Profile
- */
-
-export const udappProfile: Profile<UdappProfile> = {
-  displayName: 'Universal Dapp',
-  icon: '<link to icon>',
+// Profile
+export const UdappProfile: ModuleProfile<Udapp> = {
   type: 'udapp',
-  methods: ['runTx', 'getAccounts', 'createVMAccount'],
+  methods: ['runTx', 'getAccounts', 'createVMAccount']
 }
 
-/**
- * Service as a constant
- */
-export class UdappService implements IUdappService {
+// API
+export class UdappApi extends API<Udapp> implements Udapp {
 
-  constructor(private appManager: AppManager) {}
+  constructor() {
+    super('udapp')
+  }
+
+  private doSomeCalculation(transaction: Transaction) {
+    // This method is not accessible part of the Profile
+    // You should not call it directly
+    // Here you would do some calculation.
+  }
 
   public runTx(transaction: Transaction) {
-    this.appManager.broadcast({ type: 'txlistener', key: 'newTransaction', value: transaction })
+    this.doSomeCalculation(transaction)
   }
 
   public getAccounts() {
@@ -50,4 +39,5 @@ export class UdappService implements IUdappService {
   public createVMAccount(newAccount: {privateKey: string, balance: number}) {
     return '0x0000000000000000000000000000000000000000'
   }
+
 }

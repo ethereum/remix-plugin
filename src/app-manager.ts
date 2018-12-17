@@ -1,11 +1,11 @@
-import { PluginProfile, Profile, API } from './types'
+import { PluginProfile, ModuleProfile, API } from './types'
 import { Plugin } from './plugin'
 
 export class AppManager {
   events = {}
 
   constructor(dependancies: {
-    modules?: { json: Profile; api: API }[]
+    modules?: { json: ModuleProfile; api: API }[]
     plugins?: { json: PluginProfile; api: Plugin }[]
   }) {
     // Modules
@@ -29,7 +29,7 @@ export class AppManager {
   }
 
   /** Add an api to the AppModule */
-  private addApi(json: Profile, api: API) {
+  private addApi(json: ModuleProfile, api: API) {
     this[api.type] = {}
 
     const events = json.events || []

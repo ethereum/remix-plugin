@@ -105,7 +105,7 @@ export class Plugin extends API {
     // Create
     try {
       const { type, key } = loadIn || {
-        type: 'swipeBar',
+        type: 'swipePanel',
         key: 'getIframeSource',
       }
       const message = { action: 'request', type, key, value: {} } as Message

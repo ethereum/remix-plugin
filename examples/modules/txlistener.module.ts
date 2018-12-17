@@ -1,59 +1,29 @@
-import { ModuleProfile, Profile, ModuleService } from '../../src'
+import { ModuleProfile, EventEmitter, Api, API } from '../../src'
 import { Transaction } from './types'
 
 
-/* ------- TYPES ------- */
-
-export interface TxListenerProfile extends ModuleProfile {
-  displayName: 'TxListener'
-  icon: '<icon>'
+// Type
+export interface Txlistener extends Api {
   type: 'txlistener'
-  methods: {}
-  events: {
-    newTransaction: Transaction
-  }
-  notifications: []
+  newTransaction: EventEmitter<Transaction>
 }
 
-export interface ITxListenerService extends ModuleService<TxListenerProfile> {}
-
-/* ------- IMPLEMENTATION ------- */
-
-/**
- * PROFILE
- */
-
-export const txlistenerProfile: Profile<TxListenerProfile> = {
-  displayName: 'TxListener',
-  icon: '<icon>',
+// Profile
+export const TxlistenerProfile: ModuleProfile<Txlistener> = {
   type: 'txlistener',
-  events: ['newTransaction'],
-  notifications: [],
+  events: ['newTransaction']
 }
 
-/**
- * SERVICE as a class
- */
-export class TxListenerService implements ITxListenerService {
-  event = {
-    registered: {},
-    unregister(e: 'newTransaction') {
-      delete this.register[e]
-    },
-    register(
-      e: 'newTransaction',
-      cb: (value: Transaction) => any,
-    ) {
-      this.registered[e] = cb
-    },
-    trigger(
-      e: 'newTransaction',
-      params: Transaction,
-    ) {
-      this.registered[e](params)
-    },
+// API
+export class TxlistenerApi extends API<Txlistener> implements Txlistener {
+  constructor() {
+    super('txlistener')
   }
-  lastCompilationResult() {
-    return 'last'
+
+  public newTransaction = new EventEmitter<Transaction>('newTransaction')
+
+  public lastCompilationResult() {
+    return 'compilation'
   }
+
 }

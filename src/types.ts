@@ -7,7 +7,7 @@ export abstract class API<T extends Api = any> {
   constructor(public type: T['type']) {}
 }
 
-export interface Profile<T extends Api = any> {
+export interface ModuleProfile<T extends Api = any> {
   type: T['type']
   methods?: (Extract<keyof T, string>)[]
   events?: (Extract<keyof T, string>)[]

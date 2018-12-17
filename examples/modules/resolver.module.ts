@@ -1,40 +1,30 @@
-import { ModuleProfile, Profile, ModuleService } from '../../src'
+import { ModuleProfile, Api, API } from '../../src'
 
-/* ------- TYPES ------- */
 
-export interface ResolverProfile extends ModuleProfile {
-  displayName: 'Solidity Import Resolver',
-  icon: '<link to icon>',
-  type: 'sol-resolver',
-  methods: {
-    combineSource(path: string): void,
-    getFile(url: string): string
-  },
-  events: {}
-  notifications: []
+// Type
+export interface Resolver extends Api {
+  type: 'solResolver'
+  combineSource(path: string): void,
+  getFile(url: string): string
 }
 
-export interface IResolverService extends ModuleService<ResolverProfile> {}
-
-/* ------- IMPLEMENTATION ------- */
-
-/**
- * Profile
- */
-
-export const resolverProfile: Profile<ResolverProfile> = {
-  displayName: 'Solidity Import Resolver',
-  icon: '<link to icon>',
-  type: 'sol-resolver',
-  methods: ['combineSource', 'getFile'],
+// Profile
+export const ResolverProfile: ModuleProfile<Resolver> = {
+  type: 'solResolver',
+  methods: ['combineSource', 'getFile']
 }
 
-/**
- * Service as a constant
- */
-export const resolverService: IResolverService = {
-  combineSource(path: string) {},
-  getFile(url: string): string {
-    return 'myFile'
+// API
+export class ResolverApi extends API<Resolver> implements Resolver {
+  constructor() {
+    super('solResolver')
   }
+
+  public combineSource(path: string) {
+    console.log(path)
+  }
+  public getFile(url: string): string {
+    return 'contract Ballot{}'
+  }
+
 }

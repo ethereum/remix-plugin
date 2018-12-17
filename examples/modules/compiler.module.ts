@@ -1,60 +1,30 @@
-import { ModuleProfile, Profile, ModuleService } from '../../src'
+import { ModuleProfile, EventEmitter, Api, API } from '../../src'
 
-/* ------- TYPES ------- */
 
-export interface CompilerProfile extends ModuleProfile {
-  displayName: 'Solidity Compiler'
-  icon: 'compiler'
-  type: 'sol-compiler'
-  methods: {
-    lastCompilationResult(): string
-  }
-  events: {
-    compilationFinished: { success: boolean; data: any; source: any }
-  }
-  notifications: []
+// Type
+export interface Compiler extends Api {
+  type: 'solCompiler'
+  compilationFinished: EventEmitter<{ success: boolean; data: any; source: any }>
+  lastCompilationResult(): string
 }
 
-export interface ICompilerService extends ModuleService<CompilerProfile> {}
-
-/* ------- IMPLEMENTATION ------- */
-
-/**
- * PROFILE
- */
-
-export const compilerProfile: Profile<CompilerProfile> = {
-  displayName: 'Solidity Compiler',
-  icon: 'compiler',
-  type: 'sol-compiler',
+// Profile
+export const CompilerProfile: ModuleProfile<Compiler> = {
+  type: 'solCompiler',
   methods: ['lastCompilationResult'],
-  events: ['compilationFinished'],
-  notifications: [],
+  events: ['compilationFinished']
 }
 
-/**
- * SERVICE as a class
- */
-export class CompilerService implements ICompilerService {
-  event = {
-    registered: {},
-    unregister(e: 'compilationFinished') {
-      delete this.register[e]
-    },
-    register(
-      e: 'compilationFinished',
-      cb: (value: { success: boolean; data: any; source: any }) => any,
-    ) {
-      this.registered[e] = cb
-    },
-    trigger(
-      e: 'compilationFinished',
-      params: { success: boolean; data: any; source: any },
-    ) {
-      this.registered[e](params)
-    },
+// API
+export class CompilerApi extends API<Compiler> implements Compiler {
+  constructor() {
+    super('solCompiler')
   }
-  lastCompilationResult() {
-    return 'last'
+
+  public compilationFinished = new EventEmitter<{ success: boolean; data: any; source: any }>('compilationFinished')
+
+  public lastCompilationResult() {
+    return 'compilation'
   }
+
 }
