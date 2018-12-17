@@ -23,7 +23,7 @@ export interface ITxListenerService extends ModuleService<TxListenerProfile> {}
  * PROFILE
  */
 
-export const compilerProfile: Profile<TxListenerProfile> = {
+export const txlistenerProfile: Profile<TxListenerProfile> = {
   displayName: 'TxListener',
   icon: '<icon>',
   type: 'txlistener',

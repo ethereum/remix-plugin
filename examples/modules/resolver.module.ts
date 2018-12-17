@@ -33,9 +33,7 @@ export const resolverProfile: Profile<ResolverProfile> = {
  * Service as a constant
  */
 export const resolverService: IResolverService = {
-  combineSource(path: string) {
-    console.log(path)
-  },
+  combineSource(path: string) {},
   getFile(url: string): string {
     return 'myFile'
   }

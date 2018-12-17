@@ -1,90 +1,80 @@
-import { Message, EventMessage, RemixModule, ModuleProfile, Profile } from './remix-module'
-import { Module } from './module'
-import { Plugin, IframeProfile, ExternalProfile } from './plugin'
+import { PluginProfile, Profile, API } from './types'
+import { Plugin } from './plugin'
 
+export class AppManager {
+  events = {}
 
-export class AppManager<C extends AppConfig = any> {
+  constructor(dependancies: {
+    modules?: { json: Profile; api: API }[]
+    plugins?: { json: PluginProfile; api: Plugin }[]
+  }) {
+    // Modules
+    const modules = dependancies.modules || []
+    modules.forEach(({ json, api }) => this.addApi(json, api))
 
-  public calls: ManagerMethods<C>
-  public modules: ManagerDefinition<C>
+    // Plugins
+    const plugins = dependancies.plugins || []
+    plugins.forEach(({ json, api }) => {
+      this.addApi(json, api)
 
-  public events: {
-    [origin: string]: {
-      [type: string]: {
-        [key: string]: (value: any) => any
-      }
-    }
-  } = {}
+      api.request = ({ type, key, value }) => this[type][key](value)
 
-  constructor() {}
-
-  /**
-   * Create a Module Manager and instanciate all the modules
-   * @param config List of module profile
-   */
-  static create<Config extends AppConfig>(config?: ProfileConfig<Config>) {
-    const manager = new AppManager<Config>()
-    if (!config) return manager
-    manager.modules = {} as any
-    manager.calls = {} as any
-    // Create Modules
-    if (config.modules) {
-      for (const type in config.modules) {
-        const module = new Module(config.modules[type], manager, config.providers[type]) as any
-        manager.modules[type] = module
-        manager.calls[type] = module.calls
-      }
-    }
-    // Create Plugins
-    if (config.plugins) {
-      for (const type in config.plugins) {
-        const module = new Plugin(config.plugins[type], manager) as any
-        manager.modules[type] = module
-        manager.calls[type] = module.calls
-      }
-    }
-
-    return manager
+      const notifications = json.notifications || []
+      notifications.forEach(({ type, key }) => {
+        if (!this.events[api.type]) this.events[api.type] = {}
+        if (!this.events[api.type][type]) this.events[api.type][type] = {}
+        this.events[api.type][type][key] = api.notifs[type][key]
+      })
+    })
   }
 
-  /** Add a module to the module manager */
-  public addModule(module: RemixModule) {
-    this.modules[module.type] = (module as any)
-  }
+  /** Add an api to the AppModule */
+  private addApi(json: Profile, api: API) {
+    this[api.type] = {}
 
-  /** Remove a module from the module manager */
-  public removeModule(module: RemixModule) {
-    delete this.modules[module.type]
-  }
-
-  /** Add an event listen from a module to another */
-  public addEvent(origin: string, type: string, key: string, cb: (value: any) => any) {
-    this.events[origin][type][key] = cb
-  }
-
-  /** Remove an event listen from a module */
-  public removeEvent(origin: string, type: string, key: string) {
-    delete this.events[origin][type][key]
-  }
-
-  /** Call a specific module */
-  public call(message: Message): Promise<any> {
-    return this.modules[message.type].call(message)
-  }
-
-  /** Broadcast an event to all module listening */
-  public broadcast({ type, key, value }: EventMessage) {
-    Object.keys(this.events).forEach(origin => {
-      const module = this.events[origin][type]
-      if (!!module && !!module[key]) {
-        this.events[origin][type][key](value)
+    const events = json.events || []
+    events.forEach(event => {
+      if (event in api) {
+        api[event].on((value: any) => {
+          this.broadcast(api.type, event, value)
+        })
       }
     })
+
+    const methods = json.methods || []
+    methods.forEach(key => {
+      if (key in api) {
+        this[api.type][key] = api[key]
+      }
+    })
+  }
+
+  private broadcast(type: string, key: string, value: any) {
+    for (const origin in this.events) {
+      if (this.events[origin][type]) {
+        const destination = this.events[origin][type]
+        if (destination[key]) destination[key](value)
+      }
+    }
+  }
+
+  /** Activate a plugin */
+  public activate(type: string) {
+    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+    this[type].activate()
+    // TODO : this.addApi()
+  }
+
+  /** Deactivate a plugin */
+  public deactivate(type: string) {
+    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+    this[type].deactivate()
+    // TODO : this.removeApi()
   }
 }
 
 
-
+/*
 export interface InternalModuleConfig<T extends ModuleProfile = any> {
   [type: string]: T
 }
@@ -98,7 +88,6 @@ export interface AppConfig {
   providers: any
 }
 
-/* Config */
 export type InternalConfig<C extends AppConfig> = {
   [key in keyof C['modules']]: Profile<C['modules'][key]>
 }
@@ -111,7 +100,6 @@ export interface ProfileConfig<C extends AppConfig> {
   providers: any
 }
 
-/* Methods */
 export type InternalMethods<C extends AppConfig> = {
   [key in keyof C['modules']]: C['modules'][key]['methods']
 }
@@ -121,7 +109,6 @@ export type ExternalMethods<C extends AppConfig> = {
 export type ManagerMethods<C extends AppConfig> = InternalMethods<C> & ExternalMethods<C>
 
 
-/* Module Instances */
 export type InternalDefinition<C extends AppConfig> = {
   [key in keyof C['modules']]: Module<C['modules'][key]>
 }
@@ -129,3 +116,4 @@ export type ExternalDefinition<C extends AppConfig> = {
   [key in keyof C['plugins']]: Plugin<C['plugins'][key]>
 }
 export type ManagerDefinition<C extends AppConfig> = InternalDefinition<C> & ExternalDefinition<C>
+*/

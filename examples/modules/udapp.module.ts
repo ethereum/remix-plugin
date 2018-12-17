@@ -25,7 +25,7 @@ export interface IUdappService extends ModuleService<UdappProfile> {}
  * Profile
  */
 
-export const resolverProfile: Profile<UdappProfile> = {
+export const udappProfile: Profile<UdappProfile> = {
   displayName: 'Universal Dapp',
   icon: '<link to icon>',
   type: 'udapp',
