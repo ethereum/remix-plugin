@@ -1,4 +1,4 @@
-import { AppManager, Module, Injector, InjectorFactory, EventEmitter, createPluginManager} from './../src/experimental'
+import { AppManager, Module, Injector, InjectorFactory } from './../src/experimental'
 
 @Module({
   type: 'test',

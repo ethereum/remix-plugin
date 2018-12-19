@@ -1,8 +1,36 @@
-import { API, Message, PluginProfile } from './types'
+export abstract class StatelessComponent {
+
+  protected view: HTMLElement
+
+  constructor(protected parent: HTMLElement) {
+    this.view = this.render()
+    this.parent.appendChild(this.view)
+  }
+
+  // Should be implemented by the component
+  protected abstract render(): HTMLElement
+
+  public destroy() {
+    this.parent.removeChild(this.view)
+  }
+}
+
+export abstract class StatefulComponent extends StatelessComponent {
+
+  constructor(protected parent: HTMLElement) {
+    super(parent)
+  }
+
+  protected abstract update(): void
+}
+
+
+/*
+import { API, Message, PluginProfile, ModuleProfile } from './types'
 import { EventEmitter } from './event'
 
 export class InternalComponent extends API {
-  
+
   public notifs = {}
   public request: (value: { type: string; key: string; value: any }) => any
   public activate: () => Promise<void>
@@ -18,7 +46,7 @@ export class InternalComponent extends API {
     this.deactivate = () => {}
   }
 
-  /** Create an iframe element */
+  // Create an iframe element
   private async create({ InternalComponent, loadIn }: PluginProfile) {
     // Create
     try {
@@ -38,3 +66,5 @@ export class InternalComponent extends API {
     this.postMessage({ action: 'request', type: this.type, key: 'handshake' })
   }
 }
+
+ */
