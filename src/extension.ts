@@ -1,6 +1,8 @@
 import { Message } from './types'
 
 export class RemixExtension {
+  private source: Window
+  private origin: string
   private notifications: {
     [type: string]: {
       [key: string]: (value: any) => void
@@ -18,24 +20,61 @@ export class RemixExtension {
     window.addEventListener('message', event => this.getMessage(event), false)
   }
 
+  /** Manage a message coming from the parent origin */
   private getMessage(event: MessageEvent) {
-    if (!event.data) return
-    if (typeof event.data !== 'string') return
-    const msg = JSON.parse(event.data) as Message
-    if (!msg) return
+    if (!event.source) return
+    if (!this.checkOrigin(event.origin)) return
 
-    const { action, key, type, value } = msg
-    if (action === 'notification') {
-      if (this.notifications[key] && this.notifications[key][type]) {
-        this.notifications[key][type](value)
+    try {
+      if (!event.data) throw new Error('Not data in event')
+      const msg = JSON.parse(event.data) as Message
+      if (!msg) throw new Error('No message in the message')
+      const { action, key, type, value, id, error } = msg
+
+      if (action === 'request' && key === 'handshake') {
+        this.source = event.source as Window
+        this.origin = event.origin
       }
-    } else if (action === 'response') {
-      const { id, error } = msg
-      if (this.pendingRequests[id]) {
-        this.pendingRequests[id](value, error)
-        delete this.pendingRequests[id]
+
+      if (!this.source) throw new Error('Handshake before communicating')
+
+      if (action === 'notification') {
+        if (this.notifications[key] && this.notifications[key][type]) {
+          this.notifications[key][type](value)
+        }
+      } else if (action === 'response') {
+        if (this.pendingRequests[id]) {
+          this.pendingRequests[id](value, error)
+          delete this.pendingRequests[id]
+        }
+      } else if (action === 'request') {
+        if (!this[key]) {
+          throw new Error(`Method ${key} doesn't exist on ${type}`)
+        }
+        this.send({action, type, key, id}, this[key](value))
       }
+    } catch (err) {
+      // (event.source as Window).postMessage({type: })
     }
+
+  }
+
+  /** Check if the sender has the right origin */
+  private checkOrigin(origin: string) {
+    return this.origin
+      ? this.origin === origin
+      : [
+      "http://remix-alpha.ethereum.org",
+      "http://remix.ethereum.org",
+      "https://remix-alpha.ethereum.org",
+      "https://remix.ethereum.org"
+    ].includes(origin)
+  }
+
+  /** Send a message to source parent */
+  private send({action, type, key, id}: any, value: any) {
+    const msg = {action, type, key, value, id}
+    this.source.postMessage(JSON.stringify(msg), this.origin)
   }
 
   public listen(
@@ -49,12 +88,11 @@ export class RemixExtension {
     this.notifications[type][key] = cb
   }
 
-  public call(type: string, key: string, params: any): Promise<any> {
+  public call(type: string, key: string, value: any): Promise<any> {
     const action = 'request'
     const id = this.id++
-    const value = params
     const message = JSON.stringify({ action, type, key, value, id })
-    window.parent.postMessage(message, '*')
+    this.source.postMessage(message, '*')
     return new Promise((res, rej) => {
       this.pendingRequests[this.id] = (result: any, error?: Error) => {
         if (error) rej(error)
