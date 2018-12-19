@@ -1,4 +1,4 @@
-import { Message } from './remix-module'
+import { Message } from './types'
 
 export class RemixExtension {
   private notifications: {

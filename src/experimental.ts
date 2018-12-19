@@ -105,15 +105,3 @@ export class AppManager {
   }
 
 }
-
-
-export function createPluginManager(json: any[]) {
-  const type = 'plugin-manager'
-  const deps = json.map(({events}) => events.type) as string[]
-  return Module({type, deps})(class extends Injector {
-    // Implement the post message management here
-    constructor(...args: any[]) {
-      super()
-    }
-  })
-}
