@@ -24,6 +24,7 @@ describe('Boostrap', () => {
   })
   test('plugin should not be activated by default', () => expect(app[api.type]).toEqual({}))
   test('pluginManager should activate plugin', () => {
+    console.log(app)
     pluginManager.activate.emit(api.type)
     expect(app[api.type]['getDoc']).toBeDefined()
   })

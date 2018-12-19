@@ -42,10 +42,9 @@ export class AppManager {
 
     // bootstrap
     if (dependancies.options && dependancies.options.boostrap) {
-      this[dependancies.options.boostrap]['activate']
-        .on((type: string) => this.activate(type))
-      this[dependancies.options.boostrap]['deactivate']
-        .on((type: string) => this.deactivate(type))
+      const {api} = this.modules[dependancies.options.boostrap]
+      api['activate'].on((type: string) => this.activate(type))
+      api['deactivate'].on((type: string) => this.deactivate(type))
     }
   }
 
@@ -100,14 +99,14 @@ export class AppManager {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
-      api.activate()
       this.activateApi(json, api)
       this.activatePlugin(json, api)
+      api.activate()
     }
     if (this.modules[type]) {
       const { json, api } = this.plugins[type]
-      api.activate()
       this.activateApi(json, api)
+      api.activate()
     }
   }
 
