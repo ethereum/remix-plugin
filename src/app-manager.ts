@@ -21,7 +21,7 @@ export class AppManager {
   constructor(dependancies: {
     modules?: { json: ModuleProfile; api: API }[]
     plugins?: { json: PluginProfile; api: Plugin }[]
-    options: {
+    options?: {
       boostrap: string
     }
   }) {
@@ -42,10 +42,10 @@ export class AppManager {
 
     // bootstrap
     if (dependancies.options && dependancies.options.boostrap) {
-      this[dependancies.options.boostrap].event
-        .on('activate', (type: string) => this.activate(type))
-      this[dependancies.options.boostrap].event
-        .on('deactivate', (type: string) => this.deactivate(type))
+      this[dependancies.options.boostrap]['activate']
+        .on((type: string) => this.activate(type))
+      this[dependancies.options.boostrap]['deactivate']
+        .on((type: string) => this.deactivate(type))
     }
   }
 
@@ -66,8 +66,6 @@ export class AppManager {
 
   /** Add an api to the AppModule */
   private activateApi(json: ModuleProfile, api: API) {
-    this[api.type] = {}
-
     const events = json.events || []
     events.forEach(event => {
       if (event in api) {
@@ -100,14 +98,15 @@ export class AppManager {
   /** Activate a plugin or module */
   public activate(type: string) {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
-    this[type].activate()
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
+      api.activate()
       this.activateApi(json, api)
       this.activatePlugin(json, api)
     }
     if (this.modules[type]) {
       const { json, api } = this.plugins[type]
+      api.activate()
       this.activateApi(json, api)
     }
   }
@@ -148,15 +147,16 @@ export class AppManager {
   /** Activate a plugin or module */
   public deactivate(type: string) {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
-    this[type].deactivate()
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
       this.deactivateApi(json, api)
       this.deactivatePlugin(json, api)
+      api.deactivate()
     }
     if (this.modules[type]) {
       const { json, api } = this.plugins[type]
       this.deactivateApi(json, api)
+      api.deactivate()
     }
 
   }

@@ -21,8 +21,6 @@ export class Plugin extends API {
   constructor(json: PluginProfile) {
     super(json.type)
 
-    // TODO : ADD THIS IN ACTIVATE
-
     const notifs = json.notifications || []
     notifs.forEach(({ type, key }) => {
       if (!this.notifs[type]) this.notifs[type] = {}

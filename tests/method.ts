@@ -18,6 +18,7 @@ describe('Method', () => {
       modules: [{ json: ResolverProfile, api: module }],
       plugins: [{ json: EthdocProfile, api: plugin }]
     })
+    app.activate(EthdocProfile.type)
   })
 
   test('call a method from plugin api', () => {
