@@ -24,12 +24,12 @@ export class RemixExtension {
   private getMessage(event: MessageEvent) {
     if (!event.source) return
     if (!this.checkOrigin(event.origin)) return
+    if (!event.data) return
+    const msg = JSON.parse(event.data) as Message
+    if (!msg) return
 
+    const { action, key, type, value, id, error } = msg
     try {
-      if (!event.data) throw new Error('Not data in event')
-      const msg = JSON.parse(event.data) as Message
-      if (!msg) throw new Error('No message in the message')
-      const { action, key, type, value, id, error } = msg
 
       if (action === 'request' && key === 'handshake') {
         this.source = event.source as Window
@@ -54,7 +54,8 @@ export class RemixExtension {
         this.send({action, type, key, id}, this[key](value))
       }
     } catch (err) {
-      // (event.source as Window).postMessage({type: })
+      const message = { action, type, key, id, error: err.error };
+      (<Window>event.source).postMessage(JSON.stringify(message), event.origin)
     }
 
   }
