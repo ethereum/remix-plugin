@@ -1,9 +1,11 @@
+import { EventEmitter } from 'events'
 export interface Api {
   type: string
 }
 
-
 export abstract class API<T extends Api = any> {
+  public events = new EventEmitter()
+
   constructor(public type: T['type']) {}
 }
 

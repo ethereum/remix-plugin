@@ -1,12 +1,10 @@
 import { API, Message, PluginProfile } from './types'
-import { EventEmitter } from 'events'
 
 export class Plugin extends API {
   private id = 0
   private iframe: HTMLIFrameElement
   private source: Window
   private origin: string
-  private events = new EventEmitter()
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
     [type: string]: {
