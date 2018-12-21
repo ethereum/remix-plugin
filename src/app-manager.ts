@@ -18,7 +18,7 @@ export class AppManager {
   } = {}
   events: EventListeners = {}
 
-  constructor(dependancies: {
+  constructor(dependencies: {
     modules?: { json: ModuleProfile; api: API }[]
     plugins?: { json: PluginProfile; api: Plugin }[]
     options?: {
@@ -26,7 +26,7 @@ export class AppManager {
     }
   }) {
     // Modules
-    const modules = dependancies.modules || []
+    const modules = dependencies.modules || []
     this.modules = modules.reduce((acc, {json, api}) => {
       this[api.type] = {}
       this.activateApi(json, api) // Activate module automaticaly
@@ -34,15 +34,15 @@ export class AppManager {
     }, {})
 
     // Plugins
-    const plugins = dependancies.plugins || []
+    const plugins = dependencies.plugins || []
     this.plugins = plugins.reduce((acc, {json, api}) => {
       this[api.type] = {}
       return { ...acc, [json.type]: { json, api } }
     }, {})
 
     // bootstrap
-    if (dependancies.options && dependancies.options.boostrap) {
-      const {api} = this.modules[dependancies.options.boostrap]
+    if (dependencies.options && dependencies.options.boostrap) {
+      const {api} = this.modules[dependencies.options.boostrap]
       api['activate'].on((type: string) => this.activate(type))
       api['deactivate'].on((type: string) => this.deactivate(type))
     }
