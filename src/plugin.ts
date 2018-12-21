@@ -1,6 +1,7 @@
-import { API, Message, PluginProfile } from './types'
+import { Message, PluginProfile, Api } from './types'
+import { EventEmitter } from 'events'
 
-export class Plugin extends API {
+export class Plugin {
   private id = 0
   private iframe: HTMLIFrameElement
   private source: Window
@@ -12,26 +13,21 @@ export class Plugin extends API {
     }
   } = {}
 
+  public type: string
+  public events = new EventEmitter()
   public notifs = {}
   public request: (value: { type: string; key: string; value: any }) => any
   public activate: () => Promise<void>
   public deactivate: () => void
 
   constructor(json: PluginProfile) {
-    super(json.type)
+    this.type = json.type
 
     const notifs = json.notifications || []
     notifs.forEach(({ type, key }) => {
       if (!this.notifs[type]) this.notifs[type] = {}
       this.notifs[type][key] = (value: any) => this.postMessage({ type, key, value })
     })
-
-    /*
-    const events = json.events || []
-    events.forEach(event => {
-      this[event] = new EventEmitter()
-    })
-    */
 
     const methods = json.methods || []
     methods.forEach(method => {
@@ -129,4 +125,16 @@ export class Plugin extends API {
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
   }
+}
+
+
+export interface PluginEntry<T extends Api> {
+  json: PluginProfile<T>
+  api: Plugin
+}
+
+export type PluginList<T extends { [type: string]: Api}> = PluginEntry<T[keyof T]>[]
+
+export type PluginStore<T extends { [type: string]: Api}> = {
+  [type in keyof T]: PluginEntry<T[type]>
 }
