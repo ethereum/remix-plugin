@@ -88,21 +88,24 @@ export class AppManager {
 
     const notifications = json.notifications || []
     notifications.forEach(({ type, key }) => {
-      if (!this.events[api.type]) this.events[api.type] = {}
-      if (!this.events[api.type][type]) this.events[api.type][type] = {}
-      this.events[api.type][type][key] = api.notifs[type][key]
+      const origin = api.type
+      if (!this.events[origin]) this.events[origin] = {}
+      if (!this.events[origin][type]) this.events[origin][type] = {}
+      this.events[origin][type][key] = api.notifs[type][key]
     })
   }
 
   /** Activate a plugin or module */
   public activate(type: string) {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+    // If type is registered as a plugin
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
       this.activateApi(json, api)
       this.activatePlugin(json, api)
       api.activate()
     }
+    // If type is registered as a module
     if (this.modules[type]) {
       const { json, api } = this.plugins[type]
       this.activateApi(json, api)
@@ -131,7 +134,7 @@ export class AppManager {
     })
   }
 
-  /** Activate Plugin */
+  /** Deactivate Plugin */
   private deactivatePlugin(json: PluginProfile, api: Plugin) {
     delete api.request
 
@@ -143,7 +146,7 @@ export class AppManager {
     })
   }
 
-  /** Activate a plugin or module */
+  /** Deactivate a plugin or module */
   public deactivate(type: string) {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
     if (this.plugins[type]) {
