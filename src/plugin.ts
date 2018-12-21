@@ -1,11 +1,12 @@
 import { API, Message, PluginProfile } from './types'
-import { EventEmitter } from './event'
+import { EventEmitter } from 'events'
 
 export class Plugin extends API {
   private id = 0
   private iframe: HTMLIFrameElement
   private source: Window
   private origin: string
+  private events = new EventEmitter()
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
     [type: string]: {
@@ -27,10 +28,12 @@ export class Plugin extends API {
       this.notifs[type][key] = (value: any) => this.postMessage({ type, key, value })
     })
 
+    /*
     const events = json.events || []
     events.forEach(event => {
-      this[event] = new EventEmitter(event)
+      this[event] = new EventEmitter()
     })
+    */
 
     const methods = json.methods || []
     methods.forEach(method => {
@@ -71,9 +74,7 @@ export class Plugin extends API {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     switch (message.action) {
       case 'notification': {
-        if (message.key in this) {
-          this[message.key].emit(message)
-        }
+        this.events.emit(message.key, message)
         break
       }
       case 'request': {
