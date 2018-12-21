@@ -21,8 +21,6 @@ export class Plugin extends API {
   constructor(json: PluginProfile) {
     super(json.type)
 
-    // TODO : ADD THIS IN ACTIVATE
-
     const notifs = json.notifications || []
     notifs.forEach(({ type, key }) => {
       if (!this.notifs[type]) this.notifs[type] = {}
@@ -104,12 +102,14 @@ export class Plugin extends API {
   private async create({ url, loadIn }: PluginProfile) {
     // Create
     try {
-      const { type, key } = loadIn || {
-        type: 'swipePanel',
-        key: 'getIframeSource',
+      let parent: HTMLElement
+      if (loadIn) {
+        const { type, key } = loadIn
+        const message = { action: 'request', type, key, value: {} } as Message
+        parent = (await this.request(message)) as HTMLElement
+      } else {
+        parent = document.body
       }
-      const message = { action: 'request', type, key, value: {} } as Message
-      const parent = (await this.request(message)) as HTMLElement
       this.iframe = document.createElement('iframe')
       this.iframe.src = url
       parent.appendChild(this.iframe)

@@ -1,37 +1,70 @@
 import { PluginProfile, ModuleProfile, API } from './types'
 import { Plugin } from './plugin'
 
-export class AppManager {
-  events = {}
+interface EventListeners {
+  [origin: string]: {
+    [type: string]: {
+      [key: string]: (value: any) => void
+    }
+  }
+}
 
-  constructor(dependancies: {
+export class AppManager {
+  private modules: {
+    [type: string]: { json: ModuleProfile, api: API }
+  } = {}
+  private plugins: {
+    [type: string]: { json: PluginProfile, api: Plugin }
+  } = {}
+  events: EventListeners = {}
+
+  constructor(dependencies: {
     modules?: { json: ModuleProfile; api: API }[]
     plugins?: { json: PluginProfile; api: Plugin }[]
+    options?: {
+      boostrap: string
+    }
   }) {
     // Modules
-    const modules = dependancies.modules || []
-    modules.forEach(({ json, api }) => this.addApi(json, api))
+    const modules = dependencies.modules || []
+    this.modules = modules.reduce((acc, {json, api}) => {
+      this[api.type] = {}
+      this.activateApi(json, api) // Activate module automaticaly
+      return { ...acc, [json.type]: { json, api } }
+    }, {})
 
     // Plugins
-    const plugins = dependancies.plugins || []
-    plugins.forEach(({ json, api }) => {
-      this.addApi(json, api)
+    const plugins = dependencies.plugins || []
+    this.plugins = plugins.reduce((acc, {json, api}) => {
+      this[api.type] = {}
+      return { ...acc, [json.type]: { json, api } }
+    }, {})
 
-      api.request = ({ type, key, value }) => this[type][key](value)
-
-      const notifications = json.notifications || []
-      notifications.forEach(({ type, key }) => {
-        if (!this.events[api.type]) this.events[api.type] = {}
-        if (!this.events[api.type][type]) this.events[api.type][type] = {}
-        this.events[api.type][type][key] = api.notifs[type][key]
-      })
-    })
+    // bootstrap
+    if (dependencies.options && dependencies.options.boostrap) {
+      const {api} = this.modules[dependencies.options.boostrap]
+      api['activate'].on((type: string) => this.activate(type))
+      api['deactivate'].on((type: string) => this.deactivate(type))
+    }
   }
 
-  /** Add an api to the AppModule */
-  private addApi(json: ModuleProfile, api: API) {
-    this[api.type] = {}
 
+  /** Broadcast a message to every plugin listening */
+  private broadcast(type: string, key: string, value: any) {
+    for (const origin in this.events) {
+      if (this.events[origin][type]) {
+        const destination = this.events[origin][type]
+        if (destination[key]) destination[key](value)
+      }
+    }
+  }
+
+  /**************************/
+  /* ----- ACTIVATION ----- */
+  /**************************/
+
+  /** Add an api to the AppModule */
+  private activateApi(json: ModuleProfile, api: API) {
     const events = json.events || []
     events.forEach(event => {
       if (event in api) {
@@ -49,29 +82,98 @@ export class AppManager {
     })
   }
 
-  private broadcast(type: string, key: string, value: any) {
-    for (const origin in this.events) {
-      if (this.events[origin][type]) {
-        const destination = this.events[origin][type]
-        if (destination[key]) destination[key](value)
-      }
+  /** Activate Plugin */
+  private activatePlugin(json: PluginProfile, api: Plugin) {
+    api.request = ({ type, key, value }) => this[type][key](value)
+
+    const notifications = json.notifications || []
+    notifications.forEach(({ type, key }) => {
+      const origin = api.type
+      if (!this.events[origin]) this.events[origin] = {}
+      if (!this.events[origin][type]) this.events[origin][type] = {}
+      this.events[origin][type][key] = api.notifs[type][key]
+    })
+  }
+
+  /** Activate a plugin or module */
+  public activate(type: string) {
+    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+    // If type is registered as a plugin
+    if (this.plugins[type]) {
+      const { json, api } = this.plugins[type]
+      this.activateApi(json, api)
+      this.activatePlugin(json, api)
+      api.activate()
+    }
+    // If type is registered as a module
+    if (this.modules[type]) {
+      const { json, api } = this.plugins[type]
+      this.activateApi(json, api)
+      api.activate()
     }
   }
 
-  /** Activate a plugin */
-  public activate(type: string) {
-    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
-    this[type].activate()
-    // TODO : this.addApi()
+
+  /****************************/
+  /* ----- DEACTIVATION ----- */
+  /****************************/
+
+  /** Add an api to the AppModule */
+  private deactivateApi(json: ModuleProfile, api: API) {
+    this[api.type] = {}
+
+    const events = json.events || []
+    events.forEach(event => {
+      // TODO : EventManager
+      // if (event in api) api[event].unregister()
+    })
+
+    const methods = json.methods || []
+    methods.forEach(key => {
+      if (key in api) delete this[api.type][key]
+    })
   }
 
-  /** Deactivate a plugin */
+  /** Deactivate Plugin */
+  private deactivatePlugin(json: PluginProfile, api: Plugin) {
+    delete api.request
+
+    const notifications = json.notifications || []
+    notifications.forEach(({ type, key }) => {
+      if (!this.events[api.type]) this.events[api.type] = {}
+      if (!this.events[api.type][type]) this.events[api.type][type] = {}
+      delete this.events[api.type][type][key]
+    })
+  }
+
+  /** Deactivate a plugin or module */
   public deactivate(type: string) {
     if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
-    this[type].deactivate()
-    // TODO : this.removeApi()
+    if (this.plugins[type]) {
+      const { json, api } = this.plugins[type]
+      this.deactivateApi(json, api)
+      this.deactivatePlugin(json, api)
+      api.deactivate()
+    }
+    if (this.modules[type]) {
+      const { json, api } = this.plugins[type]
+      this.deactivateApi(json, api)
+      api.deactivate()
+    }
+
   }
+
 }
+
+
+
+
+
+
+
+
+
+
 
 
 /*

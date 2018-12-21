@@ -21,6 +21,7 @@ describe('Event', () => {
       modules: [{ json: TxlistenerProfile, api: module }],
       plugins: [{ json: EthdocProfile, api: plugin }]
     })
+    app.activate(EthdocProfile.type)
   })
   test('event is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
