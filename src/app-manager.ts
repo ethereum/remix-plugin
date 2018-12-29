@@ -5,26 +5,19 @@ import {
   IAppManager,
   ModuleStore,
   EventListeners,
-  ExtractKey,
+  AppCalls,
   Api,
   ModuleList
 } from './types'
 import { Plugin, PluginList, PluginStore } from './plugin'
 
 
+
 export class AppManager<T extends IAppManager> {
   private modules: ModuleStore<T['modules']>
   private plugins: PluginStore<T['plugins']>
   public events: EventListeners = {}
-  public calls: {
-    [type in (keyof T['modules'] | keyof T['plugins'])]: T['modules'][type] extends undefined
-    ? {
-      [key in ExtractKey<T['plugins'][type], Function>]: T['plugins'][type][key]
-    }
-    : {
-      [key in ExtractKey<T['modules'][type], Function>]: T['modules'][type][key]
-    }
-  }
+  public calls: AppCalls<T>
 
   constructor(dependencies: {
     modules?: ModuleList<T['modules']>
@@ -58,7 +51,11 @@ export class AppManager<T extends IAppManager> {
   }
 
   /** Broadcast a message to every plugin listening */
-  private broadcast<M extends Api, E extends keyof M['events']>(type: M['type'], key: E, value: M['events'][E]) {
+  private broadcast<M extends Api, E extends keyof M['events']>(
+    type: M['type'],
+    key: E,
+    value: M['events'][E]
+  ) {
     for (const origin in this.events) {
       if (this.events[origin][type]) {
         const destination = this.events[origin][type]
@@ -122,7 +119,7 @@ export class AppManager<T extends IAppManager> {
   /* ----- DEACTIVATION ----- */
   /****************************/
 
-  /** Add an api to the AppModule */
+  /** Deactivate a module's api from the AppModule */
   private deactivateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
     this.calls[api.type] = {} as any
 
