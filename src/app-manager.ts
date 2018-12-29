@@ -12,8 +12,12 @@ import {
 import { Plugin, PluginList, PluginStore } from './plugin'
 
 
-
-export class AppManager<T extends IAppManager> {
+/**
+ * The main entry point of the module/plugin architecture.
+ * It manages events plugins <-> plugins and modules <-> plugins.
+ * It can listen on plugin activation events with option 'boostrap'
+ */
+export class AppManager<T extends IAppManager = any> {
   private modules: ModuleStore<T['modules']>
   private plugins: PluginStore<T['plugins']>
   public events: EventListeners = {}
@@ -23,6 +27,7 @@ export class AppManager<T extends IAppManager> {
     modules?: ModuleList<T['modules']>
     plugins?: PluginList<T['plugins']>
     options?: {
+      /** Listen on plugin activation event from the module which type is the value of boostrap */
       boostrap: string
     }
   }) {
@@ -111,7 +116,7 @@ export class AppManager<T extends IAppManager> {
     if (this.modules[type]) {
       const { json, api } = this.modules[type]
       this.activateApi<M>(json as any, api as any)
-      api.activate()
+      if (api.activate) api.activate()
     }
   }
 
@@ -122,12 +127,7 @@ export class AppManager<T extends IAppManager> {
   /** Deactivate a module's api from the AppModule */
   private deactivateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
     this.calls[api.type] = {} as any
-
-    const events = json.events || []
-    events.forEach(event => {
-      // TODO : EventManager
-      // if (event in api) api[event].unregister()
-    })
+    if (api.events) api.events.removeAllListeners()
 
     const methods = json.methods || []
     methods.forEach(key => {
@@ -161,7 +161,7 @@ export class AppManager<T extends IAppManager> {
     if (this.modules[type]) {
       const { json, api } = this.modules[type]
       this.deactivateApi<M>(json as any, api as any)
-      api.deactivate()
+      if (api.deactivate) api.deactivate()
     }
   }
 }

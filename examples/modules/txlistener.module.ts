@@ -18,11 +18,11 @@ export const TxlistenerProfile: ModuleProfile<Txlistener> = {
 
 // API
 export class TxlistenerApi implements API<Txlistener> {
-  public type: 'txlistener' = 'txlistener'
+  public readonly type = 'txlistener'
   public events: ApiEventEmitter<Txlistener> = new EventEmitter()
 
   // In this implementation of the API, Txlistener depends on an external class
-  constructor(private emitter: TxEmitter) {
+  constructor(emitter: TxEmitter) {
     emitter.newTx.on('newTransaction', data => this.events.emit('newTransaction', data))
   }
 

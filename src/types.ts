@@ -25,8 +25,8 @@ export interface ApiEventEmitter<T extends Api> {
 export type API<T extends Api> = {
   type: T['type']
   events?: ApiEventEmitter<T>
-  activate(): void
-  deactivate(): void
+  activate?(): void
+  deactivate?(): void
 } & {
   [M in ExtractKey<T, Function>]: T[M]
 }

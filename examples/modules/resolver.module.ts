@@ -4,7 +4,7 @@ import { ModuleProfile, Api, API } from '../../src'
 // Type
 export interface Resolver extends Api {
   type: 'solResolver'
-  combineSource(path: string): void,
+  combineSource(path: string): void
   getFile(url: string): string
 }
 
@@ -15,10 +15,8 @@ export const ResolverProfile: ModuleProfile<Resolver> = {
 }
 
 // API
-export class ResolverApi extends API<Resolver> implements Resolver {
-  constructor() {
-    super('solResolver')
-  }
+export class ResolverApi implements API<Resolver> {
+  public readonly type = 'solResolver'
 
   public combineSource(path: string) {
     console.log(path)

@@ -1,10 +1,12 @@
-import { ModuleProfile, EventEmitter, Api, API } from '../../src'
-
+import { ModuleProfile, Api, API, ApiEventEmitter } from '../../src'
+import { EventEmitter } from 'events'
 
 // Type
 export interface Compiler extends Api {
   type: 'solCompiler'
-  compilationFinished: EventEmitter<{ success: boolean; data: any; source: any }>
+  events: {
+    compilationFinished: { success: boolean; data: any; source: any }
+  }
   lastCompilationResult(): string
 }
 
@@ -16,12 +18,9 @@ export const CompilerProfile: ModuleProfile<Compiler> = {
 }
 
 // API
-export class CompilerApi extends API<Compiler> implements Compiler {
-  constructor() {
-    super('solCompiler')
-  }
-
-  public compilationFinished = new EventEmitter<{ success: boolean; data: any; source: any }>('compilationFinished')
+export class CompilerApi implements API<Compiler> {
+  public readonly type = 'solCompiler'
+  public compilationFinished: ApiEventEmitter<Compiler> = new EventEmitter()
 
   public lastCompilationResult() {
     return 'compilation'
