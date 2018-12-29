@@ -100,9 +100,9 @@ export interface ModuleEntry<T extends Api> {
 }
 
 /** A list of module entries */
-export type ModuleList<T extends { [type: string]: Api}> = ModuleEntry<T[keyof T]>[]
+export type ModuleList<T extends { [type: string]: Api }> = ModuleEntry<T[keyof T]>[]
 
 /** A map of module entries depending on the type of the module */
-export type ModuleStore<T extends { [type: string]: Api}> = {
+export type ModuleStore<T extends { [type: string]: Api }> = {
   [type in keyof T]: ModuleEntry<T[type]>
 }

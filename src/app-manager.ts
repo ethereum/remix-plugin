@@ -17,11 +17,11 @@ import { Plugin, PluginList, PluginStore } from './plugin'
  * It manages events plugins <-> plugins and modules <-> plugins.
  * It can listen on plugin activation events with option 'boostrap'
  */
-export class AppManager<T extends IAppManager = any> {
+export class AppManager<T extends IAppManager> {
   private modules: ModuleStore<T['modules']>
   private plugins: PluginStore<T['plugins']>
   public events: EventListeners = {}
-  public calls: AppCalls<T>
+  public calls: AppCalls<T> = {} as AppCalls<T>
 
   constructor(dependencies: {
     modules?: ModuleList<T['modules']>
@@ -37,14 +37,14 @@ export class AppManager<T extends IAppManager = any> {
       this.calls[api.type] = {} as any
       this.activateApi(json, api) // Activate module automaticaly
       return { ...acc, [json.type]: { json, api } }
-    }, {} as ModuleStore<T['modules']>)
+    }, {}) as ModuleStore<T['modules']>
 
     // Plugins
     const plugins = dependencies.plugins || []
     this.plugins = plugins.reduce((acc, { json, api }) => {
       this.calls[api.type] = {}
       return { ...acc, [json.type]: { json, api } }
-    }, {} as PluginStore<T['plugins']>)
+    }, {}) as PluginStore<T['plugins']>
 
     // bootstrap
     if (dependencies.options && dependencies.options.boostrap) {
@@ -88,8 +88,8 @@ export class AppManager<T extends IAppManager = any> {
   }
 
   /** Activate Plugin */
-  private activatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin) {
-    api.request = ({ type, key, value }) => this[type][key](value)
+  private activatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
+    api.request = ({ type, key, value }) => this.calls[type][key](value)
 
     const notifications = json.notifications || []
     notifications.forEach(({ type, key }) => {
@@ -109,7 +109,7 @@ export class AppManager<T extends IAppManager = any> {
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
       this.activateApi<M>(json as any, api as any)
-      this.activatePlugin<M>(json as any, api)
+      this.activatePlugin<M>(json as any, api as any)
       api.activate()
     }
     // If type is registered as a module
@@ -136,7 +136,7 @@ export class AppManager<T extends IAppManager = any> {
   }
 
   /** Deactivate Plugin */
-  private deactivatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin) {
+  private deactivatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
     delete api.request
 
     const notifications = json.notifications || []
@@ -155,7 +155,7 @@ export class AppManager<T extends IAppManager = any> {
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
       this.deactivateApi<M>(json as any, api as any)
-      this.deactivatePlugin<M>(json as any, api)
+      this.deactivatePlugin<M>(json as any, api as any)
       api.deactivate()
     }
     if (this.modules[type]) {

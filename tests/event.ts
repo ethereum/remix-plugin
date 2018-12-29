@@ -1,7 +1,8 @@
-import { Plugin, AppManager } from '../src'
-import { TxlistenerApi, TxlistenerProfile, TxEmitter } from '../examples/modules'
+import { Plugin, AppManager, PluginProfile } from '../src'
+import { TxlistenerApi, TxlistenerProfile, TxEmitter, Txlistener } from '../examples/modules'
+import { Ethdoc } from '../examples/plugins'
 
-const EthdocProfile = {
+const EthdocProfile: PluginProfile<Ethdoc> = {
   type: 'ethdoc',
   methods: ['getDoc'],
   events: ['createDoc'],
@@ -9,10 +10,20 @@ const EthdocProfile = {
   url: ''
 }
 
+
+export interface IAppManager {
+  modules: {
+    txlistener: Txlistener
+  }
+  plugins: {
+    ethdoc: Ethdoc
+  }
+}
+
 describe('Event', () => {
-  let app: AppManager
+  let app: AppManager<IAppManager>
   let module: TxlistenerApi
-  let plugin: Plugin
+  let plugin: Plugin<Ethdoc>
   let txemitter: TxEmitter
   beforeAll(() => {
     txemitter = new TxEmitter()
@@ -38,6 +49,7 @@ describe('Event', () => {
 
   test('event from plugin is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
+    if (!EthdocProfile.events) throw new Error('EthdocProfile should have "events"')
     plugin.events.emit(EthdocProfile.events[0], true)
     expect(spy).toBeCalledWith(plugin.type, EthdocProfile.events[0], true)
   })
