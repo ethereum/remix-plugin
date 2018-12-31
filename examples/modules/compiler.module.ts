@@ -7,7 +7,7 @@ export interface Compiler extends Api {
   events: {
     compilationFinished: { success: boolean; data: any; source: any }
   }
-  lastCompilationResult(): string
+  lastCompilationResult(): any
 }
 
 // Profile
@@ -20,10 +20,11 @@ export const CompilerProfile: ModuleProfile<Compiler> = {
 // API
 export class CompilerApi implements API<Compiler> {
   public readonly type = 'solCompiler'
-  public compilationFinished: ApiEventEmitter<Compiler> = new EventEmitter()
+  public events: ApiEventEmitter<Compiler> = new EventEmitter()
+
+  constructor(private compiler) {}
 
   public lastCompilationResult() {
     return 'compilation'
   }
-
 }
