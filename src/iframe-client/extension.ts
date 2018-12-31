@@ -1,4 +1,4 @@
-import { Message, EventMessage, Api } from './types'
+import { Message, EventMessage, Api } from '../types'
 
 export class RemixExtension<T extends Api> {
   private source: Window

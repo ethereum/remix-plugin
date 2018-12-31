@@ -8,7 +8,7 @@ import {
   AppCalls,
   Api,
   ModuleList
-} from './types'
+} from '../types'
 import { Plugin, PluginList, PluginStore } from './plugin'
 
 

@@ -1,4 +1,4 @@
-import { Message, PluginProfile, Api, ExtractKey } from './types'
+import { Message, PluginProfile, Api, ExtractKey } from '../types'
 import { EventEmitter } from 'events'
 
 export class Plugin<T extends Api> {

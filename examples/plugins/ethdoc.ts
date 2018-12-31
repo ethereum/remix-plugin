@@ -1,4 +1,4 @@
-import { PluginProfile, RemixExtension, IAppManager } from "../../src"
+import { PluginProfile, RemixExtension } from "../../src"
 import { Api } from '../../src'
 
 export interface Ethdoc extends Api {
