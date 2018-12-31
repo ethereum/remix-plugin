@@ -106,3 +106,16 @@ export type ModuleList<T extends { [type: string]: Api }> = ModuleEntry<T[keyof 
 export type ModuleStore<T extends { [type: string]: Api }> = {
   [type in keyof T]: ModuleEntry<T[type]>
 }
+
+/* ---- IFRAME ---- */
+/** An Api for plugin that add notifications */
+export interface PluginApi<App extends IAppManager> extends Api {
+  notifications: {
+    [type in keyof App['modules']]: Notifications<App['modules'][type]>
+  }
+}
+
+/** The name of the event and it's type */
+export type Notifications<T extends Api> = {
+  [key in keyof T['events']]: T['events'][key]
+}
