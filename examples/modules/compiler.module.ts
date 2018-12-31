@@ -22,7 +22,7 @@ export class CompilerApi implements API<Compiler> {
   public readonly type = 'solCompiler'
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
 
-  constructor(private compiler) {}
+  constructor() {}
 
   public lastCompilationResult() {
     return 'compilation'
