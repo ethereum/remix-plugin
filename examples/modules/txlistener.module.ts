@@ -1,11 +1,13 @@
-import { ModuleProfile, EventEmitter, Api, API } from '../../src'
+import { ModuleProfile, Api, API, ApiEventEmitter } from '../../src'
 import { Transaction } from './types'
-
+import { EventEmitter } from 'events'
 
 // Type
 export interface Txlistener extends Api {
   type: 'txlistener'
-  newTransaction: EventEmitter<Transaction>
+  events: {
+    newTransaction: Transaction
+  }
 }
 
 // Profile
@@ -15,13 +17,14 @@ export const TxlistenerProfile: ModuleProfile<Txlistener> = {
 }
 
 // API
-export class TxlistenerApi extends API<Txlistener> implements Txlistener {
-  // In this implementation of the API, Txlistener depends on an external class
-  constructor(private emitter: TxEmitter) {
-    super('txlistener')
-  }
+export class TxlistenerApi implements API<Txlistener> {
+  public readonly type = 'txlistener'
+  public events: ApiEventEmitter<Txlistener> = new EventEmitter()
 
-  public newTransaction = this.emitter.newTx
+  // In this implementation of the API, Txlistener depends on an external class
+  constructor(emitter: TxEmitter) {
+    emitter.newTx.on('newTransaction', data => this.events.emit('newTransaction', data))
+  }
 
   public lastCompilationResult() {
     return 'compilation'
@@ -32,9 +35,9 @@ export class TxlistenerApi extends API<Txlistener> implements Txlistener {
 // External class
 export class TxEmitter {
 
-  newTx = new EventEmitter<Transaction>('newTransaction')
+  newTx = new EventEmitter()
 
   createTx(data: string) {
-    this.newTx.emit({data})
+    this.newTx.emit('newTransaction', {data})
   }
 }

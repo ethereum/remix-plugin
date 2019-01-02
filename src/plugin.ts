@@ -1,7 +1,7 @@
-import { API, Message, PluginProfile } from './types'
-import { EventEmitter } from './event'
+import { Message, PluginProfile, Api, ExtractKey } from './types'
+import { EventEmitter } from 'events'
 
-export class Plugin extends API {
+export class Plugin<T extends Api> {
   private id = 0
   private iframe: HTMLIFrameElement
   private source: Window
@@ -13,13 +13,15 @@ export class Plugin extends API {
     }
   } = {}
 
+  public readonly type: string
+  public events = new EventEmitter()
   public notifs = {}
   public request: (value: { type: string; key: string; value: any }) => any
   public activate: () => Promise<void>
   public deactivate: () => void
 
-  constructor(json: PluginProfile) {
-    super(json.type)
+  constructor(json: PluginProfile<T>) {
+    this.type = json.type
 
     const notifs = json.notifications || []
     notifs.forEach(({ type, key }) => {
@@ -27,19 +29,14 @@ export class Plugin extends API {
       this.notifs[type][key] = (value: any) => this.postMessage({ type, key, value })
     })
 
-    const events = json.events || []
-    events.forEach(event => {
-      this[event] = new EventEmitter(event)
-    })
-
     const methods = json.methods || []
     methods.forEach(method => {
-      this[method] = (value: any) => {
+      this[method as string] = (value: any) => {
         this.id++
         this.postMessage({
           action: 'request',
           type: this.type,
-          key: method,
+          key: method as string,
           id: this.id,
           value,
         })
@@ -71,9 +68,7 @@ export class Plugin extends API {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     switch (message.action) {
       case 'notification': {
-        if (message.key in this) {
-          this[message.key].emit(message)
-        }
+        this.events.emit(message.key, message)
         break
       }
       case 'request': {
@@ -130,4 +125,16 @@ export class Plugin extends API {
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
   }
+}
+
+
+export interface PluginEntry<T extends Api> {
+  json: PluginProfile<T>
+  api: Plugin<T>
+}
+
+export type PluginList<T extends { [type: string]: Api}> = PluginEntry<T[keyof T]>[]
+
+export type PluginStore<T extends { [type: string]: Api}> = {
+  [type in keyof T]: PluginEntry<T[type]>
 }

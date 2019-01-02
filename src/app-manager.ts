@@ -1,56 +1,66 @@
-import { PluginProfile, ModuleProfile, API } from './types'
-import { Plugin } from './plugin'
+import {
+  PluginProfile,
+  ModuleProfile,
+  API,
+  IAppManager,
+  ModuleStore,
+  EventListeners,
+  AppCalls,
+  Api,
+  ModuleList
+} from './types'
+import { Plugin, PluginList, PluginStore } from './plugin'
 
-interface EventListeners {
-  [origin: string]: {
-    [type: string]: {
-      [key: string]: (value: any) => void
-    }
-  }
-}
 
-export class AppManager {
-  private modules: {
-    [type: string]: { json: ModuleProfile, api: API }
-  } = {}
-  private plugins: {
-    [type: string]: { json: PluginProfile, api: Plugin }
-  } = {}
-  events: EventListeners = {}
+/**
+ * The main entry point of the module/plugin architecture.
+ * It manages events plugins <-> plugins and modules <-> plugins.
+ * It can listen on plugin activation events with option 'boostrap'
+ */
+export class AppManager<T extends IAppManager> {
+  private modules: ModuleStore<T['modules']>
+  private plugins: PluginStore<T['plugins']>
+  public events: EventListeners = {}
+  public calls: AppCalls<T> = {} as AppCalls<T>
 
   constructor(dependencies: {
-    modules?: { json: ModuleProfile; api: API }[]
-    plugins?: { json: PluginProfile; api: Plugin }[]
+    modules?: ModuleList<T['modules']>
+    plugins?: PluginList<T['plugins']>
     options?: {
+      /** Listen on plugin activation event from the module which type is the value of boostrap */
       boostrap: string
     }
   }) {
     // Modules
     const modules = dependencies.modules || []
-    this.modules = modules.reduce((acc, {json, api}) => {
-      this[api.type] = {}
+    this.modules = modules.reduce((acc, { json, api }) => {
+      this.calls[api.type] = {} as any
       this.activateApi(json, api) // Activate module automaticaly
       return { ...acc, [json.type]: { json, api } }
-    }, {})
+    }, {}) as ModuleStore<T['modules']>
 
     // Plugins
     const plugins = dependencies.plugins || []
-    this.plugins = plugins.reduce((acc, {json, api}) => {
-      this[api.type] = {}
+    this.plugins = plugins.reduce((acc, { json, api }) => {
+      this.calls[api.type] = {}
       return { ...acc, [json.type]: { json, api } }
-    }, {})
+    }, {}) as PluginStore<T['plugins']>
 
     // bootstrap
     if (dependencies.options && dependencies.options.boostrap) {
-      const {api} = this.modules[dependencies.options.boostrap]
-      api['activate'].on((type: string) => this.activate(type))
-      api['deactivate'].on((type: string) => this.deactivate(type))
+      const { api } = this.modules[dependencies.options.boostrap]
+      if (!api.events) return
+      api.events.on('activate', (type: string) => this.activate(type))
+      api.events.on('deactivate', (type: string) => this.deactivate(type))
     }
   }
 
-
   /** Broadcast a message to every plugin listening */
-  private broadcast(type: string, key: string, value: any) {
+  private broadcast<M extends Api, E extends keyof M['events']>(
+    type: M['type'],
+    key: E,
+    value: M['events'][E]
+  ) {
     for (const origin in this.events) {
       if (this.events[origin][type]) {
         const destination = this.events[origin][type]
@@ -64,27 +74,22 @@ export class AppManager {
   /**************************/
 
   /** Add an api to the AppModule */
-  private activateApi(json: ModuleProfile, api: API) {
+  private activateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
     const events = json.events || []
     events.forEach(event => {
-      if (event in api) {
-        api[event].on((value: any) => {
-          this.broadcast(api.type, event, value)
-        })
-      }
+      if (!api.events) return
+      api.events.on(event, (value: any) => this.broadcast(api.type, event, value))
     })
 
     const methods = json.methods || []
     methods.forEach(key => {
-      if (key in api) {
-        this[api.type][key] = api[key]
-      }
+      if (key in api) this.calls[api.type as string][key] = api[key]
     })
   }
 
   /** Activate Plugin */
-  private activatePlugin(json: PluginProfile, api: Plugin) {
-    api.request = ({ type, key, value }) => this[type][key](value)
+  private activatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
+    api.request = ({ type, key, value }) => this.calls[type][key](value)
 
     const notifications = json.notifications || []
     notifications.forEach(({ type, key }) => {
@@ -96,46 +101,42 @@ export class AppManager {
   }
 
   /** Activate a plugin or module */
-  public activate(type: string) {
-    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+  public activate<M extends Api>(type: M['type']) {
+    if (!this.plugins[type] && !this.modules[type]) {
+      throw new Error(`Module or Plugin ${type} is not registered yet`)
+    }
     // If type is registered as a plugin
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
-      this.activateApi(json, api)
-      this.activatePlugin(json, api)
+      this.activateApi<M>(json as any, api as any)
+      this.activatePlugin<M>(json as any, api as any)
       api.activate()
     }
     // If type is registered as a module
     if (this.modules[type]) {
-      const { json, api } = this.plugins[type]
-      this.activateApi(json, api)
-      api.activate()
+      const { json, api } = this.modules[type]
+      this.activateApi<M>(json as any, api as any)
+      if (api.activate) api.activate()
     }
   }
-
 
   /****************************/
   /* ----- DEACTIVATION ----- */
   /****************************/
 
-  /** Add an api to the AppModule */
-  private deactivateApi(json: ModuleProfile, api: API) {
-    this[api.type] = {}
-
-    const events = json.events || []
-    events.forEach(event => {
-      // TODO : EventManager
-      // if (event in api) api[event].unregister()
-    })
+  /** Deactivate a module's api from the AppModule */
+  private deactivateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
+    this.calls[api.type] = {} as any
+    if (api.events) api.events.removeAllListeners()
 
     const methods = json.methods || []
     methods.forEach(key => {
-      if (key in api) delete this[api.type][key]
+      if (key in api) delete this[api.type as string][key]
     })
   }
 
   /** Deactivate Plugin */
-  private deactivatePlugin(json: PluginProfile, api: Plugin) {
+  private deactivatePlugin<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
     delete api.request
 
     const notifications = json.notifications || []
@@ -147,75 +148,20 @@ export class AppManager {
   }
 
   /** Deactivate a plugin or module */
-  public deactivate(type: string) {
-    if (!this[type]) throw new Error(`Plugin ${type} is not registered yet`)
+  public deactivate<M extends Api>(type: M['type']) {
+    if (!this.plugins[type] && !this.modules[type]) {
+      throw new Error(`Module or Plugin ${type} is not registered yet`)
+    }
     if (this.plugins[type]) {
       const { json, api } = this.plugins[type]
-      this.deactivateApi(json, api)
-      this.deactivatePlugin(json, api)
+      this.deactivateApi<M>(json as any, api as any)
+      this.deactivatePlugin<M>(json as any, api as any)
       api.deactivate()
     }
     if (this.modules[type]) {
-      const { json, api } = this.plugins[type]
-      this.deactivateApi(json, api)
-      api.deactivate()
+      const { json, api } = this.modules[type]
+      this.deactivateApi<M>(json as any, api as any)
+      if (api.deactivate) api.deactivate()
     }
-
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-export interface InternalModuleConfig<T extends ModuleProfile = any> {
-  [type: string]: T
-}
-export interface ExternalModuleConfig<T extends IframeProfile = any> {
-  [type: string]: T
-}
-
-export interface AppConfig {
-  modules: InternalModuleConfig
-  plugins: ExternalModuleConfig
-  providers: any
-}
-
-export type InternalConfig<C extends AppConfig> = {
-  [key in keyof C['modules']]: Profile<C['modules'][key]>
-}
-export type ExternalConfig<C extends AppConfig> = {
-  [key in keyof C['plugins']]: ExternalProfile<C['plugins'][key]>
-}
-export interface ProfileConfig<C extends AppConfig> {
-  modules?: InternalConfig<C>
-  plugins?: ExternalConfig<C>
-  providers: any
-}
-
-export type InternalMethods<C extends AppConfig> = {
-  [key in keyof C['modules']]: C['modules'][key]['methods']
-}
-export type ExternalMethods<C extends AppConfig> = {
-  [key in keyof C['plugins']]: C['plugins'][key]['methods']
-}
-export type ManagerMethods<C extends AppConfig> = InternalMethods<C> & ExternalMethods<C>
-
-
-export type InternalDefinition<C extends AppConfig> = {
-  [key in keyof C['modules']]: Module<C['modules'][key]>
-}
-export type ExternalDefinition<C extends AppConfig> = {
-  [key in keyof C['plugins']]: Plugin<C['plugins'][key]>
-}
-export type ManagerDefinition<C extends AppConfig> = InternalDefinition<C> & ExternalDefinition<C>
-*/

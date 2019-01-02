@@ -65,11 +65,11 @@ export class RemixExtension {
     return this.origin
       ? this.origin === origin
       : [
-      "http://remix-alpha.ethereum.org",
-      "http://remix.ethereum.org",
-      "https://remix-alpha.ethereum.org",
-      "https://remix.ethereum.org"
-    ].includes(origin)
+        "http://remix-alpha.ethereum.org",
+        "http://remix.ethereum.org",
+        "https://remix-alpha.ethereum.org",
+        "https://remix.ethereum.org"
+      ].includes(origin)
   }
 
   /** Send a message to source parent */

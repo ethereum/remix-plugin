@@ -1,12 +1,17 @@
 import { AppManager } from '../src'
 
-import { CompilerProfile, CompilerApi } from '../examples/modules'
+import { CompilerProfile, CompilerApi, Compiler } from '../examples/modules'
 
-/* ---- TEST ---- */
+interface IAppManager {
+  modules: {
+    solCompiler: Compiler
+  }
+  plugins: {}
+}
 
 
 describe('Module', () => {
-  let app: AppManager
+  let app: AppManager<IAppManager>
   let api: CompilerApi
   beforeAll(() => {
     api = new CompilerApi()
@@ -14,9 +19,9 @@ describe('Module', () => {
       modules: [{ json: CompilerProfile, api }]
     })
   })
-  test('is added to app', () => expect(app[api.type]).toBeDefined())
+  test('is added to app', () => expect(app.calls[api.type]).toBeDefined())
   test('method is added to app', () => {
-    const lastCompilationResult = app[api.type].lastCompilationResult()
+    const lastCompilationResult = app.calls[api.type].lastCompilationResult()
     expect(lastCompilationResult).toEqual('compilation')
   })
 })

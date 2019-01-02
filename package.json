@@ -17,8 +17,11 @@
     "build": "tsc",
     "test": "jest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "events": "^3.0.0"
+  },
   "devDependencies": {
+    "@types/events": "^1.2.0",
     "@types/jest": "^23.3.9",
     "jest": "^23.6.0",
     "prettier": "^1.15.2",

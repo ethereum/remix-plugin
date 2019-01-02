@@ -16,16 +16,14 @@ export const UdappProfile: ModuleProfile<Udapp> = {
 }
 
 // API
-export class UdappApi extends API<Udapp> implements Udapp {
+export class UdappApi implements API<Udapp> {
+  public readonly type = 'udapp'
 
-  constructor() {
-    super('udapp')
-  }
 
   private doSomeCalculation(transaction: Transaction) {
-    // This method is not accessible part of the Profile
-    // You should not call it directly
-    // Here you would do some calculation.
+    // This method is not part of the UdappProfile.
+    // You should not call it directly.
+    // Here you would do some calculation for example.
   }
 
   public runTx(transaction: Transaction) {

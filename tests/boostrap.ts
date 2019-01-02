@@ -1,15 +1,25 @@
-import { Plugin, AppManager } from '../src'
-import { PluginManagerProfile, PluginManagerApi } from '../examples/modules'
+import { Plugin, AppManager, PluginProfile } from '../src'
+import { PluginManager, PluginManagerProfile, PluginManagerApi } from '../examples/modules'
+import { Ethdoc } from './../examples/plugins'
 
-const EthdocProfile = {
+const EthdocProfile: PluginProfile = {
   type: 'ethdoc',
   methods: ['getDoc'],
   url: ''
 }
 
+export interface IAppManager {
+  modules: {
+    pluginManager: PluginManager
+  }
+  plugins: {
+    ethdoc: Ethdoc
+  }
+}
+
 describe('Boostrap', () => {
-  let app: AppManager
-  let api: Plugin
+  let app: AppManager<IAppManager>
+  let api: Plugin<Ethdoc>
   let pluginManager: PluginManagerApi
   beforeAll(() => {
     pluginManager = new PluginManagerApi()
@@ -22,10 +32,9 @@ describe('Boostrap', () => {
       }
     })
   })
-  test('plugin should not be activated by default', () => expect(app[api.type]).toEqual({}))
+  test('plugin should not be activated by default', () => expect(app.calls.ethdoc).toEqual({}))
   test('pluginManager should activate plugin', () => {
-    console.log(app)
-    pluginManager.activate.emit(api.type)
-    expect(app[api.type]['getDoc']).toBeDefined()
+    pluginManager.events.emit('activate', api.type)
+    expect(app.calls.ethdoc['getDoc']).toBeDefined()
   })
 })
