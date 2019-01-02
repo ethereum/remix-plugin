@@ -1,1 +1,1 @@
-export * from './hello-world.plugin'
+export * from './ethdoc'
