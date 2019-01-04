@@ -83,7 +83,9 @@ export class AppManager<T extends IAppManager> {
 
     const methods = json.methods || []
     methods.forEach(key => {
-      if (key in api) this.calls[api.type as string][key] = api[key]
+      if (key in api) {
+        this.calls[api.type as string][key] = (...args: any[]) => (api[key] as any)(...args)
+      }
     })
   }
 
