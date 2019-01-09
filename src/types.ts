@@ -95,7 +95,7 @@ export type AppCalls<T extends IAppManager> = {
 
 /** The data needed by the AppManager to add a module */
 export interface ModuleEntry<T extends Api> {
-  json: ModuleProfile<T>
+  profile: ModuleProfile<T>
   api: API<T>
 }
 

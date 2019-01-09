@@ -2,58 +2,175 @@ import {
   PluginProfile,
   ModuleProfile,
   API,
-  IAppManager,
-  ModuleStore,
   EventListeners,
-  AppCalls,
   Api,
-  ModuleList
+  ApiEventEmitter,
+  ModuleEntry
 } from '../types'
-import { Plugin, PluginList, PluginStore } from './plugin'
+import { Plugin } from './plugin'
+import { EventEmitter } from 'events'
 
+interface AppManager extends Api {
+  type: 'appManager',
+  events: {
+    register: string
+    activate: {profile: ModuleProfile<any>, api: API<any>},
+    deactivate: ModuleProfile
+  }
+  registerMany(entry: ModuleEntry<any>[]): void
+  registerMany(entry: ModuleEntry<any>[]): void
+  registerOne<T extends Api>(entry: ModuleEntry<T>): void
+  registerOne<T extends Api>(entry: ModuleEntry<T>): void
+  activateMany(types: string[]): void
+  deactivateMany(types: string[]): void
+  activateOne(type: string): void
+  deactivateOne(type: string): void
+}
 
-/**
- * The main entry point of the module/plugin architecture.
- * It manages events plugins <-> plugins and modules <-> plugins.
- * It can listen on plugin activation events with option 'boostrap'
- */
-export class AppManager<T extends IAppManager> {
-  private modules: ModuleStore<T['modules']>
-  private plugins: PluginStore<T['plugins']>
-  public events: EventListeners = {}
-  public calls: AppCalls<T> = {} as AppCalls<T>
+abstract class AppManagerApi implements API<AppManager> {
 
-  constructor(dependencies: {
-    modules?: ModuleList<T['modules']>
-    plugins?: PluginList<T['plugins']>
-    options?: {
-      /** Listen on plugin activation event from the module which type is the value of boostrap */
-      boostrap: string
-    }
-  }) {
-    // Modules
-    const modules = dependencies.modules || []
-    this.modules = modules.reduce((acc, { json, api }) => {
-      this.calls[api.type] = {} as any
-      this.activateApi(json, api) // Activate module automaticaly
-      return { ...acc, [json.type]: { json, api } }
-    }, {}) as ModuleStore<T['modules']>
-
-    // Plugins
-    const plugins = dependencies.plugins || []
-    this.plugins = plugins.reduce((acc, { json, api }) => {
-      this.calls[api.type] = {}
-      return { ...acc, [json.type]: { json, api } }
-    }, {}) as PluginStore<T['plugins']>
-
-    // bootstrap
-    if (dependencies.options && dependencies.options.boostrap) {
-      const { api } = this.modules[dependencies.options.boostrap]
-      if (!api.events) return
-      api.events.on('activate', (type: string) => this.activate(type))
-      api.events.on('deactivate', (type: string) => this.deactivate(type))
+  private eventmanager: EventListeners = {}
+  private calls: {
+    [type: string]: {
+      [key: string]: Function
     }
   }
+
+  /** Map module types with your implementation of this map */
+  protected mapNames: { [type: string]: string }
+
+  public readonly type = 'appManager'
+  public events: ApiEventEmitter<AppManager> = new EventEmitter()
+
+  //////////////
+  // ABSTRACT //
+  //////////////
+
+  /** Method to implement: get a module from the state of the application */
+  abstract getModule<T extends Api>(id: string): ModuleEntry<T>
+
+  /** Method to implement: Should add the plugin or module to the state of the application */
+  abstract addModule<T extends Api>(module: ModuleEntry<T>)
+
+  /////////////
+  // HELPERS //
+  /////////////
+
+  /** Safe method to get the type of a module in a specific implementation */
+  private getType(type: string): string {
+    return this.mapNames[type] || type
+  }
+
+  /** Check if profile is a plugin */
+  private isPlugin(profile: ModuleProfile): profile is PluginProfile {
+    return profile['url']
+  }
+
+  //////////////
+  // REGISTRY //
+  //////////////
+
+  /** Register many Modules or Plugins and activate them */
+  public init(entries: ModuleEntry<any>[]) {
+    entries.forEach(entry => {
+      this.registerOne(entry)
+      this.activateOne(entry.profile.type)
+    })
+  }
+
+  /** Register many Modules or Plugins */
+  public registerMany(entries: ModuleEntry<any>[]) {
+    entries.forEach(entry => this.registerOne(entry))
+  }
+
+  /** Register on Module or Plugin */
+  public registerOne<T extends Api>(entry: ModuleEntry<T>) {
+    this.addModule(entry)
+    this.events.emit('register', entry.profile.type)
+  }
+
+  ////////////////
+  // ACTIVATION //
+  ////////////////
+
+  /** Activate several modules or plugins */
+  public activateMany(types: string[]) {
+    types.forEach(type => this.activateOne(type))
+  }
+
+  /** Activate a module or plugin */
+  public activateOne(type: string) {
+    const id = this.getType(type)
+    const { profile, api } = this.getModule(id)
+    this.activateCallAndEvent(profile, api)
+    if (this.isPlugin(profile)) {
+      this.activateRequestAndNotification(profile, api as Plugin<any>)
+    }
+    if (api.activate) {
+      api.activate()
+    }
+    this.events.emit('activate', { profile, api })
+  }
+
+  /** Activation for Module and Plugin */
+  private activateCallAndEvent(profile: ModuleProfile, api: API<any>) {
+    const events = profile.events || []
+    events.forEach(event => {
+      if (!api.events) return
+      api.events.on(event, (value: any) => this.broadcast(api.type, event as string, value))
+    })
+
+    const methods = profile.methods || []
+    methods.forEach((key) => {
+      if (key in api) {
+        this.calls[api.type][key] = (...args: any[]) => (api[key] as any)(...args)
+      }
+    })
+  }
+
+  /** Activation for Plugin only */
+  private activateRequestAndNotification(json: PluginProfile, api: Plugin<any>) {
+    api.request = ({ type, key, value }) => this.calls[type][key](value)
+
+    const notifications = json.notifications || []
+    notifications.forEach(({ type, key }) => {
+      const origin = api.type
+      if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
+      if (!this.eventmanager[origin][type]) this.eventmanager[origin][type] = {}
+      this.eventmanager[origin][type][key] = api.notifs[type][key]
+    })
+  }
+
+  //////////////////
+  // DEACTIVATION //
+  //////////////////
+
+  /** Deactivate several modules or plugins */
+  public deactivateMany(types: string[]) {
+    types.forEach(type => this.deactivateOne(type))
+  }
+
+  /** Deactivate a module or plugin */
+  public deactivateOne(type: string) {
+    const id = this.getType(type)
+    const { profile, api } = this.getModule(id)
+    this.deactivateProfile(profile)
+    // if (api.events) api.events.removeAllListeners()
+    if (api.deactivate) api.deactivate()
+    this.events.emit('deactivate', profile)
+  }
+
+  /** Deactivation for modules and plugins */
+  private deactivateProfile(profile: ModuleProfile) {
+    this.calls[profile.type] = {} as any
+
+    const methods = profile.methods || []
+    methods.forEach(key => delete this[profile.type][key])
+  }
+
+  ////////////////////
+  // EVENTS MANAGER //
+  ////////////////////
 
   /** Broadcast a message to every plugin listening */
   private broadcast<M extends Api, E extends keyof M['events']>(
@@ -61,109 +178,11 @@ export class AppManager<T extends IAppManager> {
     key: E,
     value: M['events'][E]
   ) {
-    for (const origin in this.events) {
-      if (this.events[origin][type]) {
-        const destination = this.events[origin][type]
+    for (const origin in this.eventmanager) {
+      if (this.eventmanager[origin][type]) {
+        const destination = this.eventmanager[origin][type]
         if (destination[key]) destination[key](value)
       }
-    }
-  }
-
-  /**************************/
-  /* ----- ACTIVATION ----- */
-  /**************************/
-
-  /** Add an api to the AppModule */
-  private activateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
-    const events = json.events || []
-    events.forEach(event => {
-      if (!api.events) return
-      api.events.on(event, (value: any) => this.broadcast(api.type, event, value))
-    })
-
-    const methods = json.methods || []
-    methods.forEach(key => {
-      if (key in api) {
-        this.calls[api.type as string][key] = (...args: any[]) => (api[key] as any)(...args)
-      }
-    })
-  }
-
-  /** Activate Plugin */
-  private activateRequestAndNotifications<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
-    api.request = ({ type, key, value }) => this.calls[type][key](value)
-
-    const notifications = json.notifications || []
-    notifications.forEach(({ type, key }) => {
-      const origin = api.type
-      if (!this.events[origin]) this.events[origin] = {}
-      if (!this.events[origin][type]) this.events[origin][type] = {}
-      this.events[origin][type][key] = api.notifs[type][key]
-    })
-  }
-
-  /** Activate a plugin or module */
-  public activate<M extends Api>(type: M['type']) {
-    if (!this.plugins[type] && !this.modules[type]) {
-      throw new Error(`Module or Plugin ${type} is not registered yet`)
-    }
-    // If type is registered as a plugin
-    if (this.plugins[type]) {
-      const { json, api } = this.plugins[type]
-      this.activateApi<M>(json as any, api as any)
-      this.activateRequestAndNotifications<M>(json as any, api as any)
-      api.activate()
-    }
-    // If type is registered as a module
-    if (this.modules[type]) {
-      const { json, api } = this.modules[type]
-      this.activateApi<M>(json as any, api as any)
-      if (api.activate) api.activate()
-    }
-  }
-
-  /****************************/
-  /* ----- DEACTIVATION ----- */
-  /****************************/
-
-  /** Deactivate a module's api from the AppModule */
-  private deactivateApi<M extends Api>(json: ModuleProfile<M>, api: API<M>) {
-    this.calls[api.type] = {} as any
-    if (api.events) api.events.removeAllListeners()
-
-    const methods = json.methods || []
-    methods.forEach(key => {
-      if (key in api) delete this[api.type as string][key]
-    })
-  }
-
-  /** Deactivate Plugin */
-  private deactivateRequestAndNotifications<M extends Api>(json: PluginProfile<M>, api: Plugin<M>) {
-    delete api.request
-
-    const notifications = json.notifications || []
-    notifications.forEach(({ type, key }) => {
-      if (!this.events[api.type]) this.events[api.type] = {}
-      if (!this.events[api.type][type]) this.events[api.type][type] = {}
-      delete this.events[api.type][type][key]
-    })
-  }
-
-  /** Deactivate a plugin or module */
-  public deactivate<M extends Api>(type: M['type']) {
-    if (!this.plugins[type] && !this.modules[type]) {
-      throw new Error(`Module or Plugin ${type} is not registered yet`)
-    }
-    if (this.plugins[type]) {
-      const { json, api } = this.plugins[type]
-      this.deactivateApi<M>(json as any, api as any)
-      this.deactivateRequestAndNotifications<M>(json as any, api as any)
-      api.deactivate()
-    }
-    if (this.modules[type]) {
-      const { json, api } = this.modules[type]
-      this.deactivateApi<M>(json as any, api as any)
-      if (api.deactivate) api.deactivate()
     }
   }
 }
