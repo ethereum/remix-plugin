@@ -1,4 +1,4 @@
-import { Message, EventMessage, Api } from '../types'
+import { Message, Api } from '../types'
 
 export class RemixExtension<T extends Api> {
   private source: Window
@@ -105,10 +105,6 @@ export class RemixExtension<T extends Api> {
 
   /** Emit an event */
   public emit<Key extends keyof T['events'] & string>(key: Key, value: T['events'][Key]) {
-    this.send({
-      action: 'notification',
-      key,
-      value
-    })
+    this.send({ action: 'notification', key, value })
   }
 }
