@@ -7,12 +7,12 @@ export class RemixAppManager extends AppManagerApi {
   }
 
   // Get the module from the component state
-  public getModule<T extends Api>(id: string): ModuleEntry<T> {
+  public getEntity<T extends Api>(id: string): ModuleEntry<T> {
     return this.component.get<T>(id)
   }
 
   // Add the module to the component state
-  public addModule<T extends Api>(entry: ModuleEntry<T>) {
+  public addEntity<T extends Api>(entry: ModuleEntry<T>) {
     this.component.add(entry)
   }
 

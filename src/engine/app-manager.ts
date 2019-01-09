@@ -47,10 +47,10 @@ export abstract class AppManagerApi implements API<AppManager> {
   //////////////
 
   /** Method to implement: get a module from the state of the application */
-  abstract getModule<T extends Api>(id: string): ModuleEntry<T>
+  abstract getEntity<T extends Api>(id: string): ModuleEntry<T>
 
   /** Method to implement: Should add the plugin or module to the state of the application */
-  abstract addModule<T extends Api>(module: ModuleEntry<T>)
+  abstract addEntity<T extends Api>(module: ModuleEntry<T>): void
 
   /////////////
   // HELPERS //
@@ -85,7 +85,7 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Register on Module or Plugin */
   public registerOne<T extends Api>(entry: ModuleEntry<T>) {
-    this.addModule(entry)
+    this.addEntity(entry)
     this.events.emit('register', entry.profile.type)
   }
 
@@ -101,7 +101,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Activate a module or plugin */
   public activateOne(type: string) {
     const id = this.getType(type)
-    const { profile, api } = this.getModule(id)
+    const { profile, api } = this.getEntity(id)
     this.activateCallAndEvent(profile, api)
     if (this.isPlugin(profile)) {
       this.activateRequestAndNotification(profile, api as Plugin<any>)
@@ -153,7 +153,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Deactivate a module or plugin */
   public deactivateOne(type: string) {
     const id = this.getType(type)
-    const { profile, api } = this.getModule(id)
+    const { profile, api } = this.getEntity(id)
     this.deactivateProfile(profile)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
