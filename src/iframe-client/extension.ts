@@ -13,7 +13,7 @@ export class RemixExtension<T extends Api> {
   }
   private id: number
 
-  constructor(private type: T['type']) {
+  constructor() {
     this.notifications = {}
     this.pendingRequests = {}
     this.id = 0
@@ -73,7 +73,7 @@ export class RemixExtension<T extends Api> {
   }
 
   /** Send a message to source parent */
-  private send(message: Message | EventMessage) {
+  private send(message: Partial<Message>) {
     this.source.postMessage(JSON.stringify(message), this.origin)
   }
 
@@ -107,7 +107,6 @@ export class RemixExtension<T extends Api> {
   public emit<Key extends keyof T['events'] & string>(key: Key, value: T['events'][Key]) {
     this.send({
       action: 'notification',
-      type: this.type,
       key,
       value
     })
