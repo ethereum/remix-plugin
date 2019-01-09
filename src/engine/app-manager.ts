@@ -10,7 +10,7 @@ import {
 import { Plugin } from './plugin'
 import { EventEmitter } from 'events'
 
-interface AppManager extends Api {
+export interface AppManager extends Api {
   type: 'appManager',
   events: {
     register: string
@@ -27,7 +27,7 @@ interface AppManager extends Api {
   deactivateOne(type: string): void
 }
 
-abstract class AppManagerApi implements API<AppManager> {
+export abstract class AppManagerApi implements API<AppManager> {
 
   private eventmanager: EventListeners = {}
   private calls: {
