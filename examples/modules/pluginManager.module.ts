@@ -4,7 +4,7 @@ import { EventEmitter} from 'events'
 /*
 // Type
 export interface PluginManager extends Api {
-  type: 'pluginManager'
+  name: 'pluginManager'
   events: {
     activate: string,
     deactivate: string
@@ -13,13 +13,13 @@ export interface PluginManager extends Api {
 
 // Profile
 export const PluginManagerProfile: ModuleProfile<PluginManager> = {
-  type: 'pluginManager',
+  name: 'pluginManager',
   events: ['activate', 'deactivate']
 }
 
 // API
 export class PluginManagerApi implements API<PluginManager> {
-  public readonly type = 'pluginManager'
+  public readonly name = 'pluginManager'
   public events: ApiEventEmitter<PluginManager> = new EventEmitter()
 }
 */

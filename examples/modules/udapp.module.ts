@@ -3,7 +3,7 @@ import { Transaction } from './types'
 
 // Type
 export interface Udapp extends Api {
-  type: 'udapp'
+  name: 'udapp'
   runTx(transaction: Transaction): void,
   getAccounts(): string
   createVMAccount(newAccount: {privateKey: string, balance: number}): string
@@ -11,13 +11,13 @@ export interface Udapp extends Api {
 
 // Profile
 export const UdappProfile: ModuleProfile<Udapp> = {
-  type: 'udapp',
+  name: 'udapp',
   methods: ['runTx', 'getAccounts', 'createVMAccount']
 }
 
 // API
 export class UdappApi implements API<Udapp> {
-  public readonly type = 'udapp'
+  public readonly name = 'udapp'
 
 
   private doSomeCalculation(transaction: Transaction) {

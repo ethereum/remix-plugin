@@ -1,9 +1,9 @@
 export type Factory = (...deps: any[]) => any
 
 export class InjectorFactory {
-  static create(type: string, deps: string[], useFactory: Factory) {
+  static create(name: string, deps: string[], useFactory: Factory) {
     const injector = Injector
-    injector.type = type
+    injector.entryName = name
     injector.deps = deps
     injector.useFactory = useFactory
     return injector
@@ -11,7 +11,7 @@ export class InjectorFactory {
 }
 
 export class Injector {
-  public static type: string
+  public static entryName: string
   public static deps: string[]
   public static useFactory: Factory
 
@@ -22,7 +22,7 @@ export class Injector {
 }
 
 interface ModuleConfig {
-  type: string
+  name: string
   deps: string[]
 }
 
@@ -37,7 +37,7 @@ interface OnDeactivate {
 export function Module(config: ModuleConfig) {
   return function<T extends typeof Injector>(constructor: T) {
     return class extends constructor {
-      static type = config.type
+      static entryName = config.name
       static deps = config.deps
       static useFactory = (...deps) => new constructor(...deps)
 
@@ -84,24 +84,24 @@ export class AppManager {
   }
 
   private addModules(injectors) {
-    const types: InjectorMap = {}
+    const names: InjectorMap = {}
     injectors.forEach(injector => addInjector(injector))
 
     function addInjector(injector: typeof Injector) {
-      if (types[injector.type]) return
+      if (names[injector.name]) return
       injector.deps.forEach(dep => {
         const depModule = findInjector(dep)
         if (!depModule) return
         addInjector(depModule)
       })
-      const deps = injector.deps.map(dep => types[dep])
-      types[injector.type] = injector.useFactory(...deps)
+      const deps = injector.deps.map(dep => names[dep])
+      names[injector.name] = injector.useFactory(...deps)
     }
 
-    function findInjector(type: string) {
-      return injectors.find(module => module.type === type)
+    function findInjector(name: string) {
+      return injectors.find(module => module.name === name)
     }
-    return types
+    return names
   }
 
 }

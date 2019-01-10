@@ -3,7 +3,7 @@ import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 import { Ethdoc } from './../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
-  type: 'ethdoc',
+  name: 'ethdoc',
   methods: ['getDoc'],
   url: 'some-url'
 }
@@ -19,13 +19,13 @@ describe('Boostrap', () => {
     app.registerOne<Ethdoc>({ profile: EthdocProfile, api })
   })
   test('Plugin Entity should be registered', () => {
-    expect(app.getEntity(EthdocProfile.type)).toEqual({ profile: EthdocProfile, api })
+    expect(app.getEntity(EthdocProfile.name)).toEqual({ profile: EthdocProfile, api })
   })
   test('Plugin Entity method should not be available before activation', () => {
-    expect(app['calls'][EthdocProfile.type]).toBeUndefined()
+    expect(app['calls'][EthdocProfile.name]).toBeUndefined()
   })
   test('pluginManager should activate plugin', () => {
-    app.activateOne(EthdocProfile.type)
-    expect(app['calls'][EthdocProfile.type]['getDoc']).toBeDefined()
+    app.activateOne(EthdocProfile.name)
+    expect(app['calls'][EthdocProfile.name]['getDoc']).toBeDefined()
   })
 })

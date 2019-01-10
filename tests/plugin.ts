@@ -3,7 +3,7 @@ import { Ethdoc } from './../examples/plugins'
 import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
-  type: 'ethdoc',
+  name: 'ethdoc',
   methods: ['getDoc'],
   url: 'some-url'
 }
@@ -19,9 +19,9 @@ describe('Plugin', () => {
     app.init([{ profile: EthdocProfile, api }])
   })
   test('is added to app', () => {
-    expect(app['calls'][api.type]).toBeDefined()
+    expect(app['calls'][api.name]).toBeDefined()
   })
   test('method is added to app', () => {
-    expect(app['calls'][api.type]['getDoc']).toBeDefined()
+    expect(app['calls'][api.name]['getDoc']).toBeDefined()
   })
 })

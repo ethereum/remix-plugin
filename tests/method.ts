@@ -9,7 +9,7 @@ import {
 import { Ethdoc } from './../examples/plugins/ethdoc'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
-  type: 'ethdoc',
+  name: 'ethdoc',
   methods: ['getDoc'],
   url: 'some-url'
 }
@@ -40,8 +40,8 @@ describe('Method', () => {
   })
 
   test('call a method from plugin api', () => {
-    const spy = spyOn(app['calls'][ResolverProfile.type], 'getFile')
-    plugin.request({ type: module.type, key: 'getFile', value: 'Ballot.sol' })
+    const spy = spyOn(app['calls'][ResolverProfile.name], 'getFile')
+    plugin.request({ name: module.name, key: 'getFile', value: 'Ballot.sol' })
     expect(spy).toBeCalledWith('Ballot.sol')
   })
 })

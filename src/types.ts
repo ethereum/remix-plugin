@@ -3,7 +3,7 @@ import { Plugin } from './engine/plugin'
 export type ExtractKey<T, U> =  { [K in keyof T]: T[K] extends U ? K : never }[keyof T]
 
 export interface Api {
-  type: string
+  name: string
   events: {
     [key: string]: any
   }
@@ -14,18 +14,18 @@ export type ApiListener<T> = (arg: T) => void
 /** Override the EventEmitter type to take into account the Api */
 export interface ApiEventEmitter<T extends Api> {
   setMaxListeners(n: number): this
-  emit<K extends keyof T['events']>(type: K, arg: T['events'][K]): boolean
-  addListener<K extends keyof T['events']>(type: K, listener: ApiListener<T['events'][K]>): this
-  on<K extends keyof T['events']>(type: K, listener: ApiListener<T['events'][K]>): this
-  once<K extends keyof T['events']>(type: K, listener: ApiListener<T['events'][K]>): this
-  removeListener<K extends keyof T['events']>(type: K, listener: ApiListener<T['events'][K]>): this
-  removeAllListeners<K extends keyof T['events']>(type?: K): this
-  listeners<K extends keyof T['events']>(type: K): ApiListener<T['events'][K]>[]
-  listenerCount<K extends keyof T['events']>(type: K): number
+  emit<K extends keyof T['events']>(name: K, arg: T['events'][K]): boolean
+  addListener<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
+  on<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
+  once<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
+  removeListener<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
+  removeAllListeners<K extends keyof T['events']>(name?: K): this
+  listeners<K extends keyof T['events']>(name: K): ApiListener<T['events'][K]>[]
+  listenerCount<K extends keyof T['events']>(name: K): number
 }
 
 export type API<T extends Api> = {
-  type: T['type']
+  name: T['name']
   events?: ApiEventEmitter<T>
   activate?(): void
   deactivate?(): void
@@ -34,15 +34,15 @@ export type API<T extends Api> = {
 }
 
 export interface ModuleProfile<T extends Api = any> {
-  type: T['type']
+  name: T['name']
   methods?: ExtractKey<T, Function>[]
   events?: (keyof T['events'])[]
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
-  notifications?: { type: string; key: string }[]
+  notifications?: { name: string; key: string }[]
   url: string
-  loadIn?: { type: string; key: string } // The module used to load the iframe in
+  loadIn?: { name: string; key: string } // The module used to load the iframe in
 }
 
 /* ---- MESSAGES ---- */
@@ -51,7 +51,7 @@ export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
 export interface Message {
   id: number
   action: 'notification' | 'request' | 'response'
-  type: string
+  name: string
   key: string
   value: any
   error?: Error
@@ -59,7 +59,7 @@ export interface Message {
 
 /** A specific message that manage event */
 export interface EventMessage {
-  type: string
+  name: string
   key: string
   value: any
 }
@@ -68,17 +68,17 @@ export interface EventMessage {
 
 export interface IAppManager {
   modules: {
-    [type: string]: Api
+    [name: string]: Api
   }
   plugins: {
-    [type: string]: Api
+    [name: string]: Api
   }
 }
 
 /** the list of  */
 export interface EventListeners {
   [origin: string]: {
-    [type: string]: {
+    [name: string]: {
       [key: string]: (value: any) => void
     }
   }
@@ -86,12 +86,12 @@ export interface EventListeners {
 
 /** List of calls methods inside an AppManager */
 export type AppCalls<T extends IAppManager> = {
-  [type in (keyof T['modules'] | keyof T['plugins'])]: T['modules'][type] extends undefined
+  [name in (keyof T['modules'] | keyof T['plugins'])]: T['modules'][name] extends undefined
   ? {
-    [key in ExtractKey<T['plugins'][type], Function>]: T['plugins'][type][key]
+    [key in ExtractKey<T['plugins'][name], Function>]: T['plugins'][name][key]
   }
   : {
-    [key in ExtractKey<T['modules'][type], Function>]: T['modules'][type][key]
+    [key in ExtractKey<T['modules'][name], Function>]: T['modules'][name][key]
   }
 }
 
@@ -109,22 +109,22 @@ export interface PluginEntry<T extends Api> {
 export type Entry<T extends Api> = ModuleEntry<T> | PluginEntry<T>
 
 /** A list of module entries */
-export type ModuleList<T extends { [type: string]: Api }> = Entry<T[keyof T]>[]
+export type ModuleList<T extends { [name: string]: Api }> = Entry<T[keyof T]>[]
 
 /** A map of module entries depending on the type of the module */
-export type ModuleStore<T extends { [type: string]: Api }> = {
-  [type in keyof T]: Entry<T[type]>
+export type ModuleStore<T extends { [name: string]: Api }> = {
+  [name in keyof T]: Entry<T[name]>
 }
 
 /* ---- IFRAME ---- */
 /** An Api for plugin that add notifications */
 export interface PluginApi<App extends IAppManager> extends Api {
   notifications: {
-    [type in keyof App['modules']]: Notifications<App['modules'][type]>
+    [name in keyof App['modules']]: Notifications<App['modules'][name]>
   }
 }
 
-/** The name of the event and it's type */
+/** The name of the event and it's name */
 export type Notifications<T extends Api> = {
   [key in keyof T['events']]: T['events'][key]
 }

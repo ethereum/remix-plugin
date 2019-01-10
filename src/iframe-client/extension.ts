@@ -4,7 +4,7 @@ export class RemixExtension<T extends Api> {
   private source: Window
   private origin: string
   private notifications: {
-    [type: string]: {
+    [name: string]: {
       [key: string]: (value: any) => void
     }
   }
@@ -28,7 +28,7 @@ export class RemixExtension<T extends Api> {
     const msg = JSON.parse(event.data) as Message
     if (!msg) return
 
-    const { action, key, type, value, id, error } = msg
+    const { action, key, name, value, id, error } = msg
     try {
 
       if (action === 'request' && key === 'handshake') {
@@ -39,8 +39,8 @@ export class RemixExtension<T extends Api> {
       if (!this.source) throw new Error('Handshake before communicating')
 
       if (action === 'notification') {
-        if (this.notifications[key] && this.notifications[key][type]) {
-          this.notifications[key][type](value)
+        if (this.notifications[key] && this.notifications[key][name]) {
+          this.notifications[key][name](value)
         }
       } else if (action === 'response') {
         if (this.pendingRequests[id]) {
@@ -49,12 +49,12 @@ export class RemixExtension<T extends Api> {
         }
       } else if (action === 'request') {
         if (!this[key]) {
-          throw new Error(`Method ${key} doesn't exist on ${type}`)
+          throw new Error(`Method ${key} doesn't exist on ${name}`)
         }
-        this.send({action, type, key, id, value: this[key](value)})
+        this.send({action, name, key, id, value: this[key](value)})
       }
     } catch (err) {
-      const message = { action, type, key, id, error: err.error };
+      const message = { action, name, key, id, error: err.error };
       (<Window>event.source).postMessage(JSON.stringify(message), event.origin)
     }
 
@@ -79,21 +79,21 @@ export class RemixExtension<T extends Api> {
 
   /** Listen on notification events from another plugin or module */
   protected listen(
-    type: string,
+    name: string,
     key: string,
     cb: (value: any) => void,
   ) {
-    if (!this.notifications[type]) {
-      this.notifications[type] = {}
+    if (!this.notifications[name]) {
+      this.notifications[name] = {}
     }
-    this.notifications[type][key] = cb
+    this.notifications[name][key] = cb
   }
 
   /** Call a method from another plugin or module */
-  protected call(type: string, key: string, value: any): Promise<any> {
+  protected call(name: string, key: string, value: any): Promise<any> {
     const action = 'request'
     const id = this.id++
-    const message = JSON.stringify({ action, type, key, value, id })
+    const message = JSON.stringify({ action, name, key, value, id })
     this.source.postMessage(message, '*')
     return new Promise((res, rej) => {
       this.pendingRequests[this.id] = (result: any, error?: Error) => {

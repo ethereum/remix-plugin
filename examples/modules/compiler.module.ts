@@ -3,7 +3,7 @@ import { EventEmitter } from 'events'
 
 // Type
 export interface Compiler extends Api {
-  type: 'solCompiler'
+  name: 'solCompiler'
   events: {
     compilationFinished: { success: boolean; data: any; source: any }
   }
@@ -12,14 +12,14 @@ export interface Compiler extends Api {
 
 // Profile
 export const CompilerProfile: ModuleProfile<Compiler> = {
-  type: 'solCompiler',
+  name: 'solCompiler',
   methods: ['lastCompilationResult'],
   events: ['compilationFinished']
 }
 
 // API
 export class CompilerApi implements API<Compiler> {
-  public readonly type = 'solCompiler'
+  public readonly name = 'solCompiler'
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
 
   constructor() {}

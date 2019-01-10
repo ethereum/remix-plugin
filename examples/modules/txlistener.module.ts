@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 
 // Type
 export interface Txlistener extends Api {
-  type: 'txlistener'
+  name: 'txlistener'
   events: {
     newTransaction: Transaction
   }
@@ -12,13 +12,13 @@ export interface Txlistener extends Api {
 
 // Profile
 export const TxlistenerProfile: ModuleProfile<Txlistener> = {
-  type: 'txlistener',
+  name: 'txlistener',
   events: ['newTransaction']
 }
 
 // API
 export class TxlistenerApi implements API<Txlistener> {
-  public readonly type = 'txlistener'
+  public readonly name = 'txlistener'
   public events: ApiEventEmitter<Txlistener> = new EventEmitter()
 
   // In this implementation of the API, Txlistener depends on an external class

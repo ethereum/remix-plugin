@@ -35,8 +35,8 @@ export class PluginManagerComponent {
   }
 
   public add<T extends Api>({profile, api}: Entry<T>) {
-    this.state.ids.push(profile.type)
-    this.state.entities[profile.type] = {profile, api} as Entry<T>
+    this.state.ids.push(profile.name)
+    this.state.entities[profile.name] = {profile, api} as Entry<T>
   }
 
   public get<T extends Api>(id: string) {
