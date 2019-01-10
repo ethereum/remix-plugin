@@ -18,7 +18,7 @@ If you're building a module for your own IDE, you just have to add :
 ### Api Interface (**Typescript Only**)
 ```typescript
 export interface Compiler extends Api {
-  type: 'solCompiler'
+  name: 'solCompiler'
   events: {
     compilationFinished: { success: boolean; data: any; source: any }
   }
@@ -33,20 +33,20 @@ export interface Compiler extends Api {
 ### Profile
 ```typescript
 export const CompilerProfile: ModuleProfile<Compiler> = {
-  type: 'solCompiler',
+  name: 'solCompiler',
   methods: ['lastCompilationResult'],
   events: ['compilationFinished']
 }
 ```
 
-- `type`: The name of the module.
+- `name`: The name of the module.
 - `methods`: An array with the names of the methods exposed.
 - `events`: An array with the names of the events exposed.
 
 ### API
 ```typescript
 export class CompilerApi implements API<Compiler> {
-  public readonly type = 'solCompiler'
+  public readonly name = 'solCompiler'
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
 
   constructor(private compiler) {}
@@ -58,7 +58,7 @@ export class CompilerApi implements API<Compiler> {
 }
 ```
 
-- `type`: Readonly name of the module.
+- `name`: Readonly name of the module.
 - `events`: A node.js `EventEmitter` based on this [library](https://www.npmjs.com/package/events). The `ApiEventEmitter` is an helper to get the name and types of the events.
 - `private compiler`: This is your implementation of the module.
 - `lastCompilationResult`: This method can be called by other modules and plugins.
@@ -70,7 +70,7 @@ In this example the implementation of the module uses `rxjs` to deal with events
 ```typescript
 export class CompilerApi implements API<Compiler> {
   private isActivated = true
-  public readonly type = 'solCompiler'
+  public readonly name = 'solCompiler'
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
 
   constructor(private compiler) {}
@@ -101,9 +101,64 @@ You can find example of modules here :
 - [Udapp](./examples/modules/udapp.module.ts)
 - [Plugin Manager](./examples/modules/plugManager.module.ts): Module that manage activation and deactivation of the plugins.
 
+
 ### Overview
 ![Module Overview](./doc/imgs/module.png "Module Achitecture")
 
 ## Build a Plugin
 
-## AppManager
+## AppManager : Module interaction
+Modules and Plugins interact with each other thanks to an `AppManager`. It keeps a record of all the Modules and Plugins and broadcast events coming from them.
+
+### Extends AppManager
+`AppManager` is an `abstract` class, so you need to extends it and implements the methods: 
+- `addEntity(entry)`: Stores an entry (plugin or module) into the record of your choice.
+- `getEntity(name)`: Returns an entry based on it's name.
+
+An `entry` is an object with the key `profile` and `api` : 
+```typescript
+const compilerEntry: Entry<Compiler> = {
+  profile: CompilerProfile,	// The profile of the module or plugin
+  api: new CompilerApi(),   // The Api of the module or plugin
+}
+```
+
+Here is a simple example using a mapping to store the entries : 
+```typescript
+class MyAppManager extends AppManager {
+  private state = {}
+
+  addEntity(entry: Entry) {
+    this.state[entry.profile.name] = entry
+  }
+
+  getEntity(name: string) {
+    return this.state[name]
+  }
+}
+```
+
+### Register your Entries
+`AppManager` exposes three methods : 
+1. `registerOne` or `registerMany`:
+```typescript
+const app = new MyAppManager()
+app.registerOne(compilerEntry)
+```
+> Add the entry to the state but doesn't listen on events.
+
+2. `activateOne` or `activateMany`:
+```typescript
+const app = new MyAppManager()
+app.activateOne('solCompiler')
+```
+> Listen on events coming from the module / plugin, if it's already registered.
+
+3. `init`
+```typescript
+const app = new MyAppManager()
+app.init(['solCompiler'])
+```
+> Register and activate the module / plugin. 
+
+Check the [full example](./examples/full/0-starter.ts).

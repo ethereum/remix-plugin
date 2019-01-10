@@ -43,10 +43,10 @@ export abstract class AppManagerApi implements API<AppManager> {
   //////////////
 
   /** Method to implement: get a module from the state of the application */
-  abstract getEntity<T extends Api>(id: string): Entry<T>
+  abstract getEntity<T extends Api>(name: string): Entry<T>
 
   /** Method to implement: Should add the plugin or module to the state of the application */
-  abstract addEntity<T extends Api>(module: Entry<T>): void
+  abstract addEntity<T extends Api>(entry: Entry<T>): void
 
   /////////////
   // HELPERS //
