@@ -1,6 +1,7 @@
 import { ModuleProfile, Api, API, ApiEventEmitter } from '../../src'
 import { EventEmitter} from 'events'
 
+/*
 // Type
 export interface PluginManager extends Api {
   type: 'pluginManager'
@@ -21,3 +22,4 @@ export class PluginManagerApi implements API<PluginManager> {
   public readonly type = 'pluginManager'
   public events: ApiEventEmitter<PluginManager> = new EventEmitter()
 }
+*/
