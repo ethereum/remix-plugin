@@ -1,6 +1,6 @@
-import { Message } from './types'
+import { Message, Api } from '../types'
 
-export class RemixExtension {
+export class RemixExtension<T extends Api> {
   private source: Window
   private origin: string
   private notifications: {
@@ -51,7 +51,7 @@ export class RemixExtension {
         if (!this[key]) {
           throw new Error(`Method ${key} doesn't exist on ${type}`)
         }
-        this.send({action, type, key, id}, this[key](value))
+        this.send({action, type, key, id, value: this[key](value)})
       }
     } catch (err) {
       const message = { action, type, key, id, error: err.error };
@@ -73,12 +73,12 @@ export class RemixExtension {
   }
 
   /** Send a message to source parent */
-  private send({action, type, key, id}: any, value: any) {
-    const msg = {action, type, key, value, id}
-    this.source.postMessage(JSON.stringify(msg), this.origin)
+  private send(message: Partial<Message>) {
+    this.source.postMessage(JSON.stringify(message), this.origin)
   }
 
-  public listen(
+  /** Listen on notification events from another plugin or module */
+  protected listen(
     type: string,
     key: string,
     cb: (value: any) => void,
@@ -89,7 +89,8 @@ export class RemixExtension {
     this.notifications[type][key] = cb
   }
 
-  public call(type: string, key: string, value: any): Promise<any> {
+  /** Call a method from another plugin or module */
+  protected call(type: string, key: string, value: any): Promise<any> {
     const action = 'request'
     const id = this.id++
     const message = JSON.stringify({ action, type, key, value, id })
@@ -100,5 +101,10 @@ export class RemixExtension {
         if (!error) res(result)
       }
     })
+  }
+
+  /** Emit an event */
+  public emit<Key extends keyof T['events'] & string>(key: Key, value: T['events'][Key]) {
+    this.send({ action: 'notification', key, value })
   }
 }

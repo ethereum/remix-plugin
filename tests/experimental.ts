@@ -1,4 +1,4 @@
-import { AppManager, Module, Injector, InjectorFactory } from './../src/experimental'
+import { AppManager, Module, Injector, InjectorFactory } from './../src/experimental/injectors'
 
 @Module({
   type: 'test',

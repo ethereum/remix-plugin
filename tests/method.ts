@@ -1,11 +1,17 @@
-import { Plugin, AppManager, PluginProfile } from '../src'
-import { ResolverApi, ResolverProfile, Resolver } from '../examples/modules'
+import { Plugin, PluginProfile } from '../src'
+import {
+  ResolverApi,
+  ResolverProfile,
+  Resolver,
+  PluginManagerComponent,
+  RemixAppManager,
+} from '../examples/modules'
 import { Ethdoc } from './../examples/plugins/ethdoc'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   type: 'ethdoc',
   methods: ['getDoc'],
-  url: ''
+  url: 'some-url'
 }
 
 export interface IAppManager {
@@ -18,23 +24,24 @@ export interface IAppManager {
 }
 
 describe('Method', () => {
-  let app: AppManager<IAppManager>
+  let app: RemixAppManager
+  let component: PluginManagerComponent
   let module: ResolverApi
   let plugin: Plugin<Ethdoc>
   beforeAll(() => {
     module = new ResolverApi()
     plugin = new Plugin(EthdocProfile)
-    app = new AppManager({
-      modules: [{ json: ResolverProfile, api: module }],
-      plugins: [{ json: EthdocProfile, api: plugin }]
-    })
-    app.activate(EthdocProfile.type)
+    component = new PluginManagerComponent()
+    app = new RemixAppManager(component)
+    app.init([
+      { profile: ResolverProfile, api: module },
+      { profile: EthdocProfile, api: plugin },
+    ])
   })
 
   test('call a method from plugin api', () => {
-    const spy = spyOn(app.calls.solResolver, 'getFile')
+    const spy = spyOn(app['calls'][ResolverProfile.type], 'getFile')
     plugin.request({ type: module.type, key: 'getFile', value: 'Ballot.sol' })
     expect(spy).toBeCalledWith('Ballot.sol')
   })
-
 })
