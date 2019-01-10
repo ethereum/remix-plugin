@@ -48,6 +48,9 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Method to implement: Should add the plugin or module to the state of the application */
   abstract addEntity<T extends Api>(entry: Entry<T>): void
 
+  /** Method to implement: Do something when module or plugin is activated or deactivated */
+  abstract setActive(name: string, isActive: boolean): void
+
   /////////////
   // HELPERS //
   /////////////
