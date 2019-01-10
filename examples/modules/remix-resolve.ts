@@ -15,7 +15,7 @@ export const RemixResolveProfile: ModuleProfile<RemixResolve> = {
 export interface Imported {
   content: string
   cleanURL: string
-  name: string
+  type: string
 }
 
 interface PreviouslyHandledImports {
@@ -23,7 +23,7 @@ interface PreviouslyHandledImports {
 }
 
 interface Handler {
-  name: string
+  type: string
   match(url: string): RegExpExecArray
   handle(match: RegExpExecArray): Promise<string> | string
 }
