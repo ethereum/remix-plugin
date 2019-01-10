@@ -6,7 +6,7 @@ export interface Ethdoc extends Api {
   events: {
     createDoc: any
   }
-  getDoc: any
+  getDoc(): any
 }
 
 export const EthdocProfile: PluginProfile<Ethdoc> = {
@@ -23,7 +23,7 @@ export class EthdocApi extends RemixExtension<Ethdoc> {
   private doc: any
 
   constructor() {
-    super('ethdoc')
+    super()
     this.listen('solCompiler', 'compilationFinished', (result) => {
       this.doc = result.data
       this.emit('createDoc', this.doc)

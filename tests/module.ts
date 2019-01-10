@@ -1,29 +1,23 @@
-import { AppManager } from '../src'
-
-import { CompilerProfile, CompilerApi, Compiler } from '../examples/modules'
-
-interface IAppManager {
-  modules: {
-    solCompiler: Compiler
-  }
-  plugins: {}
-}
-
+import {
+  RemixAppManager,
+  PluginManagerComponent,
+  CompilerProfile,
+  CompilerApi,
+} from '../examples/modules'
 
 describe('Module', () => {
-  let app: AppManager<IAppManager>
+  let app: RemixAppManager
+  let component: PluginManagerComponent
   let api: CompilerApi
   beforeAll(() => {
     api = new CompilerApi()
-    app = new AppManager({
-      modules: [{ json: CompilerProfile, api }]
-    })
+    component = new PluginManagerComponent()
+    app = new RemixAppManager(component)
+    app.init([{ profile: CompilerProfile, api }])
   })
-  test('is added to app', () => expect(app.calls[api.type]).toBeDefined())
+  test('is added to app', () => expect(app['calls'][api.type]).toBeDefined())
   test('method is added to app', () => {
-    const lastCompilationResult = app.calls[api.type].lastCompilationResult()
+    const lastCompilationResult = app['calls'][api.type].lastCompilationResult()
     expect(lastCompilationResult).toEqual('compilation')
   })
 })
-
-

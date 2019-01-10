@@ -1,5 +1,6 @@
-import { Plugin, AppManager, PluginProfile } from '../src'
+import { Plugin, PluginProfile } from '../src'
 import { TxlistenerApi, TxlistenerProfile, TxEmitter, Txlistener } from '../examples/modules'
+import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 import { Ethdoc } from '../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
@@ -7,21 +8,13 @@ const EthdocProfile: PluginProfile<Ethdoc> = {
   methods: ['getDoc'],
   events: ['createDoc'],
   notifications: [{type: 'txlistener', key : 'newTransaction'}],
-  url: ''
+  url: 'some-url'
 }
 
-
-export interface IAppManager {
-  modules: {
-    txlistener: Txlistener
-  }
-  plugins: {
-    ethdoc: Ethdoc
-  }
-}
 
 describe('Event', () => {
-  let app: AppManager<IAppManager>
+  let app: RemixAppManager
+  let component: PluginManagerComponent
   let module: TxlistenerApi
   let plugin: Plugin<Ethdoc>
   let txemitter: TxEmitter
@@ -29,11 +22,12 @@ describe('Event', () => {
     txemitter = new TxEmitter()
     module = new TxlistenerApi(txemitter)
     plugin = new Plugin(EthdocProfile)
-    app = new AppManager({
-      modules: [{ json: TxlistenerProfile, api: module }],
-      plugins: [{ json: EthdocProfile, api: plugin }]
-    })
-    app.activate(EthdocProfile.type)
+    component = new PluginManagerComponent()
+    app = new RemixAppManager(component)
+    app.init([
+      { profile: TxlistenerProfile, api: module },
+      { profile: EthdocProfile, api: plugin }
+    ])
   })
   test('event from module is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)

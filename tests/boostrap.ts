@@ -1,40 +1,31 @@
-import { Plugin, AppManager, PluginProfile } from '../src'
-import { PluginManager, PluginManagerProfile, PluginManagerApi } from '../examples/modules'
+import { Plugin, PluginProfile } from '../src'
+import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 import { Ethdoc } from './../examples/plugins'
 
-const EthdocProfile: PluginProfile = {
+const EthdocProfile: PluginProfile<Ethdoc> = {
   type: 'ethdoc',
   methods: ['getDoc'],
-  url: ''
-}
-
-export interface IAppManager {
-  modules: {
-    pluginManager: PluginManager
-  }
-  plugins: {
-    ethdoc: Ethdoc
-  }
+  url: 'some-url'
 }
 
 describe('Boostrap', () => {
-  let app: AppManager<IAppManager>
+  let app: RemixAppManager
   let api: Plugin<Ethdoc>
-  let pluginManager: PluginManagerApi
+  let component: PluginManagerComponent
   beforeAll(() => {
-    pluginManager = new PluginManagerApi()
+    component = new PluginManagerComponent()
     api = new Plugin(EthdocProfile)
-    app = new AppManager({
-      modules: [{ json: PluginManagerProfile, api: pluginManager}],
-      plugins: [{ json: EthdocProfile, api }],
-      options: {
-        boostrap: pluginManager.type
-      }
-    })
+    app = new RemixAppManager(component)
+    app.registerOne<Ethdoc>({ profile: EthdocProfile, api })
   })
-  test('plugin should not be activated by default', () => expect(app.calls.ethdoc).toEqual({}))
+  test('Plugin Entity should be registered', () => {
+    expect(app.getEntity(EthdocProfile.type)).toEqual({ profile: EthdocProfile, api })
+  })
+  test('Plugin Entity method should not be available before activation', () => {
+    expect(app['calls'][EthdocProfile.type]).toBeUndefined()
+  })
   test('pluginManager should activate plugin', () => {
-    pluginManager.events.emit('activate', api.type)
-    expect(app.calls.ethdoc['getDoc']).toBeDefined()
+    app.activateOne(EthdocProfile.type)
+    expect(app['calls'][EthdocProfile.type]['getDoc']).toBeDefined()
   })
 })
