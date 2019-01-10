@@ -41,7 +41,7 @@ describe('Method', () => {
 
   test('call a method from plugin api', () => {
     const spy = spyOn(app['calls'][ResolverProfile.name], 'getFile')
-    plugin.request({ name: module.name, key: 'getFile', value: 'Ballot.sol' })
+    plugin.request({ name: module.name, key: 'getFile', payload: 'Ballot.sol' })
     expect(spy).toBeCalledWith('Ballot.sol')
   })
 })

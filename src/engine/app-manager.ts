@@ -1,5 +1,4 @@
 import {
-  PluginProfile,
   ModuleProfile,
   PluginEntry,
   API,
@@ -8,7 +7,6 @@ import {
   ApiEventEmitter,
   Entry
 } from '../types'
-import { Plugin } from './plugin'
 import { EventEmitter } from 'events'
 
 export interface AppManager extends Api {
@@ -109,7 +107,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     const events = profile.events || []
     events.forEach((event) => {
       if (!api.events) return
-      api.events.on(event, (value: any) => this.broadcast(api.name, event as string, value))
+      api.events.on(event, (payload: any) => this.broadcast(api.name, event as string, payload))
     })
 
     const methods = profile.methods || []
@@ -123,7 +121,7 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Activation for Plugin only */
   private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
-    api.request = ({ name, key, value }) => this.calls[name][key](value)
+    api.request = ({ name, key, payload }) => this.calls[name][key](payload)
 
     const notifications = profile.notifications || []
     notifications.forEach(({ name, key }) => {
@@ -168,12 +166,12 @@ export abstract class AppManagerApi implements API<AppManager> {
   private broadcast<M extends Api, E extends keyof M['events']>(
     name: M['name'],
     key: E,
-    value: M['events'][E]
+    payload: M['events'][E]
   ) {
     for (const origin in this.eventmanager) {
       if (this.eventmanager[origin][name]) {
         const destination = this.eventmanager[origin][name]
-        if (destination[key]) destination[key](value)
+        if (destination[key]) destination[key](payload)
       }
     }
   }

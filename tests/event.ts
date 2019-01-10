@@ -38,7 +38,7 @@ describe('Event', () => {
   test('event from module is received by plugin', () => {
     const spy = spyOn(plugin, 'postMessage' as any)
     txemitter.createTx('0x')
-    expect(spy).toBeCalledWith({name: module.name, key: 'newTransaction', value: {data: '0x'}})
+    expect(spy).toBeCalledWith({name: module.name, key: 'newTransaction', payload: {data: '0x'}})
   })
 
   test('event from plugin is broadcasted', () => {

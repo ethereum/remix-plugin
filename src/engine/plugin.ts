@@ -9,14 +9,14 @@ export class Plugin<T extends Api> {
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
     [name: string]: {
-      [id: number]: (value: any) => void
+      [id: number]: (payload: any) => void
     }
   } = {}
 
   public readonly name: T['name']
   public events: ApiEventEmitter<T>
   public notifs = {}
-  public request: (value: { name: string; key: string; value: any }) => any
+  public request: (value: { name: string; key: string; payload: any }) => any
   public activate: () => Promise<void>
   public deactivate: () => void
 
@@ -27,19 +27,19 @@ export class Plugin<T extends Api> {
     const notifs = json.notifications || []
     notifs.forEach(({ name, key }) => {
       if (!this.notifs[name]) this.notifs[name] = {}
-      this.notifs[name][key] = (value: any) => this.postMessage({ name, key, value })
+      this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload })
     })
 
     const methods = json.methods || []
     methods.forEach(method => {
-      this[method as string] = (value: any) => {
+      this[method as string] = (payload: any) => {
         this.id++
         this.postMessage({
           action: 'request',
           name: this.name,
           key: method as string,
           id: this.id,
-          value,
+          payload,
         })
         return new Promise((res, rej) => {
           this.pendingRequest[this.name][this.id] = (result: any) => res(result)
@@ -83,8 +83,8 @@ export class Plugin<T extends Api> {
         break
       }
       case 'response': {
-        const { name, id, value } = message
-        this.pendingRequest[name][id](value)
+        const { name, id, payload } = message
+        this.pendingRequest[name][id](payload)
         delete this.pendingRequest[name][id]
         break
       }
@@ -101,7 +101,7 @@ export class Plugin<T extends Api> {
       let parent: HTMLElement
       if (loadIn) {
         const { name, key } = loadIn
-        const message = { action: 'request', name, key, value: {} } as Message
+        const message = { action: 'request', name, key, payload: {} } as Message
         parent = (await this.request(message)) as HTMLElement
       } else {
         parent = document.body

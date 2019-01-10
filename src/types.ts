@@ -53,7 +53,7 @@ export interface Message {
   action: 'notification' | 'request' | 'response'
   name: string
   key: string
-  value: any
+  payload: any
   error?: Error
 }
 
@@ -61,7 +61,7 @@ export interface Message {
 export interface EventMessage {
   name: string
   key: string
-  value: any
+  payload: any
 }
 
 /* ---- APP MANAGER ---- */
@@ -79,7 +79,7 @@ export interface IAppManager {
 export interface EventListeners {
   [origin: string]: {
     [name: string]: {
-      [key: string]: (value: any) => void
+      [key: string]: (payload: any) => void
     }
   }
 }

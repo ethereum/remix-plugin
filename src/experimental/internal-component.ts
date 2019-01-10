@@ -30,7 +30,7 @@ import { API, Message, PluginProfile, ModuleProfile } from './types'
 import { EventEmitter } from './event'
 export class InternalComponent extends API {
   public notifs = {}
-  public request: (value: { name: string; key: string; value: any }) => any
+  public request: (value: { name: string; key: string; payload: any }) => any
   public activate: () => Promise<void>
   public deactivate: () => void
   constructor(json: ModuleProfile) {
@@ -48,7 +48,7 @@ export class InternalComponent extends API {
         name: 'swipePanel',
         key: 'getIframeSource',
       }
-      const message = { action: 'request', name, key, value: {} } as Message
+      const message = { action: 'request', name, key, payload: {} } as Message
       const parent = (await this.request(message)) as HTMLElement
       let view = new InternalComponent()
       parent.appendChild(view.render())
