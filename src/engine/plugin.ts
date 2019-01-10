@@ -8,41 +8,41 @@ export class Plugin<T extends Api> {
   private origin: string
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
-    [type: string]: {
-      [id: number]: (value: any) => void
+    [name: string]: {
+      [id: number]: (payload: any) => void
     }
   } = {}
 
-  public readonly type: T['type']
+  public readonly name: T['name']
   public events: ApiEventEmitter<T>
   public notifs = {}
-  public request: (value: { type: string; key: string; value: any }) => any
+  public request: (value: { name: string; key: string; payload: any }) => any
   public activate: () => Promise<void>
   public deactivate: () => void
 
   constructor(json: PluginProfile<T>) {
-    this.type = json.type
+    this.name = json.name
     this.events = new EventEmitter() as ApiEventEmitter<T>
 
     const notifs = json.notifications || []
-    notifs.forEach(({ type, key }) => {
-      if (!this.notifs[type]) this.notifs[type] = {}
-      this.notifs[type][key] = (value: any) => this.postMessage({ type, key, value })
+    notifs.forEach(({ name, key }) => {
+      if (!this.notifs[name]) this.notifs[name] = {}
+      this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload })
     })
 
     const methods = json.methods || []
     methods.forEach(method => {
-      this[method as string] = (value: any) => {
+      this[method as string] = (payload: any) => {
         this.id++
         this.postMessage({
           action: 'request',
-          type: this.type,
+          name: this.name,
           key: method as string,
           id: this.id,
-          value,
+          payload,
         })
         return new Promise((res, rej) => {
-          this.pendingRequest[this.type][this.id] = (result: any) => res(result)
+          this.pendingRequest[this.name][this.id] = (result: any) => res(result)
         })
       }
     })
@@ -83,9 +83,9 @@ export class Plugin<T extends Api> {
         break
       }
       case 'response': {
-        const { type, id, value } = message
-        this.pendingRequest[type][id](value)
-        delete this.pendingRequest[type][id]
+        const { name, id, payload } = message
+        this.pendingRequest[name][id](payload)
+        delete this.pendingRequest[name][id]
         break
       }
       default: {
@@ -100,8 +100,8 @@ export class Plugin<T extends Api> {
     try {
       let parent: HTMLElement
       if (loadIn) {
-        const { type, key } = loadIn
-        const message = { action: 'request', type, key, value: {} } as Message
+        const { name, key } = loadIn
+        const message = { action: 'request', name, key, payload: {} } as Message
         parent = (await this.request(message)) as HTMLElement
       } else {
         parent = document.body
@@ -118,7 +118,7 @@ export class Plugin<T extends Api> {
     }
 
     // Handshake
-    this.postMessage({ action: 'request', type: this.type, key: 'handshake' })
+    this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
   }
 
   /** Post a message to the iframe of this plugin */

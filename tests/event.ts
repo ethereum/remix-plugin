@@ -4,10 +4,10 @@ import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 import { Ethdoc } from '../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
-  type: 'ethdoc',
+  name: 'ethdoc',
   methods: ['getDoc'],
   events: ['createDoc'],
-  notifications: [{type: 'txlistener', key : 'newTransaction'}],
+  notifications: [{name: 'txlistener', key : 'newTransaction'}],
   url: 'some-url'
 }
 
@@ -32,19 +32,19 @@ describe('Event', () => {
   test('event from module is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
     txemitter.createTx('0x')
-    expect(spy).toBeCalledWith(module.type, 'newTransaction', {data: '0x'})
+    expect(spy).toBeCalledWith(module.name, 'newTransaction', {data: '0x'})
   })
 
   test('event from module is received by plugin', () => {
     const spy = spyOn(plugin, 'postMessage' as any)
     txemitter.createTx('0x')
-    expect(spy).toBeCalledWith({type: module.type, key: 'newTransaction', value: {data: '0x'}})
+    expect(spy).toBeCalledWith({name: module.name, key: 'newTransaction', payload: {data: '0x'}})
   })
 
   test('event from plugin is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
     if (!EthdocProfile.events) throw new Error('EthdocProfile should have "events"')
     plugin.events.emit(EthdocProfile.events[0], true)
-    expect(spy).toBeCalledWith(plugin.type, EthdocProfile.events[0], true)
+    expect(spy).toBeCalledWith(plugin.name, EthdocProfile.events[0], true)
   })
 })

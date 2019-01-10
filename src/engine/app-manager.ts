@@ -1,5 +1,4 @@
 import {
-  PluginProfile,
   ModuleProfile,
   PluginEntry,
   API,
@@ -8,11 +7,10 @@ import {
   ApiEventEmitter,
   Entry
 } from '../types'
-import { Plugin } from './plugin'
 import { EventEmitter } from 'events'
 
 export interface AppManager extends Api {
-  type: 'appManager',
+  name: 'appManager',
   events: {
     register: string
     activate: Entry<Api>,
@@ -22,22 +20,22 @@ export interface AppManager extends Api {
   registerMany(entry: Entry<any>[]): void
   registerOne<T extends Api>(entry: Entry<T>): void
   registerOne<T extends Api>(entry: Entry<T>): void
-  activateMany(types: string[]): void
-  deactivateMany(types: string[]): void
-  activateOne(type: string): void
-  deactivateOne(type: string): void
+  activateMany(names: string[]): void
+  deactivateMany(names: string[]): void
+  activateOne(name: string): void
+  deactivateOne(name: string): void
 }
 
 export abstract class AppManagerApi implements API<AppManager> {
 
   private eventmanager: EventListeners = {}
   private calls: {
-    [type: string]: {
+    [name: string]: {
       [key: string]: Function
     }
   } = {}
 
-  public readonly type = 'appManager'
+  public readonly name = 'appManager'
   public events: ApiEventEmitter<AppManager> = new EventEmitter()
 
   //////////////
@@ -67,7 +65,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   public init(entries: Entry<any>[]) {
     entries.forEach(entry => {
       this.registerOne(entry)
-      this.activateOne(entry.profile.type)
+      this.activateOne(entry.profile.name)
     })
   }
 
@@ -79,7 +77,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Register on Module or Plugin */
   public registerOne<T extends Api>(entry: Entry<T>) {
     this.addEntity(entry)
-    this.events.emit('register', entry.profile.type)
+    this.events.emit('register', entry.profile.name)
   }
 
   ////////////////
@@ -87,13 +85,13 @@ export abstract class AppManagerApi implements API<AppManager> {
   ////////////////
 
   /** Activate several modules or plugins */
-  public activateMany(types: string[]) {
-    types.forEach(type => this.activateOne(type))
+  public activateMany(names: string[]) {
+    names.forEach(name => this.activateOne(name))
   }
 
   /** Activate a module or plugin */
-  public activateOne(type: string) {
-    const entry = this.getEntity(type)
+  public activateOne(name: string) {
+    const entry = this.getEntity(name)
     this.activateCallAndEvent(entry)
     if (this.isPlugin(entry)) {
       this.activateRequestAndNotification(entry)
@@ -109,28 +107,28 @@ export abstract class AppManagerApi implements API<AppManager> {
     const events = profile.events || []
     events.forEach((event) => {
       if (!api.events) return
-      api.events.on(event, (value: any) => this.broadcast(api.type, event as string, value))
+      api.events.on(event, (payload: any) => this.broadcast(api.name, event as string, payload))
     })
 
     const methods = profile.methods || []
-    this.calls[api.type] = {}
+    this.calls[api.name] = {}
     methods.forEach((key) => {
       if ((key) in api) {
-        this.calls[api.type][key as string] = (...args: any[]) => (api[key as string])(...args)
+        this.calls[api.name][key as string] = (...args: any[]) => (api[key as string])(...args)
       }
     })
   }
 
   /** Activation for Plugin only */
   private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
-    api.request = ({ type, key, value }) => this.calls[type][key](value)
+    api.request = ({ name, key, payload }) => this.calls[name][key](payload)
 
     const notifications = profile.notifications || []
-    notifications.forEach(({ type, key }) => {
-      const origin = api.type
+    notifications.forEach(({ name, key }) => {
+      const origin = api.name
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
-      if (!this.eventmanager[origin][type]) this.eventmanager[origin][type] = {}
-      this.eventmanager[origin][type][key] = api.notifs[type][key]
+      if (!this.eventmanager[origin][name]) this.eventmanager[origin][name] = {}
+      this.eventmanager[origin][name][key] = api.notifs[name][key]
     })
   }
 
@@ -139,13 +137,13 @@ export abstract class AppManagerApi implements API<AppManager> {
   //////////////////
 
   /** Deactivate several modules or plugins */
-  public deactivateMany(types: string[]) {
-    types.forEach(type => this.deactivateOne(type))
+  public deactivateMany(names: string[]) {
+    names.forEach(name => this.deactivateOne(name))
   }
 
   /** Deactivate a module or plugin */
-  public deactivateOne(type: string) {
-    const { profile, api } = this.getEntity(type)
+  public deactivateOne(name: string) {
+    const { profile, api } = this.getEntity(name)
     this.deactivateProfile(profile)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
@@ -154,10 +152,10 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Deactivation for modules and plugins */
   private deactivateProfile(profile: ModuleProfile) {
-    this.calls[profile.type] = {} as any
+    this.calls[profile.name] = {} as any
 
     const methods = profile.methods || []
-    methods.forEach(key => delete this[profile.type][key])
+    methods.forEach(key => delete this[profile.name][key])
   }
 
   ////////////////////
@@ -166,14 +164,14 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Broadcast a message to every plugin listening */
   private broadcast<M extends Api, E extends keyof M['events']>(
-    type: M['type'],
+    name: M['name'],
     key: E,
-    value: M['events'][E]
+    payload: M['events'][E]
   ) {
     for (const origin in this.eventmanager) {
-      if (this.eventmanager[origin][type]) {
-        const destination = this.eventmanager[origin][type]
-        if (destination[key]) destination[key](value)
+      if (this.eventmanager[origin][name]) {
+        const destination = this.eventmanager[origin][name]
+        if (destination[key]) destination[key](payload)
       }
     }
   }

@@ -1,13 +1,13 @@
 import { ModuleProfile, Api, API } from '../../src'
 
 export interface RemixResolve extends Api {
-  type: 'remix-resolve'
+  name: 'remix-resolve'
   events: {}
   resolve(filePath: string, customHandlers?: Handler[]): Promise<Imported>
 }
 
 export const RemixResolveProfile: ModuleProfile<RemixResolve> = {
-  type: 'remix-resolve',
+  name: 'remix-resolve',
   methods: ['resolve']
 }
 
@@ -29,7 +29,7 @@ interface Handler {
 }
 
 export class RemixResolveApi implements API<RemixResolve> {
-  public readonly type = 'remix-resolve'
+  public readonly name = 'remix-resolve'
 
   private previouslyHandled: PreviouslyHandledImports
   constructor() {

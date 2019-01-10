@@ -15,9 +15,9 @@ describe('Module', () => {
     app = new RemixAppManager(component)
     app.init([{ profile: CompilerProfile, api }])
   })
-  test('is added to app', () => expect(app['calls'][api.type]).toBeDefined())
+  test('is added to app', () => expect(app['calls'][api.name]).toBeDefined())
   test('method is added to app', () => {
-    const lastCompilationResult = app['calls'][api.type].lastCompilationResult()
+    const lastCompilationResult = app['calls'][api.name].lastCompilationResult()
     expect(lastCompilationResult).toEqual('compilation')
   })
 })

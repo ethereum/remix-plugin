@@ -2,7 +2,7 @@ import { PluginProfile, RemixExtension } from "../../src"
 import { Api } from '../../src'
 
 export interface Ethdoc extends Api {
-  type: 'ethdoc'
+  name: 'ethdoc'
   events: {
     createDoc: any
   }
@@ -10,10 +10,10 @@ export interface Ethdoc extends Api {
 }
 
 export const EthdocProfile: PluginProfile<Ethdoc> = {
-  type: 'ethdoc',
+  name: 'ethdoc',
   methods: ['getDoc'],
   events: ['createDoc'],
-  notifications: [{type: 'solCompiler', key : 'compilationFinished'}],
+  notifications: [{name: 'solCompiler', key : 'compilationFinished'}],
   url: ''
 }
 
