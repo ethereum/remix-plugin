@@ -1,4 +1,4 @@
-import { Message, PluginProfile, Api, ExtractKey } from '../types'
+import { Message, PluginProfile, Api, ApiEventEmitter } from '../types'
 import { EventEmitter } from 'events'
 
 export class Plugin<T extends Api> {
@@ -13,8 +13,8 @@ export class Plugin<T extends Api> {
     }
   } = {}
 
-  public readonly type: string
-  public events = new EventEmitter()
+  public readonly type: T['type']
+  public events: ApiEventEmitter<T>
   public notifs = {}
   public request: (value: { type: string; key: string; value: any }) => any
   public activate: () => Promise<void>
@@ -22,6 +22,7 @@ export class Plugin<T extends Api> {
 
   constructor(json: PluginProfile<T>) {
     this.type = json.type
+    this.events = new EventEmitter() as ApiEventEmitter<T>
 
     const notifs = json.notifications || []
     notifs.forEach(({ type, key }) => {
@@ -125,16 +126,4 @@ export class Plugin<T extends Api> {
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
   }
-}
-
-
-export interface PluginEntry<T extends Api> {
-  json: PluginProfile<T>
-  api: Plugin<T>
-}
-
-export type PluginList<T extends { [type: string]: Api}> = PluginEntry<T[keyof T]>[]
-
-export type PluginStore<T extends { [type: string]: Api}> = {
-  [type in keyof T]: PluginEntry<T[type]>
 }

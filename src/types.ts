@@ -1,3 +1,5 @@
+import { Plugin } from './engine/plugin'
+
 export type ExtractKey<T, U> =  { [K in keyof T]: T[K] extends U ? K : never }[keyof T]
 
 export interface Api {
@@ -98,13 +100,20 @@ export interface ModuleEntry<T extends Api> {
   profile: ModuleProfile<T>
   api: API<T>
 }
+/** The data needed by the AppManager to add a plugin */
+export interface PluginEntry<T extends Api> {
+  profile: PluginProfile<T>
+  api: Plugin<T>
+}
+
+export type Entry<T extends Api> = ModuleEntry<T> | PluginEntry<T>
 
 /** A list of module entries */
-export type ModuleList<T extends { [type: string]: Api }> = ModuleEntry<T[keyof T]>[]
+export type ModuleList<T extends { [type: string]: Api }> = Entry<T[keyof T]>[]
 
 /** A map of module entries depending on the type of the module */
 export type ModuleStore<T extends { [type: string]: Api }> = {
-  [type in keyof T]: ModuleEntry<T[type]>
+  [type in keyof T]: Entry<T[type]>
 }
 
 /* ---- IFRAME ---- */

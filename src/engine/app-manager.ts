@@ -1,11 +1,12 @@
 import {
   PluginProfile,
   ModuleProfile,
+  PluginEntry,
   API,
   EventListeners,
   Api,
   ApiEventEmitter,
-  ModuleEntry
+  Entry
 } from '../types'
 import { Plugin } from './plugin'
 import { EventEmitter } from 'events'
@@ -14,13 +15,13 @@ export interface AppManager extends Api {
   type: 'appManager',
   events: {
     register: string
-    activate: {profile: ModuleProfile<any>, api: API<any>},
+    activate: Entry<Api>,
     deactivate: ModuleProfile
   }
-  registerMany(entry: ModuleEntry<any>[]): void
-  registerMany(entry: ModuleEntry<any>[]): void
-  registerOne<T extends Api>(entry: ModuleEntry<T>): void
-  registerOne<T extends Api>(entry: ModuleEntry<T>): void
+  registerMany(entry: Entry<any>[]): void
+  registerMany(entry: Entry<any>[]): void
+  registerOne<T extends Api>(entry: Entry<T>): void
+  registerOne<T extends Api>(entry: Entry<T>): void
   activateMany(types: string[]): void
   deactivateMany(types: string[]): void
   activateOne(type: string): void
@@ -34,10 +35,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     [type: string]: {
       [key: string]: Function
     }
-  }
-
-  /** Map module types with your implementation of this map */
-  protected mapNames: { [type: string]: string }
+  } = {}
 
   public readonly type = 'appManager'
   public events: ApiEventEmitter<AppManager> = new EventEmitter()
@@ -47,23 +45,18 @@ export abstract class AppManagerApi implements API<AppManager> {
   //////////////
 
   /** Method to implement: get a module from the state of the application */
-  abstract getEntity<T extends Api>(id: string): ModuleEntry<T>
+  abstract getEntity<T extends Api>(id: string): Entry<T>
 
   /** Method to implement: Should add the plugin or module to the state of the application */
-  abstract addEntity<T extends Api>(module: ModuleEntry<T>): void
+  abstract addEntity<T extends Api>(module: Entry<T>): void
 
   /////////////
   // HELPERS //
   /////////////
 
-  /** Safe method to get the type of a module in a specific implementation */
-  private getType(type: string): string {
-    return this.mapNames[type] || type
-  }
-
   /** Check if profile is a plugin */
-  private isPlugin(profile: ModuleProfile): profile is PluginProfile {
-    return profile['url']
+  private isPlugin<T extends Api>(entry: Entry<T>): entry is PluginEntry<T> {
+    return entry.profile['url']
   }
 
   //////////////
@@ -71,7 +64,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   //////////////
 
   /** Register many Modules or Plugins and activate them */
-  public init(entries: ModuleEntry<any>[]) {
+  public init(entries: Entry<any>[]) {
     entries.forEach(entry => {
       this.registerOne(entry)
       this.activateOne(entry.profile.type)
@@ -79,12 +72,12 @@ export abstract class AppManagerApi implements API<AppManager> {
   }
 
   /** Register many Modules or Plugins */
-  public registerMany(entries: ModuleEntry<any>[]) {
+  public registerMany(entries: Entry<any>[]) {
     entries.forEach(entry => this.registerOne(entry))
   }
 
   /** Register on Module or Plugin */
-  public registerOne<T extends Api>(entry: ModuleEntry<T>) {
+  public registerOne<T extends Api>(entry: Entry<T>) {
     this.addEntity(entry)
     this.events.emit('register', entry.profile.type)
   }
@@ -100,39 +93,39 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Activate a module or plugin */
   public activateOne(type: string) {
-    const id = this.getType(type)
-    const { profile, api } = this.getEntity(id)
-    this.activateCallAndEvent(profile, api)
-    if (this.isPlugin(profile)) {
-      this.activateRequestAndNotification(profile, api as Plugin<any>)
+    const entry = this.getEntity(type)
+    this.activateCallAndEvent(entry)
+    if (this.isPlugin(entry)) {
+      this.activateRequestAndNotification(entry)
     }
-    if (api.activate) {
-      api.activate()
+    if (entry.api.activate) {
+      entry.api.activate()
     }
-    this.events.emit('activate', { profile, api })
+    this.events.emit('activate', entry)
   }
 
   /** Activation for Module and Plugin */
-  private activateCallAndEvent(profile: ModuleProfile, api: API<any>) {
+  private activateCallAndEvent<T extends Api>({ profile, api }: Entry<T>) {
     const events = profile.events || []
-    events.forEach(event => {
+    events.forEach((event) => {
       if (!api.events) return
       api.events.on(event, (value: any) => this.broadcast(api.type, event as string, value))
     })
 
     const methods = profile.methods || []
+    this.calls[api.type] = {}
     methods.forEach((key) => {
-      if (key in api) {
-        this.calls[api.type][key] = (...args: any[]) => (api[key] as any)(...args)
+      if ((key) in api) {
+        this.calls[api.type][key as string] = (...args: any[]) => (api[key as string])(...args)
       }
     })
   }
 
   /** Activation for Plugin only */
-  private activateRequestAndNotification(json: PluginProfile, api: Plugin<any>) {
+  private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
     api.request = ({ type, key, value }) => this.calls[type][key](value)
 
-    const notifications = json.notifications || []
+    const notifications = profile.notifications || []
     notifications.forEach(({ type, key }) => {
       const origin = api.type
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
@@ -152,8 +145,7 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Deactivate a module or plugin */
   public deactivateOne(type: string) {
-    const id = this.getType(type)
-    const { profile, api } = this.getEntity(id)
+    const { profile, api } = this.getEntity(type)
     this.deactivateProfile(profile)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
