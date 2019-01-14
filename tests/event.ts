@@ -1,4 +1,4 @@
-import { Plugin, PluginProfile } from '../src'
+import { Plugin, PluginProfile, Message } from '../src'
 import { TxlistenerApi, TxlistenerProfile, TxEmitter, Txlistener } from '../examples/modules'
 import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 import { Ethdoc } from '../examples/plugins'
@@ -20,7 +20,7 @@ describe('Event', () => {
   let module: TxlistenerApi
   let plugin: Plugin<Ethdoc>
   let txemitter: TxEmitter
-  beforeAll(() => {
+  beforeEach(() => {
     txemitter = new TxEmitter()
     module = new TxlistenerApi(txemitter)
     plugin = new Plugin(EthdocProfile)
@@ -48,5 +48,15 @@ describe('Event', () => {
     if (!EthdocProfile.events) throw new Error('EthdocProfile should have "events"')
     plugin.events.emit(EthdocProfile.events[0], true)
     expect(spy).toBeCalledWith(plugin.name, EthdocProfile.events[0], true)
+  })
+
+  test('Plugin receive notification from module', (done) => {
+    plugin['source'].addEventListener('message', event => {
+      const data = JSON.parse(event.data) as Partial<Message>
+      if (data.key === 'handshake') return
+      expect(data.payload).toEqual({data: '0x'})
+      done()
+    }, false)
+    txemitter.createTx('0x')
   })
 })
