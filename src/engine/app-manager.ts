@@ -126,13 +126,14 @@ export abstract class AppManagerApi implements API<AppManager> {
   private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
     api.request = ({ name, key, payload }) => this.calls[name][key](payload)
 
-    const notifications = profile.notifications || []
-    notifications.forEach(({ name, key }) => {
+    const notifications = profile.notifications || {}
+    for (const name in notifications) {
       const origin = api.name
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
       if (!this.eventmanager[origin][name]) this.eventmanager[origin][name] = {}
-      this.eventmanager[origin][name][key] = api.notifs[name][key]
-    })
+      const keys = notifications[name] || []
+      keys.forEach(key => this.eventmanager[origin][name][key] = api.notifs[name][key])
+    }
   }
 
   //////////////////

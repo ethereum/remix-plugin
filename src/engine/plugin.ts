@@ -24,11 +24,12 @@ export class Plugin<T extends Api> {
     this.name = json.name
     this.events = new EventEmitter() as ApiEventEmitter<T>
 
-    const notifs = json.notifications || []
-    notifs.forEach(({ name, key }) => {
-      if (!this.notifs[name]) this.notifs[name] = {}
-      this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload })
-    })
+    const notifs = json.notifications || {}
+    for (const name in notifs) {
+      this.notifs[name] = {}
+      const keys = notifs[name] || []
+      keys.forEach(key => this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload }))
+    }
 
     const methods = json.methods || []
     methods.forEach(method => {
@@ -109,10 +110,10 @@ export class Plugin<T extends Api> {
       this.iframe = document.createElement('iframe')
       this.iframe.src = url
       parent.appendChild(this.iframe)
-      if (!this.iframe.contentWindow)
-        throw new Error('No window attached to Iframe')
+      if (!this.iframe.contentWindow || !this.iframe.contentDocument)
+        throw new Error('No window or document attached to Iframe')
       this.source = this.iframe.contentWindow
-      this.origin = this.iframe.contentWindow.origin
+      this.origin = this.iframe.contentDocument.origin
     } catch (err) {
       console.log(err)
     }

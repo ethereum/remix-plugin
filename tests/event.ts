@@ -7,7 +7,9 @@ const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
   methods: ['getDoc'],
   events: ['createDoc'],
-  notifications: [{name: 'txlistener', key : 'newTransaction'}],
+  notifications: {
+    'txlistener': ['newTransaction']
+  },
   url: 'some-url'
 }
 

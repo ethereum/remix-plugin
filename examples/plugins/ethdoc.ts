@@ -13,7 +13,9 @@ export const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
   methods: ['getDoc'],
   events: ['createDoc'],
-  notifications: [{name: 'solCompiler', key : 'compilationFinished'}],
+  notifications: {
+    'solCompiler': ['compilationFinished']
+  },
   url: ''
 }
 

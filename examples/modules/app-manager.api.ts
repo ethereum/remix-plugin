@@ -1,4 +1,4 @@
-import { AppManagerApi, Api, Entry, ModuleProfile } from '../../src'
+import { AppManagerApi, Api, Entry } from '../../src'
 
 export class RemixAppManager extends AppManagerApi {
 
