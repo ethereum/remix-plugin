@@ -66,7 +66,6 @@ export class Plugin<T extends Api> {
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
     const message = JSON.parse(event.data) as Message
-
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     switch (message.action) {
       case 'notification': {
@@ -113,7 +112,7 @@ export class Plugin<T extends Api> {
       if (!this.iframe.contentWindow || !this.iframe.contentDocument)
         throw new Error('No window or document attached to Iframe')
       this.source = this.iframe.contentWindow
-      this.origin = this.iframe.contentDocument.origin
+      this.origin = this.iframe.contentWindow.origin || this.iframe.contentWindow.location.origin
     } catch (err) {
       console.log(err)
     }

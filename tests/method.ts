@@ -2,7 +2,6 @@ import { Plugin, PluginProfile } from '../src'
 import {
   ResolverApi,
   ResolverProfile,
-  Resolver,
   PluginManagerComponent,
   RemixAppManager,
 } from '../examples/modules'
@@ -14,14 +13,6 @@ const EthdocProfile: PluginProfile<Ethdoc> = {
   url: 'some-url'
 }
 
-export interface IAppManager {
-  modules: {
-    solResolver: Resolver
-  }
-  plugins: {
-    ethdoc: Ethdoc
-  }
-}
 
 describe('Method', () => {
   let app: RemixAppManager
