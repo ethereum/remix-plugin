@@ -1,6 +1,6 @@
 import { Message, Api } from '../types'
 
-export class RemixExtension<T extends Api> {
+export class PluginIframe<T extends Api> {
   private source: Window
   private origin: string
   private notifications: {
@@ -21,11 +21,11 @@ export class RemixExtension<T extends Api> {
   }
 
   /** Manage a message coming from the parent origin */
-  private getMessage(event: MessageEvent) {
+  private async getMessage(event: MessageEvent) {
     if (!event.source) return
     if (!this.checkOrigin(event.origin)) return
     if (!event.data) return
-    const msg = JSON.parse(event.data) as Message
+    const msg: Message = JSON.parse(event.data)
     if (!msg) return
 
     const { action, key, name, payload, id, error } = msg
@@ -51,7 +51,8 @@ export class RemixExtension<T extends Api> {
         if (!this[key]) {
           throw new Error(`Method ${key} doesn't exist on ${name}`)
         }
-        this.send({action, name, key, id, payload: this[key](payload)})
+        const result = await this[key](payload)
+        this.send({action, name, key, id, payload: result})
       }
     } catch (err) {
       const message = { action, name, key, id, error: err.error };
