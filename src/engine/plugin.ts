@@ -95,24 +95,22 @@ export class Plugin<T extends Api> {
   }
 
   /** Create an iframe element */
-  private async create({ url, loadIn }: PluginProfile) {
+  private async create({ url, location }: PluginProfile) {
     // Create
     try {
-      let parent: HTMLElement
-      if (loadIn) {
-        const { name, key } = loadIn
-        const message = { action: 'request', name, key, payload: {} } as Message
-        parent = (await this.request(message)) as HTMLElement
-      } else {
-        parent = document.body
-      }
       this.iframe = document.createElement('iframe')
       this.iframe.src = url
-      parent.appendChild(this.iframe)
       if (!this.iframe.contentWindow || !this.iframe.contentDocument)
         throw new Error('No window or document attached to Iframe')
       this.source = this.iframe.contentWindow
       this.origin = this.iframe.contentWindow.origin || this.iframe.contentWindow.location.origin
+
+      if (location) {
+        const { name, key } = location
+        const message = { action: 'request', name, key, payload: {} } as Message
+        const parent = (await this.request(message)) as HTMLElement
+        parent.appendChild(this.iframe)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -125,5 +123,10 @@ export class Plugin<T extends Api> {
   private postMessage(message: Partial<Message>) {
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
+  }
+
+  public render() {
+    if (!this.iframe) throw new Error('Plugin not activated yet')
+    return this.iframe
   }
 }
