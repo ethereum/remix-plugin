@@ -1,0 +1,22 @@
+{
+  "name": "ts-bazel-plugin",
+  "version": "1.0.0",
+  "description": "A simple example to build a plugin with Typescript and Bazel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Remix",
+    "plugin",
+    "Typescript",
+    "Bazel"
+  ],
+  "author": "Grandschtroumpf",
+  "license": "MIT",
+  "devDependencies": {
+    "@bazel/bazel": "^0.21.0",
+    "@bazel/typescript": "^0.22.1",
+    "typescript": "^3.2.2"
+  }
+}
