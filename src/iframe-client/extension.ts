@@ -1,6 +1,6 @@
 import { Message, Api } from '../types'
 
-export class PluginIframe<T extends Api> {
+export class IframePlugin<T extends Api> {
   private source: Window
   private origin: string
   private notifications: {

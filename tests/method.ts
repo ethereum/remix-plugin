@@ -9,7 +9,7 @@ import { Ethdoc } from './../examples/plugins/ethdoc'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
+  methods: ['getdoc'],
   url: 'some-url'
 }
 

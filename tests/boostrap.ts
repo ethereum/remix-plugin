@@ -4,7 +4,7 @@ import { Ethdoc } from './../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
+  methods: ['getdoc'],
   url: 'some-url'
 }
 
@@ -26,7 +26,7 @@ describe('Boostrap', () => {
   })
   test('pluginManager should activate plugin', () => {
     app.activateOne(EthdocProfile.name)
-    expect(app['calls'][EthdocProfile.name]['getDoc']).toBeDefined()
+    expect(app['calls'][EthdocProfile.name]['getdoc']).toBeDefined()
   })
   test('method activateOne should call setActive', () => {
     const spy = spyOn(app, 'setActive')

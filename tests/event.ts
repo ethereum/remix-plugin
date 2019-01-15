@@ -10,8 +10,8 @@ import { Ethdoc, VyperCompiler } from '../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
-  events: ['createDoc'],
+  methods: ['getdoc'],
+  events: ['newDoc'],
   notifications: {
     txlistener: ['newTransaction'],
     vyperCompiler: ['compilationFinished'],
@@ -66,8 +66,8 @@ describe('Event', () => {
     const spy = spyOn(app, 'broadcast' as any)
     if (!EthdocProfile.events)
       throw new Error('EthdocProfile should have "events"')
-    ethdoc.events.emit(EthdocProfile.events[0], true)
-    expect(spy).toBeCalledWith(ethdoc.name, EthdocProfile.events[0], true)
+    ethdoc.events.emit(EthdocProfile.events[0], 'Documentation')
+    expect(spy).toBeCalledWith(ethdoc.name, EthdocProfile.events[0], 'Documentation')
   })
 
   test('Plugin receive notification from module', done => {

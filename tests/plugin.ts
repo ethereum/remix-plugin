@@ -4,9 +4,14 @@ import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
-  url: 'some-url'
+  events: ['newDoc'],
+  methods: ['getdoc'],
+  notifications: {
+    'solCompiler': ['getCompilationFinished']
+  },
+  url: 'https://ipfs.io/ipfs/Qmdu56TjQLMQmwitM6GRZXwvTWh8LBoNCWmoZbSzykPycJ/'
 }
+
 
 describe('Plugin', () => {
   let app: RemixAppManager
@@ -22,11 +27,11 @@ describe('Plugin', () => {
     expect(app['calls'][api.name]).toBeDefined()
   })
   test('method is added to app', () => {
-    expect(app['calls'][api.name]['getDoc']).toBeDefined()
+    expect(app['calls'][api.name]['getdoc']).toBeDefined()
   })
 
   test('Iframe should have src settled', () => {
-    expect(api['iframe'].src).toEqual(`${document.origin}/${EthdocProfile.url}`)
+    expect(api['iframe'].src).toEqual(EthdocProfile.url)
   })
 
   test('Plugin should get handshake', (done) => {
