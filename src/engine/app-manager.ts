@@ -102,6 +102,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     if (entry.api.activate) {
       entry.api.activate()
     }
+    this.setActive(name, true)
     this.events.emit('activate', entry)
   }
 
@@ -151,6 +152,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     this.deactivateProfile(profile)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
+    this.setActive(name, false)
     this.events.emit('deactivate', profile)
   }
 

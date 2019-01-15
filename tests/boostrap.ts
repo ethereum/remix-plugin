@@ -28,4 +28,9 @@ describe('Boostrap', () => {
     app.activateOne(EthdocProfile.name)
     expect(app['calls'][EthdocProfile.name]['getDoc']).toBeDefined()
   })
+  test('method activateOne should call setActive', () => {
+    const spy = spyOn(app, 'setActive')
+    app.activateOne(EthdocProfile.name)
+    expect(spy).toBeCalledWith(EthdocProfile.name, true)
+  })
 })
