@@ -51,6 +51,10 @@ export class PluginManagerComponent {
   }
 
   public activate(name: string) {
+    if (this.state.entities[name].api['render']) {
+      const view = this.state.entities[name].api['render']()
+      document.body.appendChild(view)
+    }
     this.state.actives.push(name)
   }
 

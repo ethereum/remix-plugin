@@ -26,6 +26,19 @@ export interface AppManager extends Api {
   deactivateOne(name: string): void
 }
 
+/**
+ * AppManager can implement a default location for plugin to be rendered
+ * `name` is the name of the module to call
+ * `key` is the name of the method exposed by the module
+ * The method should accept an `HTMLElement` as payload
+ */
+export interface DefaultLocation {
+  defaultLocation: {
+    name: string
+    key: string
+  }
+}
+
 export abstract class AppManagerApi implements API<AppManager> {
 
   private eventmanager: EventListeners = {}
@@ -79,6 +92,10 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Register on Module or Plugin */
   public registerOne<T extends Api>(entry: Entry<T>) {
+    // Add a default location is provided by the AppManager update the profile with it
+    if (!entry.profile['location'] && this['defaultLocation']) {
+      entry.profile['location'] = this['defaultLocation']
+    }
     this.addEntity(entry)
     this.events.emit('register', entry.profile.name)
   }
