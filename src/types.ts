@@ -40,9 +40,11 @@ export interface ModuleProfile<T extends Api = any> {
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
-  notifications?: { name: string; key: string }[]
+  notifications?: {
+    [name: string]: string[]
+  },
   url: string
-  loadIn?: { name: string; key: string } // The module used to load the iframe in
+  location?: { name: string; key: string } // The module used to load the iframe in
 }
 
 /* ---- MESSAGES ---- */

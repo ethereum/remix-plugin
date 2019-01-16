@@ -107,13 +107,14 @@ You can find example of modules here :
 
 ## Build a Plugin
 
-## AppManager : Module interaction
-Modules and Plugins interact with each other thanks to an `AppManager`. It keeps a record of all the Modules and Plugins and broadcast events coming from them.
+## AppManagerApi : Module interaction
+Modules and Plugins interact with each other thanks to an `AppManagerApi`. It keeps a record of all the Modules and Plugins and broadcast events coming from them.
 
-### Extends AppManager
-`AppManager` is an `abstract` class, so you need to extends it and implements the methods: 
+### Extends AppManagerApi
+`AppManagerApi` is an `abstract` class, so you need to extends it and implements the methods: 
 - `addEntity(entry)`: Stores an entry (plugin or module) into the record of your choice.
 - `getEntity(name)`: Returns an entry based on it's name.
+- `setActive(name, isActive)`: Activate or deactivate an entry in the state.
 
 An `entry` is an object with the key `profile` and `api` : 
 ```typescript
@@ -125,7 +126,7 @@ const compilerEntry: Entry<Compiler> = {
 
 Here is a simple example using a mapping to store the entries : 
 ```typescript
-class MyAppManager extends AppManager {
+class MyAppManager extends AppManagerApi {
   private state = {}
 
   addEntity(entry: Entry) {

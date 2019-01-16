@@ -1,11 +1,16 @@
 import { Message, PluginProfile, Api, ApiEventEmitter } from '../types'
 import { EventEmitter } from 'events'
 
+interface PluginLocation {
+  resolveLocaton(element: HTMLElement): void
+}
+
 export class Plugin<T extends Api> {
   private id = 0
   private iframe: HTMLIFrameElement
-  private source: Window
+  private pluginLocation: PluginLocation
   private origin: string
+  private source: Window
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
     [name: string]: {
@@ -20,17 +25,20 @@ export class Plugin<T extends Api> {
   public activate: () => Promise<void>
   public deactivate: () => void
 
-  constructor(json: PluginProfile<T>) {
-    this.name = json.name
+  constructor(profile: PluginProfile<T>, location?: PluginLocation) {
+    if (location) this.pluginLocation = location
+
+    this.name = profile.name
     this.events = new EventEmitter() as ApiEventEmitter<T>
 
-    const notifs = json.notifications || []
-    notifs.forEach(({ name, key }) => {
-      if (!this.notifs[name]) this.notifs[name] = {}
-      this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload })
-    })
+    const notifs = profile.notifications || {}
+    for (const name in notifs) {
+      this.notifs[name] = {}
+      const keys = notifs[name] || []
+      keys.forEach(key => this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload }))
+    }
 
-    const methods = json.methods || []
+    const methods = profile.methods || []
     methods.forEach(method => {
       this[method as string] = (payload: any) => {
         this.id++
@@ -51,7 +59,7 @@ export class Plugin<T extends Api> {
 
     // Listen on message from the iframe and to the event
     this.activate = async () => {
-      await this.create(json)
+      await this.create(profile)
       window.addEventListener('message', getMessage, false)
     }
 
@@ -65,7 +73,6 @@ export class Plugin<T extends Api> {
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
     const message = JSON.parse(event.data) as Message
-
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     switch (message.action) {
       case 'notification': {
@@ -95,35 +102,37 @@ export class Plugin<T extends Api> {
   }
 
   /** Create an iframe element */
-  private async create({ url, loadIn }: PluginProfile) {
+  private async create({ url, location }: PluginProfile) {
     // Create
     try {
-      let parent: HTMLElement
-      if (loadIn) {
-        const { name, key } = loadIn
-        const message = { action: 'request', name, key, payload: {} } as Message
-        parent = (await this.request(message)) as HTMLElement
-      } else {
-        parent = document.body
-      }
       this.iframe = document.createElement('iframe')
       this.iframe.src = url
-      parent.appendChild(this.iframe)
-      if (!this.iframe.contentWindow)
-        throw new Error('No window attached to Iframe')
-      this.source = this.iframe.contentWindow
-      this.origin = this.iframe.contentWindow.origin
+      if (location) {
+        const { name, key } = location
+        const message = { action: 'request', name, key, payload: this.iframe }
+        await this.request(message)
+      } else if (this.pluginLocation) {
+        this.pluginLocation.resolveLocaton(this.iframe)
+      } else {
+        document.body.appendChild(this.iframe)
+      }
+      const iframeWindow = this.iframe.contentWindow
+      if (!iframeWindow) throw new Error('No window attached to Iframe yet')
+      this.origin = iframeWindow.origin || iframeWindow.location.origin
+      this.source = iframeWindow
+      // handshake
+      this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
+
     } catch (err) {
       console.log(err)
     }
-
-    // Handshake
-    this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
   }
 
   /** Post a message to the iframe of this plugin */
   private postMessage(message: Partial<Message>) {
+    if (!this.source) { throw new Error('No window attached to Iframe yet') }
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
   }
+
 }

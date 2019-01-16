@@ -26,6 +26,19 @@ export interface AppManager extends Api {
   deactivateOne(name: string): void
 }
 
+/**
+ * AppManager can implement a default location for plugin to be rendered
+ * `name` is the name of the module to call
+ * `key` is the name of the method exposed by the module
+ * The method should accept an `HTMLElement` as payload
+ */
+export interface DefaultLocation {
+  defaultLocation: {
+    name: string
+    key: string
+  }
+}
+
 export abstract class AppManagerApi implements API<AppManager> {
 
   private eventmanager: EventListeners = {}
@@ -47,6 +60,9 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Method to implement: Should add the plugin or module to the state of the application */
   abstract addEntity<T extends Api>(entry: Entry<T>): void
+
+  /** Method to implement: Do something when module or plugin is activated or deactivated */
+  abstract setActive(name: string, isActive: boolean): void
 
   /////////////
   // HELPERS //
@@ -76,6 +92,10 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Register on Module or Plugin */
   public registerOne<T extends Api>(entry: Entry<T>) {
+    // Add a default location is provided by the AppManager update the profile with it
+    if (!entry.profile['location'] && this['defaultLocation']) {
+      entry.profile['location'] = this['defaultLocation']
+    }
     this.addEntity(entry)
     this.events.emit('register', entry.profile.name)
   }
@@ -99,6 +119,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     if (entry.api.activate) {
       entry.api.activate()
     }
+    this.setActive(name, true)
     this.events.emit('activate', entry)
   }
 
@@ -123,13 +144,14 @@ export abstract class AppManagerApi implements API<AppManager> {
   private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
     api.request = ({ name, key, payload }) => this.calls[name][key](payload)
 
-    const notifications = profile.notifications || []
-    notifications.forEach(({ name, key }) => {
+    const notifications = profile.notifications || {}
+    for (const name in notifications) {
       const origin = api.name
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
       if (!this.eventmanager[origin][name]) this.eventmanager[origin][name] = {}
-      this.eventmanager[origin][name][key] = api.notifs[name][key]
-    })
+      const keys = notifications[name] || []
+      keys.forEach(key => this.eventmanager[origin][name][key] = api.notifs[name][key])
+    }
   }
 
   //////////////////
@@ -147,6 +169,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     this.deactivateProfile(profile)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
+    this.setActive(name, false)
     this.events.emit('deactivate', profile)
   }
 

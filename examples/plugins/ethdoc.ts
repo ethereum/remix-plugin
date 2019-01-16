@@ -1,24 +1,26 @@
-import { PluginProfile, RemixExtension } from "../../src"
+import { PluginProfile, IframePlugin } from "../../src"
 import { Api } from '../../src'
 
 export interface Ethdoc extends Api {
-  name: 'ethdoc'
+  name: 'ethdoc',
   events: {
-    createDoc: any
+    newDoc: string
   }
-  getDoc(): any
+  getdoc(): string,
 }
 
 export const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
-  events: ['createDoc'],
-  notifications: [{name: 'solCompiler', key : 'compilationFinished'}],
+  methods: ['getdoc'],
+  events: ['newDoc'],
+  notifications: {
+    'solCompiler': ['compilationFinished']
+  },
   url: ''
 }
 
 // Plugin: This should be in an Iframe
-export class EthdocApi extends RemixExtension<Ethdoc> {
+export class EthdocApi extends IframePlugin<Ethdoc> {
 
   private doc: any
 
@@ -26,7 +28,7 @@ export class EthdocApi extends RemixExtension<Ethdoc> {
     super()
     this.listen('solCompiler', 'compilationFinished', (result) => {
       this.doc = result.data
-      this.emit('createDoc', this.doc)
+      this.emit('newDoc', this.doc)
     })
   }
 

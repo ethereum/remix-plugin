@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "A simple Remix Plugin written in Typescript",
   "scripts": {
-      "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [
     "Remix",
@@ -13,7 +14,7 @@
   "author": "François Guezengar",
   "license": "MIT",
   "dependencies": {
-      "remix-plugin": "AUTO"
+    "remix-plugin": "latest"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^1.0.0",

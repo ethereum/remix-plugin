@@ -2,7 +2,6 @@ import { Plugin, PluginProfile } from '../src'
 import {
   ResolverApi,
   ResolverProfile,
-  Resolver,
   PluginManagerComponent,
   RemixAppManager,
 } from '../examples/modules'
@@ -10,18 +9,10 @@ import { Ethdoc } from './../examples/plugins/ethdoc'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
-  methods: ['getDoc'],
+  methods: ['getdoc'],
   url: 'some-url'
 }
 
-export interface IAppManager {
-  modules: {
-    solResolver: Resolver
-  }
-  plugins: {
-    ethdoc: Ethdoc
-  }
-}
 
 describe('Method', () => {
   let app: RemixAppManager
