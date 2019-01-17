@@ -166,7 +166,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Deactivate a module or plugin */
   public deactivateOne(name: string) {
     const { profile, api } = this.getEntity(name)
-    this.deactivateProfile(profile)
+    this.deactivateProfile(name)
     // if (api.events) api.events.removeAllListeners()
     if (api.deactivate) api.deactivate()
     this.setActive(name, false)
@@ -174,11 +174,8 @@ export abstract class AppManagerApi implements API<AppManager> {
   }
 
   /** Deactivation for modules and plugins */
-  private deactivateProfile(profile: ModuleProfile) {
-    this.calls[profile.name] = {} as any
-
-    const methods = profile.methods || []
-    methods.forEach(key => delete this[profile.name][key])
+  private deactivateProfile(name: string) {
+    delete this.calls[name]
   }
 
   ////////////////////

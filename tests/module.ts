@@ -9,7 +9,7 @@ describe('Module', () => {
   let app: RemixAppManager
   let component: PluginManagerComponent
   let api: CompilerApi
-  beforeAll(() => {
+  beforeEach(() => {
     api = new CompilerApi()
     component = new PluginManagerComponent()
     app = new RemixAppManager(component)
@@ -19,5 +19,9 @@ describe('Module', () => {
   test('method is added to app', () => {
     const lastCompilationResult = app['calls'][api.name].lastCompilationResult()
     expect(lastCompilationResult).toEqual('compilation')
+  })
+  test('deactivate module', () => {
+    app.deactivateOne(api.name)
+    expect(app['calls'][api.name]).toBeUndefined()
   })
 })

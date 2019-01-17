@@ -1,4 +1,4 @@
-import { Ethdoc } from './main'
+import { Ethdoc } from './ethdoc'
 import { PluginProfile } from 'remix-plugin'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
