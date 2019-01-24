@@ -35,7 +35,11 @@ export class Plugin<T extends Api> {
     for (const name in notifs) {
       this.notifs[name] = {}
       const keys = notifs[name] || []
-      keys.forEach(key => this.notifs[name][key] = (payload: any) => this.postMessage({ name, key, payload }))
+      keys.forEach(
+        key =>
+          (this.notifs[name][key] = (payload: any) =>
+            this.postMessage({ name, key, payload })),
+      )
     }
 
     const methods = profile.methods || []
@@ -102,14 +106,19 @@ export class Plugin<T extends Api> {
   }
 
   /** Create an iframe element */
-  private async create({ url, location }: PluginProfile) {
+  private async create(profile: PluginProfile) {
     // Create
     try {
       this.iframe = document.createElement('iframe')
-      this.iframe.src = url
-      if (location) {
-        const { name, key } = location
-        const message = { action: 'request', name, key, payload: this.iframe }
+      this.iframe.src = profile.url
+      if (profile.location) {
+        const { name, key } = profile.location
+        const message = {
+          action: 'request',
+          name,
+          key,
+          payload: { ...profile, element: this.iframe },
+        }
         await this.request(message)
       } else if (this.pluginLocation) {
         this.pluginLocation.resolveLocaton(this.iframe)
@@ -122,7 +131,6 @@ export class Plugin<T extends Api> {
       this.source = iframeWindow
       // handshake
       this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
-
     } catch (err) {
       console.log(err)
     }
@@ -130,9 +138,10 @@ export class Plugin<T extends Api> {
 
   /** Post a message to the iframe of this plugin */
   private postMessage(message: Partial<Message>) {
-    if (!this.source) { throw new Error('No window attached to Iframe yet') }
+    if (!this.source) {
+      throw new Error('No window attached to Iframe yet')
+    }
     const msg = JSON.stringify(message)
     this.source.postMessage(msg, this.origin)
   }
-
 }
