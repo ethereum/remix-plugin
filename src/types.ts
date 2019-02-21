@@ -55,7 +55,7 @@ export interface ModuleProfile<T extends Api = any> {
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
-  required: false
+  required?: false
   notifications?: {
     [name: string]: string[]
   }
