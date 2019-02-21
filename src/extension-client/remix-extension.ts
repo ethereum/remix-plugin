@@ -1,6 +1,6 @@
 import { Message, Api } from '../types'
 
-export class RemixExtension<T extends Api> {
+export class RemixExtension<T extends Api = any> {
   private source: Window
   private origin: string
   private notifications: {
@@ -23,11 +23,11 @@ export class RemixExtension<T extends Api> {
 
   /** Manage a message coming from the parent origin */
   private async getMessage(event: MessageEvent) {
-    if (!event.source) return
-    if (!this.checkOrigin(event.origin)) return
-    if (!event.data) return
+    if (!event.source) throw new Error('No source')
+    if (!this.checkOrigin(event.origin)) throw new Error('Unknown origin')
+    if (!event.data) throw new Error('No data')
     const msg: Message = JSON.parse(event.data)
-    if (!msg) return
+    if (!msg) throw new Error('No message in data')
 
     const { action, key, name, payload, id, error } = msg
     try {
