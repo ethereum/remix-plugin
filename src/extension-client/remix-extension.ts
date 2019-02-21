@@ -71,7 +71,9 @@ export class RemixExtension<T extends Api = any> {
         "http://remix-alpha.ethereum.org",
         "http://remix.ethereum.org",
         "https://remix-alpha.ethereum.org",
-        "https://remix.ethereum.org"
+        "https://remix.ethereum.org",
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
       ].includes(origin)
   }
 
