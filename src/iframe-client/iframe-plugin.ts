@@ -12,6 +12,7 @@ export class IframePlugin<T extends Api> {
     [id: number]: (payload: any, error?: Error) => void
   }
   private id: number
+  private handshake: ({theme: string}) => any
 
   constructor() {
     this.notifications = {}
@@ -34,6 +35,7 @@ export class IframePlugin<T extends Api> {
       if (action === 'request' && key === 'handshake') {
         this.source = event.source as Window
         this.origin = event.origin
+        if (this.handshake) this.handshake(payload)
       }
 
       if (!this.source) throw new Error('Handshake before communicating')
@@ -79,7 +81,7 @@ export class IframePlugin<T extends Api> {
   }
 
   /** Listen on notification events from another plugin or module */
-  protected listen(
+  public listen(
     name: string,
     key: string,
     cb: (payload: any) => void,
@@ -91,7 +93,7 @@ export class IframePlugin<T extends Api> {
   }
 
   /** Call a method from another plugin or module */
-  protected call(name: string, key: string, payload: any): Promise<any> {
+  public call(name: string, key: string, payload: any): Promise<any> {
     const action = 'request'
     const id = this.id++
     const message = JSON.stringify({ action, name, key, payload, id })
@@ -107,5 +109,12 @@ export class IframePlugin<T extends Api> {
   /** Emit an event */
   public emit<Key extends keyof T['events'] & string>(key: Key, payload: T['events'][Key]) {
     this.send({ action: 'notification', key, payload })
+  }
+
+  /** Return the current theme when handshaked */
+  public loaded(): Promise<{theme: string}> {
+    return new Promise((res, rej) => {
+      this.handshake = (payload) => res(payload)
+    })
   }
 }
