@@ -5,15 +5,15 @@ import {
   EventListeners,
   Api,
   ApiEventEmitter,
-  Entry
+  Entry,
 } from '../types'
 import { EventEmitter } from 'events'
 
 export interface AppManager extends Api {
-  name: 'appManager',
+  name: 'appManager'
   events: {
     register: string
-    activate: Entry<Api>,
+    activate: Entry<Api>
     deactivate: ModuleProfile
   }
   registerMany(entry: Entry<any>[]): void
@@ -40,7 +40,6 @@ export interface DefaultLocation {
 }
 
 export abstract class AppManagerApi implements API<AppManager> {
-
   private eventmanager: EventListeners = {}
   private calls: {
     [name: string]: {
@@ -80,6 +79,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Register many Modules or Plugins and activate them */
   public init(entries: Entry<any>[]) {
     entries.forEach(entry => {
+      entry.profile.required = true
       this.registerOne(entry)
       this.activateOne(entry.profile.name)
     })
@@ -126,22 +126,28 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Activation for Module and Plugin */
   private activateCallAndEvent<T extends Api>({ profile, api }: Entry<T>) {
     const events = profile.events || []
-    events.forEach((event) => {
+    events.forEach(event => {
       if (!api.events) return
-      api.events.on(event, (payload: any) => this.broadcast(api.name, event as string, payload))
+      api.events.on(event, (payload: any) =>
+        this.broadcast(api.name, event as string, payload),
+      )
     })
 
     const methods = profile.methods || []
     this.calls[api.name] = {}
-    methods.forEach((key) => {
-      if ((key) in api) {
-        this.calls[api.name][key as string] = (...args: any[]) => (api[key as string])(...args)
+    methods.forEach(key => {
+      if (key in api) {
+        this.calls[api.name][key as string] = (...args: any[]) =>
+          api[key as string](...args)
       }
     })
   }
 
   /** Activation for Plugin only */
-  private activateRequestAndNotification<T extends Api>({ profile, api }: PluginEntry<T>) {
+  private activateRequestAndNotification<T extends Api>({
+    profile,
+    api,
+  }: PluginEntry<T>) {
     api.request = ({ name, key, payload }) => this.calls[name][key](payload)
 
     const notifications = profile.notifications || {}
@@ -150,7 +156,9 @@ export abstract class AppManagerApi implements API<AppManager> {
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
       if (!this.eventmanager[origin][name]) this.eventmanager[origin][name] = {}
       const keys = notifications[name] || []
-      keys.forEach(key => this.eventmanager[origin][name][key] = api.notifs[name][key])
+      keys.forEach(
+        key => (this.eventmanager[origin][name][key] = api.notifs[name][key]),
+      )
     }
   }
 
@@ -186,7 +194,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   private broadcast<M extends Api, E extends keyof M['events']>(
     name: M['name'],
     key: E,
-    payload: M['events'][E]
+    payload: M['events'][E],
   ) {
     for (const origin in this.eventmanager) {
       if (this.eventmanager[origin][name]) {
