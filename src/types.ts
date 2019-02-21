@@ -1,6 +1,8 @@
 import { Plugin } from './engine/plugin'
 
-export type ExtractKey<T, U> =  { [K in keyof T]: T[K] extends U ? K : never }[keyof T]
+export type ExtractKey<T, U> = {
+  [K in keyof T]: T[K] extends U ? K : never
+}[keyof T]
 
 export interface Api {
   name: string
@@ -15,10 +17,22 @@ export type ApiListener<T> = (arg: T) => void
 export interface ApiEventEmitter<T extends Api> {
   setMaxListeners(n: number): this
   emit<K extends keyof T['events']>(name: K, arg: T['events'][K]): boolean
-  addListener<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
-  on<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
-  once<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
-  removeListener<K extends keyof T['events']>(name: K, listener: ApiListener<T['events'][K]>): this
+  addListener<K extends keyof T['events']>(
+    name: K,
+    listener: ApiListener<T['events'][K]>,
+  ): this
+  on<K extends keyof T['events']>(
+    name: K,
+    listener: ApiListener<T['events'][K]>,
+  ): this
+  once<K extends keyof T['events']>(
+    name: K,
+    listener: ApiListener<T['events'][K]>,
+  ): this
+  removeListener<K extends keyof T['events']>(
+    name: K,
+    listener: ApiListener<T['events'][K]>,
+  ): this
   removeAllListeners<K extends keyof T['events']>(name?: K): this
   listeners<K extends keyof T['events']>(name: K): ApiListener<T['events'][K]>[]
   listenerCount<K extends keyof T['events']>(name: K): number
@@ -29,20 +43,22 @@ export type API<T extends Api> = {
   events?: ApiEventEmitter<T>
   activate?(): void
   deactivate?(): void
-} & {
-  [M in ExtractKey<T, Function>]: T[M]
-}
+} & { [M in ExtractKey<T, Function>]: T[M] }
 
 export interface ModuleProfile<T extends Api = any> {
   name: T['name']
+  displayName?: string
+  required?: boolean
+  kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
   methods?: ExtractKey<T, Function>[]
   events?: (keyof T['events'])[]
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
+  required: false
   notifications?: {
     [name: string]: string[]
-  },
+  }
   url: string
   location?: { name: string; key: string } // The module used to load the iframe in
 }
@@ -88,13 +104,21 @@ export interface EventListeners {
 
 /** List of calls methods inside an AppManager */
 export type AppCalls<T extends IAppManager> = {
-  [name in (keyof T['modules'] | keyof T['plugins'])]: T['modules'][name] extends undefined
-  ? {
-    [key in ExtractKey<T['plugins'][name], Function>]: T['plugins'][name][key]
-  }
-  : {
-    [key in ExtractKey<T['modules'][name], Function>]: T['modules'][name][key]
-  }
+  [name in
+    | keyof T['modules']
+    | keyof T['plugins']]: T['modules'][name] extends undefined
+    ? {
+        [key in ExtractKey<
+          T['plugins'][name],
+          Function
+        >]: T['plugins'][name][key]
+      }
+    : {
+        [key in ExtractKey<
+          T['modules'][name],
+          Function
+        >]: T['modules'][name][key]
+      }
 }
 
 /** The data needed by the AppManager to add a module */
