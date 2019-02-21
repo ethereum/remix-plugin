@@ -127,10 +127,13 @@ export class Plugin<T extends Api> {
       }
       const iframeWindow = this.iframe.contentWindow
       if (!iframeWindow) throw new Error('No window attached to Iframe yet')
-      this.origin = iframeWindow.origin || iframeWindow.location.origin
+      // this.origin = iframeWindow.origin || iframeWindow.location.origin
+      this.origin = new URL(this.iframe.src).origin
       this.source = iframeWindow
-      // handshake
-      this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
+      // Wait for the iframe to load and handshake
+      this.iframe.onload = () => {
+        this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
+      }
     } catch (err) {
       console.log(err)
     }
