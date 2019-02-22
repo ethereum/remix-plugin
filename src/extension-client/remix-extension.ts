@@ -36,6 +36,7 @@ export class RemixExtension<T extends Api = any> {
         this.source = event.source as Window
         this.origin = event.origin
         if (this.handshake) this.handshake(payload)
+        return
       }
 
       if (!this.source) throw new Error('Handshake before communicating')
@@ -99,9 +100,9 @@ export class RemixExtension<T extends Api = any> {
     const action = 'request'
     const id = this.id++
     const message = JSON.stringify({ action, name, key, payload, id })
-    this.source.postMessage(message, '*')
+    this.source.postMessage(message, this.origin)
     return new Promise((res, rej) => {
-      this.pendingRequests[this.id] = (result: any, error?: Error) => {
+      this.pendingRequests[id] = (result: any, error?: Error) => {
         if (error) rej(error)
         if (!error) res(result)
       }
