@@ -150,7 +150,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   }: PluginEntry<T>) {
     api.request = ({ name, key, payload }) => {
       if (!Array.isArray(payload)) payload = [payload]
-      this.calls[name][key](...payload)
+      return this.calls[name][key](...payload)
     }
 
     const notifications = profile.notifications || {}

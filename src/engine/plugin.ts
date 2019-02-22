@@ -80,7 +80,8 @@ export class Plugin<T extends Api> {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     switch (message.action) {
       case 'notification': {
-        this.events.emit(message.key, message)
+        if (!message.payload) break
+        this.events.emit(message.key, message.payload)
         break
       }
       case 'request': {

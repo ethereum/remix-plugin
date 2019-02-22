@@ -103,8 +103,8 @@ export class RemixExtension<T extends Api = any> {
     this.source.postMessage(message, this.origin)
     return new Promise((res, rej) => {
       this.pendingRequests[id] = (result: any, error?: Error) => {
-        if (error) rej(error)
-        if (!error) res(result)
+        if (error) rej(new Error(`Error from IDE : ${error}`))
+        res(result)
       }
     })
   }
@@ -121,3 +121,4 @@ export class RemixExtension<T extends Api = any> {
     })
   }
 }
+
