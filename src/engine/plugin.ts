@@ -86,10 +86,13 @@ export class Plugin<T extends Api> {
       case 'request': {
         const action = 'response'
         try {
-          const res = await this.request(message)
-          this.postMessage({ ...res, action })
-        } catch (error) {
-          this.postMessage({ ...message, action, error })
+          const payload = await this.request(message)
+          const error = undefined
+          this.postMessage({ ...message, action, payload, error })
+        } catch (err) {
+          const payload = undefined
+          const error = err.message
+          this.postMessage({ ...message, action, payload, error })
         }
         break
       }
