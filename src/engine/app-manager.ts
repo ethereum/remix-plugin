@@ -129,15 +129,15 @@ export abstract class AppManagerApi implements API<AppManager> {
     events.forEach(event => {
       if (!api.events) return
       api.events.on(event, (payload: any) =>
-        this.broadcast(api.name, event as string, payload),
+        this.broadcast(profile.name, event as string, payload),
       )
     })
 
     const methods = profile.methods || []
-    this.calls[api.name] = {}
+    this.calls[profile.name] = {}
     methods.forEach(key => {
       if (key in api) {
-        this.calls[api.name][key as string] = (...args: any[]) =>
+        this.calls[profile.name][key as string] = (...args: any[]) =>
           api[key as string](...args)
       }
     })
@@ -152,7 +152,7 @@ export abstract class AppManagerApi implements API<AppManager> {
 
     const notifications = profile.notifications || {}
     for (const name in notifications) {
-      const origin = api.name
+      const origin = profile.name
       if (!this.eventmanager[origin]) this.eventmanager[origin] = {}
       if (!this.eventmanager[origin][name]) this.eventmanager[origin][name] = {}
       const keys = notifications[name] || []
