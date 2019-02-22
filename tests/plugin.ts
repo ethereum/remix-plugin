@@ -35,11 +35,12 @@ describe('Plugin', () => {
   })
 
   test('Plugin should get handshake', (done) => {
-    const handshake = { action: 'request', name: EthdocProfile.name, key: 'handshake' }
+    const handshake = { action: 'request', name: EthdocProfile.name, key: 'handshake' } as Partial<Message>
     api['source'].addEventListener('message', event => {
       expect(JSON.parse(event.data)).toEqual(handshake)
       done()
     }, false)
+    api['postMessage'](handshake)
   })
 
   test('Plugin should get a message', (done) => {
