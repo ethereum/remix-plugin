@@ -24,7 +24,7 @@ export class RemixExtension<T extends Api = any> {
   /** Manage a message coming from the parent origin */
   private async getMessage(event: MessageEvent) {
     if (!event.source) throw new Error('No source')
-    if (!this.checkOrigin(event.origin)) throw new Error('Unknown origin')
+    if (!this.checkOrigin(event.origin)) return
     if (!event.data) throw new Error('No data')
     const msg: Message = JSON.parse(event.data)
     if (!msg) throw new Error('No message in data')

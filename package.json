@@ -1,6 +1,6 @@
 {
   "name": "remix-plugin",
-  "version": "0.0.1-alpha.19",
+  "version": "0.0.1-alpha.26",
   "description": "Ethereum IDE and tools for the web",
   "contributors": [
     {
@@ -12,10 +12,14 @@
       "email": "francois.guezengar@hotmail.fr"
     }
   ],
-  "main": "dist",
+  "files": [
+    "dist"
+  ],
   "types": "dist/index.d.ts",
+  "browser": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "test": "jest"
   },
   "dependencies": {
@@ -27,14 +31,16 @@
     "jest": "^23.6.0",
     "prettier": "^1.15.2",
     "ts-jest": "^23.10.4",
+    "ts-loader": "^5.3.3",
     "tslint": "^5.11.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.3.3333",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "standard": {
     "ignore": [
       "node_modules/*"
-    ],
-    "parser": "babel-eslint"
+    ]
   },
   "repository": {
     "type": "git",

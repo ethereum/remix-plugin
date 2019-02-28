@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "baseUrl": ".",
-    "outDir": "dist",
+    "outDir": "./dist",
     "sourceMap": false,
     "declaration": true,
-    "module": "commonjs",
-    "strict": true,
     "noImplicitAny": false,
-    "strictPropertyInitialization": false,
-    "experimentalDecorators": true,
     "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["dom", "es2018"],
+    "lib": ["es2016", "dom", "es5"]
   },
   "include": ["src"]
 }
