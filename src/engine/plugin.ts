@@ -76,8 +76,8 @@ export class Plugin<T extends Api> {
 
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
-    const message = JSON.parse(event.data) as Message
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
+    const message = JSON.parse(event.data) as Message
     switch (message.action) {
       case 'notification': {
         if (!message.payload) break
