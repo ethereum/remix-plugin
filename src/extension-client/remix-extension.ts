@@ -96,7 +96,7 @@ export class RemixExtension<T extends Api = any> {
   }
 
   /** Call a method from another plugin or module */
-  public call(name: string, key: string, payload: any): Promise<any> {
+  public call(name: string, key: string, ...payload: any): Promise<any> {
     const action = 'request'
     const id = this.id++
     const message = JSON.stringify({ action, name, key, payload, id })
