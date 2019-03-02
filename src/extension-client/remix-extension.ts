@@ -5,7 +5,7 @@ export class RemixExtension<T extends Api = any> {
   private origin: string
   private notifications: {
     [name: string]: {
-      [key: string]: (payload: any) => void
+      [key: string]: (...payload: any[]) => void
     }
   }
   private pendingRequests: {
@@ -42,8 +42,8 @@ export class RemixExtension<T extends Api = any> {
       if (!this.source) throw new Error('Handshake before communicating')
 
       if (action === 'notification') {
-        if (this.notifications[key] && this.notifications[key][name]) {
-          this.notifications[key][name](payload)
+        if (this.notifications[name] && this.notifications[name][key]) {
+          this.notifications[name][key](...payload)
         }
       } else if (action === 'response') {
         if (this.pendingRequests[id]) {
@@ -87,7 +87,7 @@ export class RemixExtension<T extends Api = any> {
   public listen(
     name: string,
     key: string,
-    cb: (payload: any) => void,
+    cb: (...payload: any[]) => void,
   ) {
     if (!this.notifications[name]) {
       this.notifications[name] = {}

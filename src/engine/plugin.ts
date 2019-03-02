@@ -35,11 +35,11 @@ export class Plugin<T extends Api> {
     for (const name in notifs) {
       this.notifs[name] = {}
       const keys = notifs[name] || []
-      keys.forEach(
-        key =>
-          (this.notifs[name][key] = (payload: any) =>
-            this.postMessage({ name, key, payload })),
-      )
+      keys.forEach(key => {
+        this.notifs[name][key] = (payload: any[]) => {
+          this.postMessage({ action: 'notification', name, key, payload })
+        }
+      })
     }
 
     const methods = profile.methods || []

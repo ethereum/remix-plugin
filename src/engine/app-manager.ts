@@ -128,7 +128,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     const events = profile.events || []
     events.forEach(event => {
       if (!api.events) return
-      api.events.on(event, (payload: any) =>
+      api.events.on(event, (...payload: any[]) =>
         this.broadcast(profile.name, event as string, payload),
       )
     })
