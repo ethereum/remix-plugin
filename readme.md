@@ -31,7 +31,7 @@ const { RemixExtension } = remixPlugin
 const extension = new RemixExtension()
 ```
 
-## Api
+---
 
 ### Loaded
 `RemixExtension` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise `loaded` to be called.
@@ -60,7 +60,7 @@ extension.listen('solidity', 'compilationFinished', (target, source, version, da
 )
 ```
 
-> See all available event below.
+> See all available event [below](#api).
 
 ### Call 
 You can call some methods exposed by the IDE with with the method `call`. You need to provide the name of the plugin, the name of the method, and the arguments of the methods : 
