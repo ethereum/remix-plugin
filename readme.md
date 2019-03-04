@@ -95,6 +95,10 @@ async function deployReadme(content) {
 
 > Note: Be sure that your plugin is loaded before making any call.
 
+<div align="center">
+<img src="./doc/imgs/remix-extension.png" width="300">
+</div>
+
 ### Testing your plugin
 You can test your plugin direcly on the [alpha version of Remix-IDE](https://remix-alpha.ethereum.org). Go to the `pluginManager` (plug icon in the sidebar), and click "Connect to a Local Plugin".
 
