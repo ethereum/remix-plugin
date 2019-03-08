@@ -7,17 +7,14 @@ export class RemixExtension<T extends Api = any> {
     [name: string]: {
       [key: string]: (...payload: any[]) => void
     }
-  }
+  } = {}
   private pendingRequests: {
     [id: number]: (payload: any, error?: Error) => void
-  }
-  private id: number
-  private handshake: ({theme: string}) => any
+  } = {}
+  private id = 0
+  private handshake: () => any
 
   constructor() {
-    this.notifications = {}
-    this.pendingRequests = {}
-    this.id = 0
     window.addEventListener('message', event => this.getMessage(event), false)
   }
 
@@ -35,7 +32,7 @@ export class RemixExtension<T extends Api = any> {
       if (action === 'request' && key === 'handshake') {
         this.source = event.source as Window
         this.origin = event.origin
-        if (this.handshake) this.handshake(payload)
+        if (this.handshake) this.handshake()
         return
       }
 
@@ -117,7 +114,7 @@ export class RemixExtension<T extends Api = any> {
   /** Return the current theme when handshaked */
   public loaded(): Promise<{theme: string}> {
     return new Promise((res, rej) => {
-      this.handshake = (payload) => res(payload)
+      this.handshake = () => res()
     })
   }
 }
