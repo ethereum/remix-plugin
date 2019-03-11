@@ -1,8 +1,9 @@
 import { Plugin } from './engine/plugin'
 
-export type ExtractKey<T, U> = {
+export type StrictExtractKey<T, U> = {
   [K in keyof T]: T[K] extends U ? K : never
 }[keyof T]
+export type ExtractKey<T, U> = StrictExtractKey<T, U> | string
 
 export interface Api {
   name: string
@@ -43,7 +44,7 @@ export type API<T extends Api> = {
   events?: ApiEventEmitter<T>
   activate?(): void
   deactivate?(): void
-} & { [M in ExtractKey<T, Function>]: T[M] }
+} & { [M in StrictExtractKey<T, Function>]: T[M] }
 
 export interface ModuleProfile<T extends Api = any> {
   name: T['name']
@@ -91,8 +92,8 @@ export interface PluginRequest {
 export interface PluginApi<T extends Api> {
   profile: ModuleProfile<T> | PluginProfile<T>
   name: T['name']
-  events: ApiEventEmitter<T>
-  addRequest?: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
+  events?: ApiEventEmitter<T>
+  addRequest: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
   activate?: () => Promise<void>
   deactivate?: () => void
 }
@@ -123,13 +124,13 @@ export type AppCalls<T extends IAppManager> = {
     | keyof T['modules']
     | keyof T['plugins']]: T['modules'][name] extends undefined
     ? {
-        [key in ExtractKey<
+        [key in StrictExtractKey<
           T['plugins'][name],
           Function
         >]: T['plugins'][name][key]
       }
     : {
-        [key in ExtractKey<
+        [key in StrictExtractKey<
           T['modules'][name],
           Function
         >]: T['modules'][name][key]
