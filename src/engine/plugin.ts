@@ -1,16 +1,26 @@
-import { Message, PluginProfile, Api, ApiEventEmitter } from '../types'
+import {
+  Message,
+  PluginProfile,
+  Api,
+  ApiEventEmitter,
+  PluginRequest,
+  ExtractKey,
+  PluginApi,
+} from '../types'
 import { EventEmitter } from 'events'
 
 interface PluginLocation {
   resolveLocaton(element: HTMLElement): void
 }
 
-export class Plugin<T extends Api> {
+export class Plugin<T extends Api> implements PluginApi<T> {
   private id = 0
   private iframe: HTMLIFrameElement
   private pluginLocation: PluginLocation
   private origin: string
   private source: Window
+  // Request to the plugin waiting in queue
+  private requestQueue: Array<() => Promise<any>> = []
   // Request from outside to the plugin waiting for response from the plugin
   private pendingRequest: {
     [name: string]: {
@@ -19,6 +29,7 @@ export class Plugin<T extends Api> {
   } = {}
 
   public readonly name: T['name']
+  public profile: PluginProfile<T>
   public events: ApiEventEmitter<T>
   public notifs = {}
   public request: (value: { name: string; key: string; payload: any }) => any
@@ -28,6 +39,7 @@ export class Plugin<T extends Api> {
   constructor(profile: PluginProfile<T>, location?: PluginLocation) {
     if (location) this.pluginLocation = location
 
+    this.profile = profile
     this.name = profile.name
     this.events = new EventEmitter() as ApiEventEmitter<T>
 
@@ -41,23 +53,6 @@ export class Plugin<T extends Api> {
         }
       })
     }
-
-    const methods = profile.methods || []
-    methods.forEach(method => {
-      this[method as string] = (payload: any) => {
-        this.id++
-        this.postMessage({
-          action: 'request',
-          name: this.name,
-          key: method as string,
-          id: this.id,
-          payload,
-        })
-        return new Promise((res, rej) => {
-          this.pendingRequest[this.name][this.id] = (result: any) => res(result)
-        })
-      }
-    })
 
     const getMessage = (e: MessageEvent) => this.getMessage(e)
 
@@ -77,7 +72,8 @@ export class Plugin<T extends Api> {
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
-    const message: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+    const message: Message =
+      typeof event.data === 'string' ? JSON.parse(event.data) : event.data
     switch (message.action) {
       case 'notification': {
         if (!message.payload) break
@@ -109,7 +105,51 @@ export class Plugin<T extends Api> {
     }
   }
 
-  /** Create an iframe element */
+  /**
+   * Add a request for the plugin to the queue and execute it in time
+   * @param requestInfo Information concerning the incoming request
+   * @param method The name of the method to call
+   * @param payload The arguments of this method
+   */
+  public addRequest(
+    requestInfo: PluginRequest,
+    method: ExtractKey<T, Function>,
+    payload: any[],
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (!this.profile.methods.includes(method)) {
+        reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
+      }
+      // Add the current request into the queue
+      this.requestQueue.push(async () => {
+        this.id++
+        this.postMessage({
+          action: 'request',
+          name: this.name,
+          key: method as string,
+          id: this.id,
+          payload,
+          requestInfo,
+        })
+        // Wait for the response from the plugin
+        this.pendingRequest[this.name][this.id] = (result: any) => {
+          resolve(result)
+          // Remove current request and call next
+          this.requestQueue.shift()
+          if (this.requestQueue.length !== 0) this.requestQueue[0]()
+        }
+      })
+      // If there is only one request waiting, call it
+      if (this.requestQueue.length === 1) {
+        this.requestQueue[0]()
+      }
+    })
+  }
+
+  /**
+   * Create an iframe element
+   * @param profile The profile of the plugin
+   */
   private async create(profile: PluginProfile) {
     // Create
     try {
@@ -129,20 +169,28 @@ export class Plugin<T extends Api> {
       } else {
         document.body.appendChild(this.iframe)
       }
-      // this.origin = iframeWindow.origin || iframeWindow.location.origin
       // Wait for the iframe to load and handshake
       this.iframe.onload = () => {
-        if (!this.iframe.contentWindow) throw new Error('No window attached to Iframe yet')
+        if (!this.iframe.contentWindow) {
+          throw new Error('No window attached to Iframe yet')
+        }
         this.origin = new URL(this.iframe.src).origin
         this.source = this.iframe.contentWindow
-        this.postMessage({ action: 'request', name: this.name, key: 'handshake' })
+        this.postMessage({
+          action: 'request',
+          name: this.name,
+          key: 'handshake',
+        })
       }
     } catch (err) {
       console.log(err)
     }
   }
 
-  /** Post a message to the iframe of this plugin */
+  /**
+   * Post a message to the iframe of this plugin
+   * @param message The message to post
+   */
   private postMessage(message: Partial<Message>) {
     if (!this.source) {
       throw new Error('No window attached to Iframe yet')
