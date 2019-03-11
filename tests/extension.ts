@@ -38,10 +38,7 @@ describe('Remix Extension Handshake', () => {
   */
 
   test('Should trigger loaded on handshake', async (done) => {
-    extension.loaded().then(({theme}) => {
-      expect(theme).toBe('my-theme')
-      done()
-    })
+    extension.loaded().then(() => done())
     extension['getMessage'](handshake)
   })
 

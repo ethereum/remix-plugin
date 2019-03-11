@@ -1,27 +1,25 @@
 import {
   RemixAppManager,
-  PluginManagerComponent,
-  CompilerProfile,
+  Store,
   CompilerApi,
 } from '../examples/modules'
 
 describe('Module', () => {
   let app: RemixAppManager
-  let component: PluginManagerComponent
-  let api: CompilerApi
+  let compiler: CompilerApi
   beforeEach(() => {
-    api = new CompilerApi()
-    component = new PluginManagerComponent()
-    app = new RemixAppManager(component)
-    app.init([{ profile: CompilerProfile, api }])
+    compiler = new CompilerApi()
+    app = new RemixAppManager(new Store())
+    app.init([compiler.api()])
   })
-  test('is added to app', () => expect(app['calls'][api.name]).toBeDefined())
+  test('is added to app', () => {
+    expect(app['calls'][compiler.name]).toBeDefined()
+  })
   test('method is added to app', () => {
-    const lastCompilationResult = app['calls'][api.name].lastCompilationResult()
-    expect(lastCompilationResult).toEqual('compilation')
+    expect(app['calls'][compiler.name]['lastCompilationResult']).toBeDefined()
   })
   test('deactivate module', () => {
-    app.deactivateOne(api.name)
-    expect(app['calls'][api.name]).toBeUndefined()
+    app.deactivateOne(compiler.name)
+    expect(app['calls'][compiler.name]).toBeUndefined()
   })
 })
