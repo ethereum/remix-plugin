@@ -72,6 +72,7 @@ export interface Message {
   name: string
   key: string
   payload: any
+  requestInfo: PluginRequest
   error?: Error
 }
 
@@ -80,6 +81,20 @@ export interface EventMessage {
   name: string
   key: string
   payload: any
+}
+
+/* --- PLUGIN REQUEST --- */
+export interface PluginRequest {
+  from: string
+}
+
+export interface PluginApi<T extends Api> {
+  profile: ModuleProfile<T> | PluginProfile<T>
+  name: T['name']
+  events: ApiEventEmitter<T>
+  addRequest?: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
+  activate?: () => Promise<void>
+  deactivate?: () => void
 }
 
 /* ---- APP MANAGER ---- */
@@ -143,13 +158,6 @@ export type ModuleStore<T extends { [name: string]: Api }> = {
 }
 
 /* ---- IFRAME ---- */
-/** An Api for plugin that add notifications */
-export interface PluginApi<App extends IAppManager> extends Api {
-  notifications: {
-    [name in keyof App['modules']]: Notifications<App['modules'][name]>
-  }
-}
-
 /** The name of the event and it's name */
 export type Notifications<T extends Api> = {
   [key in keyof T['events']]: T['events'][key]
