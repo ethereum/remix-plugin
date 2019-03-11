@@ -5,7 +5,7 @@ import {
   PluginRequest,
   ExtractKey,
   PluginApi,
-} from 'src/types'
+} from '../types'
 
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
@@ -24,8 +24,11 @@ export abstract class ApiFactory<T extends Api = any> {
         args: any[],
       ) => {
         return new Promise((resolve, reject) => {
-          if (!this.profile.methods.includes(method)) {
+          if (!this.profile.methods || !this.profile.methods.includes(method)) {
             reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
+          }
+          if (!(method in this)) {
+            reject(new Error(`Method ${method} is not implemented by ${this.profile.name}`))
           }
           // Add a new request to the queue
           this.requestQueue.push(async () => {
