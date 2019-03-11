@@ -14,6 +14,7 @@ export class RemixExtension<T extends Api = any> {
   private id = 0
   private handshake: () => any
   protected currentRequest: PluginRequest
+  public isLoaded = false
 
   constructor() {
     window.addEventListener('message', event => this.getMessage(event), false)
@@ -33,7 +34,10 @@ export class RemixExtension<T extends Api = any> {
       if (action === 'request' && key === 'handshake') {
         this.source = event.source as Window
         this.origin = event.origin
-        if (this.handshake) this.handshake()
+        if (this.handshake) {
+          this.isLoaded = true
+          this.handshake()
+        }
         return
       }
 
