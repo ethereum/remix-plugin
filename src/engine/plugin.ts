@@ -117,7 +117,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     payload: any[],
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.profile.methods.includes(method)) {
+      if (!this.profile.methods || !this.profile.methods.includes(method)) {
         reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
       }
       // Add the current request into the queue

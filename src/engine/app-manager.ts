@@ -1,11 +1,9 @@
 import {
   ModuleProfile,
-  PluginEntry,
   API,
   EventListeners,
   Api,
   ApiEventEmitter,
-  Entry,
   PluginRequest,
   PluginApi,
 } from '../types'
@@ -81,26 +79,26 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Register many Modules or Plugins and activate them */
   public init(entries: PluginApi<any>[]) {
-    entries.forEach(entry => {
-      entry.profile.required = true
-      this.registerOne(entry)
-      this.activateOne(entry.profile.name)
+    entries.forEach(api => {
+      api.profile.required = true
+      this.registerOne(api)
+      this.activateOne(api.profile.name)
     })
   }
 
   /** Register many Modules or Plugins */
   public registerMany(entries: PluginApi<any>[]) {
-    entries.forEach(entry => this.registerOne(entry))
+    entries.forEach(api => this.registerOne(api))
   }
 
   /** Register on Module or Plugin */
-  public registerOne<T extends Api>(entry: PluginApi<T>) {
+  public registerOne<T extends Api>(api: PluginApi<T>) {
     // Add a default location is provided by the AppManager update the profile with it
-    if (!entry.profile['location'] && this['defaultLocation']) {
-      entry.profile['location'] = this['defaultLocation']
+    if (!api.profile['location'] && this['defaultLocation']) {
+      api.profile['location'] = this['defaultLocation']
     }
-    this.addEntity(entry)
-    this.events.emit('register', entry.profile.name)
+    this.addEntity(api)
+    this.events.emit('register', api.profile.name)
   }
 
   ////////////////
@@ -139,13 +137,11 @@ export abstract class AppManagerApi implements API<AppManager> {
     const methods = api.profile.methods || []
     this.calls[api.name] = {}
     methods.forEach(key => {
-      if (key in api) {
-        this.calls[api.name][key as string] = async (
-          request: PluginRequest,
-          ...args: any[]
-        ) => {
-          return api.addRequest(request, key, args)
-        }
+      this.calls[api.name][key as string] = async (
+        request: PluginRequest,
+        ...args: any[]
+      ) => {
+        return api.addRequest(request, key, args)
       }
     })
   }
