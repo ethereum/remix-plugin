@@ -113,8 +113,8 @@ export class RemixExtension<T extends Api = any> {
     this.send({ action: 'notification', key, payload })
   }
 
-  /** Return the current theme when handshaked */
-  public loaded(): Promise<{theme: string}> {
+  /** Run when the handshake is done */
+  public loaded(): Promise<void> {
     return new Promise((res, rej) => {
       this.handshake = () => res()
     })
