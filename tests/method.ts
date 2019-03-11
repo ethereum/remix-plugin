@@ -2,7 +2,7 @@ import { Plugin, PluginProfile } from '../src'
 import {
   ResolverApi,
   ResolverProfile,
-  PluginManagerComponent,
+  Store,
   RemixAppManager,
 } from '../examples/modules'
 import { Ethdoc } from './../examples/plugins/ethdoc'
@@ -16,23 +16,18 @@ const EthdocProfile: PluginProfile<Ethdoc> = {
 
 describe('Method', () => {
   let app: RemixAppManager
-  let component: PluginManagerComponent
-  let module: ResolverApi
-  let plugin: Plugin<Ethdoc>
+  let resolver: ResolverApi
+  let ethdoc: Plugin<Ethdoc>
   beforeAll(() => {
-    module = new ResolverApi()
-    plugin = new Plugin(EthdocProfile)
-    component = new PluginManagerComponent()
-    app = new RemixAppManager(component)
-    app.init([
-      { profile: ResolverProfile, api: module },
-      { profile: EthdocProfile, api: plugin },
-    ])
+    resolver = new ResolverApi()
+    ethdoc = new Plugin(EthdocProfile)
+    app = new RemixAppManager(new Store())
+    app.init([resolver.api(), ethdoc])
   })
 
   test('call a method from plugin api', () => {
     const spy = spyOn(app['calls'][ResolverProfile.name], 'getFile')
-    plugin.request({ name: module.name, key: 'getFile', payload: 'Ballot.sol' })
-    expect(spy).toBeCalledWith('Ballot.sol')
+    ethdoc.request({ name: resolver.name, key: 'getFile', payload: ['Ballot.sol'] })
+    expect(spy).toBeCalledWith({ from: ethdoc.name}, 'Ballot.sol')
   })
 })

@@ -1,5 +1,5 @@
 import { Plugin, PluginProfile } from '../src'
-import { RemixAppManager, PluginManagerComponent } from '../examples/modules'
+import { RemixAppManager, Store } from '../examples/modules'
 import { Ethdoc } from './../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
@@ -10,16 +10,14 @@ const EthdocProfile: PluginProfile<Ethdoc> = {
 
 describe('Boostrap', () => {
   let app: RemixAppManager
-  let api: Plugin<Ethdoc>
-  let component: PluginManagerComponent
+  let ethdoc: Plugin<Ethdoc>
   beforeAll(() => {
-    component = new PluginManagerComponent()
-    api = new Plugin(EthdocProfile)
-    app = new RemixAppManager(component)
-    app.registerOne<Ethdoc>({ profile: EthdocProfile, api })
+    ethdoc = new Plugin(EthdocProfile)
+    app = new RemixAppManager(new Store())
+    app.registerOne<Ethdoc>(ethdoc)
   })
   test('Plugin Entity should be registered', () => {
-    expect(app.getEntity(EthdocProfile.name)).toEqual({ profile: EthdocProfile, api })
+    expect(app.getEntity(EthdocProfile.name)).toEqual(ethdoc)
   })
   test('Plugin Entity method should not be available before activation', () => {
     expect(app['calls'][EthdocProfile.name]).toBeUndefined()
