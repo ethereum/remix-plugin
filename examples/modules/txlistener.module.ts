@@ -1,4 +1,4 @@
-import { ModuleProfile, Api, API, ApiEventEmitter } from '../../src'
+import { ModuleProfile, Api, API, ApiEventEmitter, ApiFactory } from '../../src'
 import { Transaction } from './types'
 import { EventEmitter } from 'events'
 
@@ -17,12 +17,14 @@ export const TxlistenerProfile: ModuleProfile<Txlistener> = {
 }
 
 // API
-export class TxlistenerApi implements API<Txlistener> {
+export class TxlistenerApi extends ApiFactory<Txlistener> implements API<Txlistener> {
   public readonly name = 'txlistener'
+  public readonly profile = TxlistenerProfile
   public events: ApiEventEmitter<Txlistener> = new EventEmitter()
 
   // In this implementation of the API, Txlistener depends on an external class
   constructor(emitter: TxEmitter) {
+    super()
     emitter.newTx.on('newTransaction', data => this.events.emit('newTransaction', data))
   }
 

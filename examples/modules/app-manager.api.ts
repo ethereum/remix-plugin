@@ -1,39 +1,39 @@
-import { AppManagerApi, Api, Entry } from '../../src'
+import { AppManagerApi, Api, PluginApi } from '../../src'
 
 export class RemixAppManager extends AppManagerApi {
 
-  constructor(private component: PluginManagerComponent) {
+  constructor(private store: Store) {
     super()
   }
 
   // Get the module from the component state
-  public getEntity<T extends Api>(id: string): Entry<T> {
-    return this.component.get<T>(id)
+  public getEntity<T extends Api>(id: string): PluginApi<T> {
+    return this.store.get<T>(id)
   }
 
   // Add the module to the component state
-  public addEntity<T extends Api>(entry: Entry<T>) {
-    this.component.add(entry)
+  public addEntity<T extends Api>(entry: PluginApi<T>) {
+    this.store.add(entry)
   }
 
   // Activate or deactivate a module or plugin
   public setActive(name: string, isActive: boolean) {
     isActive
-      ? this.component.activate(name)
-      : this.component.deactivate(name)
+      ? this.store.activate(name)
+      : this.store.deactivate(name)
   }
 
 }
 
 
-// Component used to display some content to the user
-export class PluginManagerComponent {
+// The store of the state of the AppManager
+export class Store {
 
   public state: {
     ids: string[],
     actives: string[],
     entities: {
-      [id: string]: Entry<any>
+      [id: string]: PluginApi<any>
     }
   } = {
     ids: [],
@@ -41,20 +41,16 @@ export class PluginManagerComponent {
     entities: {}
   }
 
-  public add<T extends Api>({profile, api}: Entry<T>) {
-    this.state.ids.push(profile.name)
-    this.state.entities[profile.name] = {profile, api} as Entry<T>
+  public add<T extends Api>(api: PluginApi<T>) {
+    this.state.ids.push(api.name)
+    this.state.entities[api.name] = api
   }
 
   public get<T extends Api>(name: string) {
-    return this.state.entities[name] as Entry<T>
+    return this.state.entities[name] as PluginApi<T>
   }
 
   public activate(name: string) {
-    if (this.state.entities[name].api['render']) {
-      const view = this.state.entities[name].api['render']()
-      document.body.appendChild(view)
-    }
     this.state.actives.push(name)
   }
 

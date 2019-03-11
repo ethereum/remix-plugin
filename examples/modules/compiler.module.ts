@@ -1,4 +1,4 @@
-import { ModuleProfile, Api, API, ApiEventEmitter } from '../../src'
+import { ModuleProfile, Api, API, ApiEventEmitter, ApiFactory } from '../../src'
 import { EventEmitter } from 'events'
 
 // Type
@@ -18,11 +18,10 @@ export const CompilerProfile: ModuleProfile<Compiler> = {
 }
 
 // API
-export class CompilerApi implements API<Compiler> {
+export class CompilerApi extends ApiFactory<Compiler> implements API<Compiler> {
   public readonly name = 'solCompiler'
+  public readonly profile = CompilerProfile
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
-
-  constructor() {}
 
   public lastCompilationResult() {
     return 'compilation'
