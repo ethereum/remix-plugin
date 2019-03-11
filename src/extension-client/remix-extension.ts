@@ -1,4 +1,4 @@
-import { Message, Api } from '../types'
+import { Message, Api, PluginRequest } from '../types'
 
 export class RemixExtension<T extends Api = any> {
   private source: Window
@@ -13,6 +13,7 @@ export class RemixExtension<T extends Api = any> {
   } = {}
   private id = 0
   private handshake: () => any
+  protected currentRequest: PluginRequest
 
   constructor() {
     window.addEventListener('message', event => this.getMessage(event), false)
@@ -26,7 +27,7 @@ export class RemixExtension<T extends Api = any> {
     const msg: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
     if (!msg) throw new Error('No message in data')
 
-    const { action, key, name, payload, id, error } = msg
+    const { action, key, name, payload, id, requestInfo, error } = msg
     try {
 
       if (action === 'request' && key === 'handshake') {
@@ -51,6 +52,7 @@ export class RemixExtension<T extends Api = any> {
         if (!this[key]) {
           throw new Error(`Method ${key} doesn't exist on ${name}`)
         }
+        this.currentRequest = requestInfo
         const result = await this[key](payload)
         this.send({action, name, key, id, payload: result})
       }
