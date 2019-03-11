@@ -1,4 +1,4 @@
-import { PluginProfile, IframePlugin } from "../../src"
+import { PluginProfile, RemixExtension } from "../../src"
 import { Api } from '../../src'
 
 export interface Ethdoc extends Api {
@@ -20,7 +20,7 @@ export const EthdocProfile: PluginProfile<Ethdoc> = {
 }
 
 // Plugin: This should be in an Iframe
-export class EthdocApi extends IframePlugin<Ethdoc> {
+export class EthdocApi extends RemixExtension<Ethdoc> {
 
   private doc: any
 

@@ -1,4 +1,5 @@
-import { ModuleProfile, Api, API } from '../../src'
+import { ModuleProfile, Api, API, ApiFactory, ApiEventEmitter } from '../../src'
+import { EventEmitter } from 'events'
 
 
 // Type
@@ -15,12 +16,15 @@ export const ResolverProfile: ModuleProfile<Resolver> = {
 }
 
 // API
-export class ResolverApi implements API<Resolver> {
+export class ResolverApi extends ApiFactory<Resolver> implements API<Resolver> {
   public readonly name = 'solResolver'
+  public readonly profile = ResolverProfile
+  public events: ApiEventEmitter<Resolver> = new EventEmitter()
 
   public combineSource(path: string) {
     console.log(path)
   }
+
   public getFile(url: string): string {
     return 'contract Ballot{}'
   }
