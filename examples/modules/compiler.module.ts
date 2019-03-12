@@ -23,7 +23,15 @@ export class CompilerApi extends ApiFactory<Compiler> implements API<Compiler> {
   public readonly profile = CompilerProfile
   public events: ApiEventEmitter<Compiler> = new EventEmitter()
 
+  constructor(private canCall?: string[]) {
+    super()
+  }
+
   public lastCompilationResult() {
+    const { from } = this.currentRequest
+    if (this.canCall && !this.canCall.includes(from)) {
+      throw new Error(`${from} is not allowed to call 'lastCompilationResult'`)
+    }
     return 'compilation'
   }
 }
