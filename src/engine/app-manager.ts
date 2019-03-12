@@ -44,7 +44,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   private eventmanager: EventListeners = {}
   private calls: {
     [name: string]: {
-      [key: string]: (requestInfo: PluginRequest, ...payload: any[]) => any
+      [key: string]: (requestInfo: PluginRequest, ...payload: any[]) => Promise<any>
     }
   } = {}
 
@@ -137,11 +137,8 @@ export abstract class AppManagerApi implements API<AppManager> {
     const methods = api.profile.methods || []
     this.calls[api.name] = {}
     methods.forEach(key => {
-      this.calls[api.name][key as string] = async (
-        request: PluginRequest,
-        ...args: any[]
-      ) => {
-        return api.addRequest(request, key, args)
+      this.calls[api.name][key as string] = (request: PluginRequest, ...payload: any[]) => {
+        return api.addRequest(request, key, payload)
       }
     })
   }

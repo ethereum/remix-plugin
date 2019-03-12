@@ -33,8 +33,12 @@ export abstract class ApiFactory<T extends Api = any> {
           // Add a new request to the queue
           this.requestQueue.push(async () => {
             this.currentRequest = request
-            const result = await this[method as string](...args)
-            resolve(result)
+            try {
+              const result = await this[method as string](...args)
+              resolve(result)
+            } catch (err) {
+              reject(err)
+            }
             // Remove current request and call next
             this.requestQueue.shift()
             if (this.requestQueue.length !== 0) this.requestQueue[0]()
