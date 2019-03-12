@@ -118,8 +118,9 @@ export class RemixExtension<T extends Api = any> {
   }
 
   /** Run when the handshake is done */
-  public loaded(): Promise<void> {
+  public loaded(): Promise<void> {    
     return new Promise((res, rej) => {
+      if (this.isLoaded) return res()
       this.handshake = () => res()
     })
   }
