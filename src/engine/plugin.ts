@@ -32,7 +32,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   public profile: PluginProfile<T>
   public events: ApiEventEmitter<T>
   public notifs = {}
-  public request: (value: { name: string; key: string; payload: any }) => any
+  public request: (value: { name: string; key: string; payload: any }) => Promise<any>
   public activate: () => Promise<void>
   public deactivate: () => void
 
