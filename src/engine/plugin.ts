@@ -154,6 +154,8 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     // Create
     try {
       this.iframe = document.createElement('iframe')
+      this.iframe.setAttribute('sandbox', 'allow-scripts')
+      this.iframe.setAttribute('seamless', 'true')
       this.iframe.src = profile.url
       if (profile.location) {
         const { name, key } = profile.location
