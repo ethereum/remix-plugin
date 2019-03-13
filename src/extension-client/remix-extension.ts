@@ -15,6 +15,7 @@ export class RemixExtension<T extends Api = any> {
   private handshake: () => any
   protected currentRequest: PluginRequest
   public isLoaded = false
+  public devMode = false
 
   constructor() {
     window.addEventListener('message', event => this.getMessage(event), false)
@@ -69,6 +70,7 @@ export class RemixExtension<T extends Api = any> {
 
   /** Check if the sender has the right origin */
   private checkOrigin(origin: string) {
+    if (this.devMode) return true
     return this.origin
       ? this.origin === origin
       : [
@@ -84,6 +86,11 @@ export class RemixExtension<T extends Api = any> {
   /** Send a message to source parent */
   private send(message: Partial<Message>) {
     this.source.postMessage(JSON.stringify(message), this.origin)
+  }
+
+  /** Set developer mode (true/false) */
+  public setDevMode(devMode: boolean) {
+    this.devMode = devMode
   }
 
   /** Listen on notification events from another plugin or module */
