@@ -144,6 +144,8 @@ export class Plugin<T extends Api> implements PluginApi<T> {
       throw new Error(`${this.name} plugin is already rendered`)
     }
     this.iframe = document.createElement('iframe')
+    this.iframe.setAttribute('sandbox', 'allow-scripts')
+    this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake
     this.iframe.onload = () => {
