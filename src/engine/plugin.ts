@@ -139,48 +139,9 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   /**
    * Create and return the iframe
    */
-<<<<<<< HEAD
-  private async create(profile: PluginProfile) {
-    // Create
-    try {
-      this.iframe = document.createElement('iframe')
-      this.iframe.setAttribute('sandbox', 'allow-scripts')
-      this.iframe.setAttribute('seamless', 'true')
-      this.iframe.src = profile.url
-      if (profile.location) {
-        const { name, key } = profile.location
-        const message = {
-          action: 'request',
-          name,
-          key,
-          payload: { ...profile, element: this.iframe },
-        }
-        await this.request(message)
-      } else if (this.pluginLocation) {
-        this.pluginLocation.resolveLocaton(this.iframe)
-      } else {
-        document.body.appendChild(this.iframe)
-      }
-      // Wait for the iframe to load and handshake
-      this.iframe.onload = () => {
-        if (!this.iframe.contentWindow) {
-          throw new Error('No window attached to Iframe yet')
-        }
-        this.origin = new URL(this.iframe.src).origin
-        this.source = this.iframe.contentWindow
-        this.postMessage({
-          action: 'request',
-          name: this.name,
-          key: 'handshake',
-        })
-      }
-    } catch (err) {
-      console.log(err)
-=======
   public render() {
     if (this.iframe) {
       throw new Error(`${this.name} plugin is already rendered`)
->>>>>>> Use `render` instead of `activate`
     }
     this.iframe = document.createElement('iframe')
     this.iframe.src = this.profile.url
