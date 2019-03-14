@@ -94,6 +94,7 @@ export interface PluginApi<T extends Api> {
   name: T['name']
   events?: ApiEventEmitter<T>
   addRequest: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
+  render?: () => HTMLElement,
   activate?: () => Promise<void>
   deactivate?: () => void
 }

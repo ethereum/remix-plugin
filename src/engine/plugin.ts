@@ -9,14 +9,13 @@ import {
 } from '../types'
 import { EventEmitter } from 'events'
 
-interface PluginLocation {
-  resolveLocaton(element: HTMLElement): void
-}
+type MessageListener = ['message', (e: MessageEvent) => void, false]
 
 export class Plugin<T extends Api> implements PluginApi<T> {
+  // Listener is needed to remove the listener
+  private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
   private id = 0
   private iframe: HTMLIFrameElement
-  private pluginLocation: PluginLocation
   private origin: string
   private source: Window
   // Request to the plugin waiting in queue
@@ -29,19 +28,12 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   } = {}
 
   public readonly name: T['name']
-  public profile: PluginProfile<T>
-  public events: ApiEventEmitter<T>
+  public events = new EventEmitter() as ApiEventEmitter<T>
   public notifs = {}
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
-  public activate: () => Promise<void>
-  public deactivate: () => void
 
-  constructor(profile: PluginProfile<T>, location?: PluginLocation) {
-    if (location) this.pluginLocation = location
-
-    this.profile = profile
+  constructor(public profile: PluginProfile<T>) {
     this.name = profile.name
-    this.events = new EventEmitter() as ApiEventEmitter<T>
 
     const notifs = profile.notifications || {}
     for (const name in notifs) {
@@ -52,20 +44,6 @@ export class Plugin<T extends Api> implements PluginApi<T> {
           this.postMessage({ action: 'notification', name, key, payload })
         }
       })
-    }
-
-    const getMessage = (e: MessageEvent) => this.getMessage(e)
-
-    // Listen on message from the iframe and to the event
-    this.activate = async () => {
-      await this.create(profile)
-      window.addEventListener('message', getMessage, false)
-    }
-
-    // Remove events that come from iframe
-    this.deactivate = () => {
-      this.iframe.remove()
-      window.removeEventListener('message', getMessage, false)
     }
   }
 
@@ -103,6 +81,18 @@ export class Plugin<T extends Api> implements PluginApi<T> {
         throw new Error('Message should be a notification, request or response')
       }
     }
+  }
+
+  /**
+   * Post a message to the iframe of this plugin
+   * @param message The message to post
+   */
+  private postMessage(message: Partial<Message>) {
+    if (!this.source) {
+      throw new Error('No window attached to Iframe yet')
+    }
+    const msg = JSON.stringify(message)
+    this.source.postMessage(msg, this.origin)
   }
 
   /**
@@ -147,9 +137,9 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   }
 
   /**
-   * Create an iframe element
-   * @param profile The profile of the plugin
+   * Create and return the iframe
    */
+<<<<<<< HEAD
   private async create(profile: PluginProfile) {
     // Create
     try {
@@ -186,18 +176,31 @@ export class Plugin<T extends Api> implements PluginApi<T> {
       }
     } catch (err) {
       console.log(err)
+=======
+  public render() {
+    if (this.iframe) {
+      throw new Error(`${this.name} plugin is already rendered`)
+>>>>>>> Use `render` instead of `activate`
     }
+    this.iframe = document.createElement('iframe')
+    this.iframe.src = this.profile.url
+    // Wait for the iframe to load and handshake
+    this.iframe.onload = () => {
+      window.addEventListener(...this.listener)
+      this.origin = new URL(this.iframe.src).origin
+      this.source = this.iframe.contentWindow
+      this.postMessage({
+        action: 'request',
+        name: this.name,
+        key: 'handshake',
+      })
+    }
+    return this.iframe
   }
 
-  /**
-   * Post a message to the iframe of this plugin
-   * @param message The message to post
-   */
-  private postMessage(message: Partial<Message>) {
-    if (!this.source) {
-      throw new Error('No window attached to Iframe yet')
-    }
-    const msg = JSON.stringify(message)
-    this.source.postMessage(msg, this.origin)
+  public deactivate() {
+    this.iframe.remove()
+    window.removeEventListener(...this.listener)
   }
+
 }

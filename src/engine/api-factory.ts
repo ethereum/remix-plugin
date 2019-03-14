@@ -10,6 +10,7 @@ import {
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
   abstract events?: ApiEventEmitter<T>
+  abstract render?: () => HTMLElement
   private requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
 
@@ -18,6 +19,7 @@ export abstract class ApiFactory<T extends Api = any> {
       events: this.events,
       name: this.profile.name,
       profile: this.profile,
+      render: this.render ? () => this.render() : undefined,
       addRequest: (
         request: PluginRequest,
         method: ExtractKey<T, Function>,
