@@ -163,6 +163,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
 
   public deactivate() {
     this.iframe.remove()
+    this.iframe = null
     window.removeEventListener(...this.listener)
   }
 
