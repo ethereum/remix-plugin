@@ -91,8 +91,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     if (!this.source) {
       throw new Error('No window attached to Iframe yet')
     }
-    const msg = JSON.stringify(message)
-    this.source.postMessage(msg, this.origin)
+    this.source.postMessage(message, this.origin)
   }
 
   /**
@@ -144,7 +143,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
       throw new Error(`${this.name} plugin is already rendered`)
     }
     this.iframe = document.createElement('iframe')
-    this.iframe.setAttribute('sandbox', 'allow-scripts')
+    this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake

@@ -14,11 +14,11 @@ const eventFromRemix = {
 
 const handshake = {
   ...eventFromRemix,
-  data: JSON.stringify({
+  data: {
     action: 'request',
     key: 'handshake',
     payload: { theme: 'my-theme' }
-  })
+  }
 }
 
 describe('Remix Extension Handshake', () => {
