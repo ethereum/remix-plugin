@@ -26,7 +26,7 @@ export class RemixExtension<T extends Api = any> {
     if (!event.source) throw new Error('No source')
     if (!this.checkOrigin(event.origin)) return
     if (!event.data) throw new Error('No data')
-    const msg: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+    const msg: Message = event.data
     if (!msg) throw new Error('No message in data')
 
     const { action, key, name, payload, id, requestInfo, error } = msg
@@ -63,7 +63,7 @@ export class RemixExtension<T extends Api = any> {
       }
     } catch (err) {
       const message = { action, name, key, id, error: err.error };
-      (<Window>event.source).postMessage(JSON.stringify(message), event.origin)
+      (<Window>event.source).postMessage(message, event.origin)
     }
 
   }
@@ -85,7 +85,7 @@ export class RemixExtension<T extends Api = any> {
 
   /** Send a message to source parent */
   private send(message: Partial<Message>) {
-    this.source.postMessage(JSON.stringify(message), this.origin)
+    this.source.postMessage(message, this.origin)
   }
 
   /** Set developer mode (true/false) */
@@ -105,13 +105,12 @@ export class RemixExtension<T extends Api = any> {
   public call(name: string, key: string, ...payload: any): Promise<any> {
     const action = 'request'
     const id = this.id++
-    const message = JSON.stringify({ action, name, key, payload, id })
     return new Promise((res, rej) => {
       this.pendingRequests[id] = (result: any, error?: Error) => {
         if (error) rej(new Error(`Error from IDE : ${error}`))
         res(result)
       }
-      this.source.postMessage(message, this.origin)
+      this.send({ action, name, key, payload, id })
     })
   }
 

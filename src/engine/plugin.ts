@@ -50,8 +50,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
-    const message: Message =
-      typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+    const message: Message = event.data
     switch (message.action) {
       case 'notification': {
         if (!message.payload) break
@@ -91,8 +90,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     if (!this.source) {
       throw new Error('No window attached to Iframe yet')
     }
-    const msg = JSON.stringify(message)
-    this.source.postMessage(msg, this.origin)
+    this.source.postMessage(message, this.origin)
   }
 
   /**
@@ -144,7 +142,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
       throw new Error(`${this.name} plugin is already rendered`)
     }
     this.iframe = document.createElement('iframe')
-    this.iframe.setAttribute('sandbox', 'allow-scripts')
+    this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake
