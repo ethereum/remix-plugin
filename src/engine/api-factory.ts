@@ -10,8 +10,8 @@ import {
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
   abstract events?: ApiEventEmitter<T>
-  public activate?: Function
-  public deactivate?: Function
+  public activate?: () => Promise<void>
+  public deactivate?: () => void
   public render?: () => HTMLElement
   private requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
