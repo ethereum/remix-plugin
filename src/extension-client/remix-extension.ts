@@ -26,7 +26,7 @@ export class RemixExtension<T extends Api = any> {
     if (!event.source) throw new Error('No source')
     if (!this.checkOrigin(event.origin)) return
     if (!event.data) throw new Error('No data')
-    const msg: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+    const msg: Message = event.data
     if (!msg) throw new Error('No message in data')
 
     const { action, key, name, payload, id, requestInfo, error } = msg
