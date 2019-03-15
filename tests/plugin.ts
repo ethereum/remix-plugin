@@ -28,7 +28,8 @@ describe('Plugin', () => {
     expect(app['calls'][ethdoc.name]['getdoc']).toBeDefined()
   })
 
-  test('Iframe should have src settled', () => {
+  test('Iframe should render', () => {
+    ethdoc.render()
     expect(ethdoc['iframe'].src).toEqual(EthdocProfile.url)
   })
 

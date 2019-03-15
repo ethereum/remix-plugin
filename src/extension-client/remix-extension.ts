@@ -94,11 +94,7 @@ export class RemixExtension<T extends Api = any> {
   }
 
   /** Listen on notification events from another plugin or module */
-  public listen(
-    name: string,
-    key: string,
-    cb: (...payload: any[]) => void,
-  ) {
+  public listen(name: string, key: string, cb: (...payload: any[]) => void) {
     if (!this.notifications[name]) {
       this.notifications[name] = {}
     }
@@ -110,18 +106,18 @@ export class RemixExtension<T extends Api = any> {
     const action = 'request'
     const id = this.id++
     const message = JSON.stringify({ action, name, key, payload, id })
-    this.source.postMessage(message, this.origin)
     return new Promise((res, rej) => {
       this.pendingRequests[id] = (result: any, error?: Error) => {
         if (error) rej(new Error(`Error from IDE : ${error}`))
         res(result)
       }
+      this.source.postMessage(message, this.origin)
     })
   }
 
   /** Emit an event */
-  public emit<Key extends keyof T['events'] & string>(key: Key, payload: T['events'][Key]) {
-    this.send({ action: 'notification', key, payload })
+  public emit<Key extends keyof T['events']>(key: Key, payload: T['events'][Key]) {
+    this.send({ action: 'notification', key: key as string, payload })
   }
 
   /** Run when the handshake is done */

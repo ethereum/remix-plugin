@@ -10,6 +10,9 @@ import {
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
   abstract events?: ApiEventEmitter<T>
+  public activate?: () => Promise<void>
+  public deactivate?: () => void
+  public render?: () => HTMLElement
   private requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
 
@@ -18,6 +21,9 @@ export abstract class ApiFactory<T extends Api = any> {
       events: this.events,
       name: this.profile.name,
       profile: this.profile,
+      render: this.render ? () => this.render() : undefined,
+      activate: this.activate ? () => this.activate() : undefined,
+      deactivate: this.deactivate ? () => this.deactivate() : undefined,
       addRequest: (
         request: PluginRequest,
         method: ExtractKey<T, Function>,
