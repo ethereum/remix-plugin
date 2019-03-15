@@ -1,6 +1,7 @@
 import { Message, Api, PluginRequest } from '../types'
 
 export class RemixExtension<T extends Api = any> {
+  private devModePort: number | string
   private source: Window
   private origin: string
   private notifications: {
@@ -15,7 +16,6 @@ export class RemixExtension<T extends Api = any> {
   private handshake: () => any
   protected currentRequest: PluginRequest
   public isLoaded = false
-  public devMode = false
 
   constructor() {
     window.addEventListener('message', event => this.getMessage(event), false)
@@ -70,7 +70,12 @@ export class RemixExtension<T extends Api = any> {
 
   /** Check if the sender has the right origin */
   private checkOrigin(origin: string) {
-    if (this.devMode) return true
+    const localhost = this.devModePort ? [
+      `http://127.0.0.1:${this.devModePort}`,
+      `http://localhost:${this.devModePort}`,
+      `https://127.0.0.1:${this.devModePort}`,
+      `https://localhost:${this.devModePort}`,
+    ] : []
     return this.origin
       ? this.origin === origin
       : [
@@ -78,19 +83,27 @@ export class RemixExtension<T extends Api = any> {
         "http://remix.ethereum.org",
         "https://remix-alpha.ethereum.org",
         "https://remix.ethereum.org",
-        "http://127.0.0.1:8080",
-        "http://localhost:8080",
+        ...localhost
       ].includes(origin)
   }
 
   /** Send a message to source parent */
   private send(message: Partial<Message>) {
+    if (!this.source || !this.origin) {
+      const devmode = this.devModePort
+      ? `Make sure the port of the IDE is ${this.devModePort}`
+      : 'If you are using a local IDE, make sure to add devMode: extension.setDevMode(idePort)'
+      throw new Error(`Not connected to the IDE. ${devmode}`)
+    }
     this.source.postMessage(message, this.origin)
   }
 
-  /** Set developer mode (true/false) */
-  public setDevMode(devMode: boolean) {
-    this.devMode = devMode
+  /**
+   * Set the plugin in a developer mode which accept localhost origin
+   * @param devModePort The port of the localhost for the IDE
+   */
+  public setDevMode(devModePort: number | string) {
+    this.devModePort = devModePort
   }
 
   /** Listen on notification events from another plugin or module */
