@@ -9,6 +9,7 @@ import {
 } from '../types'
 import { EventEmitter } from 'events'
 import { Plugin } from './plugin'
+import { PermissionHandler } from './permission-handler'
 
 export interface AppManager extends Api {
   name: 'appManager'
@@ -41,6 +42,7 @@ export interface DefaultLocation {
 }
 
 export abstract class AppManagerApi implements API<AppManager> {
+  abstract permissionHandler: PermissionHandler
   private eventmanager: EventListeners = {}
   private calls: {
     [name: string]: {
@@ -145,10 +147,21 @@ export abstract class AppManagerApi implements API<AppManager> {
 
   /** Activation for Plugin only */
   private activateRequestAndNotification<T extends Api>(api: Plugin<T>) {
-    api.request = ({ name, key, payload }) => {
-      if (!Array.isArray(payload)) payload = [payload]
-      const requestInfo: PluginRequest = { from: api.name }
-      return this.calls[name][key](requestInfo, ...payload)
+    api.request = async ({ name, key, payload }) => {
+      try {
+        // Ask permission before request
+        const from = { name: api.name, hash: api.profile.hash }
+        const isAllow = await this.permissionHandler.askPermission(from, name)
+        if (!isAllow) {
+          throw new Error(`${api.name} is not allowed to call ${name}.`)
+        }
+        // Manage request and payload
+        if (!Array.isArray(payload)) payload = [payload]
+        const requestInfo: PluginRequest = { from: api.name }
+        return this.calls[name][key](requestInfo, ...payload)
+      } catch (err) {
+        throw err
+      }
     }
 
     const notifications = api.profile.notifications || {}
