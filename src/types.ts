@@ -53,6 +53,7 @@ export interface ModuleProfile<T extends Api = any> {
   kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
   methods?: ExtractKey<T, Function>[]
   events?: (keyof T['events'])[]
+  permission?: boolean
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
