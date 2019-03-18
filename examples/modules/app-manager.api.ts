@@ -1,10 +1,12 @@
-import { AppManagerApi, Api, PluginApi } from '../../src'
-import { SecurityHandler } from './permission-handler'
+import { AppManagerApi, Api, PluginApi, IPermissionHandler } from '../../src'
+import { PermissionHandler } from '../permission/asbtract-class';
 
 export class RemixAppManager extends AppManagerApi {
-  public permissionHandler = new SecurityHandler()
 
-  constructor(private store: Store) {
+  constructor(
+    private store: Store,
+    public permissionHandler: IPermissionHandler = new PermissionHandler()
+  ) {
     super()
   }
 

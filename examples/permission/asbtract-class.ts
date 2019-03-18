@@ -1,39 +1,18 @@
-import { PluginProfile, ModuleProfile } from 'src/types'
+import { IPermissionProvider, IPermissionHandler, Permissions, PluginProfile, ModuleProfile } from '../../src/types'
 
-export interface Permissions {
-  [to: string]: {
-    [from: string]: {
-      allow: boolean
-      hash: string
-    }
-  }
-}
-
-export interface IPermissionProvider {
-  confirm(message: string): Promise<{ allow: boolean; remember: boolean }>
-}
-
-export interface IPermissionHandler {
-  /** The list of the current permissions */
-  permissions: Permissions
-  /** Ask the Permission to the user */
-  askPermission(from: PluginProfile, to: ModuleProfile): Promise<boolean>
-  /** Clear the permission object */
-  clear(): void
-}
 
 /**
  * Example of a PermissionHandler using localStorage
  */
-export abstract class PermissionHandler
-  implements IPermissionHandler, IPermissionProvider {
+export abstract class SecurityHandler implements IPermissionHandler, IPermissionProvider {
   public permissions: Permissions
   abstract confirm(
     message: string,
   ): Promise<{ allow: boolean; remember: boolean }>
 
   constructor() {
-    this.permissions = JSON.parse(localStorage.getItem('permissions'))
+    const permission = localStorage.getItem('permissions')
+    this.permissions = permission ? JSON.parse(permission) : {}
   }
 
   private setPermissions() {
@@ -98,5 +77,11 @@ export abstract class PermissionHandler
     }
     // Is allowed for this hash
     return true
+  }
+}
+
+export class PermissionHandler extends SecurityHandler {
+  async confirm(message: string) {
+    return { allow: true, remember: true }
   }
 }
