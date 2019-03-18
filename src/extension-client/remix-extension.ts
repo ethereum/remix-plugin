@@ -1,7 +1,11 @@
 import { Message, Api, PluginRequest } from '../types'
 
+interface DevMode {
+  port: number | string
+}
+
 export class RemixExtension<T extends Api = any> {
-  private devModePort: number | string
+  private devMode: DevMode
   private source: Window
   private origin: string
   private notifications: {
@@ -70,11 +74,11 @@ export class RemixExtension<T extends Api = any> {
 
   /** Check if the sender has the right origin */
   private checkOrigin(origin: string) {
-    const localhost = this.devModePort ? [
-      `http://127.0.0.1:${this.devModePort}`,
-      `http://localhost:${this.devModePort}`,
-      `https://127.0.0.1:${this.devModePort}`,
-      `https://localhost:${this.devModePort}`,
+    const localhost = this.devMode ? [
+      `http://127.0.0.1:${this.devMode.port}`,
+      `http://localhost:${this.devMode.port}`,
+      `https://127.0.0.1:${this.devMode.port}`,
+      `https://localhost:${this.devMode.port}`,
     ] : []
     return this.origin
       ? this.origin === origin
@@ -90,8 +94,8 @@ export class RemixExtension<T extends Api = any> {
   /** Send a message to source parent */
   private send(message: Partial<Message>) {
     if (!this.source || !this.origin) {
-      const devmode = this.devModePort
-      ? `Make sure the port of the IDE is ${this.devModePort}`
+      const devmode = this.devMode
+      ? `Make sure the port of the IDE is ${this.devMode.port}`
       : 'If you are using a local IDE, make sure to add devMode: extension.setDevMode(idePort)'
       throw new Error(`Not connected to the IDE. ${devmode}`)
     }
@@ -100,10 +104,10 @@ export class RemixExtension<T extends Api = any> {
 
   /**
    * Set the plugin in a developer mode which accept localhost origin
-   * @param devModePort The port of the localhost for the IDE
+   * @param port The port of the localhost for the IDE
    */
-  public setDevMode(devModePort: number | string) {
-    this.devModePort = devModePort
+  public setDevMode(port: number | string = 8080) {
+    this.devMode = { port }
   }
 
   /** Listen on notification events from another plugin or module */
