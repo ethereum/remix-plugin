@@ -66,7 +66,9 @@ export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
   location?: string // The name of the module used to load the iframe in
 }
 
+////////////////////////
 /* ---- MESSAGES ---- */
+////////////////////////
 
 /** A message send to / from an iframed plugin */
 export interface Message {
@@ -86,7 +88,9 @@ export interface EventMessage {
   payload: any
 }
 
+////////////////////////////
 /* --- PLUGIN REQUEST --- */
+////////////////////////////
 export interface PluginRequest {
   from: string
 }
@@ -101,7 +105,9 @@ export interface PluginApi<T extends Api> {
   deactivate?: () => void
 }
 
+///////////////////////////
 /* ---- APP MANAGER ---- */
+//////////////////////////
 
 export interface IAppManager {
   modules: {
@@ -161,8 +167,37 @@ export type ModuleStore<T extends { [name: string]: Api }> = {
   [name in keyof T]: Entry<T[name]>
 }
 
+//////////////////////
 /* ---- IFRAME ---- */
+/////////////////////
+
 /** The name of the event and it's name */
 export type Notifications<T extends Api> = {
   [key in keyof T['events']]: T['events'][key]
+}
+
+/////////////////////////
+/* ---- PERMISSION --- */
+/////////////////////////
+
+export interface Permissions {
+  [to: string]: {
+    [from: string]: {
+      allow: boolean
+      hash: string
+    }
+  }
+}
+
+export interface IPermissionProvider {
+  confirm(message: string): Promise<{ allow: boolean; remember: boolean }>
+}
+
+export interface IPermissionHandler {
+  /** The list of the current permissions */
+  permissions: Permissions
+  /** Ask the Permission to the user */
+  askPermission(from: PluginProfile, to: ModuleProfile): Promise<boolean>
+  /** Clear the permission object */
+  clear(): void
 }
