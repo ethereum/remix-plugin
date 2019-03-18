@@ -1,6 +1,8 @@
 import { AppManagerApi, Api, PluginApi } from '../../src'
+import { SecurityHandler } from './permission-handler'
 
 export class RemixAppManager extends AppManagerApi {
+  public permissionHandler = new SecurityHandler()
 
   constructor(private store: Store) {
     super()
