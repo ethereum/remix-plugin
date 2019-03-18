@@ -19,7 +19,7 @@ export interface IPermissionHandler {
 }
 
 /**
- * Example of a PermissionHandler using OOP
+ * Example of a PermissionHandler using localStorage
  */
 export abstract class PermissionHandler implements IPermissionHandler, IPermissionProvider {
 
