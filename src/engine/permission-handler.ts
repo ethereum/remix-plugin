@@ -14,6 +14,7 @@ export interface IPermissionProvider {
 }
 
 export interface IPermissionHandler {
+  permissions: Permissions
   askPermission(from: {name: string, hash: string}, to: string): Promise<boolean>
 }
 
@@ -51,7 +52,7 @@ export abstract class PermissionHandler implements IPermissionHandler, IPermissi
     const msg = wasAllow
       ? `${from.name} would like to access plugin ${to}.\n Check it's new content ${from.hash}`
       : `${from.name} has changed and would like to access the plugin ${to}.\n Check it's new content ${from.hash}`
-    return { allow: true, remember: true }
+    return this.confirm(msg)
   }
 
   /**
