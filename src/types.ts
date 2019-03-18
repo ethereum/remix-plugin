@@ -61,7 +61,8 @@ export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
     [name: string]: string[]
   }
   url: string
-  location?: { name: string; key: string } // The module used to load the iframe in
+  hash?: string
+  location?: string // The name of the module used to load the iframe in
 }
 
 /* ---- MESSAGES ---- */
