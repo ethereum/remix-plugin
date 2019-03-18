@@ -148,16 +148,15 @@ export abstract class AppManagerApi implements API<AppManager> {
   /** Activation for Plugin only */
   private activateRequestAndNotification<T extends Api>(api: Plugin<T>) {
     api.request = async ({ name, key, payload }) => {
-      const checkPermission = async () => {
-        const from = { name: api.name, hash: api.profile.hash }
-        const isAllow = await this.permissionHandler.askPermission(from, name)
-        if (!isAllow) {
-          throw new Error(`${api.name} is not allowed to call ${name}.`)
-        }
-      }
       try {
         // Check permission if the module ask for it
-        if (this.getEntity(name).profile.permission) checkPermission()
+        const to = this.getEntity(name)
+        if (to.profile.permission) {
+          const isAllow = await this.permissionHandler.askPermission(api.profile, to.profile)
+          if (!isAllow) {
+            throw new Error(`${api.name} is not allowed to call ${name}.`)
+          }
+        }
         // Manage request and payload
         if (!Array.isArray(payload)) payload = [payload]
         const requestInfo: PluginRequest = { from: api.name }
