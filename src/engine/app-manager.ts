@@ -6,10 +6,10 @@ import {
   ApiEventEmitter,
   PluginRequest,
   PluginApi,
+  IPermissionHandler,
 } from '../types'
 import { EventEmitter } from 'events'
 import { Plugin } from './plugin'
-import { PermissionHandler } from './permission-handler'
 
 export interface AppManager extends Api {
   name: 'appManager'
@@ -42,7 +42,7 @@ export interface DefaultLocation {
 }
 
 export abstract class AppManagerApi implements API<AppManager> {
-  abstract permissionHandler: PermissionHandler
+  abstract permissionHandler: IPermissionHandler
   private eventmanager: EventListeners = {}
   private calls: {
     [name: string]: {

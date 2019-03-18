@@ -1,5 +1,5 @@
 import { AppManagerApi, Api, PluginApi, IPermissionHandler } from '../../src'
-import { PermissionHandler } from '../permission/asbtract-class';
+import { PermissionHandler } from '../permission/asbtract-class'
 
 export class RemixAppManager extends AppManagerApi {
 
