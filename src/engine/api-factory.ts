@@ -21,9 +21,9 @@ export abstract class ApiFactory<T extends Api = any> {
       events: this.events,
       name: this.profile.name,
       profile: this.profile,
-      render: this.render ? () => this.render() : undefined,
-      activate: this.activate ? () => this.activate() : undefined,
-      deactivate: this.deactivate ? () => this.deactivate() : undefined,
+      render: this.render ? () => (this.render as any)() : undefined,
+      activate: this.activate ? () => (this.activate as any)() : undefined,
+      deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
       addRequest: (
         request: PluginRequest,
         method: ExtractKey<T, Function>,
