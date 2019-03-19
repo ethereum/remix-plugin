@@ -5,7 +5,7 @@ import { IPermissionProvider, IPermissionHandler, Permissions, PluginProfile, Mo
  * Example of a PermissionHandler using localStorage
  */
 export abstract class SecurityHandler implements IPermissionHandler, IPermissionProvider {
-  public permissions: Permissions
+  public permissions: Permissions = {}
   abstract confirm(
     message: string,
   ): Promise<{ allow: boolean; remember: boolean }>
@@ -15,7 +15,7 @@ export abstract class SecurityHandler implements IPermissionHandler, IPermission
     this.permissions = permission ? JSON.parse(permission) : {}
   }
 
-  private setPermissions() {
+  private persistPermissions() {
     const permissions = JSON.stringify(this.permissions)
     localStorage.setItem('permissions', permissions)
   }
@@ -58,7 +58,7 @@ export abstract class SecurityHandler implements IPermissionHandler, IPermission
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      this.setPermissions()
+      this.persistPermissions()
       return allow
     }
     // Remember not allow
@@ -72,7 +72,7 @@ export abstract class SecurityHandler implements IPermissionHandler, IPermission
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      this.setPermissions()
+      this.persistPermissions()
       return allow
     }
     // Is allowed for this hash
@@ -80,7 +80,8 @@ export abstract class SecurityHandler implements IPermissionHandler, IPermission
   }
 }
 
-export class PermissionHandler extends SecurityHandler {
+export class PermissionHandlerWithAbstract extends SecurityHandler {
+
   async confirm(message: string) {
     return { allow: true, remember: true }
   }

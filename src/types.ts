@@ -198,6 +198,4 @@ export interface IPermissionHandler {
   permissions: Permissions
   /** Ask the Permission to the user */
   askPermission(from: PluginProfile, to: ModuleProfile): Promise<boolean>
-  /** Clear the permission object */
-  clear(): void
 }

@@ -1,13 +1,14 @@
 import { AppManagerApi, Api, PluginApi, IPermissionHandler } from '../../src'
-import { PermissionHandler } from '../permission/asbtract-class'
+import { PermissionHandlerWithAbstract } from '../permission/asbtract-class'
 
 export class RemixAppManager extends AppManagerApi {
-
+  public permissionHandler
   constructor(
     private store: Store,
-    public permissionHandler: IPermissionHandler = new PermissionHandler()
+    permissionHandler?: IPermissionHandler
   ) {
     super()
+    this.permissionHandler = permissionHandler || new PermissionHandlerWithAbstract()
   }
 
   // Get the module from the component state
