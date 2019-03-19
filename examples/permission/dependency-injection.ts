@@ -1,4 +1,4 @@
-import { IPermissionHandler, IPermissionProvider, PluginProfile, ModuleProfile, Permissions } from "../../src";
+import { IPermissionHandler, IPermissionProvider, PluginProfile, ModuleProfile, Permissions } from "../../src"
 
 export class PermissionProvider implements IPermissionProvider {
   async confirm(message: string) {
@@ -6,7 +6,7 @@ export class PermissionProvider implements IPermissionProvider {
   }
 }
 
-export class PermissionHandler implements IPermissionHandler {
+export class PermissionHandlerWithDI implements IPermissionHandler {
 
   public permissions: Permissions = {}
 

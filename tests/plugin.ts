@@ -1,4 +1,4 @@
-import { Plugin, PluginProfile, Message } from '../src'
+import { Plugin, PluginProfile } from '../src'
 import { Ethdoc } from './../examples/plugins'
 import { RemixAppManager, Store } from '../examples/modules'
 
@@ -28,10 +28,15 @@ describe('Plugin', () => {
     expect(app['calls'][ethdoc.name]['getdoc']).toBeDefined()
   })
 
+  test('Plugin should have a request function', () => {
+    expect(ethdoc.request).toBeDefined()
+  })
+
   test('Iframe should render', () => {
     ethdoc.render()
     expect(ethdoc['iframe'].src).toEqual(EthdocProfile.url)
   })
+
 
   /*
   test('Plugin should get handshake', (done) => {
