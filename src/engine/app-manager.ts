@@ -28,19 +28,6 @@ export interface AppManager extends Api {
   deactivateOne(name: string): void
 }
 
-/**
- * AppManager can implement a default location for plugin to be rendered
- * `name` is the name of the module to call
- * `key` is the name of the method exposed by the module
- * The method should accept an `HTMLElement` as payload
- */
-export interface DefaultLocation {
-  defaultLocation: {
-    name: string
-    key: string
-  }
-}
-
 export abstract class AppManagerApi implements API<AppManager> {
   abstract permissionHandler: IPermissionHandler
   private eventmanager: EventListeners = {}
@@ -119,7 +106,7 @@ export abstract class AppManagerApi implements API<AppManager> {
     if (this.isPlugin(api)) {
       this.activateRequestAndNotification(api)
     }
-    if (api.activate) {
+    if (!this.isPlugin(api) && api.activate) {
       api.activate()
     }
     this.setActive(name, true)
