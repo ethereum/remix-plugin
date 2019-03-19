@@ -49,7 +49,7 @@ describe('Permissions', () => {
     const result = await ethdoc.request({ name: permissionModule.name, key: 'callWithPermission', payload: [] })
     expect(result).toBe(true)
   })
-  test('Permission should pass', async () => {
+  test('Permission should not pass', async () => {
     permissionHandler.responseToConfirm = { allow: false, remember: true }
     try {
       await ethdoc.request({ name: permissionModule.name, key: 'callWithPermission', payload: [] })
