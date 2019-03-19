@@ -15,7 +15,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   // Listener is needed to remove the listener
   private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
   private id = 0
-  private iframe: HTMLIFrameElement
+  private iframe = document.createElement('iframe')
   private origin: string
   private source: Window
   // Request to the plugin waiting in queue
@@ -138,7 +138,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
    * Create and return the iframe
    */
   public render() {
-    if (this.iframe) {
+    if (this.iframe.contentWindow) {
       throw new Error(`${this.name} plugin is already rendered`)
     }
     this.iframe = document.createElement('iframe')
@@ -147,6 +147,9 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake
     this.iframe.onload = () => {
+      if (!this.iframe.contentWindow) {
+        throw new Error(`${this.name} plugin is cannot find url ${this.profile.url}`)
+      }
       window.addEventListener(...this.listener)
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
@@ -161,7 +164,6 @@ export class Plugin<T extends Api> implements PluginApi<T> {
 
   public deactivate() {
     this.iframe.remove()
-    this.iframe = null
     window.removeEventListener(...this.listener)
   }
 
