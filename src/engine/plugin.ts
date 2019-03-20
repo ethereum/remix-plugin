@@ -141,7 +141,6 @@ export class Plugin<T extends Api> implements PluginApi<T> {
     if (this.iframe.contentWindow) {
       throw new Error(`${this.name} plugin is already rendered`)
     }
-    this.iframe = document.createElement('iframe')
     this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url

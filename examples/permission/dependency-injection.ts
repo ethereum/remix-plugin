@@ -1,6 +1,6 @@
-import { IPermissionHandler, IPermissionProvider, PluginProfile, ModuleProfile, Permissions } from "../../src"
+import { IPermissionHandler, PluginProfile, ModuleProfile, Permissions } from "../../src"
 
-export class PermissionProvider implements IPermissionProvider {
+export class PermissionProvider {
   async confirm(message: string) {
     return { allow: true, remember: true }
   }
@@ -10,7 +10,7 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
 
   public permissions: Permissions = {}
 
-  constructor(private provider: IPermissionProvider) {}
+  constructor(private provider: PermissionProvider) {}
 
   clear(): void {
     this.permissions = {}

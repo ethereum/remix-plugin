@@ -1,10 +1,10 @@
-import { IPermissionProvider, IPermissionHandler, Permissions, PluginProfile, ModuleProfile } from '../../src/types'
+import { IPermissionHandler, Permissions, PluginProfile, ModuleProfile } from '../../src/types'
 
 
 /**
  * Example of a PermissionHandler using localStorage
  */
-export abstract class SecurityHandler implements IPermissionHandler, IPermissionProvider {
+export abstract class SecurityHandler implements IPermissionHandler {
   public permissions: Permissions = {}
   abstract confirm(
     message: string,
