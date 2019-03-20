@@ -4,6 +4,22 @@ interface DevMode {
   port: number | string
 }
 
+export interface RemixExtensionOptions {
+  useCustomBootStrapTheme: boolean
+}
+
+export interface Theme {
+  url: string
+  quality: 'dark' | 'light'
+}
+
+function defaultOptions  (options?: Partial<RemixExtensionOptions>): RemixExtensionOptions {
+  const opts = options || {}
+  return {
+    useCustomBootStrapTheme: opts.useCustomBootStrapTheme || false
+  } as RemixExtensionOptions
+}
+
 export class RemixExtension<T extends Api = any> {
   private devMode: DevMode
   private source: Window
@@ -21,8 +37,22 @@ export class RemixExtension<T extends Api = any> {
   protected currentRequest: PluginRequest
   public isLoaded = false
 
-  constructor() {
+  constructor(options?: RemixExtensionOptions) {
+    const opts = defaultOptions(options)
+    this.initListenOnSwitchTheme(opts)
+
     window.addEventListener('message', event => this.getMessage(event), false)
+  }
+
+  private initListenOnSwitchTheme (options: RemixExtensionOptions) {
+    if (options.useCustomBootStrapTheme) return
+    const cssLink = document.createElement('link')
+    cssLink.setAttribute('rel', 'stylesheet')
+    document.head.appendChild(cssLink)
+    this.listen('theme', 'switchTheme', (theme: Theme) => {
+      cssLink.setAttribute('href', theme.url)
+      document.documentElement.style.setProperty('--theme', theme.quality)
+    })
   }
 
   /** Manage a message coming from the parent origin */
