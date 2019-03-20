@@ -189,10 +189,6 @@ export interface Permissions {
   }
 }
 
-export interface IPermissionProvider {
-  confirm(message: string, options?: { from: PluginProfile, to: ModuleProfile }): Promise<{ allow: boolean; remember: boolean }>
-}
-
 export interface IPermissionHandler {
   /** The list of the current permissions */
   permissions: Permissions
