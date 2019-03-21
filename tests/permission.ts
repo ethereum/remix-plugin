@@ -1,8 +1,8 @@
-import { Plugin, PluginProfile, IPermissionProvider, IPermissionHandler, ModuleProfile } from "../src"
+import { Plugin, PluginProfile, IPermissionHandler, ModuleProfile } from "../src"
 import { RemixAppManager, Store, PermissionModuleApi } from "../examples/modules"
 import { Ethdoc } from "../examples/plugins"
 
-class PermissionHandler implements IPermissionHandler, IPermissionProvider {
+class PermissionHandler implements IPermissionHandler {
   responseToConfirm = { allow: true, remember: true }
   permissions = {}
   async askPermission(from: PluginProfile, to: ModuleProfile) {
