@@ -49,7 +49,7 @@ export abstract class SecurityHandler implements IPermissionHandler {
   public async askPermission(
     from: PluginProfile,
     to: ModuleProfile,
-  ): Promise<boolean> {
+  ): Promise<void> {
     if (!this.permissions[to.name]) this.permissions[to.name] = {}
     // Never allowed
     if (!this.permissions[to.name][from.name]) {
@@ -59,11 +59,11 @@ export abstract class SecurityHandler implements IPermissionHandler {
         this.permissions[to.name][from.name] = { allow, hash }
       }
       this.persistPermissions()
-      return allow
+      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
     // Remember not allow
     if (!this.permissions[to.name][from.name].allow) {
-      return false
+      throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
     // Remember allow but hash has changed
     if (this.permissions[to.name][from.name].hash !== from.hash) {
@@ -73,10 +73,8 @@ export abstract class SecurityHandler implements IPermissionHandler {
         this.permissions[to.name][from.name] = { allow, hash }
       }
       this.persistPermissions()
-      return allow
+      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
-    // Is allowed for this hash
-    return true
   }
 }
 
