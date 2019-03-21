@@ -193,5 +193,5 @@ export interface IPermissionHandler {
   /** The list of the current permissions */
   permissions: Permissions
   /** Ask the Permission to the user */
-  askPermission(from: PluginProfile, to: ModuleProfile): Promise<boolean>
+  askPermission(from: PluginProfile, to: ModuleProfile): Promise<void>
 }

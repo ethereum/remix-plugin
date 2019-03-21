@@ -6,11 +6,9 @@ class PermissionHandler implements IPermissionHandler {
   responseToConfirm = { allow: true, remember: true }
   permissions = {}
   async askPermission(from: PluginProfile, to: ModuleProfile) {
-    const { allow, remember } = await this.confirm(`Give permission for ${from.name} to call ${to.name}`)
-    return allow
-  }
-  async confirm(message: string, options?: { from: PluginProfile, to: ModuleProfile }) {
-    return this.responseToConfirm
+    if (this.responseToConfirm.allow) {
+      throw new Error(`${from.name} is not allowed to call ${to.name}.`)
+    }
   }
 
 }

@@ -139,10 +139,7 @@ export abstract class AppManagerApi implements API<AppManager> {
         // Check permission if the module ask for it
         const to = this.getEntity(name)
         if (to.profile.permission) {
-          const isAllow = await this.permissionHandler.askPermission(api.profile, to.profile)
-          if (!isAllow) {
-            throw new Error(`${api.name} is not allowed to call ${name}.`)
-          }
+          await this.permissionHandler.askPermission(api.profile, to.profile)
         }
         // Manage request and payload
         if (!Array.isArray(payload)) payload = [payload]
