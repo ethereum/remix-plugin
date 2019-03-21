@@ -19,7 +19,7 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
   public async askPermission(
     from: PluginProfile,
     to: ModuleProfile,
-  ): Promise<boolean> {
+  ): Promise<void> {
     if (!this.permissions[to.name]) this.permissions[to.name] = {}
     // Never allowed
     if (!this.permissions[to.name][from.name]) {
@@ -28,11 +28,11 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      return allow
+      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
     // Remember not allow
     if (!this.permissions[to.name][from.name].allow) {
-      return false
+      throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
     // Remember allow but hash has changed
     if (this.permissions[to.name][from.name].hash !== from.hash) {
@@ -41,10 +41,8 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      return allow
+      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
     }
-    // Is allowed for this hash
-    return true
   }
 
   async openPermission(from: PluginProfile, to: ModuleProfile, wasAllow: boolean) {
