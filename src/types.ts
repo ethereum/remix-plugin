@@ -57,13 +57,28 @@ export interface ModuleProfile<T extends Api = any> {
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
+  url: string
+  hash?: string
+  location?: string // The name of the module used to load the iframe in
+  version?: string
+  contributors?: {
+    name: string,
+    email: string,
+    url: string
+  }
+  homepage?: string
+  bugs?: {
+    url: string,
+    email: string
+  }
+  repository?: {
+    type: 'git',
+    url: string
+  }
   required?: false
   notifications?: {
     [name: string]: string[]
   }
-  url: string
-  hash?: string
-  location?: string // The name of the module used to load the iframe in
 }
 
 ////////////////////////
