@@ -115,7 +115,25 @@ This is not available now.
 # API
 This API is a Work In Progress and will be extended in the future.
 
+> Some of the APIs have to be used with caution. So they might ask the permission of the user.
+
+|API                  |name         |Permission |
+|---------------------|-------------|-----------|
+|File Manager         |fileManager  |✅
+|Solidity Compiler    |solidity     |✅
+|Transaction Listener |txlistener   |
+
+
 ## fileManager
+
+|Type     |Name               |Parameters   |Types |
+|---------|-------------------|-------------|-----
+|_event_  |currentFileChanged |fileName     |string
+|_method_ |getFilesFromPath   |path         |string
+|_method_ |getCurrentFile     |
+|_method_ |getFile            |path         |string
+|_method_ |setFile            |path         |string
+|         |                   |content      |string
 
 ### Events
 currentFileChanged
@@ -136,7 +154,7 @@ getCurrentFile
 const currentFile = await extension.call('fileManager', 'getCurrentFile')
 ```
 
-getCurrentFile
+getFile
 ```typescript
 const content = await extension.call('fileManager', 'getFile', path)
 ```
@@ -148,6 +166,14 @@ await extension.call('fileManager', 'setFile', path, content)
 
 ## solidity
 
+|Type     |Name                 |Parameters   |Types |
+|---------|---------------------|-------------|-----
+|_event_  |compilationFinished  |fileName     |string
+|         |                     |source       |Object
+|         |                     |version      |string
+|         |                     |data         |Object
+
+
 ### Events
 compilationFinished
 ```typescript
@@ -157,6 +183,9 @@ extension.listen('solidity', 'compilationFinished', (fileName: string, source: O
 ```
 
 ## txlistener
+|Type     |Name                 |Parameters   |Types |
+|---------|---------------------|-------------|-----
+|_event_  |newTransaction       |tx           |Object
 
 ### Events
 newTransaction
