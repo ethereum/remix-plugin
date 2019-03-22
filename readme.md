@@ -32,6 +32,19 @@ const extension = new RemixExtension()
 ```
 
 ---
+## DevMode
+Plugins communicate with the IDE through the `postMessage` API. It means that `RemixExtension` needs to know the origin of your IDE.
+
+If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
+```typescript
+extension.setDevMode(8000) 
+```
+or 
+```typescript
+extension.setDevMode()  // default is port 8080
+```
+
+---
 
 ### Loaded
 `RemixExtension` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise `loaded` to be called.
