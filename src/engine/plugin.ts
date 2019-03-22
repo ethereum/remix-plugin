@@ -8,8 +8,16 @@ import {
   PluginApi,
 } from '../types'
 import { EventEmitter } from 'events'
+import { addServices } from '../services'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
+
+/** Request from outside to the plugin waiting for response from the plugin */
+interface PluginPendingRequest {
+  [name: string]: {
+    [id: number]: (payload: any) => void
+  }
+}
 
 export class Plugin<T extends Api> implements PluginApi<T> {
   // Listener is needed to remove the listener
@@ -20,22 +28,19 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   private source: Window
   // Request to the plugin waiting in queue
   private requestQueue: Array<() => Promise<any>> = []
-  // Request from outside to the plugin waiting for response from the plugin
-  private pendingRequest: {
-    [name: string]: {
-      [id: number]: (payload: any) => void
-    }
-  } = {}
+  private pendingRequest: PluginPendingRequest = {}
 
   public readonly name: T['name']
+  public readonly profile: PluginProfile<T>
   public events = new EventEmitter() as ApiEventEmitter<T>
   public notifs = {}
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
 
-  constructor(public profile: PluginProfile<T>) {
-    this.name = profile.name
+  constructor(profile: PluginProfile<T>) {
+    this.profile = addServices(profile)
+    this.name = this.profile.name
 
-    const notifs = profile.notifications || {}
+    const notifs = this.profile.notifications || {}
     for (const name in notifs) {
       this.notifs[name] = {}
       const keys = notifs[name] || []
