@@ -8,17 +8,17 @@ export interface RemixExtensionOptions {
   useCustomBootStrapTheme: boolean
 }
 
-export interface Notifications {
+interface Notifications {
   [name: string]: {
     [key: string]: (...payload: any[]) => void
   }
 }
 
-export interface PendingRequests {
+interface PendingRequests {
   [id: number]: (payload: any, error?: Error) => void
 }
 
-export interface Theme {
+interface Theme {
   url: string
   quality: 'dark' | 'light'
 }
