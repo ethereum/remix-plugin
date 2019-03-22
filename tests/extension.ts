@@ -17,7 +17,6 @@ const handshake = {
   data: {
     action: 'request',
     key: 'handshake',
-    payload: { theme: 'my-theme' }
   }
 }
 
