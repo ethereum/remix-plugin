@@ -8,6 +8,16 @@ export interface RemixExtensionOptions {
   useCustomBootStrapTheme: boolean
 }
 
+export interface Notifications {
+  [name: string]: {
+    [key: string]: (...payload: any[]) => void
+  }
+}
+
+export interface PendingRequests {
+  [id: number]: (payload: any, error?: Error) => void
+}
+
 export interface Theme {
   url: string
   quality: 'dark' | 'light'
@@ -24,14 +34,8 @@ export class RemixExtension<T extends Api = any> {
   private devMode: DevMode
   private source: Window
   private origin: string
-  private notifications: {
-    [name: string]: {
-      [key: string]: (...payload: any[]) => void
-    }
-  } = {}
-  private pendingRequests: {
-    [id: number]: (payload: any, error?: Error) => void
-  } = {}
+  private notifications: Notifications = {}
+  private pendingRequests: PendingRequests = {}
   private id = 0
   private handshake: () => any
   protected currentRequest: PluginRequest
