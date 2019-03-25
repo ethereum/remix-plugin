@@ -4,10 +4,13 @@ interface DevMode {
   port: number | string
 }
 
+<<<<<<< HEAD
 export interface RemixExtensionOptions {
   useCustomBootStrapTheme: boolean
 }
 
+=======
+>>>>>>> fix tsc errors
 interface Notifications {
   [name: string]: {
     [key: string]: (...payload: any[]) => void
@@ -18,7 +21,15 @@ interface PendingRequests {
   [id: number]: (payload: any, error?: Error) => void
 }
 
+<<<<<<< HEAD
 interface Theme {
+=======
+export interface RemixExtensionOptions {
+  useCustomBootStrapTheme: boolean
+}
+
+export interface Theme {
+>>>>>>> fix tsc errors
   url: string
   quality: 'dark' | 'light'
 }
