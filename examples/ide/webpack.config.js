@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   mode: 'production',
@@ -6,8 +6,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: 'remixPlugin',
-    libraryTarget: 'umd',
   },
   module: {
     rules: [
