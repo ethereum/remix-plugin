@@ -22,6 +22,7 @@
     "start": "webpack --watch",
     "build": "webpack",
     "test": "jest",
+    "build:e2e": "webpack --config ./examples/ide/webpack.config.js",
     "e2e": "cypress run"
   },
   "dependencies": {
