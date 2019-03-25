@@ -21,4 +21,9 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
+  plugins: [
+    new WebpackNightWatchPlugin({
+      url: './nightwatch.json',
+    }),
+  ],
 }
