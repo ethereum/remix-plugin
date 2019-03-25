@@ -21,7 +21,8 @@
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "e2e:chrome": "selenium-standalone start && nightwatch --env chrome"
   },
   "dependencies": {
     "events": "^3.0.0"
@@ -29,8 +30,11 @@
   "devDependencies": {
     "@types/events": "^1.2.0",
     "@types/jest": "^23.3.9",
+    "@types/nightwatch": "^0.9.12",
     "jest": "^23.6.0",
+    "nightwatch": "^1.0.19",
     "prettier": "^1.15.2",
+    "selenium-standalone": "^6.16.0",
     "ts-jest": "^23.10.4",
     "ts-loader": "^5.3.3",
     "tslint": "^5.11.0",
