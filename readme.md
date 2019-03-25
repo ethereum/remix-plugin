@@ -1,6 +1,6 @@
 # Remix Plugin
 
-> For the old api, go to [api](./api.md)
+> For the old api, go to [api](./doc/api.md)
 
 ALPHA : This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
 
