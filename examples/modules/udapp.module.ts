@@ -20,7 +20,7 @@ export const UdappProfile: ModuleProfile<Udapp> = {
 export class UdappApi extends ApiFactory<Udapp> implements API<Udapp> {
   public readonly name = 'udapp'
   public readonly profile = UdappProfile
-  public events: ApiEventEmitter<Udapp> = new EventEmitter()
+  public events: ApiEventEmitter<Udapp> = new EventEmitter() as any
 
   private doSomeCalculation(transaction: Transaction) {
     // This method is not part of the UdappProfile.

@@ -38,7 +38,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   } = {}
 
   public readonly name = 'appManager'
-  public events: ApiEventEmitter<AppManager> = new EventEmitter()
+  public events: ApiEventEmitter<AppManager> = new EventEmitter() as any
 
   //////////////
   // ABSTRACT //

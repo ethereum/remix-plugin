@@ -19,7 +19,7 @@ export const ResolverProfile: ModuleProfile<Resolver> = {
 export class ResolverApi extends ApiFactory<Resolver> implements API<Resolver> {
   public readonly name = 'solResolver'
   public readonly profile = ResolverProfile
-  public events: ApiEventEmitter<Resolver> = new EventEmitter()
+  public events: ApiEventEmitter<Resolver> = new EventEmitter() as any
 
   public combineSource(path: string) {
     console.log(path)
