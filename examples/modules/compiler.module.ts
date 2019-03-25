@@ -21,7 +21,7 @@ export const CompilerProfile: ModuleProfile<Compiler> = {
 export class CompilerApi extends ApiFactory<Compiler> implements API<Compiler> {
   public readonly name = 'solCompiler'
   public readonly profile = CompilerProfile
-  public events: ApiEventEmitter<Compiler> = new EventEmitter()
+  public events: ApiEventEmitter<Compiler> = new EventEmitter() as any
 
   constructor(private canCall?: string[]) {
     super()

@@ -20,7 +20,7 @@ export const TxlistenerProfile: ModuleProfile<Txlistener> = {
 export class TxlistenerApi extends ApiFactory<Txlistener> implements API<Txlistener> {
   public readonly name = 'txlistener'
   public readonly profile = TxlistenerProfile
-  public events: ApiEventEmitter<Txlistener> = new EventEmitter()
+  public events: ApiEventEmitter<Txlistener> = new EventEmitter() as any
 
   // In this implementation of the API, Txlistener depends on an external class
   constructor(emitter: TxEmitter) {
