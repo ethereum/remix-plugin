@@ -4,7 +4,7 @@ import { Api } from '../../src'
 export interface Ethdoc extends Api {
   name: 'ethdoc',
   events: {
-    newDoc: string
+    newDoc: [string]
   }
   getdoc(): string,
 }
