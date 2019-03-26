@@ -10,7 +10,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "typeRoots": ["node_modules/@types"],
-    "types": ["cypress"],
+    "types": ["jest"],
     "lib": ["es2016", "dom", "es5"],
     "paths": {
       "remix-plugin": ["src/index.ts"]
