@@ -1,7 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "lib": ["dom", "es2018"]
-  }
+  "extends": "../tsconfig.example.json",
+  "include": ["src"]
 }
