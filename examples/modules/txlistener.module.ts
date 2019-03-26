@@ -6,7 +6,7 @@ import { EventEmitter } from 'events'
 export interface Txlistener extends Api {
   name: 'txlistener'
   events: {
-    newTransaction: Transaction
+    newTransaction: [Transaction]
   }
 }
 

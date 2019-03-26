@@ -17,7 +17,7 @@ export type ApiListener<T> = (arg: T) => void
 /** Override the EventEmitter type to take into account the Api */
 export interface ApiEventEmitter<T extends Api> {
   setMaxListeners(n: number): this
-  emit<K extends keyof T['events']>(name: K, arg: T['events'][K]): boolean
+  emit<K extends keyof T['events']>(name: K, ...arg: T['events'][K]): boolean
   addListener<K extends keyof T['events']>(
     name: K,
     listener: ApiListener<T['events'][K]>,
@@ -49,6 +49,7 @@ export type API<T extends Api> = {
 export interface ModuleProfile<T extends Api = any> {
   name: T['name']
   displayName?: string
+  description?: string,
   required?: boolean
   kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
   methods?: ExtractKey<T, Function>[]
