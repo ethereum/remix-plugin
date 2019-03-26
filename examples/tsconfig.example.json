@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "typeRoots": ["../node_modules/@types"],
+    "types": ["cypress"],
+    "lib": ["es2016", "dom", "es5"],
+    "paths": {
+      "remix-plugin": ["../src/index.ts"]
+    }
+  },
+}

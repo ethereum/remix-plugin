@@ -16,5 +16,5 @@
       "remix-plugin": ["src/index.ts"]
     }
   },
-  "include": ["src", "examples"]
+  "include": ["src"]
 }
