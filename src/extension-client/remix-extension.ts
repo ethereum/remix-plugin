@@ -4,10 +4,6 @@ interface DevMode {
   port: number | string
 }
 
-export interface RemixExtensionOptions {
-  useCustomBootStrapTheme: boolean
-}
-
 interface Notifications {
   [name: string]: {
     [key: string]: (...payload: any[]) => void
@@ -18,7 +14,11 @@ interface PendingRequests {
   [id: number]: (payload: any, error?: Error) => void
 }
 
-interface Theme {
+export interface RemixExtensionOptions {
+  useCustomBootStrapTheme: boolean
+}
+
+export interface Theme {
   url: string
   quality: 'dark' | 'light'
 }

@@ -21,7 +21,11 @@
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "e2e": "run-p e2e:ide e2e:ethdoc e2e:run",
+    "e2e:run": "cypress run",
+    "e2e:ide": "cd ./examples/ide && webpack-dev-server",
+    "e2e:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server"
   },
   "dependencies": {
     "events": "^3.0.0"
@@ -29,14 +33,19 @@
   "devDependencies": {
     "@types/events": "^1.2.0",
     "@types/jest": "^23.3.9",
+    "cypress": "^3.2.0",
     "jest": "^23.6.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.15.2",
     "ts-jest": "^23.10.4",
     "ts-loader": "^5.3.3",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
     "tslint": "^5.11.0",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
   },
   "standard": {
     "ignore": [

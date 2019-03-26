@@ -14,9 +14,9 @@ import { Plugin } from './plugin'
 export interface AppManager extends Api {
   name: 'appManager'
   events: {
-    register: string
-    activate: PluginApi<Api>
-    deactivate: ModuleProfile
+    register: [string]
+    activate: [PluginApi<Api>]
+    deactivate: [ModuleProfile]
   }
   registerMany(entry: PluginApi<any>[]): void
   registerMany(entry: PluginApi<any>[]): void
@@ -38,7 +38,7 @@ export abstract class AppManagerApi implements API<AppManager> {
   } = {}
 
   public readonly name = 'appManager'
-  public events: ApiEventEmitter<AppManager> = new EventEmitter()
+  public events: ApiEventEmitter<AppManager> = new EventEmitter() as any
 
   //////////////
   // ABSTRACT //

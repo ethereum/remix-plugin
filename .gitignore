@@ -1,5 +1,2 @@
 node_modules
 dist
-
-examples/*/dist
-examples/*/node_modules
