@@ -6,7 +6,7 @@ import {
   ExtractKey,
   PluginApi,
 } from '../types'
-import { createProfile } from '../services'
+import { createProfile } from '../profile'
 
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
