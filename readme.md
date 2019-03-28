@@ -223,7 +223,13 @@ The status object is used for displaying a notification. It looks like that :
 ```typescript
 interface Status {
   iconName: string  // Name of the icon from font-awesome
-  type: 'info' | 'warning' | 'error'  // Bootstrap css variable to use
+  type: 'success' | 'info' | 'warning' | 'danger'  // Bootstrap css variable to use
   title?: string  // Describe the status on mouseover
 }
 ```
+
+You can also change the status of your own plugin by emitting the same event : 
+```typescript
+extension.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
+```
+> The IDE can use this status to display a notification to the user.
