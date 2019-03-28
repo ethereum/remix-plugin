@@ -50,6 +50,13 @@ export type API<T extends Api> = {
   deactivate?(): void
 } & { [M in StrictExtractKey<T, Function>]: T[M] }
 
+export interface DefaultProfile {
+  events: ['statusChanged'],
+  notifications: {
+    'theme': ['switchTheme']
+  }
+}
+
 export interface ModuleProfile<T extends Api = any> {
   name: T['name']
   displayName?: string
@@ -57,7 +64,8 @@ export interface ModuleProfile<T extends Api = any> {
   required?: boolean
   kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
   methods?: ExtractKey<T, Function>[]
-  events?: (keyof T['events'])[]
+  events?: ((keyof T['events'])[] & DefaultProfile['events']) | (keyof T['events'])[],
+  notifications?: ({ [name: string]: string[] } & DefaultProfile['notifications']) | { [name: string]: string[] }
   permission?: boolean
 }
 
@@ -81,9 +89,6 @@ export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
     url: string
   }
   required?: false
-  notifications?: {
-    [name: string]: string[]
-  }
 }
 
 ////////////////////////
