@@ -128,7 +128,8 @@ This is not available now.
 # API
 This API is a Work In Progress and will be extended in the future.
 
-> Some of the APIs have to be used with caution. So they might ask the permission of the user.
+### Permission
+Some of the APIs have to be used with caution. So they might ask the permission of the user.
 
 |API                  |name         |Permission |
 |---------------------|-------------|-----------|
@@ -206,4 +207,23 @@ newTransaction
 extension.listen('txlistener', 'newTransaction', (tx: Object) => {
   // Do Something
 })
+```
+
+
+# Status
+Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event : 
+
+```typescript
+extension.listen('fileManager', 'statusChanged', (status: Status) => {
+  // Do Something 
+})
+```
+
+The status object is used for displaying a notification. It looks like that : 
+```typescript
+interface Status {
+  iconName: string  // Name of the icon from font-awesome
+  type: 'info' | 'warning' | 'error'  // Bootstrap css variable to use
+  title?: string  // Describe the status on mouseover
+}
 ```
