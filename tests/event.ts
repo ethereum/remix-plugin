@@ -61,7 +61,7 @@ describe('Event', () => {
     const spy = spyOn(app, 'broadcast' as any)
     if (!EthdocProfile.events)
       throw new Error('EthdocProfile should have "events"')
-    ethdoc.events.emit(EthdocProfile.events[0], 'Documentation')
+    ethdoc.events.emit('newDoc', 'Documentation')
     expect(spy).toBeCalledWith(ethdoc.name, EthdocProfile.events[0], ['Documentation'])
   })
 
