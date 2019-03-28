@@ -39,6 +39,10 @@ export interface ApiEventEmitter<T extends Api> {
   listenerCount<K extends keyof T['events']>(name: K): number
 }
 
+///////////////////////
+/* ---- PROFILE ---- */
+///////////////////////
+
 export type API<T extends Api> = {
   name: T['name']
   events?: ApiEventEmitter<T>
@@ -185,7 +189,7 @@ export type ModuleStore<T extends { [name: string]: Api }> = {
 
 //////////////////////
 /* ---- IFRAME ---- */
-/////////////////////
+//////////////////////
 
 /** The name of the event and it's name */
 export type Notifications<T extends Api> = {
@@ -210,4 +214,17 @@ export interface IPermissionHandler {
   permissions: Permissions
   /** Ask the Permission to the user */
   askPermission(from: PluginProfile, to: ModuleProfile): Promise<void>
+}
+
+
+//////////////////////
+/* ---- STATUS ---- */
+//////////////////////
+export interface Status {
+  /** Name of the icon from font-awesome */
+  iconName: string
+  /** Bootstrap css variable to use */
+  type: 'info' | 'warning' | 'error'
+  /** Describe long version of the status */
+  title?: string
 }
