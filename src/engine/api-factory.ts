@@ -6,21 +6,23 @@ import {
   ExtractKey,
   PluginApi,
 } from '../types'
+import { createProfile } from '../services'
 
 export abstract class ApiFactory<T extends Api = any> {
   abstract readonly profile: ModuleProfile<T>
+  private requestQueue: Array<() => Promise<any>> = []
+  protected currentRequest: PluginRequest
   public events?: ApiEventEmitter<T>
   public activate?: () => Promise<void>
   public deactivate?: () => void
   public render?: () => HTMLElement
-  private requestQueue: Array<() => Promise<any>> = []
-  protected currentRequest: PluginRequest
+
 
   public api(): PluginApi<T> {
     return {
       events: this.events,
       name: this.profile.name,
-      profile: this.profile,
+      profile: createProfile(this.profile),
       render: this.render ? () => (this.render as any)() : undefined,
       activate: this.activate ? () => (this.activate as any)() : undefined,
       deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
