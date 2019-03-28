@@ -8,7 +8,7 @@ import {
   PluginApi,
 } from '../types'
 import { EventEmitter } from 'events'
-import { createProfile } from '../services'
+import { createProfile } from '../profile'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 

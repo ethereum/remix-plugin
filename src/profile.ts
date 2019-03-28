@@ -1,4 +1,4 @@
-import { Api, ModuleProfile, DefaultProfile } from "./types"
+import { Api, ModuleProfile, DefaultProfile, PluginProfile } from "./types"
 
 export const defaultProfile: DefaultProfile = {
   events: ['statusChanged'],
@@ -7,7 +7,10 @@ export const defaultProfile: DefaultProfile = {
   }
 }
 
-export function createProfile<T extends Api>(pluginProfile: ModuleProfile<T>) {
+export function createProfile<
+    T extends Api,
+    Profile extends ModuleProfile<T> | PluginProfile<T>
+  >(pluginProfile: Profile): Profile {
   const profile = { ...pluginProfile }
 
   // NOTIFICATIONS
