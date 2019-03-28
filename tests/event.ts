@@ -65,6 +65,12 @@ describe('Event', () => {
     expect(spy).toBeCalledWith(ethdoc.name, EthdocProfile.events[0], ['Documentation'])
   })
 
+  test('event from ethdoc is broadcasted', () => {
+    const spy = spyOn(app, 'broadcast' as any)
+    ethdoc.events.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
+    expect(spy).toBeCalledWith(ethdoc.name, 'statusChanged', [{ iconName: 'check', type: 'success', title: 'Documentation ready !' }])
+  })
+
   /*
   test('Plugin receive notification from module', done => {
     ethdoc['source'].addEventListener('message', event => {
