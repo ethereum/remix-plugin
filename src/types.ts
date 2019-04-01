@@ -17,7 +17,7 @@ export type ApiListener<T> = (arg: T) => void
 
 
 /** Override the EventEmitter type to take into account the Api */
-export interface ApiEventEmitter<T extends Api> {
+export interface ApiEventEmitter<T extends Partial<Api>> {
   setMaxListeners(n: number): this
   emit<
     K extends keyof T['events'] | DefaultEvents,
@@ -54,14 +54,14 @@ export type API<T extends Api> = {
   deactivate?(): void
 } & { [M in StrictExtractKey<T, Function>]: T[M] }
 
-export interface ModuleProfile<T extends Api = any> {
+export interface ModuleProfile<T extends Api | Partial<Api> = any> {
   name: T['name']
   displayName?: string
   description?: string,
   required?: boolean
   kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
   methods?: ExtractKey<T, Function>[]
-  events?: ((keyof T['events'] & DefaultEvents)[]) | (keyof T['events'])[],
+  events?: readonly (keyof T['events'])[],
   notifications?: ({ [name: string]: string[] } & DefaultProfile['notifications']) | { [name: string]: string[] }
   permission?: boolean
 }
