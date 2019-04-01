@@ -14,14 +14,14 @@ function createState<T extends State>(): T {
   } as T
 }
 
-const StoreProfile: Partial<ModuleProfile> = {
-  events: [],
+export const StoreProfile: Partial<ModuleProfile> = {
+  events: ['statusChanged'],
   notifications: {}
 }
 
 
 /** Create a Profile with default values */
-function createProfile<
+export function createProfile<
     T extends Api,
     Profile extends ModuleProfile<T> | PluginProfile<T>
   >(profile: Profile, storeProfile: typeof StoreProfile): Profile {
@@ -41,6 +41,7 @@ function createProfile<
 }
 
 export abstract class Store<T extends State, U extends Api> extends ApiFactory<U> {
+  protected storeProfile = StoreProfile
   protected state: T
   public readonly profile: ModuleProfile<U> | PluginProfile<U>
   public events: ApiEventEmitter<U>
@@ -56,7 +57,7 @@ export abstract class Store<T extends State, U extends Api> extends ApiFactory<U
   ) {
     super()
     this.events = new EventEmitter() as ApiEventEmitter<U>
-    this.profile = createProfile(profile, StoreProfile)
+    this.profile = createProfile(profile, this.storeProfile)
     this.state = { ...this.initialState }
   }
 
