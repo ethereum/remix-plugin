@@ -22,7 +22,7 @@ export abstract class ApiFactory<T extends Api = any> {
     return {
       events: this.events,
       name: this.profile.name,
-      profile: createProfile(this.profile),
+      profile: this.profile,
       render: this.render ? () => (this.render as any)() : undefined,
       activate: this.activate ? () => (this.activate as any)() : undefined,
       deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
