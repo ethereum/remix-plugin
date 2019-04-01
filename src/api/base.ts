@@ -10,17 +10,6 @@ import {
 } from '../types'
 import { EventEmitter } from 'events'
 
-export interface State {
-  status: Status
-}
-
-/** Create an empty state */
-function createState<T extends State>(): T {
-  return {
-    status: {},
-  } as T
-}
-
 export const StoreProfile: Partial<ModuleProfile> = {
   events: ['statusChanged'],
   notifications: {
@@ -28,26 +17,33 @@ export const StoreProfile: Partial<ModuleProfile> = {
   }
 }
 
+
 /** Create a Profile with default values */
 export function createProfile<
   T extends Api,
   Profile extends ModuleProfile<T> | PluginProfile<T>
->(profile: Profile, storeProfile: typeof StoreProfile): Profile {
+>(profile: Profile, mixinProfile: Partial<ModuleProfile>): Profile {
   return {
     ...profile,
-    methods: [...storeProfile.methods, ...profile.methods],
-    events: [...storeProfile.events, ...profile.events],
+    methods: [
+      ...mixinProfile.methods,
+      ...profile.methods],
+    events: [
+      ...mixinProfile.events,
+      ...profile.events
+    ],
     notifications: {
-      ...storeProfile.notifications,
+      ...mixinProfile.notifications,
       ...profile.notifications,
     },
   }
 }
 
-export abstract class BaseApi<S extends State, U extends Api> {
+export abstract class BaseApi<S, U extends Api> {
   private requestQueue: Array<() => Promise<any>> = []
+  private initialState: S
   protected currentRequest: PluginRequest
-  protected storeProfile = StoreProfile
+  protected mixinProfile: Partial<ModuleProfile>
   protected state: S
   public readonly profile: ModuleProfile<U> | PluginProfile<U>
   public events: ApiEventEmitter<U>
@@ -57,27 +53,14 @@ export abstract class BaseApi<S extends State, U extends Api> {
 
   constructor(
     profile: ModuleProfile<U> | PluginProfile<U>,
-    private initialState: S = createState<S>(),
+    initialState?: S,
   ) {
     this.events = new EventEmitter() as ApiEventEmitter<U>
-    this.profile = createProfile(profile, this.storeProfile)
+    this.profile = createProfile(profile, this.mixinProfile)
+    this.initialState = initialState || {} as S
     this.state = { ...this.initialState }
   }
 
-  ////////////
-  // STATUS //
-  ////////////
-
-  /** Set the status of the Api */
-  protected setStatus(status: Status) {
-    this.state.status = status
-    this.events.emit('statusChanged', status)
-  }
-
-  /** Get a snapshot of the status */
-  public getStatus() {
-    return this.getState(state => state.status)
-  }
 
   //////////////////////
   // STATE MANAGEMENT //

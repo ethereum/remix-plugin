@@ -1,7 +1,19 @@
-import { Status, Api, ModuleProfile, PluginProfile } from 'src/types'
-import { State, BaseApi, StoreProfile } from './base'
+import { Api, ModuleProfile, ApiEventEmitter } from 'src/types'
+import { BaseMixinApi } from './mixin'
 
-export interface EntityState<T> extends State {
+export interface EntityApi<T> {
+  events: {
+    add: [T],
+    remove: [string],
+    update: [T],
+    clear: [],
+    activate: [string | string[]],
+    deactivate: []
+  }
+}
+
+
+export interface EntityState<T> {
   entities: {
     [key: string]: T
   }
@@ -12,41 +24,23 @@ export interface EntityState<T> extends State {
 /** Create an empty state */
 function emptyEntityState<T>(): EntityState<T> {
   return {
-    status: {} as Status,
     ids: [],
     actives: [],
     entities: {},
   }
 }
 
-const EntityStoreProfile: Partial<ModuleProfile> = {
-  events: [
-    ...StoreProfile.events,
-    ...['add', 'remove', 'clear', 'update', 'activate', 'deactivate']
-  ],
-  notifications: {
-    ...StoreProfile.notifications
+function EntityStoreProfile<T>(): Partial<ModuleProfile<EntityApi<T>>> {
+  return {
+    events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
   }
 }
 
-export class EntityApi<T, U extends Api> extends BaseApi<EntityState<T>, U> {
-  private readonly keyId: string
-  protected storeProfile = EntityStoreProfile
-
-  /**
-   * Create a entity Store that hold a map entity of the same model
-   * @param profile The name of the store
-   * @param keyId The name of the key used as a unique ID for the entity
-   * @param initialState The initial state used if state is not available in `localStorage`
-   */
-  constructor(
-    profile: ModuleProfile<U> | PluginProfile<U>,
-    keyId?: string,
-    initialState: EntityState<T> = emptyEntityState(),
-  ) {
-    super(profile, initialState)
-    this.keyId = keyId || ('id' as string)
-  }
+export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityState<T>, EntityApi<T>> {
+  protected readonly keyId: string = 'id'
+  public state: EntityState<T> = emptyEntityState()
+  public mixinProfile = EntityStoreProfile<T>()
+  public events: ApiEventEmitter<U>
 
   /** The entities as a Map */
   get entities() {
@@ -92,7 +86,7 @@ export class EntityApi<T, U extends Api> extends BaseApi<EntityState<T>, U> {
    */
   removeEntity(id: string) {
     if (!this.state.entities[id])
-      throw new Error(`No entity with key ${id} found in store ${this.profile.name}`)
+      throw new Error(`No entity with key ${id} found`)
     delete this.state.entities[id]
     this.state.ids.splice(this.state.ids.indexOf(id), 1)
     this.state.actives.splice(this.state.ids.indexOf(id), 1)
@@ -112,7 +106,7 @@ export class EntityApi<T, U extends Api> extends BaseApi<EntityState<T>, U> {
    */
   updateEntity(id: string, update: Partial<T>) {
     if (!this.state.entities[id])
-      throw new Error(`No entity with key ${id} found in store ${this.profile.name}`)
+      throw new Error(`No entity with key ${id} found`)
     this.state.entities[id] = {
       ...this.state.entities[id],
       ...update,
