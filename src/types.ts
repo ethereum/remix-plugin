@@ -49,12 +49,13 @@ export interface ApiEventEmitter<T extends Partial<Api>> {
 
 export type API<T extends Api> = {
   name: T['name']
-  events?: ApiEventEmitter<T>
-  activate?(): void
+  events: ApiEventEmitter<T>
+  activate?(): Promise<void>
   deactivate?(): void
+  render?(): HTMLElement
 } & { [M in StrictExtractKey<T, Function>]: T[M] }
 
-export interface ModuleProfile<T extends Api | Partial<Api> = any> {
+export interface ModuleProfile<T extends Api = any> {
   name: T['name']
   displayName?: string
   description?: string,

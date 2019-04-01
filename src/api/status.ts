@@ -1,7 +1,8 @@
 import { Status, Api, ApiEventEmitter, ModuleProfile } from "../types"
-import { BaseMixinApi } from "./mixin"
+import { BaseMixinApi, MixinApi } from "./mixin"
 
 export interface StatusApi {
+  name: 'status',
   events: {
     statusChanged: [Status]
   }
@@ -11,22 +12,17 @@ export interface StatusState {
   status: Status
 }
 
-function emptyStatusState<T>(): StatusState {
-  return { status: {} as Status }
-}
+export function StatusProfile(): Partial<ModuleProfile<StatusApi>>  {
+  return {
+    events: <const>['statusChanged'],
 
-
-export const StatusProfile: Partial<ModuleProfile<StatusApi>> = {
-  events: ['statusChanged'] as const,
-  notifications: {
-    'theme': ['switchTheme']
   }
 }
 
-export class StatusApiMixin<T extends Api> implements BaseMixinApi<StatusState, StatusApi> {
-  public mixinProfile = StatusProfile
-  public state: StatusState = emptyStatusState()
-  public events: ApiEventEmitter<T>
+export class StatusMixin implements BaseMixinApi<StatusState, StatusApi> {
+  public state: StatusState
+  public events: ApiEventEmitter<StatusApi>
+
   /** Set the status of the Api */
   public setStatus(status: Status) {
     this.state.status = status
