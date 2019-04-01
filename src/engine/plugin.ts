@@ -8,6 +8,8 @@ import {
   PluginApi,
 } from '../types'
 import { EventEmitter } from 'events'
+import { MixinApi } from '../api/mixin'
+import { StatusMixin, StatusState, StatusProfile } from '../api/status'
 import { createProfile } from '../api/base'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
@@ -19,25 +21,25 @@ interface PluginPendingRequest {
   }
 }
 
-export class Plugin<T extends Api> implements PluginApi<T> {
+export class Plugin<T extends Api> extends MixinApi([StatusMixin])<StatusState, T> implements PluginApi<T> {
   // Listener is needed to remove the listener
   private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
   private id = 0
   private iframe = document.createElement('iframe')
   private origin: string
   private source: Window
-  // Request to the plugin waiting in queue
-  private requestQueue: Array<() => Promise<any>> = []
   private pendingRequest: PluginPendingRequest = {}
+  // Request to the plugin waiting in queue
+  protected requestQueue: Array<() => Promise<any>> = []
 
   public readonly name: T['name']
-  public readonly profile: PluginProfile<T>
+  public profile: PluginProfile<T>
   public events: ApiEventEmitter<T> = new EventEmitter() as any
   public notifs = {}
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
 
   constructor(profile: PluginProfile<T>) {
-    this.profile = profile
+    super(createProfile(profile, StatusProfile()))
     this.name = this.profile.name
 
     const notifs = this.profile.notifications || {}

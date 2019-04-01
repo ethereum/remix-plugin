@@ -10,57 +10,58 @@ import {
 } from '../types'
 import { EventEmitter } from 'events'
 
-export const StoreProfile: Partial<ModuleProfile> = {
-  events: ['statusChanged'],
-  notifications: {
-    'theme': ['switchTheme']
-  }
-}
-
+type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
 
 /** Create a Profile with default values */
-export function createProfile<
-  T extends Api,
-  Profile extends ModuleProfile<T> | PluginProfile<T>
->(profile: Profile, mixinProfile: Partial<ModuleProfile>): Profile {
+export function createProfile<T extends Api, U extends Api>(
+  profile: Profile<T>,
+  ...mixinProfile: Partial<ModuleProfile<U>>[]
+): Profile<T> {
   return {
     ...profile,
     methods: [
-      ...mixinProfile.methods,
-      ...profile.methods],
+      ...mixinProfile.reduce((acc, mixin) => [ ...acc, ...(mixin.methods || []) ], []),
+      ...(profile.methods || [])
+    ],
     events: [
-      ...mixinProfile.events,
-      ...profile.events
+      ...mixinProfile.reduce((acc, mixin) => [ ...acc, ...(mixin.events || []) ], []),
+      ...(profile.events || [])
     ],
     notifications: {
-      ...mixinProfile.notifications,
-      ...profile.notifications,
+      ...mixinProfile.reduce((acc, mixin) => ({ ...acc, ...(mixin.notifications || {}) }), {} as any),
+      ...(profile.notifications || {}),
     },
   }
 }
 
+export function BaseProfile() {
+  return {
+    notifications: {
+      'theme': ['switchTheme']
+    }
+  }
+}
+
 export abstract class BaseApi<S, U extends Api> {
-  private requestQueue: Array<() => Promise<any>> = []
   private initialState: S
-  protected currentRequest: PluginRequest
-  protected mixinProfile: Partial<ModuleProfile>
   protected state: S
+  protected requestQueue: Array<() => Promise<any>> = []
+  protected currentRequest: PluginRequest
   public readonly profile: ModuleProfile<U> | PluginProfile<U>
   public events: ApiEventEmitter<U>
-  public activate?: () => Promise<void>
-  public deactivate?: () => void
-  public render?: () => HTMLElement
+  public activate?(): Promise<void>
+  public deactivate?(): void
+  public render?(): HTMLElement
 
   constructor(
     profile: ModuleProfile<U> | PluginProfile<U>,
     initialState?: S,
   ) {
     this.events = new EventEmitter() as ApiEventEmitter<U>
-    this.profile = createProfile(profile, this.mixinProfile)
+    this.profile = createProfile(profile, BaseProfile())
     this.initialState = initialState || {} as S
     this.state = { ...this.initialState }
   }
-
 
   //////////////////////
   // STATE MANAGEMENT //
@@ -92,6 +93,7 @@ export abstract class BaseApi<S, U extends Api> {
   public resetState() {
     this.state = this.initialState
   }
+
 
   /////////
   // API //

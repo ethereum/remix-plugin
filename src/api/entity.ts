@@ -2,6 +2,7 @@ import { Api, ModuleProfile, ApiEventEmitter } from 'src/types'
 import { BaseMixinApi } from './mixin'
 
 export interface EntityApi<T> {
+  name: 'entity',
   events: {
     add: [T],
     remove: [string],
@@ -22,7 +23,7 @@ export interface EntityState<T> {
 }
 
 /** Create an empty state */
-function emptyEntityState<T>(): EntityState<T> {
+function EntityState<T>(): EntityState<T> {
   return {
     ids: [],
     actives: [],
@@ -38,8 +39,7 @@ function EntityStoreProfile<T>(): Partial<ModuleProfile<EntityApi<T>>> {
 
 export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityState<T>, EntityApi<T>> {
   protected readonly keyId: string = 'id'
-  public state: EntityState<T> = emptyEntityState()
-  public mixinProfile = EntityStoreProfile<T>()
+  public state: EntityState<T>
   public events: ApiEventEmitter<U>
 
   /** The entities as a Map */
@@ -95,7 +95,7 @@ export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityStat
 
   /** Remove all entity from the state and reset actives and ids to empty */
   clearState() {
-    this.state = emptyEntityState()
+    this.state = EntityState()
     this.events.emit('clear')
   }
 
