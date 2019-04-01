@@ -130,7 +130,7 @@ export interface PluginRequest {
 export interface PluginApi<T extends Api> {
   profile: ModuleProfile<T> | PluginProfile<T>
   name: T['name']
-  events?: ApiEventEmitter<T>
+  events: ApiEventEmitter<T>
   addRequest: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
   render?: () => HTMLElement,
   activate?: () => Promise<void>
