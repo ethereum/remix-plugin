@@ -8,7 +8,7 @@ import {
   PluginApi,
 } from '../types'
 import { EventEmitter } from 'events'
-import { createProfile } from '../profile'
+import { createProfile } from '../api/base'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 
@@ -37,7 +37,7 @@ export class Plugin<T extends Api> implements PluginApi<T> {
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
 
   constructor(profile: PluginProfile<T>) {
-    this.profile = createProfile(profile)
+    this.profile = profile
     this.name = this.profile.name
 
     const notifs = this.profile.notifications || {}
