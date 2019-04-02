@@ -44,11 +44,12 @@ export const baseProfile = {
   }
 }
 
-export abstract class BaseApi<S, U extends Api> {
+export abstract class BaseApi<U extends Api, S = Object> {
   private initialState: S
   protected state: S
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
+  public readonly name: U['name']
   public readonly profile: ModuleProfile<U> | PluginProfile<U>
   public events: ApiEventEmitter<U>
   public activate?(): Promise<void>
@@ -59,6 +60,7 @@ export abstract class BaseApi<S, U extends Api> {
     profile: ModuleProfile<U> | PluginProfile<U>,
     initialState?: S,
   ) {
+    this.name = profile.name
     this.events = new EventEmitter() as ApiEventEmitter<U>
     this.profile = createProfile(profile, baseProfile)
     this.initialState = initialState || {} as S
