@@ -1,6 +1,7 @@
 import { Api, ModuleProfile, ApiEventEmitter } from 'src/types'
 import { BaseMixinApi } from './mixin'
 
+// API
 export interface EntityApi<T> {
   name: 'entity',
   events: {
@@ -13,7 +14,7 @@ export interface EntityApi<T> {
   }
 }
 
-
+// STATE
 export interface EntityState<T> {
   entities: {
     [key: string]: T
@@ -31,12 +32,13 @@ function EntityState<T>(): EntityState<T> {
   }
 }
 
-function EntityStoreProfile<T>(): Partial<ModuleProfile<EntityApi<T>>> {
-  return {
-    events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
-  }
+// PROFILE
+export const entityStoreProfile: Partial<ModuleProfile<EntityApi<Api>>> = {
+  events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
+  methods: ['addEntity', 'removeEntity', 'updateEntity', 'setActive', 'getMany', 'getAll', 'getActives']
 }
 
+// MIXIN
 export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityState<T>, EntityApi<T>> {
   protected readonly keyId: string = 'id'
   public state: EntityState<T>

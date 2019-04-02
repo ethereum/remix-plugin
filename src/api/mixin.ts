@@ -9,12 +9,9 @@ export class BaseMixinApi<State, U extends Api> {
 export function MixinApi(mixins: any[]) {
   const Base = BaseApi
   mixins.forEach(mixin => {
-    console.log('mixin prototype', mixin.prototype['mixinProfile'])
     Object
       .getOwnPropertyNames(mixin.prototype)
-      .forEach(name => {
-        if (name !== 'constructor') Base.prototype[name] = mixin.prototype[name]
-      })
+      .forEach(name => Base.prototype[name] = mixin.prototype[name])
   })
   return Base
 }

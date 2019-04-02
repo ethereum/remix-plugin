@@ -12,33 +12,35 @@ import { EventEmitter } from 'events'
 
 type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
 
-/** Create a Profile with default values */
+/**
+ * Create a Profile with default values
+ * @param profile The profile of the plugin
+ * @param mixinProfiles A list of profiles to mix in the base profile
+ */
 export function createProfile<T extends Api, U extends Api>(
   profile: Profile<T>,
-  ...mixinProfile: Partial<ModuleProfile<U>>[]
+  ...mixinProfiles: Partial<ModuleProfile<U>>[]
 ): Profile<T> {
   return {
     ...profile,
     methods: [
-      ...mixinProfile.reduce((acc, mixin) => [ ...acc, ...(mixin.methods || []) ], []),
+      ...mixinProfiles.reduce((acc, mixin) => [ ...acc, ...(mixin.methods || []) ], []),
       ...(profile.methods || [])
     ],
     events: [
-      ...mixinProfile.reduce((acc, mixin) => [ ...acc, ...(mixin.events || []) ], []),
+      ...mixinProfiles.reduce((acc, mixin) => [ ...acc, ...(mixin.events || []) ], []),
       ...(profile.events || [])
     ],
     notifications: {
-      ...mixinProfile.reduce((acc, mixin) => ({ ...acc, ...(mixin.notifications || {}) }), {} as any),
+      ...mixinProfiles.reduce((acc, mixin) => ({ ...acc, ...(mixin.notifications || {}) }), {} as any),
       ...(profile.notifications || {}),
     },
   }
 }
 
-export function BaseProfile() {
-  return {
-    notifications: {
-      'theme': ['switchTheme']
-    }
+export const baseProfile = {
+  notifications: {
+    'theme': ['switchTheme']
   }
 }
 
@@ -58,7 +60,7 @@ export abstract class BaseApi<S, U extends Api> {
     initialState?: S,
   ) {
     this.events = new EventEmitter() as ApiEventEmitter<U>
-    this.profile = createProfile(profile, BaseProfile())
+    this.profile = createProfile(profile, baseProfile)
     this.initialState = initialState || {} as S
     this.state = { ...this.initialState }
   }

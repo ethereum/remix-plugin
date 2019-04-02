@@ -9,7 +9,7 @@ import {
 } from '../types'
 import { EventEmitter } from 'events'
 import { MixinApi } from '../api/mixin'
-import { StatusMixin, StatusState, StatusProfile } from '../api/status'
+import { StatusMixin, StatusState, statusProfile } from '../api/status'
 import { createProfile } from '../api/base'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
@@ -39,7 +39,7 @@ export class Plugin<T extends Api> extends MixinApi([StatusMixin])<StatusState, 
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
 
   constructor(profile: PluginProfile<T>) {
-    super(createProfile(profile, StatusProfile()))
+    super(createProfile(profile, statusProfile))
     this.name = this.profile.name
 
     const notifs = this.profile.notifications || {}
