@@ -21,7 +21,7 @@ interface PluginPendingRequest {
   }
 }
 
-export class Plugin<T extends Api> extends MixinApi([StatusMixin])<StatusState, T> implements PluginApi<T> {
+export class Plugin<T extends Api> extends MixinApi([StatusMixin])<T, StatusState> implements PluginApi<T> {
   // Listener is needed to remove the listener
   private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
   private id = 0
