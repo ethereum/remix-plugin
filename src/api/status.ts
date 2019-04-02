@@ -1,6 +1,7 @@
 import { Status, Api, ApiEventEmitter, ModuleProfile } from "../types"
 import { BaseMixinApi, MixinApi } from "./mixin"
 
+// API
 export interface StatusApi {
   name: 'status',
   events: {
@@ -8,17 +9,17 @@ export interface StatusApi {
   }
 }
 
+// STATE
 export interface StatusState {
   status: Status
 }
 
-export function StatusProfile(): Partial<ModuleProfile<StatusApi>>  {
-  return {
-    events: <const>['statusChanged'],
-
-  }
+// PROFILE
+export const statusProfile: Partial<ModuleProfile<StatusApi>> = {
+  events: <const>['statusChanged']
 }
 
+// MIXIN
 export class StatusMixin implements BaseMixinApi<StatusState, StatusApi> {
   public state: StatusState
   public events: ApiEventEmitter<StatusApi>
