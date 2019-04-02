@@ -1,4 +1,4 @@
-import { ModuleProfile, Api, API, ApiEventEmitter, ApiFactory } from '../../src'
+import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi } from '../../src'
 import { EventEmitter } from 'events'
 
 // Type
@@ -15,13 +15,11 @@ export const PermissionModuleProfile: ModuleProfile<PermissionModule> = {
 }
 
 // API
-export class PermissionModuleApi extends ApiFactory<PermissionModule> implements API<PermissionModule> {
-  public readonly name = 'permissionModule'
-  public readonly profile = PermissionModuleProfile
+export class PermissionModuleApi extends BaseApi<PermissionModule> implements API<PermissionModule> {
   public events: ApiEventEmitter<PermissionModuleApi>
 
   constructor() {
-    super()
+    super(PermissionModuleProfile)
   }
 
   public callWithPermission() {

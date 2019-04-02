@@ -1,4 +1,4 @@
-import { ModuleProfile, Api, API, ApiFactory, ApiEventEmitter } from '../../src'
+import { ModuleProfile, Api, API, BaseApi, ApiEventEmitter } from '../../src'
 import { Transaction } from './types'
 import { EventEmitter } from 'events'
 
@@ -17,10 +17,12 @@ export const UdappProfile: ModuleProfile<Udapp> = {
 }
 
 // API
-export class UdappApi extends ApiFactory<Udapp> implements API<Udapp> {
-  public readonly name = 'udapp'
-  public readonly profile = UdappProfile
+export class UdappApi extends BaseApi<Udapp> implements API<Udapp> {
   public events: ApiEventEmitter<Udapp> = new EventEmitter() as any
+
+  constructor() {
+    super(UdappProfile)
+  }
 
   private doSomeCalculation(transaction: Transaction) {
     // This method is not part of the UdappProfile.
