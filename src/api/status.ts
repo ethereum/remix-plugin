@@ -1,5 +1,5 @@
-import { Status, Api, ApiEventEmitter, ModuleProfile } from "../types"
-import { BaseMixinApi, MixinApi } from "./mixin"
+import { Status, ApiEventEmitter, ModuleProfile } from "../types"
+import { BaseMixinApi } from "./mixin"
 
 // API
 export interface StatusApi {
@@ -21,7 +21,7 @@ export const statusProfile: Partial<ModuleProfile<StatusApi>> = {
 }
 
 // MIXIN
-export class StatusMixin implements BaseMixinApi<StatusState, StatusApi> {
+export class StatusMixin implements BaseMixinApi<StatusApi, StatusState> {
   public state: StatusState
   public events: ApiEventEmitter<StatusApi>
 

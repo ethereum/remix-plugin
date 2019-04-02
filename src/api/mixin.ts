@@ -1,7 +1,7 @@
-import { BaseApi, createProfile } from './base'
-import { ModuleProfile, Api, ApiEventEmitter } from '../types'
+import { BaseApi } from './base'
+import { Api, ApiEventEmitter } from '../types'
 
-export class BaseMixinApi<State, U extends Api> {
+export class BaseMixinApi<U extends Api, State = Object> {
   state: State
   events: ApiEventEmitter<U>
 }

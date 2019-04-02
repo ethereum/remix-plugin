@@ -35,11 +35,11 @@ function EntityState<T>(): EntityState<T> {
 // PROFILE
 export const entityStoreProfile: Partial<ModuleProfile<EntityApi<Api>>> = {
   events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
-  methods: ['addEntity', 'removeEntity', 'updateEntity', 'setActive', 'getMany', 'getAll', 'getActives']
+  methods: ['addEntity', 'removeEntity', 'updateEntity', 'setActive', 'getMany', 'getAll', 'getActives', 'hasEntity', 'isEmpty']
 }
 
 // MIXIN
-export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityState<T>, EntityApi<T>> {
+export class EntityMixinApi<T, U extends Api> implements BaseMixinApi<EntityApi<T>, EntityState<T>> {
   protected readonly keyId: string = 'id'
   public state: EntityState<T>
   public events: ApiEventEmitter<U>
