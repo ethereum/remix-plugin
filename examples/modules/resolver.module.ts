@@ -1,4 +1,4 @@
-import { ModuleProfile, Api, API, ApiFactory, ApiEventEmitter } from '../../src'
+import { ModuleProfile, Api, API, BaseApi, ApiEventEmitter } from '../../src'
 import { EventEmitter } from 'events'
 
 
@@ -16,10 +16,12 @@ export const ResolverProfile: ModuleProfile<Resolver> = {
 }
 
 // API
-export class ResolverApi extends ApiFactory<Resolver> implements API<Resolver> {
-  public readonly name = 'solResolver'
-  public readonly profile = ResolverProfile
+export class ResolverApi extends BaseApi<Resolver> implements API<Resolver> {
   public events: ApiEventEmitter<Resolver> = new EventEmitter() as any
+
+  constructor() {
+    super(ResolverProfile)
+  }
 
   public combineSource(path: string) {
     console.log(path)
