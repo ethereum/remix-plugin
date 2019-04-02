@@ -16,7 +16,8 @@ export interface StatusState {
 
 // PROFILE
 export const statusProfile: Partial<ModuleProfile<StatusApi>> = {
-  events: <const>['statusChanged']
+  events: <const>['statusChanged'],
+  methods: ['getStatus']
 }
 
 // MIXIN
