@@ -60,7 +60,7 @@ export interface ModuleProfile<T extends Api = any> {
   displayName?: string
   description?: string,
   required?: boolean
-  kind?: 'compiler' | 'editor' | 'udapp' | 'test' | 'analysis' | 'debug'
+  kind?: 'compiler' | 'editor' | 'udapp' | 'network' | 'test' | 'analysis' | 'debug'
   methods?: readonly ExtractKey<T, Function>[]
   events?: readonly (keyof T['events'])[],
   notifications?: ({ [name: string]: string[] } & DefaultProfile['notifications']) | { [name: string]: string[] }
