@@ -9,6 +9,7 @@ export interface ICompilerApi extends Api {
 }
 
 export const compilerProfile: Partial<ModuleProfile<ICompilerApi>> = {
+  kind: 'compiler',
   events: ['compilationFinished'],
   methods: ['getCompilationResult']
 }
