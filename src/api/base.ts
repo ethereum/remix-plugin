@@ -17,7 +17,7 @@ type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
  * @param profile The profile of the plugin
  * @param mixinProfiles A list of profiles to mix in the base profile
  */
-export function createProfile<T extends Api, U extends Api>(
+export function extendsProfile<T extends Api, U extends Api>(
   profile: Profile<T>,
   ...mixinProfiles: Partial<ModuleProfile<U>>[]
 ): Profile<T> {
@@ -39,14 +39,15 @@ export function createProfile<T extends Api, U extends Api>(
 }
 
 export const baseProfile = {
+  events: <const>['statusChanged'],
+  methods: ['getStatus'],
   notifications: {
     'theme': ['switchTheme']
   }
 }
 
-export abstract class BaseApi<U extends Api, S = Object> {
-  private initialState: S
-  protected state: S
+export abstract class BaseApi<U extends Api> {
+  private status: Status
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   public readonly name: U['name']
@@ -56,48 +57,26 @@ export abstract class BaseApi<U extends Api, S = Object> {
   public deactivate?(): void
   public render?(): HTMLElement
 
-  constructor(
-    profile: ModuleProfile<U> | PluginProfile<U>,
-    initialState?: S,
-  ) {
+  constructor(profile: ModuleProfile<U> | PluginProfile<U>) {
     this.name = profile.name
     this.events = new EventEmitter() as ApiEventEmitter<U>
-    this.profile = createProfile(profile, baseProfile)
-    this.initialState = initialState || {} as S
-    this.state = { ...this.initialState }
+    this.profile = extendsProfile(profile, baseProfile)
   }
 
-  //////////////////////
-  // STATE MANAGEMENT //
-  //////////////////////
 
-  /**
-   * Update one field of the state
-   * @param state The part of the state updated
-   */
-  public updateState(state: Partial<S>) {
-    this.state = { ...this.state, ...state }
+  ////////////
+  // STATUS //
+  ////////////
+  /** Set the status of the Api */
+  public setStatus(status: Status) {
+    this.status = status
+    this.events.emit('statusChanged', status)
   }
 
-  /** Get the state or a part of it */
-  public getState(): S
-  public getState<K extends keyof S>(key: K): S[K]
-  public getState<R>(query: (store: S) => R): R
-  public getState<K extends keyof S, R>(
-    query?: ((state: S) => R) | K,
-  ): R | S | S[K] {
-    switch (typeof query) {
-      case 'function': return query(this.state)
-      case 'string': return this.state[query]
-      default: return this.state
-    }
+  /** Get a snapshot of the status */
+  public getStatus() {
+    return this.status
   }
-
-  /** Reset the state its initial value */
-  public resetState() {
-    this.state = this.initialState
-  }
-
 
   /////////
   // API //
