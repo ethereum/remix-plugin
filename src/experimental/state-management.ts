@@ -77,8 +77,8 @@ function EntityState<T>(): EntityState<T> {
 
 // PROFILE
 export const entityStoreProfile: Partial<ModuleProfile<EntityApi<Api>>> = {
-  events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
-  methods: ['addEntity', 'removeEntity', 'updateEntity', 'setActive', 'getMany', 'getAll', 'getActives', 'hasEntity', 'isEmpty']
+  // events: ['add', 'remove', 'clear', 'update', 'activate', 'deactivate'],
+  // methods: ['addEntity', 'removeEntity', 'updateEntity', 'setActive', 'getMany', 'getAll', 'getActives', 'hasEntity', 'isEmpty']
 }
 
 

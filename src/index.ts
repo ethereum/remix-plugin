@@ -5,6 +5,3 @@ export * from './types'
 
 // API
 export * from './api/base'
-export * from './api/entity'
-export * from './api/mixin'
-export * from './api/status'
