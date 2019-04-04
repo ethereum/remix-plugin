@@ -3,7 +3,7 @@ import { Plugin } from './engine/plugin'
 export type StrictExtractKey<T, U> = {
   [K in keyof T]: T[K] extends U ? K : never
 }[keyof T]
-export type ExtractKey<T, U> = StrictExtractKey<T, U> | string
+export type ExtractKey<T, U> = StrictExtractKey<T, U>
 
 export interface Api {
   name: string
@@ -60,8 +60,8 @@ export interface ModuleProfile<T extends Api = any> {
   displayName?: string
   description?: string,
   required?: boolean
-  kind?: 'compile' | 'run' | 'test' | 'analysis' | 'debug'
-  methods?: ExtractKey<T, Function>[]
+  kind?: 'compiler' | 'editor' | 'udapp' | 'test' | 'analysis' | 'debug'
+  methods?: readonly ExtractKey<T, Function>[]
   events?: readonly (keyof T['events'])[],
   notifications?: ({ [name: string]: string[] } & DefaultProfile['notifications']) | { [name: string]: string[] }
   permission?: boolean
