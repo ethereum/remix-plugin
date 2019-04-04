@@ -7,6 +7,7 @@ import {
   PluginApi,
   PluginRequest,
   ExtractKey,
+  API,
 } from '../types'
 import { EventEmitter } from 'events'
 
@@ -38,7 +39,14 @@ export function extendsProfile<T extends Api, U extends Api>(
   }
 }
 
-export const baseProfile = {
+interface IBaseApi extends Api {
+  events: {
+    statusChanged: [Status]
+  }
+  getStatus(): Status
+}
+
+export const baseProfile: Partial<ModuleProfile<IBaseApi>> = {
   events: <const>['statusChanged'],
   methods: ['getStatus'],
   notifications: {
@@ -46,7 +54,7 @@ export const baseProfile = {
   }
 }
 
-export abstract class BaseApi<U extends Api> {
+export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
   private status: Status
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
