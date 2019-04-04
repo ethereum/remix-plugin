@@ -10,12 +10,14 @@ export interface IUdappApi extends Api {
     newTransaction: [Transaction]
   }
   sendTransaction(tx: Transaction): void
+  getAccounts(): string[]
+  createVMAccount(): string
 }
 
 export const compilerProfile: Partial<ModuleProfile<IUdappApi>> = {
   kind: 'udapp',
   events: ['newTransaction'],
-  methods: ['sendTransaction']
+  methods: ['sendTransaction', 'getAccounts', 'createVMAccount']
 }
 
 export abstract class UdappApi extends BaseApi<IUdappApi> implements API<IUdappApi> {
@@ -25,4 +27,6 @@ export abstract class UdappApi extends BaseApi<IUdappApi> implements API<IUdappA
   }
 
   abstract sendTransaction(tx: Transaction): void
+  abstract getAccounts(): string[]
+  abstract createVMAccount(): string
 }
