@@ -23,15 +23,15 @@ export interface CompilationResult {
 export interface CompilationError {
   /** Location within the source file */
   sourceLocation?: {
-    file: string,
-    start: number,
+    file: string
+    start: number
     end: number
   }
   /** Error type */
   type: CompilationErrorType
   /** Component where the error originated, such as "general", "ewasm", etc. */
   component: 'general' | 'ewasm' | string
-  severity: "error" | 'warning'
+  severity: 'error' | 'warning'
   message: string
   /** the message formatted with source location */
   formattedMessage?: string
@@ -59,20 +59,49 @@ export interface CompilationSource {
   /** Identifier of the source (used in source maps) */
   id: number
   /** The AST object */
-  ast: CompilationAST,
+  ast: AstNode
   /** The legacy AST object */
-  legacyAST: CompilationLegacyAST
+  legacyAST: AstNodeLegacy
 }
-
 
 /////////
 // AST //
 /////////
-export interface CompilationAST {
-  
+export interface AstNode {
+  absolutePath?: string
+  exportedSymbols?: Object
+  id: number
+  nodeType: string
+  nodes?: Array<AstNode>
+  src: string
+  literals?: Array<string>
+  file?: string
+  scope?: number
+  sourceUnit?: number
+  symbolAliases?: Array<string>
+  [x: string]: any
 }
-export interface CompilationLegacyAST {
 
+export interface AstNodeLegacy {
+  id: number
+  name: string
+  src: string
+  children?: Array<AstNodeLegacy>
+  attributes?: AstNodeAtt
+}
+
+export interface AstNodeAtt {
+  operator?: string
+  string?: null
+  type?: string
+  value?: string
+  constant?: boolean
+  name?: string
+  public?: boolean
+  exportedSymbols?: Object
+  argumentTypes?: null
+  absolutePath?: string
+  [x: string]: any
 }
 
 //////////////
@@ -80,45 +109,45 @@ export interface CompilationLegacyAST {
 //////////////
 export interface CompilatedContract {
   /** The Ethereum Contract ABI. If empty, it is represented as an empty array. */
-  abi: ABIDescription[],
+  abi: ABIDescription[]
   // See the Metadata Output documentation (serialised JSON string)
-  metadata: string,
+  metadata: string
   /** User documentation (natural specification) */
-  userdoc: UserDocumentation,
+  userdoc: UserDocumentation
   /** Developer documentation (natural specification) */
-  devdoc: DeveloperDocumentation,
+  devdoc: DeveloperDocumentation
   /** Intermediate representation (string) */
-  ir: string,
+  ir: string
   /** EVM-related outputs */
   evm: {
-    assembly: string,
-    legacyAssembly: {},
+    assembly: string
+    legacyAssembly: {}
     /** Bytecode and related details. */
     bytecode: BytecodeObject
-    deployedBytecode: BytecodeObject,
+    deployedBytecode: BytecodeObject
     /** The list of function hashes */
     methodIdentifiers: {
       [functionIdentifier: string]: string
-    },
+    }
     // Function gas estimates
     gasEstimates: {
       creation: {
-        codeDepositCost: string,
-        executionCost: "infinite" | string,
-        totalCost: "infinite" | string
-      },
+        codeDepositCost: string
+        executionCost: 'infinite' | string
+        totalCost: 'infinite' | string
+      }
       external: {
         [functionIdentifier: string]: string
-      },
+      }
       internal: {
-        [functionIdentifier: string]: "infinite" | string
+        [functionIdentifier: string]: 'infinite' | string
       }
     }
-  },
+  }
   /** eWASM related outputs */
   ewasm: {
     /** S-expressions format */
-    wast: string,
+    wast: string
     /** Binary format (hex string) */
     wasm: string
   }
@@ -147,12 +176,13 @@ export interface FunctionDescription {
 }
 
 export interface EventDescription {
-  type: 'event',
-  name: string,
-  inputs: ABIParameter & {
-    /** true if the field is part of the log’s topics, false if it one of the log’s data segment. */
-    indexed: boolean
-  }[]
+  type: 'event'
+  name: string
+  inputs: ABIParameter &
+    {
+      /** true if the field is part of the log’s topics, false if it one of the log’s data segment. */
+      indexed: boolean
+    }[]
   /** true if the event was declared as anonymous. */
   anonymous: boolean
 }
@@ -167,28 +197,37 @@ export interface ABIParameter {
 }
 
 export type ABITypeParameter =
-  | 'uint'      | 'uint[]'  // TODO : add <M>
-  | 'int'       | 'int[]'     // TODO : add <M>
-  | 'address'   | 'address[]'
-  | 'bool'      | 'bool[]'
-  | 'fixed'     | 'fixed[]'   // TODO : add <M>
-  | 'ufixed'    | 'ufixed[]'  // TODO : add <M>
-  | 'bytes'     | 'bytes[]'   // TODO : add <M>
-  | 'function'  | 'function[]'
-  | 'tuple'     | 'tuple[]'
-  | string  // Fallback
+  | 'uint'
+  | 'uint[]' // TODO : add <M>
+  | 'int'
+  | 'int[]' // TODO : add <M>
+  | 'address'
+  | 'address[]'
+  | 'bool'
+  | 'bool[]'
+  | 'fixed'
+  | 'fixed[]' // TODO : add <M>
+  | 'ufixed'
+  | 'ufixed[]' // TODO : add <M>
+  | 'bytes'
+  | 'bytes[]' // TODO : add <M>
+  | 'function'
+  | 'function[]'
+  | 'tuple'
+  | 'tuple[]'
+  | string // Fallback
 
 ///////////////////////////
 // NATURAL SPECIFICATION //
 ///////////////////////////
 export interface UserDocumentation {
-  source: string,
-  language: "Solidity" | "Vyper" | string,
-  languageVersion: number,
+  source: string
+  language: 'Solidity' | 'Vyper' | string
+  languageVersion: number
   methods: {
     [functionIdentifier: string]: UserFunctionDocumentation
-  },
-  invariants: UserFunctionDocumentation[],
+  }
+  invariants: UserFunctionDocumentation[]
   construction: UserFunctionDocumentation[]
 }
 
@@ -197,12 +236,12 @@ export interface UserFunctionDocumentation {
 }
 
 export interface DeveloperDocumentation {
-  author: string,
-  title: string,
+  author: string
+  title: string
   methods: {
     [functionIdentifier: string]: DevFunctionDocumentation
-  },
-  invariants: DevFunctionDocumentation[],
+  }
+  invariants: DevFunctionDocumentation[]
   construction: DevFunctionDocumentation
 }
 
@@ -215,16 +254,16 @@ export interface DevFunctionDocumentation {
 //////////////
 export interface BytecodeObject {
   /** The bytecode as a hex string. */
-  object: string,
+  object: string
   /** Opcodes list */
-  opcodes: string,
+  opcodes: string
   /** The source mapping as a string. See the source mapping definition. */
-  sourceMap: string,
+  sourceMap: string
   /** If given, this is an unlinked object. */
   linkReferences?: {
     [contractName: string]: {
       /** Byte offsets into the bytecode. */
-      [library: string]: { start: number, length: number }[]
+      [library: string]: { start: number; length: number }[]
     }
-  },
+  }
 }
