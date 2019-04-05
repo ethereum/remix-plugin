@@ -8,14 +8,14 @@ export interface INetworkApi extends Api {
   detectNetWork(): any
 }
 
-export const compilerProfile: Partial<ModuleProfile<INetworkApi>> = {
+export const networkProfile: Partial<ModuleProfile<INetworkApi>> = {
   kind: 'network',
   methods: ['detectNetWork']
 }
 
 export abstract class NetworkApi extends BaseApi<INetworkApi> implements API<INetworkApi> {
   constructor(profile: ModuleProfile) {
-    const localProfile = extendsProfile(profile, compilerProfile)
+    const localProfile = extendsProfile(profile, networkProfile)
     super(localProfile)
   }
 

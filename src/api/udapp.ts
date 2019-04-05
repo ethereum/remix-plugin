@@ -14,7 +14,7 @@ export interface IUdappApi extends Api {
   createVMAccount(): string
 }
 
-export const compilerProfile: Partial<ModuleProfile<IUdappApi>> = {
+export const udappProfile: Partial<ModuleProfile<IUdappApi>> = {
   kind: 'udapp',
   events: ['newTransaction'],
   methods: ['sendTransaction', 'getAccounts', 'createVMAccount']
@@ -22,7 +22,7 @@ export const compilerProfile: Partial<ModuleProfile<IUdappApi>> = {
 
 export abstract class UdappApi extends BaseApi<IUdappApi> implements API<IUdappApi> {
   constructor(profile: ModuleProfile) {
-    const localProfile = extendsProfile(profile, compilerProfile)
+    const localProfile = extendsProfile(profile, udappProfile)
     super(localProfile)
   }
 

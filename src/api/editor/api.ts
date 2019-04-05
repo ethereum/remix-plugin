@@ -9,14 +9,14 @@ export interface IEditorApi extends Api {
   discardHighlight(): void
 }
 
-export const compilerProfile: Partial<ModuleProfile<IEditorApi>> = {
+export const editorProfile: Partial<ModuleProfile<IEditorApi>> = {
   kind: 'editor',
   methods: ['highlight', 'discardHighlight']
 }
 
 export abstract class EditorApi extends BaseApi<IEditorApi> implements API<IEditorApi> {
   constructor(profile: ModuleProfile) {
-    const localProfile = extendsProfile(profile, compilerProfile)
+    const localProfile = extendsProfile(profile, editorProfile)
     super(localProfile)
   }
 

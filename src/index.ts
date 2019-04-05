@@ -4,4 +4,4 @@ export * from './engine/plugin'
 export * from './types'
 
 // API
-export * from './api/base'
+export * from './api'
