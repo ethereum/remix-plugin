@@ -1,11 +1,12 @@
-import { BaseApi, extendsProfile } from "./base"
-import { ModuleProfile, Api, API } from "src/types"
+import { BaseApi, extendsProfile } from "../base"
+import { ModuleProfile, Api, API } from "../../types"
+import { CompilationResult } from "./type"
 
 export interface ICompilerApi extends Api {
   events: {
-    compilationFinished: []
+    compilationFinished: [CompilationResult]
   }
-  getCompilationResult(): any
+  getCompilationResult(): CompilationResult
 }
 
 export const compilerProfile: Partial<ModuleProfile<ICompilerApi>> = {
@@ -20,5 +21,5 @@ export abstract class CompilerApi extends BaseApi<ICompilerApi> implements API<I
     super(localProfile)
   }
 
-  abstract getCompilationResult(): any
+  abstract getCompilationResult(): CompilationResult
 }
