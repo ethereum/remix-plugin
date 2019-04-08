@@ -23,10 +23,9 @@ To import it you can use ES6 if installed with npm :
 ```javascript
 import { RemixExtension } from 'remix-plugin'
 const extension = new RemixExtension()
-```
 
-Or with a global variable if you used unpkg : 
-```javascript
+// Or with a global variable if you used unpkg : 
+
 const { RemixExtension } = remixPlugin
 const extension = new RemixExtension()
 ```
@@ -38,9 +37,7 @@ Plugins communicate with the IDE through the `postMessage` API. It means that `R
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
 ```typescript
 extension.setDevMode(8000) 
-```
-or 
-```typescript
+// or
 extension.setDevMode()  // default is port 8080
 ```
 
@@ -51,10 +48,9 @@ extension.setDevMode()  // default is port 8080
 
 ```javascript
 extension.loaded().then(_ => /* Do Something now */)
-```
 
-Or with the `async` / `await` syntax : 
-```javascript
+// Or with the `async` / `await` syntax
+
 await extension.loaded()
 // Do Something now
 ```
@@ -187,6 +183,7 @@ await extension.call('editor', 'discardHighlight')
 ```
 
 ## Compiler
+
 Name: `solidity`
 
 Remix exposes the `solidity` compiler.
@@ -199,7 +196,8 @@ Remix exposes the `solidity` compiler.
 
 ```typescript
 // Event : compilationFinished
-extension.listen('solidity', 'compilationFinished', (fileName: string, source: Object, version: string, data: Object) => {
+extension.listen('solidity', 'compilationFinished', 
+  (fileName: string, source: CompilationSources, languageVersion: string, data: CompilationResult) => {
   // Do something
 })
 
