@@ -131,84 +131,148 @@ This API is a Work In Progress and will be extended in the future.
 ### Permission
 Some of the APIs have to be used with caution. So they might ask the permission of the user.
 
-|API                  |name         |Permission |
-|---------------------|-------------|-----------|
-|File Manager         |fileManager  |✅
-|Solidity Compiler    |solidity     |✅
-|Transaction Listener |txlistener   |
+|API            |name         |Permission |
+|---------------|-------------|-----------|
+|File Manager   |fileManager  |✅
+|Compiler       |solidity     |✅
+|Editor         |editor       |
+|Network        |network      |
+|Udapp          |udapp        |
 
 
-## fileManager
+## File Manager
 
-|Type     |Name               |Parameters   |Types |
-|---------|-------------------|-------------|-----
-|_event_  |currentFileChanged |fileName     |string
-|_method_ |getFilesFromPath   |path         |string
+Name: `fileManager`
+
+Remix uses a folder based 
+
+|Type     |Name               |
+|---------|-------------------|
+|_event_  |currentFileChanged |
+|_method_ |getFilesFromPath   |
 |_method_ |getCurrentFile     |
-|_method_ |getFile            |path         |string
-|_method_ |setFile            |path         |string
-|         |                   |content      |string
+|_method_ |getFile            |
+|_method_ |setFile            |
 
-### Events
-currentFileChanged
 ```typescript
 extension.listen('fileManager', 'currentFileChanged', (fileName: string) => {
   // Do something
 })
+
+const filesTree = await extension.call('fileManager', 'getFilesFromPath', 'browser')
+const content = await extension.call('fileManager', 'getFile', 'browser/ballot.sol')
+const content = await extension.call('fileManager', 'getFile', 'browser/ballot.sol')
+await extension.call('fileManager', 'setFile', 'browser/ballot.sol', '/** File Content */')
 ```
 
-### Methods
-getFilesFromPath
+## Editor
+
+Name: `editor`
+
+Use the editor to highlight a piece of code. Remix uses Ace editor by default.
+
+|Type     |Name                 |
+|---------|---------------------|
+|_method_ |highlight            |
+|_method_ |discardHighlight     |
+
 ```typescript
-const filesTree = await extension.call('fileManager', 'getFilesFromPath', path)
+// Hightlight a piece of code with color "#e6e6e6"
+await extension.call('editor', 'highlight', {
+  start: { line: 1, column: 1 },
+  end: { line: 1, column: 42 }
+}, 'browser/ballot.sol', '#e6e6e6')
+// Remove the highlight of this plugin
+await extension.call('editor', 'discardHighlight')
 ```
 
-getCurrentFile
+## Compiler
+Name: `solidity`
+
+Remix exposes the `solidity` compiler.
+> The `vyper` compiler is exposed by an external plugin.
+
+|Type     |Name                 |
+|---------|---------------------|
+|_event_  |compilationFinished  |
+|_method_ |getCompilationResult |
+
 ```typescript
-const currentFile = await extension.call('fileManager', 'getCurrentFile')
-```
-
-getFile
-```typescript
-const content = await extension.call('fileManager', 'getFile', path)
-```
-
-setFile
-```typescript
-await extension.call('fileManager', 'setFile', path, content)
-```
-
-## solidity
-
-|Type     |Name                 |Parameters   |Types |
-|---------|---------------------|-------------|-----
-|_event_  |compilationFinished  |fileName     |string
-|         |                     |source       |Object
-|         |                     |version      |string
-|         |                     |data         |Object
-
-
-### Events
-compilationFinished
-```typescript
+// Event : compilationFinished
 extension.listen('solidity', 'compilationFinished', (fileName: string, source: Object, version: string, data: Object) => {
   // Do something
 })
+
+// Method : getCompilationResult
+const result = await extension.call('solidity', 'getCompilationResult')
 ```
 
-## txlistener
-|Type     |Name                 |Parameters   |Types |
-|---------|---------------------|-------------|-----
-|_event_  |newTransaction       |tx           |Object
+## Network
 
-### Events
-newTransaction
+Name: `network`
+
+With Remix IDE you can listen on default network (`mainnet`, `ropsten`, `rinkeby`, `kovan`), or custom one (`ganache`, Etherum Sidechain).
+
+|Type     |Name               |
+|---------|-------------------|
+|_event_  |providerChanged    |
+|_method_ |getNetworkProvider |
+|_method_ |getEndpoint        |
+|_method_ |detectNetwork      |
+|_method_ |addNetwork         |
+|_method_ |removeNetwork      |
+
 ```typescript
-extension.listen('txlistener', 'newTransaction', (tx: Object) => {
+// Event : providerChanged
+extension.listen('network', 'providerChanged', (provider: networkProvider) => {
+  // Do something
+})
+
+// getNetworkProvider: "vm", "web3" or "injected"
+const provider = await extension.call('network', 'getNetworkProvider')
+// getEndpoint: Return the url of the current network if provider is web3
+const endpoint = await extension.call('network', 'getEndpoint')
+// detectNetwork: Return the current network (mainnet, ropsten, ... or Custom)
+const network = await extension.call('network', 'detectNetwork')
+// addNetwork: Add a custom network
+await extension.call('network', 'addNetwork', { name: 'ganache', url: 'http://localhost:8586'})
+// removeNetwork: Remove a custom network
+await extension.call('network', 'removeNetwork', 'ganache')
+```
+
+## Udapp
+
+Name: `udapp`
+
+The Universal Dapp is an abstraction on top of the Virtual Machine.
+
+|Type     |Name                 |
+|---------|---------------------|
+|_event_  |newTransaction       |
+|_method_ |createVMAccount      |
+|_method_ |getAccounts          |
+|_method_ |sendTransaction      |
+
+
+```typescript
+extension.listen('udapp', 'newTransaction', (tx: TxRemix) => {
   // Do Something
 })
-```
 
+// createVMAccount: Create an account if the provider is "vm"
+const account = await extension.call('udapp', 'createVMAccount')
+// getAccounts: The list of current accounts
+const accounts = await extension.call('udapp', 'getAccounts')
+// sendTransaction: Send a transaction or make a call to the network
+extension.call('udapp', 'sendTransaction', {
+  gasLimit: '0x2710',
+  from: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c',
+  to: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c'
+  data: '0x...',
+  value: '0x00',
+  useCall: false
+})
+```
 
 # Status
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event : 
