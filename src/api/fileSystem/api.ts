@@ -1,5 +1,5 @@
-import { BaseApi, extendsProfile } from "../base"
-import { ModuleProfile, Api, API } from "../../types"
+import { BaseApi, extendsProfile } from '../base'
+import { ModuleProfile, Api, API } from '../../types'
 import { Folder } from './type'
 
 export interface IFileSystemApi extends Api {
@@ -12,14 +12,17 @@ export interface IFileSystemApi extends Api {
   setFile(path: string, content: string): void
 }
 
-export const editorProfile: Partial<ModuleProfile<IFileSystemApi>> = {
+export const fileSystemProfile: Partial<ModuleProfile<IFileSystemApi>> = {
   kind: 'fs',
-  methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile']
+  methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile'],
 }
 
-export abstract class FileSystemApi extends BaseApi<IFileSystemApi> implements API<IFileSystemApi> {
-  constructor(profile: ModuleProfile) {
-    const localProfile = extendsProfile(profile, editorProfile)
+export abstract class FileSystemApi<T extends Api>
+  extends BaseApi<T & IFileSystemApi>
+  implements API<IFileSystemApi> {
+
+  constructor(profile: ModuleProfile<T>) {
+    const localProfile = extendsProfile(profile, fileSystemProfile)
     super(localProfile)
   }
 

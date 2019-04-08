@@ -197,7 +197,7 @@ Remix exposes the `solidity` compiler.
 ```typescript
 // Event : compilationFinished
 extension.listen('solidity', 'compilationFinished', 
-  (fileName: string, source: CompilationSources, languageVersion: string, data: CompilationResult) => {
+  (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => {
   // Do something
 })
 

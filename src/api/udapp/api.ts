@@ -17,7 +17,8 @@ export const udappProfile: Partial<ModuleProfile<IUdappApi>> = {
   methods: ['sendTransaction', 'getAccounts', 'createVMAccount'],
 }
 
-export abstract class UdappApi extends BaseApi<IUdappApi>
+export abstract class UdappApi<T extends Api>
+  extends BaseApi<T & IUdappApi>
   implements API<IUdappApi> {
   constructor(profile: ModuleProfile) {
     const localProfile = extendsProfile(profile, udappProfile)
