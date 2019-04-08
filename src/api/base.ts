@@ -21,7 +21,7 @@ type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
 export function extendsProfile<T extends Api, U extends Api>(
   profile: Profile<T>,
   ...mixinProfiles: Partial<ModuleProfile<U>>[]
-): Profile<T> {
+): Profile<T & U> {
   return {
     ...profile,
     methods: [
@@ -39,9 +39,9 @@ export function extendsProfile<T extends Api, U extends Api>(
   }
 }
 
-interface IBaseApi extends Api {
+export interface IBaseApi extends Api {
   events: {
-    statusChanged: [Status]
+    statusChanged: (status: Status) => void
   }
   getStatus(): Status
 }
@@ -59,15 +59,15 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   public readonly name: U['name']
-  public readonly profile: ModuleProfile<U> | PluginProfile<U>
-  public events: ApiEventEmitter<U>
+  public readonly profile: ModuleProfile<U & IBaseApi> | PluginProfile<U & IBaseApi>
+  public events: ApiEventEmitter<U & IBaseApi>
   public activate?(): Promise<void>
   public deactivate?(): void
   public render?(): HTMLElement
 
   constructor(profile: ModuleProfile<U> | PluginProfile<U>) {
     this.name = profile.name
-    this.events = new EventEmitter() as ApiEventEmitter<U>
+    this.events = new EventEmitter() as ApiEventEmitter<U & IBaseApi>
     this.profile = extendsProfile(profile, baseProfile)
   }
 
@@ -77,8 +77,8 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
   ////////////
   /** Set the status of the Api */
   public setStatus(status: Status) {
-    this.status = status
-    this.events.emit('statusChanged', status)
+    this.status = status;
+    (this.events as ApiEventEmitter<IBaseApi>).emit('statusChanged', status)  // needed for tsc
   }
 
   /** Get a snapshot of the status */
@@ -91,7 +91,7 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
   /////////
 
   /** Exports an Api interface */
-  public api(): PluginApi<U> {
+  public api(): PluginApi<U & IBaseApi> {
     return {
       events: this.events,
       name: this.profile.name,
@@ -101,7 +101,7 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
       deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
       addRequest: (
         request: PluginRequest,
-        method: ExtractKey<U, Function>,
+        method: ExtractKey<(U & IBaseApi), Function>,
         args: any[],
       ) => {
         return new Promise((resolve, reject) => {

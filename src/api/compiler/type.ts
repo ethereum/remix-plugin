@@ -1,7 +1,7 @@
 /////////////
 // SOURCES //
 /////////////
-export interface CompilationSources {
+export interface CompilationFileSources {
   [fileName: string]: string
 }
 

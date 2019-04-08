@@ -5,6 +5,10 @@ export type StrictExtractKey<T, U> = {
 }[keyof T]
 export type ExtractKey<T, U> = StrictExtractKey<T, U>
 
+/////////
+// API //
+/////////
+
 export interface Api {
   name: string
   events: {
@@ -13,11 +17,9 @@ export interface Api {
 }
 
 /** Override the EventEmitter type to take into account the Api */
-export interface ApiEventEmitter<T extends Partial<Api>> {
+export interface ApiEventEmitter<T extends Api> {
   setMaxListeners(n: number): this
-  emit<
-    K extends keyof T['events'] | DefaultEvents,
-  >(name: K, ...arg: Parameters<T['events'][K]>): boolean
+  emit<K extends keyof T['events']>(name: K, ...arg: Parameters<T['events'][K]>): boolean
   addListener<K extends keyof T['events']>(
     name: K,
     listener: T['events'][K],
@@ -52,14 +54,14 @@ export type API<T extends Api> = {
 } & { [M in StrictExtractKey<T, Function>]: T[M] }
 
 export interface ModuleProfile<T extends Api = any> {
-  name: T['name']
+  name?: T['name']
   displayName?: string
   description?: string,
   required?: boolean
   kind?: 'fs' | 'compiler' | 'editor' | 'udapp' | 'network' | 'test' | 'analysis' | 'debug'
   methods?: readonly ExtractKey<T, Function>[]
   events?: readonly (keyof T['events'])[],
-  notifications?: ({ [name: string]: string[] } & DefaultProfile['notifications']) | { [name: string]: string[] }
+  notifications?: ({ [name: string]: string[] }) | { [name: string]: string[] }
   permission?: boolean
 }
 
@@ -84,16 +86,6 @@ export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
   }
   required?: false
 }
-
-// DEFAULT
-export interface DefaultProfile {
-  events: ['statusChanged']
-  notifications: {
-    'theme': ['switchTheme']
-  }
-}
-type DefaultEvents = DefaultProfile['events'][number]
-
 
 ////////////////////////
 /* ---- MESSAGES ---- */

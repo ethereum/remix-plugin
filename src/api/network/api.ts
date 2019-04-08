@@ -19,8 +19,10 @@ export const networkProfile: Partial<ModuleProfile<INetworkApi>> = {
   methods: ['getNetworkProvider', 'getEndpoint', 'detectNetwork', 'addNetwork', 'removeNetwork'],
 }
 
-export abstract class NetworkApi extends BaseApi<INetworkApi>
+export abstract class NetworkApi<T extends Api>
+  extends BaseApi<T & INetworkApi>
   implements API<INetworkApi> {
+
   constructor(profile: ModuleProfile) {
     const localProfile = extendsProfile(profile, networkProfile)
     super(localProfile)
