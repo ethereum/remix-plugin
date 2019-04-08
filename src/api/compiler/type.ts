@@ -1,3 +1,11 @@
+/////////////
+// SOURCES //
+/////////////
+export interface CompilationSources {
+  [fileName: string]: string
+}
+
+
 ////////////
 // RESULT //
 ////////////

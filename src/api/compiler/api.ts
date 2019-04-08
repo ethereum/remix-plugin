@@ -1,10 +1,10 @@
 import { BaseApi, extendsProfile } from "../base"
 import { ModuleProfile, Api, API } from "../../types"
-import { CompilationResult } from "./type"
+import { CompilationResult, CompilationSources } from "./type"
 
 export interface ICompilerApi extends Api {
   events: {
-    compilationFinished: [CompilationResult]
+    compilationFinished: (fileName: string, source: CompilationSources, languageVersion: string, data: CompilationResult) => void
   }
   getCompilationResult(): CompilationResult
 }
