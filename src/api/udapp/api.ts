@@ -4,7 +4,7 @@ import { RemixTx, RemixTxReceipt } from './type'
 
 export interface IUdappApi extends Api {
   events: {
-    newTransaction: [RemixTx]
+    newTransaction: (transaction: RemixTx) => void
   }
   sendTransaction(tx: RemixTx): RemixTxReceipt
   getAccounts(): string[]

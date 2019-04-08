@@ -4,7 +4,7 @@ import { Network, CustomNetwork, networkProvider } from './type'
 
 export interface INetworkApi extends Api {
   events: {
-    providerChanged: [networkProvider]
+    providerChanged: (provider: networkProvider) => void
   }
   getNetworkProvider(): networkProvider
   detectNetwork(): Network | Partial<CustomNetwork>

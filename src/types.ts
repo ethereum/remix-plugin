@@ -8,38 +8,34 @@ export type ExtractKey<T, U> = StrictExtractKey<T, U>
 export interface Api {
   name: string
   events: {
-    [key: string]: any
+    [key: string]: (...args: any[]) => void
   }
 }
-
-export type ApiListener<T> = (arg: T) => void
-
-
 
 /** Override the EventEmitter type to take into account the Api */
 export interface ApiEventEmitter<T extends Partial<Api>> {
   setMaxListeners(n: number): this
   emit<
     K extends keyof T['events'] | DefaultEvents,
-  >(name: K, ...arg: T['events'][K]): boolean
+  >(name: K, ...arg: Parameters<T['events'][K]>): boolean
   addListener<K extends keyof T['events']>(
     name: K,
-    listener: ApiListener<T['events'][K]>,
+    listener: T['events'][K],
   ): this
   on<K extends keyof T['events']>(
     name: K,
-    listener: ApiListener<T['events'][K]>,
+    listener: T['events'][K],
   ): this
   once<K extends keyof T['events']>(
     name: K,
-    listener: ApiListener<T['events'][K]>,
+    listener: T['events'][K],
   ): this
   removeListener<K extends keyof T['events']>(
     name: K,
-    listener: ApiListener<T['events'][K]>,
+    listener: T['events'][K],
   ): this
   removeAllListeners<K extends keyof T['events']>(name?: K): this
-  listeners<K extends keyof T['events']>(name: K): ApiListener<T['events'][K]>[]
+  listeners<K extends keyof T['events']>(name: K): T['events'][K][]
   listenerCount<K extends keyof T['events']>(name: K): number
 }
 

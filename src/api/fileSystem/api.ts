@@ -4,7 +4,7 @@ import { Folder } from './type'
 
 export interface IFileSystemApi extends Api {
   events: {
-    currentFileChanged: [string]
+    currentFileChanged: (file: string) => void
   }
   getFolder(path: string): Folder
   getCurrentFile(): string
