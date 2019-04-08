@@ -133,14 +133,14 @@ Some of the APIs have to be used with caution. So they might ask the permission 
 
 |API            |name         |Permission |
 |---------------|-------------|-----------|
-|File Manager   |fileManager  |✅
+|File System    |fileManager  |✅
 |Compiler       |solidity     |✅
 |Editor         |editor       |
 |Network        |network      |
 |Udapp          |udapp        |
 
 
-## File Manager
+## File System
 
 Name: `fileManager`
 
