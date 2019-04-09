@@ -46,9 +46,10 @@ export interface IBaseApi extends Api {
   getStatus(): Status
 }
 
-export const baseProfile:ModuleProfile<IBaseApi> = {
+export const baseProfile: ModuleProfile<IBaseApi> = {
   events: <const>['statusChanged'],
   methods: ['getStatus'],
+  // TODO: move it to plugin.ts
   notifications: {
     'theme': ['switchTheme']
   }
