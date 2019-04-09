@@ -12,7 +12,7 @@ export interface IEditorApi extends Api {
   discardHighlight(): void
 }
 
-export const editorProfile: Partial<ModuleProfile<IEditorApi>> = {
+export const editorProfile: ModuleProfile<IEditorApi> = {
   kind: 'editor',
   methods: ['highlight', 'discardHighlight'],
 }

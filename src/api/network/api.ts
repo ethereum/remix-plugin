@@ -13,7 +13,7 @@ export interface INetworkApi extends Api {
   removeNetwork(name: string): void
 }
 
-export const networkProfile: Partial<ModuleProfile<INetworkApi>> = {
+export const networkProfile: ModuleProfile<INetworkApi> = {
   kind: 'network',
   events: ['providerChanged'],
   methods: ['getNetworkProvider', 'getEndpoint', 'detectNetwork', 'addNetwork', 'removeNetwork'],

@@ -1,7 +1,7 @@
 import {
   RemixAppManager,
   Store,
-  CompilerApi,
+  CompilerModule,
 } from '../examples/modules'
 
 const AUTHORIZED = 'authorizedPlugin'
@@ -9,9 +9,9 @@ const UNAUTHORIZED = 'unauthorizedPlugin'
 
 describe('Module', () => {
   let app: RemixAppManager
-  let compiler: CompilerApi
+  let compiler: CompilerModule
   beforeEach(() => {
-    compiler = new CompilerApi([AUTHORIZED])
+    compiler = new CompilerModule([AUTHORIZED])
     app = new RemixAppManager(new Store())
     app.init([compiler.api()])
   })

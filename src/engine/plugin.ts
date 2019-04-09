@@ -2,12 +2,10 @@ import {
   Message,
   PluginProfile,
   Api,
-  ApiEventEmitter,
   PluginRequest,
-  ExtractKey,
   PluginApi,
+  ExtractKey,
 } from '../types'
-import { EventEmitter } from 'events'
 import { BaseApi } from '../api/base'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
@@ -32,7 +30,7 @@ export class Plugin<T extends Api> extends BaseApi<T> implements PluginApi<T> {
 
   public readonly name: T['name']
   public profile: PluginProfile<T>
-  public events: ApiEventEmitter<T> = new EventEmitter() as any
+  // public events: ApiEventEmitter<T & IBaseApi> = new EventEmitter() as any
   public notifs = {}
   public request: (value: { name: string; key: string; payload: any }) => Promise<any>
 
@@ -59,7 +57,7 @@ export class Plugin<T extends Api> extends BaseApi<T> implements PluginApi<T> {
     switch (message.action) {
       case 'notification': {
         if (!message.payload) break
-        this.events.emit(message.key, message.payload)
+        this.events.emit(message.key, ...message.payload)
         break
       }
       case 'request': {
@@ -106,11 +104,11 @@ export class Plugin<T extends Api> extends BaseApi<T> implements PluginApi<T> {
    */
   public addRequest(
     requestInfo: PluginRequest,
-    method: ExtractKey<T, Function>,
+    method: ExtractKey<T, Function> | string,
     payload: any[],
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.profile.methods || !this.profile.methods.includes(method)) {
+      if (!this.profile.methods || !this.profile.methods.includes(method as ExtractKey<T, Function>)) {
         reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
       }
       // Add the current request into the queue
