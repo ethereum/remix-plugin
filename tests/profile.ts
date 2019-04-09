@@ -11,6 +11,7 @@ describe('Profile', () => {
   test('[Default]: Should add default notifications in profile notifications', () => {
     const plugin = new Plugin(NormalProfile)
     if (!plugin.profile.notifications) throw new Error('notifications should be defined')
+    if (!baseProfile.notifications) throw new Error('baseProfile notifications should be defined')
     const notifications = Object.keys(plugin.profile.notifications)
     const defaults = Object.keys(baseProfile.notifications)
     const notificationsHasAllDefault = defaults.every(notif => notifications.includes(notif))

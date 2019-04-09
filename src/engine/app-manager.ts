@@ -14,9 +14,9 @@ import { Plugin } from './plugin'
 export interface AppManager extends Api {
   name: 'appManager'
   events: {
-    register: [string]
-    activate: [PluginApi<Api>]
-    deactivate: [ModuleProfile]
+    register: (name: string) => void
+    activate: (api: PluginApi<Api>) => void
+    deactivate: (profile: ModuleProfile) => void
   }
   registerMany(entry: PluginApi<any>[]): void
   registerMany(entry: PluginApi<any>[]): void
@@ -118,9 +118,8 @@ export abstract class AppManagerApi implements API<AppManager> {
     const events = api.profile.events || []
     events.forEach((event: keyof T['events']) => {
       if (!api.events) return
-      api.events.on(event, (...payload: any[]) =>
-        this.broadcast(api.name, event as string, payload),
-      )
+      const broadcast: any = (...payload: any[]) => this.broadcast(api.name, event, payload as any)
+      api.events.on(event, broadcast)
     })
 
     const methods = api.profile.methods || []

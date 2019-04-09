@@ -20,7 +20,7 @@ type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
  */
 export function extendsProfile<T extends Api, U extends Api>(
   profile: Profile<T>,
-  ...mixinProfiles: Partial<ModuleProfile<U>>[]
+  ...mixinProfiles: ModuleProfile<U>[]
 ): Profile<T & U> {
   return {
     ...profile,
@@ -46,7 +46,7 @@ export interface IBaseApi extends Api {
   getStatus(): Status
 }
 
-export const baseProfile: Partial<ModuleProfile<IBaseApi>> = {
+export const baseProfile:ModuleProfile<IBaseApi> = {
   events: <const>['statusChanged'],
   methods: ['getStatus'],
   notifications: {

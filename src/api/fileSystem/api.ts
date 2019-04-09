@@ -12,7 +12,7 @@ export interface IFileSystemApi extends Api {
   setFile(path: string, content: string): void
 }
 
-export const fileSystemProfile: Partial<ModuleProfile<IFileSystemApi>> = {
+export const fileSystemProfile: ModuleProfile<IFileSystemApi> = {
   kind: 'fs',
   methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile'],
 }

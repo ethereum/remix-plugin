@@ -26,6 +26,7 @@ describe('Method', () => {
   })
 
   test('call a method from plugin api', () => {
+    if (!ResolverProfile.name) throw new Error('ResolverProfile should have a name')
     const spy = spyOn(app['calls'][ResolverProfile.name], 'getFile')
     ethdoc.request({ name: resolver.name, key: 'getFile', payload: ['Ballot.sol'] })
     expect(spy).toBeCalledWith({ from: ethdoc.name}, 'Ballot.sol')

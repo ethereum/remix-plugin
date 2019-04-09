@@ -66,6 +66,7 @@ export interface ModuleProfile<T extends Api = any> {
 }
 
 export interface PluginProfile<T extends Api = any> extends ModuleProfile<T> {
+  name: T['name'],
   url: string
   hash?: string
   location?: string // The name of the module used to load the iframe in
@@ -120,7 +121,7 @@ export interface PluginApi<T extends Api> {
   profile: ModuleProfile<T> | PluginProfile<T>
   name: T['name']
   events: ApiEventEmitter<T>
-  addRequest: (request: PluginRequest, method: ExtractKey<T, Function>, args: any[]) => Promise<any>
+  addRequest: (request: PluginRequest, method: ExtractKey<T, Function> | string, args: any[]) => Promise<any>
   render?: () => HTMLElement,
   activate?: () => Promise<void>
   deactivate?: () => void
@@ -225,7 +226,7 @@ export interface Status {
   /** Name of the icon from font-awesome */
   iconName: string
   /** Bootstrap css variable to use */
-  type: 'info' | 'warning' | 'error'
+  type: 'success' | 'info' | 'warning' | 'danger'
   /** Describe long version of the status */
   title?: string
 }

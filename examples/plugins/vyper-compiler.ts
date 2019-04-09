@@ -4,7 +4,7 @@ import { Api } from '../../src'
 export interface VyperCompiler extends Api {
   name: 'vyperCompiler'
   events: {
-    compilationFinished: any
+    compilationFinished: (compilationResult: any) => void
   }
   lastCompilationResult(): any
 }

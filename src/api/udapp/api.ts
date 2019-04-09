@@ -11,7 +11,7 @@ export interface IUdappApi extends Api {
   createVMAccount(): string
 }
 
-export const udappProfile: Partial<ModuleProfile<IUdappApi>> = {
+export const udappProfile: ModuleProfile<IUdappApi> = {
   kind: 'udapp',
   events: ['newTransaction'],
   methods: ['sendTransaction', 'getAccounts', 'createVMAccount'],
