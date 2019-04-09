@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 // Type
 export interface PermissionModule extends Api {
   name: 'permissionModule'
+  events: {}
   callWithPermission(): boolean
 }
 
@@ -16,8 +17,6 @@ export const PermissionModuleProfile: ModuleProfile<PermissionModule> = {
 
 // API
 export class PermissionModuleApi extends BaseApi<PermissionModule> implements API<PermissionModule> {
-  public events: ApiEventEmitter<PermissionModuleApi>
-
   constructor() {
     super(PermissionModuleProfile)
   }

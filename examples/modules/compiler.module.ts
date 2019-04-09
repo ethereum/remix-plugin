@@ -1,35 +1,27 @@
-import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi } from '../../src'
-import { EventEmitter } from 'events'
+import { ModuleProfile, CompilerApi, CompilationResult, Api } from '../../src'
 
-// Type
-export interface Compiler extends Api {
-  name: 'solCompiler'
-  events: {
-    compilationFinished: { success: boolean; data: any; source: any }
-  }
-  lastCompilationResult(): any
+export interface Solidity extends Api {
+  name: 'solidity',
+  events: {}  // Need to add an empty one for autocompletion
 }
 
 // Profile
-export const CompilerProfile: ModuleProfile<Compiler> = {
-  name: 'solCompiler',
-  methods: ['lastCompilationResult'],
-  events: ['compilationFinished']
+export const CompilerProfile: ModuleProfile<Solidity> = {
+  name: 'solidity',
 }
 
 // API
-export class CompilerApi extends BaseApi<Compiler> implements API<Compiler> {
-  public events: ApiEventEmitter<Compiler> = new EventEmitter() as any
-
+export class CompilerModule extends CompilerApi<Solidity> {
+  // canCall is used for testing
   constructor(private canCall?: string[]) {
     super(CompilerProfile)
   }
 
-  public lastCompilationResult() {
+  getCompilationResult(): CompilationResult {
     const { from } = this.currentRequest
     if (this.canCall && !this.canCall.includes(from)) {
       throw new Error(`${from} is not allowed to call 'lastCompilationResult'`)
     }
-    return 'compilation'
+    return 'compilation' as any
   }
 }

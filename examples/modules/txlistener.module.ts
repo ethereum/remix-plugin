@@ -1,25 +1,20 @@
-import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi } from '../../src'
+import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi, UdappApi, RemixTx, RemixTxReceipt } from '../../src'
 import { Transaction } from './types'
 import { EventEmitter } from 'events'
 
 // Type
 export interface Txlistener extends Api {
   name: 'txlistener'
-  events: {
-    newTransaction: [Transaction]
-  }
+  events: {}
 }
 
 // Profile
 export const TxlistenerProfile: ModuleProfile<Txlistener> = {
-  name: 'txlistener',
-  events: ['newTransaction']
+  name: 'txlistener'
 }
 
 // API
-export class TxlistenerApi extends BaseApi<Txlistener> implements API<Txlistener> {
-  public events: ApiEventEmitter<Txlistener> = new EventEmitter() as any
-
+export class TxlistenerApi extends UdappApi<Txlistener> implements API<Txlistener> {
   // In this implementation of the API, Txlistener depends on an external class
   constructor(emitter: TxEmitter) {
     super(TxlistenerProfile)
@@ -28,6 +23,16 @@ export class TxlistenerApi extends BaseApi<Txlistener> implements API<Txlistener
 
   public lastCompilationResult() {
     return 'compilation'
+  }
+
+  sendTransaction(tx: RemixTx): RemixTxReceipt {
+    throw new Error("Method not implemented.")
+  }
+  getAccounts(): string[] {
+    throw new Error("Method not implemented.")
+  }
+  createVMAccount(): string {
+    throw new Error("Method not implemented.")
   }
 
 }
