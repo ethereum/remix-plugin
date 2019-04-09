@@ -5,6 +5,7 @@ import { EventEmitter } from 'events'
 // Type
 export interface Resolver extends Api {
   name: 'solResolver'
+  events: {}
   combineSource(path: string): void
   getFile(url: string): string
 }
