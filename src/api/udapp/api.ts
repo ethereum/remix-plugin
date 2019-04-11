@@ -1,4 +1,5 @@
-import { BaseApi, extendsProfile } from '../base'
+import { BaseApi } from '../base'
+import { extendsProfile } from "../profile"
 import { ModuleProfile, Api, API } from '../../types'
 import { RemixTx, RemixTxReceipt } from './type'
 

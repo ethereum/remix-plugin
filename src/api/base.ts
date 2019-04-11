@@ -10,34 +10,8 @@ import {
   API,
 } from '../types'
 import { EventEmitter } from 'events'
+import { extendsProfile } from './profile'
 
-type Profile<T extends Api> = ModuleProfile<T> | PluginProfile<T>
-
-/**
- * Create a Profile with default values
- * @param profile The profile of the plugin
- * @param mixinProfiles A list of profiles to mix in the base profile
- */
-export function extendsProfile<T extends Api, U extends Api>(
-  profile: Profile<T>,
-  ...mixinProfiles: ModuleProfile<U>[]
-): Profile<T & U> {
-  return {
-    ...profile,
-    methods: [
-      ...mixinProfiles.reduce((acc, mixin) => [ ...acc, ...(mixin.methods || []) ], []),
-      ...(profile.methods || [])
-    ],
-    events: [
-      ...mixinProfiles.reduce((acc, mixin) => [ ...acc, ...(mixin.events || []) ], []),
-      ...(profile.events || [])
-    ],
-    notifications: {
-      ...mixinProfiles.reduce((acc, mixin) => ({ ...acc, ...(mixin.notifications || {}) }), {} as any),
-      ...(profile.notifications || {}),
-    },
-  }
-}
 
 export interface IBaseApi extends Api {
   events: {
