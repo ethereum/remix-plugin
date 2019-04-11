@@ -1,4 +1,5 @@
-import { BaseApi, extendsProfile } from '../base'
+import { BaseApi } from '../base'
+import { extendsProfile } from "../profile"
 import { ModuleProfile, Api, API } from '../../types'
 import { Folder } from './type'
 
@@ -14,6 +15,7 @@ export interface IFileSystemApi extends Api {
 
 export const fileSystemProfile: ModuleProfile<IFileSystemApi> = {
   kind: 'fs',
+  events: ['currentFileChanged'],
   methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile'],
 }
 
