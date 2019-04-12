@@ -25,7 +25,7 @@ export const baseProfile: ModuleProfile<IBaseApi> = {
   methods: ['getStatus'],
   // TODO: move it to plugin.ts
   notifications: {
-    'theme': ['switchTheme']
+    'theme': ['themeChanged']
   }
 }
 
