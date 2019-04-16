@@ -6,8 +6,8 @@ import { ModuleProfile, Api } from '../types'
 ///////////
 
 // Get the events of the Api
-type EventApi<T extends Api> = {
-  [event in keyof T['events']]: T['events'][event]
+interface EventApi<T extends Api> {
+  on: <event extends Extract<keyof T['events'], string>>(name: event, cb: T['events'][event]) => void
 }
 // Get the methods of the Api
 type MethodApi<T extends Api> = {
@@ -32,15 +32,15 @@ export function createApi<T extends Api>(client: PluginClient, profile: ModulePr
   if (typeof profile.name !== 'string') {
     throw new Error('Profile should have a name')
   }
-  const events = (profile.events || []).reduce((acc, event) => ({
-    ...acc,
-    [event]: client.on.bind(client, profile.name, event)
-  }), {} as EventApi<T>)
+  const on = <event extends Extract<keyof T['events'], string>>(event: event, cb: T['events'][event]) => {
+    client.on.call(client, profile.name, event, cb)
+  }
+
   const methods = (profile.methods || []).reduce((acc, method) => ({
     ...acc,
     [method]: client.call.bind(client, profile.name, method)
   }), {} as MethodApi<T>)
-  return { ...events, ...methods }
+  return { on, ...methods }
 }
 
 
@@ -72,4 +72,5 @@ export function listenOnThemeChanged(client: PluginClient, options?: PluginOptio
     cssLink.setAttribute('href', theme.url)
     document.documentElement.style.setProperty('--theme', theme.quality)
   })
+  return cssLink
 }

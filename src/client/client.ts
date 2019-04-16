@@ -66,7 +66,6 @@ export class PluginClient<T extends Api = any> {
     if (!this.loaded) handleConnectionError(this.devMode)
     this.id++
     return new Promise((res, rej) => {
-      this.events.emit('send', { action: 'request', name, key, payload, id: this.id })
       const eventName = callEvent(name, key, this.id)
       this.events.once(eventName, (result: any[], error) => {
         const resultArray = Array.isArray(result) ? result : [result]
@@ -74,6 +73,7 @@ export class PluginClient<T extends Api = any> {
           ? rej(new Error(`Error from IDE : ${error}`))
           : res(...resultArray)
       })
+      this.events.emit('send', { action: 'request', name, key, payload, id: this.id })
     })
   }
 
