@@ -21,6 +21,7 @@ export interface IBaseApi extends Api {
 }
 
 export const baseProfile: ModuleProfile<IBaseApi> = {
+  name: 'base', // Will be removed when extended
   events: <const>['statusChanged'],
   methods: ['getStatus'],
   // TODO: move it to plugin.ts
@@ -76,7 +77,7 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
       deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
       addRequest: (
         request: PluginRequest,
-        method: ExtractKey<(U & IBaseApi), Function>,
+        method: Extract<ExtractKey<(U & IBaseApi), Function>, string>,
         args: any[],
       ) => {
         return new Promise((resolve, reject) => {

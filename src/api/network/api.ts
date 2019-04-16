@@ -15,6 +15,7 @@ export interface INetworkApi extends Api {
 }
 
 export const networkProfile: ModuleProfile<INetworkApi> = {
+  name: 'networkTemplate', // Will be removed when extended
   kind: 'network',
   events: ['providerChanged'],
   methods: ['getNetworkProvider', 'getEndpoint', 'detectNetwork', 'addNetwork', 'removeNetwork'],

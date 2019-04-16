@@ -1,5 +1,5 @@
 import { PluginClient, PluginOptions } from './client'
-import { ModuleProfile, Api, ExtractKey } from 'src/types'
+import { ModuleProfile, Api, ExtractKey } from '../types'
 
 ///////////
 /// API ///
@@ -29,13 +29,15 @@ export type ApiMap<M extends ModuleProfile<Api>> = {
  * @param profile The profile of the api
  */
 function createApi<T extends Api>(client: PluginClient, profile: ModuleProfile<T>): CustomApi<T> {
-  const events = profile.events.reduce((acc, event) => ({
+  const name = profile.name
+  if (typeof name !== 'string') throw new Error('Profile should have a name')
+  const events = (profile.events || []).reduce((acc, event) => ({
     ...acc,
-    [event]: client.on.bind(client, profile.name, event)
+    [event]: client.on.bind(client, name, event)
   }), {} as EventApi<T>)
-  const methods = profile.methods.reduce((acc, method) => ({
+  const methods = (profile.methods || []).reduce((acc, method) => ({
     ...acc,
-    [method]: client.call.bind(client, profile.name, method)
+    [method]: client.call.bind(client, name, method)
   }), {} as MethodApi<T>)
   return { ...events, ...methods }
 }
