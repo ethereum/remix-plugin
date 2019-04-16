@@ -40,14 +40,14 @@ function connectIframe(client: PluginClient) {
     // Get the data
     if (!event.data) throw new Error('No data')
     const { action, key, name, payload, id, requestInfo, error } = event.data as Message
-
     try {
+
       // If handshake set loaded
       if (action === 'request' && key === 'handshake') {
         loaded = true
         client.events.emit('loaded')
         client.events.on('send', (message: Message) => {
-          event.source.postMessage(message, event.origin as any)
+          (event.source as Window).postMessage(message, event.origin as any)
         })
       }
 

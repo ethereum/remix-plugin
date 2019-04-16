@@ -1,5 +1,5 @@
 import { PluginClient, PluginOptions } from './client'
-import { ModuleProfile, Api, ExtractKey } from '../types'
+import { ModuleProfile, Api } from '../types'
 
 ///////////
 /// API ///
@@ -11,9 +11,9 @@ type EventApi<T extends Api> = {
 }
 // Get the methods of the Api
 type MethodApi<T extends Api> = {
-  [method in ExtractKey<T, Function>]: T[method]
+  [m in Extract<keyof T['methods'], string>]: (...args: Parameters<T['methods'][m]>) => Promise<ReturnType<T['methods'][m]>>
 }
-type CustomApi<T extends Api> = EventApi<T> & MethodApi<T>
+export type CustomApi<T extends Api> = EventApi<T> & MethodApi<T>
 
 // Extract an Api based on its profile and name
 export type ExtractApi<Profile, name> = Profile extends ModuleProfile<infer X>
@@ -28,16 +28,17 @@ export type ApiMap<M extends ModuleProfile<Api>> = {
  * Create an Api
  * @param profile The profile of the api
  */
-function createApi<T extends Api>(client: PluginClient, profile: ModuleProfile<T>): CustomApi<T> {
-  const name = profile.name
-  if (typeof name !== 'string') throw new Error('Profile should have a name')
+export function createApi<T extends Api>(client: PluginClient, profile: ModuleProfile<T>): CustomApi<T> {
+  if (typeof profile.name !== 'string') {
+    throw new Error('Profile should have a name')
+  }
   const events = (profile.events || []).reduce((acc, event) => ({
     ...acc,
-    [event]: client.on.bind(client, name, event)
+    [event]: client.on.bind(client, profile.name, event)
   }), {} as EventApi<T>)
   const methods = (profile.methods || []).reduce((acc, method) => ({
     ...acc,
-    [method]: client.call.bind(client, name, method)
+    [method]: client.call.bind(client, profile.name, method)
   }), {} as MethodApi<T>)
   return { ...events, ...methods }
 }
@@ -62,8 +63,8 @@ export interface Theme {
 }
 
 /** Start listening on theme changed */
-export function listenOnThemeChanged(client: PluginClient, options: PluginOptions) {
-  if (options.customTheme) return
+export function listenOnThemeChanged(client: PluginClient, options?: PluginOptions) {
+  if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')
   document.head.appendChild(cssLink)

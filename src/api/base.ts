@@ -6,7 +6,6 @@ import {
   ApiEventEmitter,
   PluginApi,
   PluginRequest,
-  ExtractKey,
   API,
 } from '../types'
 import { EventEmitter } from 'events'
@@ -17,7 +16,9 @@ export interface IBaseApi extends Api {
   events: {
     statusChanged: (status: Status) => void
   }
-  getStatus(): Status
+  methods: {
+    getStatus(): Status
+  }
 }
 
 export const baseProfile: ModuleProfile<IBaseApi> = {
@@ -77,7 +78,7 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
       deactivate: this.deactivate ? () => (this.deactivate as any)() : undefined,
       addRequest: (
         request: PluginRequest,
-        method: Extract<ExtractKey<(U & IBaseApi), Function>, string>,
+        method: Extract<keyof (U & IBaseApi)['methods'], string>,
         args: any[],
       ) => {
         return new Promise((resolve, reject) => {

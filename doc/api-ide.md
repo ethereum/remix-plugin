@@ -19,7 +19,9 @@ export interface Compiler extends Api {
   events: {
     compilationFinished: { success: boolean; data: any; source: any }
   }
-  lastCompilationResult(): any
+  methods: {
+    lastCompilationResult(): any
+  }
 }
 ```
 

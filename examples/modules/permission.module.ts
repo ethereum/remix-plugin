@@ -5,7 +5,9 @@ import { EventEmitter } from 'events'
 export interface PermissionModule extends Api {
   name: 'permissionModule'
   events: {}
-  callWithPermission(): boolean
+  methods: {
+    callWithPermission(): boolean
+  }
 }
 
 // Profile

@@ -7,9 +7,11 @@ export interface IUdappApi extends Api {
   events: {
     newTransaction: (transaction: RemixTx) => void
   }
-  sendTransaction(tx: RemixTx): RemixTxReceipt
-  getAccounts(): string[]
-  createVMAccount(): string
+  methods: {
+    sendTransaction(tx: RemixTx): RemixTxReceipt
+    getAccounts(): string[]
+    createVMAccount(): string
+  }
 }
 
 export const udappProfile: ModuleProfile<IUdappApi> = {

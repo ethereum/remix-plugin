@@ -5,12 +5,15 @@ import { HighlightPosition } from './type'
 
 export interface IEditorApi extends Api {
   events: {}
-  highlight(
-    position: HighlightPosition,
-    filePath: string,
-    hexColor: string,
-  ): void
-  discardHighlight(): void
+  methods: {
+    highlight(
+      position: HighlightPosition,
+      filePath: string,
+      hexColor: string,
+    ): void
+    discardHighlight(): void
+  }
+
 }
 
 export const editorProfile: ModuleProfile<IEditorApi> = {

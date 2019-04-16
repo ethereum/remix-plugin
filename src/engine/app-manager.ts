@@ -18,14 +18,16 @@ export interface AppManager extends Api {
     activate: (api: PluginApi<Api>) => void
     deactivate: (profile: ModuleProfile) => void
   }
-  registerMany(entry: PluginApi<any>[]): void
-  registerMany(entry: PluginApi<any>[]): void
-  registerOne<T extends Api>(entry: PluginApi<T>): void
-  registerOne<T extends Api>(entry: PluginApi<T>): void
-  activateMany(names: string[]): void
-  deactivateMany(names: string[]): void
-  activateOne(name: string): void
-  deactivateOne(name: string): void
+  methods: {
+    registerMany(entry: PluginApi<any>[]): void
+    registerMany(entry: PluginApi<any>[]): void
+    registerOne<T extends Api>(entry: PluginApi<T>): void
+    registerOne<T extends Api>(entry: PluginApi<T>): void
+    activateMany(names: string[]): void
+    deactivateMany(names: string[]): void
+    activateOne(name: string): void
+    deactivateOne(name: string): void
+  }
 }
 
 export abstract class AppManagerApi implements API<AppManager> {

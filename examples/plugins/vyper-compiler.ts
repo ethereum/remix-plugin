@@ -6,7 +6,9 @@ export interface VyperCompiler extends Api {
   events: {
     compilationFinished: (compilationResult: any) => void
   }
-  lastCompilationResult(): any
+  methods: {
+    lastCompilationResult(): any
+  }
 }
 
 export const VyperCompilerProfile: PluginProfile<VyperCompiler> = {

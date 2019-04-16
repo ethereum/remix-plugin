@@ -14,6 +14,9 @@ export interface Api {
   events: {
     [key: string]: (...args: any[]) => void
   }
+  methods: {
+    [key: string]: (...args: any[]) => void
+  }
 }
 
 /** Override the EventEmitter type to take into account the Api */
@@ -51,7 +54,9 @@ export type API<T extends Api> = {
   activate?(): Promise<void>
   deactivate?(): void
   render?(): HTMLElement
-} & { [M in StrictExtractKey<T, Function>]: T[M] }
+} & {
+  [M in keyof T['methods']]: T['methods'][M]
+}
 
 export interface ModuleProfile<T extends Api = any> {
   name: T['name']
@@ -59,7 +64,7 @@ export interface ModuleProfile<T extends Api = any> {
   description?: string,
   required?: boolean
   kind?: 'fs' | 'compiler' | 'editor' | 'udapp' | 'network' | 'test' | 'analysis' | 'debug'
-  methods?: readonly Extract<ExtractKey<T, Function>, string>[]
+  methods?: readonly Extract<keyof T['methods'], string>[]
   events?: readonly Extract<keyof T['events'], string>[],
   notifications?: ({ [name: string]: string[] }) | { [name: string]: string[] }
   permission?: boolean
@@ -123,7 +128,7 @@ export interface PluginApi<T extends Api> {
   events: ApiEventEmitter<T>
   addRequest: (
     request: PluginRequest,
-    method: Extract<ExtractKey<T, Function>, string>,
+    method: Extract<keyof T['methods'], string>,
     args: any[]) => Promise<any>
   render?: () => HTMLElement,
   activate?: () => Promise<void>
