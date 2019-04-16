@@ -1,13 +1,13 @@
-import { PluginDevMode, PluginClient, PluginOptions } from './client'
+import { PluginDevMode, PluginClient, PluginOptions, listenEvent, callEvent } from './client'
 import { Message, ModuleProfile } from '../types'
 import { ApiMap, getApiMap, listenOnThemeChanged } from './api'
 
 /**
  * Check if the sender has the right origin
- * @param msgOrigin The origin of the incoming message
+ * @param origin The origin of the incoming message
  * @param devMode Devmode options
  */
-function checkOrigin(msgOrigin: string, devMode?: PluginDevMode) {
+export function checkOrigin(origin: string, devMode?: PluginDevMode) {
   const localhost = devMode ? [
     `http://127.0.0.1:${devMode.port}`,
     `http://localhost:${devMode.port}`,
@@ -20,18 +20,18 @@ function checkOrigin(msgOrigin: string, devMode?: PluginDevMode) {
     "https://remix-alpha.ethereum.org",
     "https://remix.ethereum.org",
     ...localhost
-  ].includes(msgOrigin)
+  ].includes(origin)
 }
 
 /**
  * Start listening on the IDE though PostMessage
  * @param store A store to put the messages into
  */
-function connectIframe(client: PluginClient) {
+export function connectIframe(client: PluginClient) {
   let loaded = false
 
   async function getMessage(event: MessageEvent) {
-    if (!(event.source)) throw new Error('No source')
+    if (!event.source) throw new Error('No source')
 
     // Check that the origin is the right one
     const devMode = client.devMode
@@ -56,11 +56,11 @@ function connectIframe(client: PluginClient) {
 
       switch (action) {
         case 'notification': {
-          client.events.emit(`[${name}] ${key}`, ...payload)
+          client.events.emit(listenEvent(name, key), ...payload)
           break
         }
         case 'response': {
-          client.events.emit(`[${name}] ${key}-${id}`, payload, error)
+          client.events.emit(callEvent(name, key, id), payload, error)
           break
         }
         case 'request': {
@@ -69,13 +69,13 @@ function connectIframe(client: PluginClient) {
           }
           client.currentRequest = requestInfo
           const result = await client[key](...payload)
-          const message = {action, name, key, id, payload: result}
+          const message = {action: 'response', name, key, id, payload: result}
           event.source.postMessage(message, event.origin as any)
           break
         }
       }
     } catch (err) {
-      const message = { action, name, key, id, error: err.error }
+      const message = { action, name, key, id, error: err.message }
       event.source.postMessage(message, event.origin as any)
     }
   }
