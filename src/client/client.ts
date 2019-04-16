@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { Api, PluginRequest } from 'src/types'
+import { Api, PluginRequest } from '../types'
 
 export interface PluginDevMode {
   port: number | string
@@ -7,11 +7,10 @@ export interface PluginDevMode {
 
 export interface PluginOptions {
   customTheme: boolean,
-  devMode: PluginDevMode
+  devMode?: PluginDevMode
 }
 
 export const defaultOptions: PluginOptions = {
-  devMode: null,
   customTheme: false,
 }
 
@@ -42,7 +41,7 @@ export class PluginClient<T extends Api = any> {
   public devMode: PluginDevMode
 
   constructor(options: PluginOptions = defaultOptions) {
-    this.devMode = options.devMode
+    if (options.devMode) this.devMode = options.devMode
     this.events.once('loaded', () => {
       this.loaded = true
       if (this.loadedCB) this.loadedCB()

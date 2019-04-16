@@ -54,13 +54,13 @@ export type API<T extends Api> = {
 } & { [M in StrictExtractKey<T, Function>]: T[M] }
 
 export interface ModuleProfile<T extends Api = any> {
-  name?: T['name']
+  name: T['name']
   displayName?: string
   description?: string,
   required?: boolean
   kind?: 'fs' | 'compiler' | 'editor' | 'udapp' | 'network' | 'test' | 'analysis' | 'debug'
-  methods?: readonly ExtractKey<T, Function>[]
-  events?: readonly (keyof T['events'])[],
+  methods?: readonly Extract<ExtractKey<T, Function>, string>[]
+  events?: readonly Extract<keyof T['events'], string>[],
   notifications?: ({ [name: string]: string[] }) | { [name: string]: string[] }
   permission?: boolean
 }
@@ -121,7 +121,10 @@ export interface PluginApi<T extends Api> {
   profile: ModuleProfile<T> | PluginProfile<T>
   name: T['name']
   events: ApiEventEmitter<T>
-  addRequest: (request: PluginRequest, method: ExtractKey<T, Function> | string, args: any[]) => Promise<any>
+  addRequest: (
+    request: PluginRequest,
+    method: Extract<ExtractKey<T, Function>, string>,
+    args: any[]) => Promise<any>
   render?: () => HTMLElement,
   activate?: () => Promise<void>
   deactivate?: () => void

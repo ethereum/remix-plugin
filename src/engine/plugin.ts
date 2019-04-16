@@ -104,11 +104,11 @@ export class Plugin<T extends Api> extends BaseApi<T> implements PluginApi<T> {
    */
   public addRequest(
     requestInfo: PluginRequest,
-    method: ExtractKey<T, Function> | string,
+    method: Extract<ExtractKey<T, Function>, string>,
     payload: any[],
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.profile.methods || !this.profile.methods.includes(method as ExtractKey<T, Function>)) {
+      if (!this.profile.methods || !this.profile.methods.includes(method)) {
         reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
       }
       // Add the current request into the queue

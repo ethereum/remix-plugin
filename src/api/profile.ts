@@ -13,7 +13,7 @@ export function extendsProfile<T extends Api, U extends Api>(
 ): Profile<T & U> {
   let baseProfile = {}
   if (baseProfiles.length > 1) {
-    baseProfile = baseProfiles.reduce((acc, base) => extendsProfile(acc, base), {})
+    baseProfile = baseProfiles.reduce((acc, base) => extendsProfile(acc, base), {} as Profile<T & U>)
   } else if (baseProfiles.length === 1) {
     baseProfile = baseProfiles[0]
   }
@@ -22,11 +22,11 @@ export function extendsProfile<T extends Api, U extends Api>(
     ...baseProfile,
     ...profile,
     methods: [
-      ...baseProfiles.reduce((acc, base) => [ ...acc, ...(base.methods || []) ], []),
+      ...baseProfiles.reduce((acc, base) => [ ...acc, ...(base.methods || []) ], [] as any),
       ...(profile.methods || [])
     ],
     events: [
-      ...baseProfiles.reduce((acc, base) => [ ...acc, ...(base.events || []) ], []),
+      ...baseProfiles.reduce((acc, base) => [ ...acc, ...(base.events || []) ], [] as any),
       ...(profile.events || [])
     ],
     notifications: {
