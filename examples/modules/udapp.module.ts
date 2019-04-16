@@ -5,9 +5,11 @@ import { EventEmitter } from 'events'
 // Type
 export interface Udapp extends Api {
   name: 'udapp'
-  runTx(transaction: Transaction): void,
-  getAccounts(): string
-  createVMAccount(newAccount: {privateKey: string, balance: number}): string
+  methods: {
+    runTx(transaction: Transaction): void,
+    getAccounts(): string
+    createVMAccount(newAccount: {privateKey: string, balance: number}): string
+  }
 }
 
 // Profile
