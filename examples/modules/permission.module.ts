@@ -1,5 +1,4 @@
-import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi } from '../../src'
-import { EventEmitter } from 'events'
+import { ModuleProfile, Api, API, BaseApi } from '../../src'
 
 // Type
 export interface PermissionModule extends Api {
