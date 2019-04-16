@@ -3,6 +3,7 @@ import { ModuleProfile, CompilerApi, CompilationResult, Api } from '../../src'
 export interface Solidity extends Api {
   name: 'solidity',
   events: {}  // Need to add an empty one for autocompletion
+  methods: {}
 }
 
 // Profile

@@ -7,7 +7,9 @@ export interface ICompilerApi extends Api {
   events: {
     compilationFinished: (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => void
   }
-  getCompilationResult(): CompilationResult
+  methods: {
+    getCompilationResult(): CompilationResult
+  }
 }
 
 export const compilerProfile: ModuleProfile<ICompilerApi> = {

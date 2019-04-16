@@ -1,11 +1,11 @@
-import { ModuleProfile, Api, API, ApiEventEmitter, BaseApi, UdappApi, RemixTx, RemixTxReceipt } from '../../src'
-import { Transaction } from './types'
+import { ModuleProfile, Api, API, UdappApi, RemixTx, RemixTxReceipt } from '../../src'
 import { EventEmitter } from 'events'
 
 // Type
 export interface Txlistener extends Api {
   name: 'txlistener'
   events: {}
+  methods: {}
 }
 
 // Profile

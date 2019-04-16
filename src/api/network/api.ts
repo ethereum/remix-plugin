@@ -7,11 +7,13 @@ export interface INetworkApi extends Api {
   events: {
     providerChanged: (provider: networkProvider) => void
   }
-  getNetworkProvider(): networkProvider
-  detectNetwork(): Network | Partial<CustomNetwork>
-  getEndpoint(): string
-  addNetwork(network: CustomNetwork): void
-  removeNetwork(name: string): void
+  methods: {
+    getNetworkProvider(): networkProvider
+    detectNetwork(): Network | Partial<CustomNetwork>
+    getEndpoint(): string
+    addNetwork(network: CustomNetwork): void
+    removeNetwork(name: string): void
+  }
 }
 
 export const networkProfile: ModuleProfile<INetworkApi> = {

@@ -6,7 +6,9 @@ export interface Ethdoc extends Api {
   events: {
     newDoc: (doc: string) => void
   }
-  getdoc(): string,
+  methods: {
+    getdoc(): string,
+  }
 }
 
 export const EthdocProfile: PluginProfile<Ethdoc> = {

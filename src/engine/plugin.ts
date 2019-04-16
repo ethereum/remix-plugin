@@ -104,7 +104,7 @@ export class Plugin<T extends Api> extends BaseApi<T> implements PluginApi<T> {
    */
   public addRequest(
     requestInfo: PluginRequest,
-    method: Extract<ExtractKey<T, Function>, string>,
+    method: Extract<keyof T['methods'], string>,
     payload: any[],
   ): Promise<any> {
     return new Promise((resolve, reject) => {

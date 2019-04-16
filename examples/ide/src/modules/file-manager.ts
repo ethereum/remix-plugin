@@ -7,10 +7,12 @@ interface FileManagerApi extends Api {
   events: {
     currentFileChanged: [string]
   }
-  getFilesFromPath(path: string): string[]
-  getCurrentFile(): string
-  getFile(path: string): string
-  setFile(path: string, content: string): void
+  methods: {
+    getFilesFromPath(path: string): string[]
+    getCurrentFile(): string
+    getFile(path: string): string
+    setFile(path: string, content: string): void
+  }
 }
 
 // PROFILE

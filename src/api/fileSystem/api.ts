@@ -7,10 +7,12 @@ export interface IFileSystemApi extends Api {
   events: {
     currentFileChanged: (file: string) => void
   }
-  getFolder(path: string): Folder
-  getCurrentFile(): string
-  getFile(path: string): string
-  setFile(path: string, content: string): void
+  methods: {
+    getFolder(path: string): Folder
+    getCurrentFile(): string
+    getFile(path: string): string
+    setFile(path: string, content: string): void
+  }
 }
 
 export const fileSystemProfile: ModuleProfile<IFileSystemApi> = {

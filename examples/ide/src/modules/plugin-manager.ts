@@ -3,6 +3,8 @@ import { ApiFactory, Api, ModuleProfile, PluginApi } from 'remix-plugin'
 // API Interface
 interface PluginManagerApi extends Api {
   name: 'pluginManager'
+  events: {}
+  methods: {}
 }
 
 // PROFILE

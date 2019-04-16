@@ -3,7 +3,9 @@ import { ModuleProfile, Api, API } from '../../src'
 export interface RemixResolve extends Api {
   name: 'remix-resolve'
   events: {}
-  resolve(filePath: string, customHandlers?: Handler[]): Promise<Imported>
+  methods: {
+    resolve(filePath: string, customHandlers?: Handler[]): Promise<Imported>
+  }
 }
 
 export const RemixResolveProfile: ModuleProfile<RemixResolve> = {
