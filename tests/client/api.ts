@@ -1,7 +1,18 @@
-import { createApi, ModuleProfile, PluginClient, CustomApi, Api, callEvent, listenEvent, getApiMap, Theme, listenOnThemeChanged } from '../../src'
+import {
+  createApi,
+  ModuleProfile,
+  PluginClient,
+  CustomApi,
+  Api,
+  callEvent,
+  listenEvent,
+  getApiMap,
+  Theme,
+  listenOnThemeChanged,
+} from '../../src'
 
 interface TestApi extends Api {
-  name: 'test',
+  name: 'test'
   events: {
     event: (isTrue: boolean) => void
   }
@@ -13,7 +24,7 @@ interface TestApi extends Api {
 const profile: ModuleProfile<TestApi> = {
   name: 'test',
   methods: ['method'],
-  events: ['event']
+  events: ['event'],
 }
 
 describe('Client Api', () => {
@@ -31,22 +42,22 @@ describe('Client Api', () => {
     expect(api.method).toBeDefined()
   })
 
-  test('"Method" should send a message', (done) => {
+  test('"Method" should send a message', done => {
     client.events.on('send', message => {
       expect(message).toEqual({
         action: 'request',
         name: 'test',
         key: 'method',
         payload: [true],
-        id: 1
+        id: 1,
       })
       done()
     })
     api.method(true)
   })
 
-  test('"Method" should return a promise', (done) => {
-    client.events.on('send', ({name, key, id, payload}) => {
+  test('"Method" should return a promise', done => {
+    client.events.on('send', ({ name, key, id, payload }) => {
       client.events.emit(callEvent(name, key, id), payload[0])
     })
     api.method(true).then(isTrue => {
@@ -55,8 +66,8 @@ describe('Client Api', () => {
     })
   })
 
-  test('"Event" should emit an event', (done) => {
-    api.on('event', (isTrue) => {
+  test('"Event" should emit an event', done => {
+    api.on('event', isTrue => {
       expect(isTrue).toBeTruthy()
       done()
     })
@@ -80,11 +91,19 @@ describe('Common Apis', () => {
     client = new PluginClient()
   })
   test('Should listen on theme changed', () => {
-    const link = listenOnThemeChanged(client, { customTheme: false }) as HTMLLinkElement
+    const link = listenOnThemeChanged(client) as HTMLLinkElement
     expect(link.getAttribute('rel')).toBe('stylesheet')
-    client.events.emit('themeChanged', { url: 'url', quality: 'dark'})
+    client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
     setTimeout(() => {
       expect(link.getAttribute('href')).toBe('url')
+    }, 100)
+  })
+  test('If theme is custom, do not change the url', () => {
+    const options = { customTheme: true }
+    const link = listenOnThemeChanged(client, options) as HTMLLinkElement
+    client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
+    setTimeout(() => {
+      expect(link.getAttribute('href')).toBeUndefined()
     }, 100)
   })
 })
