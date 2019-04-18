@@ -122,18 +122,19 @@ Here you can add :
 This is not available now.
 
 # API
-This API is a Work In Progress and will be extended in the future.
+Your plugin can interact with other plugins through the API. `remix-plugin` provide a set of default plugins integrated inside the Remix IDE. Some of the APIs have to be used with caution. So they might ask the permission of the user.  
 
-### Permission
-Some of the APIs have to be used with caution. So they might ask the permission of the user.
+ 
 
-|API            |name         |Permission |
-|---------------|-------------|-----------|
-|File System    |fileManager  |✅
-|Compiler       |solidity     |✅
-|Editor         |editor       |
-|Network        |network      |
-|Udapp          |udapp        |
+|API            |Name         |Permission |Description |
+|---------------|-------------|-----------|-------------
+|File System    |fileManager  |✅         |Manages the File System
+|Compiler       |solidity     |✅         |The solidity Compiler
+|Editor         |editor       |           |Enables highlighting in the code Editor
+|Network        |network      |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
+|Udapp          |udapp        |           |Transaction listener
+
+> This API is a Work In Progress and will be extended in the future.
 
 
 ## File System
