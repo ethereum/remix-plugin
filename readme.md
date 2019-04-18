@@ -126,10 +126,10 @@ Your plugin can interact with other plugins through the API. `remix-plugin` prov
 
  
 
-|API            |Name         |Permission |Description |
-|---------------|-------------|-----------|-------------
-|File System    |fileManager  |✅         |Manages the File System
-|Compiler       |solidity     |✅         |The solidity Compiler
+|API            |Name                                       |Permission |Description |
+|---------------|-------------|-----------------------------|-------------
+|File System    |fileManager                                |✅         |Manages the File System
+|Compiler       |[solidity](./doc/plugins/solidity.md)      |✅         |The solidity Compiler
 |Editor         |editor       |           |Enables highlighting in the code Editor
 |Network        |network      |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
 |Udapp          |udapp        |           |Transaction listener
