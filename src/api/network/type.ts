@@ -11,4 +11,4 @@ export type Network =
   | { id: '4', name: 'Rinkeby' }
   | { id: '42', name: 'Kovan' }
 
-export type networkProvider = 'vm' | 'injected' | 'web3'
+export type NetworkProvider = 'vm' | 'injected' | 'web3'

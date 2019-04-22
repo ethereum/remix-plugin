@@ -7,8 +7,8 @@ import {
   callEvent,
   listenEvent,
   getApiMap,
-  Theme,
   listenOnThemeChanged,
+  createIframeClient,
 } from '../../src'
 
 interface TestApi extends Api {
@@ -79,12 +79,18 @@ describe('Client Api', () => {
     expect(test.on).toBeDefined()
     expect(test.method).toBeDefined()
   })
+
+  test('createIframeClient has api', () => {
+    const iframeClient = createIframeClient([profile])
+    expect(iframeClient.test).toBeDefined()
+    expect(iframeClient.test.on).toBeDefined()
+    expect(iframeClient.test.method).toBeDefined()
+  })
 })
 
 /////////////////
 // COMMON APIS //
 /////////////////
-
 describe('Common Apis', () => {
   let client: PluginClient
   beforeEach(() => {

@@ -1,9 +1,8 @@
 # Solidity Compiler
 
-- Name: `solidity`
+- Name in Remix: `solidity`
 - kind: `compiler`
 
-Remix exposes the `solidity` compiler.
 
 |Type     |Name                   |Description |
 |---------|-----------------------|------------|
@@ -33,7 +32,7 @@ const result = await client.call('solidity', 'getCompilationResult')
 ```
 
 ## Types
-`CompilationFileSources`: A map with the files name as key and the content as value.
+`CompilationFileSources`: A map with the file name as the key and the content as the value.
 
 `CompilationResult`: The result of the compilation matches the [Solidity Compiler Output documentation](https://solidity.readthedocs.io/en/latest/using-the-compiler.html#output-description).
 
