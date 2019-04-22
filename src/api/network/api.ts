@@ -1,14 +1,14 @@
 import { BaseApi } from '../base'
 import { extendsProfile } from "../profile"
 import { ModuleProfile, Api, API } from '../../types'
-import { Network, CustomNetwork, networkProvider } from './type'
+import { Network, CustomNetwork, NetworkProvider } from './type'
 
 export interface INetworkApi extends Api {
   events: {
-    providerChanged: (provider: networkProvider) => void
+    providerChanged: (provider: NetworkProvider) => void
   }
   methods: {
-    getNetworkProvider(): networkProvider
+    getNetworkProvider(): NetworkProvider
     detectNetwork(): Network | Partial<CustomNetwork>
     getEndpoint(): string
     addNetwork(network: CustomNetwork): void
@@ -33,7 +33,7 @@ export abstract class NetworkApi<T extends Api>
   }
 
   /** Return the current network provider */
-  abstract getNetworkProvider(): networkProvider
+  abstract getNetworkProvider(): NetworkProvider
   abstract detectNetwork(): Network | Partial<CustomNetwork>
   /** Return the url only if network provider is 'web3' */
   abstract getEndpoint(): string

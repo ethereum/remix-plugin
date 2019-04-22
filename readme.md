@@ -16,54 +16,54 @@ or with a unpkg :
 <script src="https://unpkg.com/remix-plugin"></script>
 ```
 
-## Remix Extension
-`RemixExtension` helps you communicate with the IDE.
+## Plugin Client
+`PluginClient` helps you communicate with the IDE through an Iframe.
 
 To import it you can use ES6 if installed with npm : 
 ```javascript
-import { RemixExtension } from 'remix-plugin'
-const extension = new RemixExtension()
+import { createIframeClient } from 'remix-plugin'
+const client = createIframeClient()
 
 // Or with a global variable if you used unpkg : 
 
-const { RemixExtension } = remixPlugin
-const extension = new RemixExtension()
+const { createIframeClient } = remixPlugin
+const client = createIframeClient()
 ```
 
 ---
 ## DevMode
-Plugins communicate with the IDE through the `postMessage` API. It means that `RemixExtension` needs to know the origin of your IDE.
+Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
 
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
 ```typescript
-extension.setDevMode(8000) 
+client.setDevMode(8000) 
 // or
-extension.setDevMode()  // default is port 8080
+client.setDevMode()  // default is port 8080
 ```
 
 ---
 
 ### Loaded
-`RemixExtension` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise `loaded` to be called.
+`PluginClient` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise `loaded` to be called.
 
 ```javascript
-extension.loaded().then(_ => /* Do Something now */)
-
+client.onLoad().then(_ => /* Do Something now */)
+await client.loaded()
 // Or with the `async` / `await` syntax
 
-await extension.loaded()
+
 // Do Something now
 ```
 
 ### Listen
 To listen to an event you need to provide the name of the plugin your listening on, and the name of the event : 
 ```javascript
-extension.listen(/* pluginName */, /* eventName */, ...arguments)
+client.listen(/* pluginName */, /* eventName */, ...arguments)
 ```
 
 For exemple if you want to listen to Solidity compilation : 
 ```javascript
-extension.listen('solidity', 'compilationFinished', (target, source, version, data) => {
+client.listen('solidity', 'compilationFinished', (target, source, version, data) => {
     /* Do Something on Compilation */
   }
 )
@@ -74,38 +74,38 @@ extension.listen('solidity', 'compilationFinished', (target, source, version, da
 ### Call 
 You can call some methods exposed by the IDE with with the method `call`. You need to provide the name of the plugin, the name of the method, and the arguments of the methods : 
 ```javascript
-await extension.call(/* pluginName */, /* methodName */, ...arguments)
+await client.call(/* pluginName */, /* methodName */, ...arguments)
 ```
 > Note: `call` is alway Promise
 
 For example if you want to upsert the current file : 
 ```typescript
 async function upsertCurrentFile(content: string) {
-  const path = await extension.call('fileManager', 'getCurrentFile')
-  await extension.call('fileManager', 'setFile', path, content)
+  const path = await client.call('fileManager', 'getCurrentFile')
+  await client.call('fileManager', 'setFile', path, content)
 }
 ```
 
-> Note: Be sure that your plugin is loaded before making any call.
+⚠️ Be sure that your plugin is loaded before making any call.
 
 ### Emit
 Your plugin can emit events that other plugins can listen on.
 ```javascript
-extension.emit(/* eventName */, ...arguments)
+client.emit(/* eventName */, ...arguments)
 ```
 
 Let's say your plugin build a deploy a Readme for your contract on IPFS : 
 ```javascript
 async function deployReadme(content) {
   const [ result ] = await ipfs.files.add(content);
-  extension.emit('readmeDeployed', result.hash)
+  client.emit('readmeDeployed', result.hash)
 }
 ```
 
 > Note: Be sure that your plugin is loaded before making any call.
 
 <div align="center">
-<img src="./doc/imgs/remix-extension.png" width="300">
+<img src="./doc/imgs/remix-client.png" width="300">
 </div>
 
 ### Testing your plugin
@@ -152,14 +152,14 @@ Remix uses a folder based
 |_method_ |setFile            |
 
 ```typescript
-extension.listen('fileManager', 'currentFileChanged', (fileName: string) => {
+client.listen('fileManager', 'currentFileChanged', (fileName: string) => {
   // Do something
 })
 
-const filesTree = await extension.call('fileManager', 'getFilesFromPath', 'browser')
-const content = await extension.call('fileManager', 'getFile', 'browser/ballot.sol')
-const content = await extension.call('fileManager', 'getFile', 'browser/ballot.sol')
-await extension.call('fileManager', 'setFile', 'browser/ballot.sol', '/** File Content */')
+const filesTree = await client.call('fileManager', 'getFilesFromPath', 'browser')
+const content = await client.call('fileManager', 'getFile', 'browser/ballot.sol')
+const content = await client.call('fileManager', 'getFile', 'browser/ballot.sol')
+await client.call('fileManager', 'setFile', 'browser/ballot.sol', '/** File Content */')
 ```
 
 ## Editor
@@ -175,12 +175,12 @@ Use the editor to highlight a piece of code. Remix uses Ace editor by default.
 
 ```typescript
 // Hightlight a piece of code with color "#e6e6e6"
-await extension.call('editor', 'highlight', {
+await client.call('editor', 'highlight', {
   start: { line: 1, column: 1 },
   end: { line: 1, column: 42 }
 }, 'browser/ballot.sol', '#e6e6e6')
 // Remove the highlight of this plugin
-await extension.call('editor', 'discardHighlight')
+await client.call('editor', 'discardHighlight')
 ```
 
 ## Compiler
@@ -197,13 +197,13 @@ Remix exposes the `solidity` compiler.
 
 ```typescript
 // Event : compilationFinished
-extension.listen('solidity', 'compilationFinished', 
+client.listen('solidity', 'compilationFinished', 
   (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => {
   // Do something
 })
 
 // Method : getCompilationResult
-const result = await extension.call('solidity', 'getCompilationResult')
+const result = await client.call('solidity', 'getCompilationResult')
 ```
 
 ## Network
@@ -223,20 +223,20 @@ With Remix IDE you can listen on default network (`mainnet`, `ropsten`, `rinkeby
 
 ```typescript
 // Event : providerChanged
-extension.listen('network', 'providerChanged', (provider: networkProvider) => {
+client.listen('network', 'providerChanged', (provider: networkProvider) => {
   // Do something
 })
 
 // getNetworkProvider: "vm", "web3" or "injected"
-const provider = await extension.call('network', 'getNetworkProvider')
+const provider = await client.call('network', 'getNetworkProvider')
 // getEndpoint: Return the url of the current network if provider is web3
-const endpoint = await extension.call('network', 'getEndpoint')
+const endpoint = await client.call('network', 'getEndpoint')
 // detectNetwork: Return the current network (mainnet, ropsten, ... or Custom)
-const network = await extension.call('network', 'detectNetwork')
+const network = await client.call('network', 'detectNetwork')
 // addNetwork: Add a custom network
-await extension.call('network', 'addNetwork', { name: 'ganache', url: 'http://localhost:8586'})
+await client.call('network', 'addNetwork', { name: 'ganache', url: 'http://localhost:8586'})
 // removeNetwork: Remove a custom network
-await extension.call('network', 'removeNetwork', 'ganache')
+await client.call('network', 'removeNetwork', 'ganache')
 ```
 
 ## Udapp
@@ -254,16 +254,16 @@ The Universal Dapp is an abstraction on top of the Virtual Machine.
 
 
 ```typescript
-extension.listen('udapp', 'newTransaction', (tx: TxRemix) => {
+client.listen('udapp', 'newTransaction', (tx: TxRemix) => {
   // Do Something
 })
 
 // createVMAccount: Create an account if the provider is "vm"
-const account = await extension.call('udapp', 'createVMAccount')
+const account = await client.call('udapp', 'createVMAccount')
 // getAccounts: The list of current accounts
-const accounts = await extension.call('udapp', 'getAccounts')
+const accounts = await client.call('udapp', 'getAccounts')
 // sendTransaction: Send a transaction or make a call to the network
-extension.call('udapp', 'sendTransaction', {
+client.call('udapp', 'sendTransaction', {
   gasLimit: '0x2710',
   from: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c',
   to: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c'
@@ -277,7 +277,7 @@ extension.call('udapp', 'sendTransaction', {
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event : 
 
 ```typescript
-extension.listen('fileManager', 'statusChanged', (status: Status) => {
+client.listen('fileManager', 'statusChanged', (status: Status) => {
   // Do Something 
 })
 ```
@@ -293,6 +293,6 @@ interface Status {
 
 You can also change the status of your own plugin by emitting the same event : 
 ```typescript
-extension.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
+client.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
 ```
 > The IDE can use this status to display a notification to the user.
