@@ -23,7 +23,6 @@ describe('Client is not loaded yet', () => {
     expect(client).toBeDefined()
     expect(client['loaded']).toBeFalsy()
     expect(client['id']).toBe(0)
-    expect(client.devMode).toBe(defaultOptions.devMode)
   })
 
   test('Client should load with callback', (done) => {

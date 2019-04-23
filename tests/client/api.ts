@@ -81,7 +81,7 @@ describe('Client Api', () => {
   })
 
   test('createIframeClient has api', () => {
-    const iframeClient = createIframeClient([profile])
+    const iframeClient = createIframeClient({customApi: [profile]})
     expect(iframeClient.test).toBeDefined()
     expect(iframeClient.test.on).toBeDefined()
     expect(iframeClient.test.method).toBeDefined()
@@ -105,7 +105,7 @@ describe('Common Apis', () => {
     }, 100)
   })
   test('If theme is custom, do not change the url', () => {
-    const options = { customTheme: true }
+    const options = { customTheme: true, customApi: [profile] }
     const link = listenOnThemeChanged(client, options) as HTMLLinkElement
     client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
     setTimeout(() => {

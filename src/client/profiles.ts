@@ -1,4 +1,4 @@
-import { CompilerApi, compilerProfile, extendsProfile } from '../api'
+import { compilerProfile, extendsProfile } from '../api'
 
 export const commonProfiles = [
   extendsProfile(compilerProfile, { name: 'solidity' }),

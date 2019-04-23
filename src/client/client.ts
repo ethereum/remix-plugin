@@ -1,17 +1,20 @@
 import { EventEmitter } from 'events'
-import { Api, PluginRequest } from '../types'
+import { Api, PluginRequest, ModuleProfile } from '../types'
 
 export interface PluginDevMode {
   port: number | string
 }
 
-export interface PluginOptions {
+export interface PluginOptions<T extends ModuleProfile = any> {
   customTheme: boolean,
-  devMode?: PluginDevMode
+  customApi: T[],
+  devMode: PluginDevMode
 }
 
 export const defaultOptions: PluginOptions = {
   customTheme: false,
+  customApi: [],
+  devMode: null,
 }
 
 /** Throw an error if client try to send a message before connection */
@@ -40,7 +43,7 @@ export class PluginClient<T extends Api = any> {
   public currentRequest: PluginRequest
   public devMode: PluginDevMode
 
-  constructor(options: PluginOptions = defaultOptions) {
+  constructor(options: Partial<PluginOptions> = {}) {
     if (options.devMode) this.devMode = options.devMode
     this.events.once('loaded', () => {
       this.loaded = true
