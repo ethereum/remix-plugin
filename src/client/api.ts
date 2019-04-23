@@ -63,7 +63,7 @@ export interface Theme {
 }
 
 /** Start listening on theme changed */
-export function listenOnThemeChanged(client: PluginClient, options?: PluginOptions) {
+export function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions>) {
   if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')
