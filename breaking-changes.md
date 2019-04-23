@@ -1,6 +1,13 @@
 # Breaking changes 
 (please reach out to our gitter channel - https://gitter.im/ethereum/remix-dev - for any questions)
 
+## api < 0.5 -> api 0.5
+- `RemixExtension` is now called `RemixClient`.
+- Use `createIframeClient()` instead of `new RemixExtension()` to create a Client.
+- `loaded()` is now called `onload()`, it's a Promise **and** can have a callback function.
+- `setDevMode()` is deprecated, add it inside the options of `createIframeClient()` instead see [documentation](./readme.md#DevMode).
+
+
 ## poc -> api 0.5
 
  - Using the bundled `remix-api.js` is not necessary anymore because `remix-plugin` has been published to npm.
