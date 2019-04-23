@@ -29,9 +29,17 @@ client.listen('udapp', 'sendTransaction', (tx: RemixTx) => {
 ### Methods
 `sendTransaction`: Send a transaction **only for testing networks**.
 ```typescript
-const receipt = await client.udapp.sendTransaction()
+const transaction: RemixTx = {
+  gasLimit: '0x2710',
+  from: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c',
+  to: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c'
+  data: '0x...',
+  value: '0x00',
+  useCall: false
+}
+const receipt = await client.udapp.sendTransaction(transaction)
 // OR
-const receipt = await client.call('udapp', 'sendTransaction')
+const receipt = await client.call('udapp', 'sendTransaction', transaction)
 ```
 
 `getAccounts`: Get the name of the current file selected.
