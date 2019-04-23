@@ -36,23 +36,19 @@ Plugins communicate with the IDE through the `postMessage` API. It means that `P
 
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
 ```typescript
-client.setDevMode(8000) 
-// or
-client.setDevMode()  // default is port 8080
+const devMode = { port: 8000 }
+const client = createIframeClient([], { devMode })
 ```
 
 ---
 
 ### Loaded
-`PluginClient` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise `loaded` to be called.
+`PluginClient` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise / callback `onload` to be called.
 
 ```javascript
-client.onLoad().then(_ => /* Do Something now */)
-await client.loaded()
-// Or with the `async` / `await` syntax
-
-
-// Do Something now
+client.onload(() => /* Do something */)
+client.onload().then(_ => /* Do Something now */)
+await client.onload()
 ```
 
 ### Listen
@@ -125,155 +121,30 @@ This is not available now.
 Your plugin can interact with other plugins through the API. `remix-plugin` provide a set of default plugins integrated inside the Remix IDE. Some of the APIs have to be used with caution. So they might ask the permission of the user.  
 
  
+## Remix Api
 
-|API            |Name                                       |Permission |Description |
-|---------------|-------------|-----------------------------|-------------
-|File System    |fileManager                                |✅         |Manages the File System
-|Compiler       |[solidity](./doc/plugins/solidity.md)      |✅         |The solidity Compiler
-|Editor         |editor       |           |Enables highlighting in the code Editor
-|Network        |network      |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
-|Udapp          |udapp        |           |Transaction listener
+|API            |Name                                         |Permission |Description |
+|---------------|-------------|-------------------------------|-------------
+|File System    |[fileManager](./doc/plugins/file-system.md)  |✅         |Manages the File System
+|Compiler       |[solidity](./doc/plugins/solidity.md)        |✅         |The solidity Compiler
+|Editor         |[editor](./doc/plugins/editor.md)            |           |Enables highlighting in the code Editor
+|Network        |[network](./doc/plugins/network.md)          |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
+|Udapp          |[udapp](./doc/plugins/udapp.md)              |           |Transaction listener
 
 > This API is a Work In Progress and will be extended in the future.
 
 
-## File System
+## Theme
+Remix is using [Bootstrap](https://getbootstrap.com/). For better User Experience it's **highly recommanded** to use the same theme as Remix in your plugin. For that you _just_ have to use standard bootstrap classes.
 
-Name: `fileManager`
+Remix will automatically create a `<link/>` tag in the header of your plugin with the current theme used. And it'll update the link each time the user change the theme.
 
-Remix uses a folder based 
-
-|Type     |Name               |
-|---------|-------------------|
-|_event_  |currentFileChanged |
-|_method_ |getFilesFromPath   |
-|_method_ |getCurrentFile     |
-|_method_ |getFile            |
-|_method_ |setFile            |
-
+If you really want to use your own theme, you can use the `customTheme` flag in the option : 
 ```typescript
-client.listen('fileManager', 'currentFileChanged', (fileName: string) => {
-  // Do something
-})
-
-const filesTree = await client.call('fileManager', 'getFilesFromPath', 'browser')
-const content = await client.call('fileManager', 'getFile', 'browser/ballot.sol')
-const content = await client.call('fileManager', 'getFile', 'browser/ballot.sol')
-await client.call('fileManager', 'setFile', 'browser/ballot.sol', '/** File Content */')
+const client = createIframeClient([customApis], { customTheme: true })
 ```
 
-## Editor
-
-Name: `editor`
-
-Use the editor to highlight a piece of code. Remix uses Ace editor by default.
-
-|Type     |Name                 |
-|---------|---------------------|
-|_method_ |highlight            |
-|_method_ |discardHighlight     |
-
-```typescript
-// Hightlight a piece of code with color "#e6e6e6"
-await client.call('editor', 'highlight', {
-  start: { line: 1, column: 1 },
-  end: { line: 1, column: 42 }
-}, 'browser/ballot.sol', '#e6e6e6')
-// Remove the highlight of this plugin
-await client.call('editor', 'discardHighlight')
-```
-
-## Compiler
-
-Name: `solidity`
-
-Remix exposes the `solidity` compiler.
-> The `vyper` compiler is exposed by an external plugin.
-
-|Type     |Name                 |
-|---------|---------------------|
-|_event_  |compilationFinished  |
-|_method_ |getCompilationResult |
-
-```typescript
-// Event : compilationFinished
-client.listen('solidity', 'compilationFinished', 
-  (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => {
-  // Do something
-})
-
-// Method : getCompilationResult
-const result = await client.call('solidity', 'getCompilationResult')
-```
-
-## Network
-
-Name: `network`
-
-With Remix IDE you can listen on default network (`mainnet`, `ropsten`, `rinkeby`, `kovan`), or custom one (`ganache`, Etherum Sidechain).
-
-|Type     |Name               |
-|---------|-------------------|
-|_event_  |providerChanged    |
-|_method_ |getNetworkProvider |
-|_method_ |getEndpoint        |
-|_method_ |detectNetwork      |
-|_method_ |addNetwork         |
-|_method_ |removeNetwork      |
-
-```typescript
-// Event : providerChanged
-client.listen('network', 'providerChanged', (provider: networkProvider) => {
-  // Do something
-})
-
-// getNetworkProvider: "vm", "web3" or "injected"
-const provider = await client.call('network', 'getNetworkProvider')
-// getEndpoint: Return the url of the current network if provider is web3
-const endpoint = await client.call('network', 'getEndpoint')
-// detectNetwork: Return the current network (mainnet, ropsten, ... or Custom)
-const network = await client.call('network', 'detectNetwork')
-// addNetwork: Add a custom network
-await client.call('network', 'addNetwork', { name: 'ganache', url: 'http://localhost:8586'})
-// removeNetwork: Remove a custom network
-await client.call('network', 'removeNetwork', 'ganache')
-```
-
-## Udapp
-
-Name: `udapp`
-
-The Universal Dapp is an abstraction on top of the Virtual Machine.
-
-|Type     |Name                 |
-|---------|---------------------|
-|_event_  |newTransaction       |
-|_method_ |createVMAccount      |
-|_method_ |getAccounts          |
-|_method_ |sendTransaction      |
-
-
-```typescript
-client.listen('udapp', 'newTransaction', (tx: TxRemix) => {
-  // Do Something
-})
-
-// createVMAccount: Create an account if the provider is "vm"
-const account = await client.call('udapp', 'createVMAccount')
-// getAccounts: The list of current accounts
-const accounts = await client.call('udapp', 'getAccounts')
-// sendTransaction: Send a transaction or make a call to the network
-client.call('udapp', 'sendTransaction', {
-  gasLimit: '0x2710',
-  from: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c',
-  to: '0xca35b7d915458ef540ade6068dfe2f44e8fa733c'
-  data: '0x...',
-  value: '0x00',
-  useCall: false
-})
-```
-
-# Status
+## Status
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event : 
 
 ```typescript
