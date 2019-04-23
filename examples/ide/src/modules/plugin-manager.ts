@@ -1,24 +1,31 @@
-import { ApiFactory, Api, ModuleProfile, PluginApi } from 'remix-plugin'
+import { BaseApi, Api, ModuleProfile, PluginApi } from 'remix-plugin'
 
 // API Interface
 interface PluginManagerApi extends Api {
   name: 'pluginManager'
-  events: {}
+  events: {
+    added: (plugin: PluginApi<Api>) => void
+    activated: (name: string) => void
+    deactivated: (name: string) => void
+  }
   methods: {}
 }
 
 // PROFILE
-const pluginProfile: ModuleProfile<PluginManagerApi> = {
+const profile: ModuleProfile<PluginManagerApi> = {
   name: 'pluginManager',
   displayName: 'Plugin Manager',
   description: 'The plugin manager helps for activating or deactivating plugins',
 }
 
 // MODULE
-export class PluginManager extends ApiFactory<PluginManagerApi> {
+export class PluginManager extends BaseApi<PluginManagerApi> {
   private plugins: { [name: string]: PluginApi<Api> } = {}
   private actives: string[] = []
-  public readonly profile = pluginProfile
+
+  constructor() {
+    super(profile)
+  }
 
   /**
    * Get one plugin if registered
@@ -26,7 +33,7 @@ export class PluginManager extends ApiFactory<PluginManagerApi> {
    */
   public getOne<T extends Api>(name: string): PluginApi<T> {
     if (!this.plugins[name]) throw new Error(`${name} plugin is not register yet`)
-    return this.plugins[name]
+    return this.plugins[name] as PluginApi<T>
   }
 
   /**
@@ -36,6 +43,7 @@ export class PluginManager extends ApiFactory<PluginManagerApi> {
   public addOne<T extends Api>(plugin: PluginApi<T>): void {
     if (this.plugins[plugin.name]) throw new Error(`${plugin.name} already exists`)
     this.plugins[plugin.name] = plugin
+    this.events.emit('added', plugin)
   }
 
   /**
@@ -45,13 +53,23 @@ export class PluginManager extends ApiFactory<PluginManagerApi> {
    */
   public setActive(name: string, isActive: boolean): void {
     const index = this.actives.indexOf(name)
-    if (isActive && index === -1) this.actives.push(name)
-    if (!isActive && index !== -1) this.actives.splice(index, 1)
+    if (isActive && index === -1) {
+      this.actives.push(name)
+      this.events.emit('activated', name)
+    }
+    if (!isActive && index !== -1) {
+      this.actives.splice(index, 1)
+      this.events.emit('deactivated', name)
+    }
+  }
+
+  public getAll() {
+    return Object.keys(this.plugins).map(key => this.plugins[key])
+  }
+
+  public isActive(name: string) {
+    return this.actives.includes(name)
   }
 }
 
-
-export class PluginManagerComponent {
-  constructor(private pluginManager: PluginManager) {}
-
-}
+export const pluginManager = new PluginManager()

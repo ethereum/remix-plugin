@@ -5,10 +5,11 @@
     "sourceMap": true,
     "declaration": true,
     "noImplicitAny": false,
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "typeRoots": ["../node_modules/@types"],
+    "experimentalDecorators": true,
     "types": ["cypress"],
     "lib": ["es2016", "dom", "es5"],
     "paths": {

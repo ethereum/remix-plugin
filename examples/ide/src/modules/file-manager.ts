@@ -1,35 +1,24 @@
-import { ApiFactory, Api, ModuleProfile, ApiEventEmitter } from 'remix-plugin'
+import { BaseApi, Api, ModuleProfile, ApiEventEmitter, IFileSystemApi, FileSystemApi, Folder } from 'remix-plugin'
 import { EventEmitter } from 'events'
 
 // API Interface
-interface FileManagerApi extends Api {
+interface IFileManagerApi extends IFileSystemApi {
   name: 'fileManager',
-  events: {
-    currentFileChanged: [string]
-  }
-  methods: {
-    getFilesFromPath(path: string): string[]
-    getCurrentFile(): string
-    getFile(path: string): string
-    setFile(path: string, content: string): void
-  }
 }
 
 // PROFILE
-const fileManagerProfile: ModuleProfile<FileManagerApi> = {
+const profile: ModuleProfile<IFileManagerApi> = {
   name: 'fileManager',
-  displayName: 'File Manager',
-  description: 'A simple browser File Manager',
-  methods: ['getFilesFromPath', 'getCurrentFile', 'getFile', 'setFile'],
-  events: ['currentFileChanged'],
 }
 
 // MODULE
-export class FileManager extends ApiFactory<FileManagerApi> {
+export class FileManager extends FileSystemApi<IFileManagerApi> {
   private files: { [path: string]: string } = {}
   private active: string
-  public readonly profile = fileManagerProfile
-  public events: ApiEventEmitter<FileManagerApi> = new EventEmitter()
+
+  constructor() {
+    super(profile)
+  }
 
   /** Change the current file */
   public selectFile(path: string) {
@@ -38,10 +27,13 @@ export class FileManager extends ApiFactory<FileManagerApi> {
     this.events.emit('currentFileChanged', this.active)
   }
 
-  public getFilesFromPath(path: string): string[] {
+  public getFolder(path: string): Folder {
     return Object.keys(this.files)
       .filter(name => name.includes(path))
-      .map(name => this.files[name])
+      .reduce((acc, name) => {
+        const isDirectory = typeof this.files[name] !== 'string'
+        return { ...acc, [name]: { isDirectory } }
+      }, {})
   }
 
   /** Get the content of the current file */
@@ -59,10 +51,4 @@ export class FileManager extends ApiFactory<FileManagerApi> {
   public setFile(path: string, content: string): void {
     this.files[path] = content
   }
-}
-
-
-export class FileManagerComponent {
-  constructor(private fileManager: FileManager) {}
-
 }
