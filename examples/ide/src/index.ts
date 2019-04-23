@@ -1,15 +1,29 @@
+import('./components')
 import { IdeManager } from './app-manager'
 
 // Modules = Internal Plugins
-import { FileManager, PluginManager } from './modules'
+import { FileManager, pluginManager } from './modules'
 
-// Instanciate Modules
+/////////////
+// MODULES //
+/////////////
 const fileManager = new FileManager()
-const pluginManager = new PluginManager()
 const app = new IdeManager(pluginManager)
 
 // Initialize all plugins that are required
 app.init([
   pluginManager.api(),
   fileManager.api(),
+])
+
+/////////////
+// PLUGINS //
+/////////////
+import { Plugin } from 'remix-plugin'
+import { ethdocProfile } from '../../plugins/ethdoc/profile'
+const ethdoc = new Plugin(ethdocProfile)
+
+// Add plugins
+app.registerMany([
+  ethdoc.api()
 ])
