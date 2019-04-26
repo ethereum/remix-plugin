@@ -1,9 +1,8 @@
-import { LitElement, customElement, html } from "lit-element";
-import { pluginManager } from "../modules";
+import { LitElement, customElement, html } from 'lit-element'
+import { pluginManager } from '../modules'
 
 @customElement('plugin-manager')
 export class PluginManagerComponent extends LitElement {
-
   constructor() {
     super()
     pluginManager.events.on('added', () => this.requestUpdate())
@@ -24,20 +23,20 @@ export class PluginManagerComponent extends LitElement {
         </button>
       </li>
     `
-    const pluginList = pluginManager
-      .getAll()
-      .filter(({profile}) => !profile.required)
-    const actives = pluginList
-      .filter(({name}) => pluginManager.isActive(name))
-      .map(p => pluginItem(p, true))
-    const inactives = pluginList
-      .filter(({name}) => !pluginManager.isActive(name))
-      .map(p => pluginItem(p, false))
+    const { actives, inactives } = pluginManager
+      .getAll(({ profile }) => !profile.required)
+      .reduce((acc, plugin) => {
+        const isActive = pluginManager.isActive(plugin.name)
+        const _actives = isActive ? [ ...acc.actives, pluginItem(plugin, true) ] : acc.actives
+        const _inactives = !isActive ? [ ...acc.inactives, pluginItem(plugin, false) ] : acc.inactives
+        return { actives: _actives, inactives: _inactives }
+      }, {actives: [], inactives: []})
 
-    return html`<ul>
-      ${inactives}
-      ${actives}
-    </ul>`
+
+    return html`
+      <ul>
+        ${inactives} ${actives}
+      </ul>
+    `
   }
-
 }

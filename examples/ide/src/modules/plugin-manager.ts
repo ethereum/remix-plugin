@@ -63,8 +63,10 @@ export class PluginManager extends BaseApi<PluginManagerApi> {
     }
   }
 
-  public getAll() {
-    return Object.keys(this.plugins).map(key => this.plugins[key])
+  public getAll(filter?: (plugin: PluginApi<Api>) => boolean) {
+    const all = Object.keys(this.plugins).map(key => this.plugins[key])
+    if (!filter) return all
+    return all.filter(filter)
   }
 
   public isActive(name: string) {
