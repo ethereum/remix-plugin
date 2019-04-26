@@ -1,4 +1,4 @@
-import { LitElement, customElement, html } from 'lit-element';
+import { LitElement, customElement, html } from 'lit-element'
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
