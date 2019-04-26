@@ -20,7 +20,9 @@ export interface CompilationResult {
   /** This contains the contract-level outputs. It can be limited/filtered by the outputSelection settings */
   contracts: {
     /** If the language used has no contract names, this field should equal to an empty string. */
-    [contractName: string]: CompilatedContract
+    [fileName: string]: {
+      [contract: string]: CompilatedContract
+    }
   }
 }
 
@@ -228,33 +230,46 @@ export type ABITypeParameter =
 ///////////////////////////
 // NATURAL SPECIFICATION //
 ///////////////////////////
+
+// Userdoc
 export interface UserDocumentation {
   source: string
   language: 'Solidity' | 'Vyper' | string
   languageVersion: number
-  methods: {
-    [functionIdentifier: string]: UserFunctionDocumentation
-  }
-  invariants: UserFunctionDocumentation[]
-  construction: UserFunctionDocumentation[]
-}
-
-export interface UserFunctionDocumentation {
+  methods: UserMethodList
+  invariants: UserMethodDoc[]
+  construction: UserMethodDoc[]
   notice: string
 }
 
+export interface UserMethodList {
+  [functionIdentifier: string]: UserMethodDoc
+}
+export interface UserMethodDoc {
+  notice: string
+}
+
+// Devdoc
 export interface DeveloperDocumentation {
   author: string
   title: string
-  methods: {
-    [functionIdentifier: string]: DevFunctionDocumentation
-  }
-  invariants: DevFunctionDocumentation[]
-  construction: DevFunctionDocumentation
+  details: string
+  methods: DevMethodList
+  invariants: DevMethodDoc[]
+  construction: DevMethodDoc
 }
 
-export interface DevFunctionDocumentation {
+export interface DevMethodList {
+  [functionIdentifier: string]: DevMethodDoc
+}
+
+export interface DevMethodDoc {
+  author: string
   details: string
+  return: string
+  params: {
+    [param: string]: string
+  }
 }
 
 //////////////

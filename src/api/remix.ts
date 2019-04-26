@@ -2,6 +2,7 @@
 import { compilerProfile, ICompilerApi } from "./compiler"
 import { extendsProfile } from "./profile"
 import { ModuleProfile } from "../types"
+import { IFileSystemApi, fileSystemProfile } from "./file-system";
 
 // SOLIDITY
 interface ISolidityApi extends ICompilerApi {
@@ -11,8 +12,15 @@ const solidityProfile: ModuleProfile<ISolidityApi> = {
   name: 'solidity'
 }
 
-
+// FILE MANAGER
+interface IFileManagerApi extends IFileSystemApi {
+  name: 'fileManager'
+}
+const fileManagerProfile: ModuleProfile<IFileManagerApi> = {
+  name: 'fileManager'
+}
 
 export const remixApi = [
-  extendsProfile(compilerProfile, solidityProfile)
+  extendsProfile(solidityProfile, compilerProfile),
+  extendsProfile(fileManagerProfile, fileSystemProfile)
 ]
