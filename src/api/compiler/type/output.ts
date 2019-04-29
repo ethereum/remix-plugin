@@ -233,17 +233,14 @@ export type ABITypeParameter =
 
 // Userdoc
 export interface UserDocumentation {
-  source: string
-  language: 'Solidity' | 'Vyper' | string
-  languageVersion: number
   methods: UserMethodList
-  invariants: UserMethodDoc[]
-  construction: UserMethodDoc[]
   notice: string
 }
 
-export interface UserMethodList {
+export type UserMethodList = {
   [functionIdentifier: string]: UserMethodDoc
+} & {
+  'constructor'?: string
 }
 export interface UserMethodDoc {
   notice: string
@@ -255,8 +252,6 @@ export interface DeveloperDocumentation {
   title: string
   details: string
   methods: DevMethodList
-  invariants: DevMethodDoc[]
-  construction: DevMethodDoc
 }
 
 export interface DevMethodList {
