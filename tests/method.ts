@@ -5,7 +5,7 @@ import {
   Store,
   RemixAppManager,
 } from '../examples/modules'
-import { Ethdoc } from './../examples/plugins/ethdoc'
+import { Ethdoc } from './../examples/plugins'
 
 const EthdocProfile: PluginProfile<Ethdoc> = {
   name: 'ethdoc',
