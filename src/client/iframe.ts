@@ -45,10 +45,10 @@ export function connectIframe(client: PluginClient) {
       // If handshake set loaded
       if (action === 'request' && key === 'handshake') {
         loaded = true
-        client.events.emit('loaded')
         client.events.on('send', (message: Message) => {
           (event.source as Window).postMessage(message, event.origin as any)
         })
+        client.events.emit('loaded')
       }
 
       // Check if is loaded
