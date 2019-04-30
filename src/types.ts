@@ -232,7 +232,7 @@ export interface IPermissionHandler {
 //////////////////////
 export interface Status {
   /** Name of the icon from font-awesome */
-  iconName: string
+  key: string
   /** Bootstrap css variable to use */
   type: 'success' | 'info' | 'warning' | 'danger'
   /** Describe long version of the status */

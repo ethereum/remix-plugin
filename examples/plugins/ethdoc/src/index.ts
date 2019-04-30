@@ -1,5 +1,5 @@
 import { LitElement, html, customElement } from 'lit-element'
-import { createIframeClient, remixApi, CompilationFileSources, CompilationResult } from 'remix-plugin'
+import { createIframeClient, remixApi, CompilationFileSources, CompilationResult, Status } from 'remix-plugin'
 import { createDoc } from './ethdoc'
 
 interface Contracts {
@@ -26,6 +26,8 @@ export class EthdocComponent extends LitElement {
     ) => {
       if (!result) return
       this.docs = createDoc(result)
+      const status: Status = { key: 'file-alt', type: 'success', title: 'New documentation ready'}
+      this.client.emit('statusChanged', status)
       this.requestUpdate()
     })
   }
@@ -44,9 +46,20 @@ export class EthdocComponent extends LitElement {
   render() {
     const contracts = Object
       .keys(this.docs)
-      .map(name => html`<a class="list-group-item list-group-item-action" @click="${() => this.writeDoc(name)}">${name}</a>`)
+      .map(name => html`
+      <button
+        class="list-group-item list-group-item-action"
+        @click="${() => this.writeDoc(name)}">
+        ${name} Documentation
+      </button>`
+      )
 
     return html`
+      <style>
+        main {
+          padding: 10px;
+        }
+      </style>
       <main>
         <div class="list-group">
           ${contracts}
