@@ -164,6 +164,6 @@ interface Status {
 
 You can also change the status of your own plugin by emitting the same event : 
 ```typescript
-client.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
+client.emit('statusChanged', { key: 'check', type: 'success', title: 'Documentation ready !' })
 ```
 > The IDE can use this status to display a notification to the user.

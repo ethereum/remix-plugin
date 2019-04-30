@@ -67,8 +67,8 @@ describe('Event', () => {
 
   test('event from ethdoc is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
-    ethdoc.events.emit('statusChanged', { iconName: 'check', type: 'success', title: 'Documentation ready !' })
-    expect(spy).toBeCalledWith(ethdoc.name, 'statusChanged', [{ iconName: 'check', type: 'success', title: 'Documentation ready !' }])
+    ethdoc.events.emit('statusChanged', { key: 'check', type: 'success', title: 'Documentation ready !' })
+    expect(spy).toBeCalledWith(ethdoc.name, 'statusChanged', [{ key: 'check', type: 'success', title: 'Documentation ready !' }])
   })
 
   /*
