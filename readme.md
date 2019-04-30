@@ -156,7 +156,7 @@ client.listen('fileManager', 'statusChanged', (status: Status) => {
 The status object is used for displaying a notification. It looks like that : 
 ```typescript
 interface Status {
-  iconName: string  // Name of the icon from font-awesome
+  key: string  // Name of the icon from font-awesome 5 or a number to display (still as a string)
   type: 'success' | 'info' | 'warning' | 'danger'  // Bootstrap css variable to use
   title?: string  // Describe the status on mouseover
 }
