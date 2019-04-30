@@ -30,6 +30,11 @@ export class EthdocComponent extends LitElement {
     })
   }
 
+  /** ⚠️ If you're using LitElement you should disable Shadow Root ⚠️ */
+  createRenderRoot() {
+    return this
+  }
+
   /** Write documentation to the FileSystem */
   writeDoc(name: string) {
     const content = this.docs[name]
@@ -39,12 +44,13 @@ export class EthdocComponent extends LitElement {
   render() {
     const contracts = Object
       .keys(this.docs)
-      .map(name => html`<li @click="${() => this.writeDoc(name)}">${name}</li>`)
+      .map(name => html`<a class="list-group-item list-group-item-action" @click="${() => this.writeDoc(name)}">${name}</a>`)
 
     return html`
       <main>
-        <h1>EthDoc</h1>
-        <ul>${contracts}</ul>
+        <div class="list-group">
+          ${contracts}
+        </div>
       </main>
     `
   }
