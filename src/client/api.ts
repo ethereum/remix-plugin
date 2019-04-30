@@ -63,14 +63,24 @@ export interface Theme {
 }
 
 /** Start listening on theme changed */
-export function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions>) {
+export async function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions>) {
   if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')
   document.head.appendChild(cssLink)
+  // Theme changed
   client.on('theme', 'themeChanged', (theme: Theme) => {
-    cssLink.setAttribute('href', theme.url)
-    document.documentElement.style.setProperty('--theme', theme.quality)
+    setTheme(cssLink, theme)
+  })
+  // When client is loaded, get the current Theme
+  client.onload(async () => {
+    const theme = await client.call('theme', 'currentTheme')
+    setTheme(cssLink, theme)
   })
   return cssLink
+}
+
+function setTheme(cssLink: HTMLLinkElement, theme: Theme) {
+  cssLink.setAttribute('href', theme.url)
+  document.documentElement.style.setProperty('--theme', theme.quality)
 }
