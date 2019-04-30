@@ -14,12 +14,12 @@ const profile: ModuleProfile<ISolidityApi> = {
 
 const status: { [name: string]: Status } = {
   compiling: {
-    iconName: 'spinner',
+    key: 'spinner',
     type: 'info',
     title: 'compiling'
   },
   success: {
-    iconName: 'check',
+    key: 'check',
     type: 'success',
     title: 'compilation succeed'
   }
