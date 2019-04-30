@@ -2,8 +2,15 @@ import { LitElement, html, customElement } from 'lit-element'
 import { createIframeClient, remixApi, CompilationFileSources, CompilationResult, Status } from 'remix-plugin'
 import { createDoc } from './ethdoc'
 
-interface Contracts {
+interface ContractMap {
   [contractName: string]: string
+}
+
+interface AlertMap {
+  [contractName: string]: {
+    message: string
+    type: 'success' | 'warning'
+  }
 }
 
 @customElement('eth-doc')
@@ -14,7 +21,8 @@ export class EthdocComponent extends LitElement {
     customApi: remixApi,
     devMode: { port: 8080 }
   })
-  private docs: Contracts = {}
+  private docs: ContractMap = {}
+  private docAlerts: AlertMap = {}
 
   constructor() {
     super()
@@ -38,9 +46,29 @@ export class EthdocComponent extends LitElement {
   }
 
   /** Write documentation to the FileSystem */
-  writeDoc(name: string) {
-    const content = this.docs[name]
-    this.client.fileManager.setFile(`browser/${name}.doc.md`, content)
+  async writeDoc(name: string) {
+    try {
+      const content = this.docs[name]
+      await this.client.fileManager.setFile(`browser/${name}.doc.md`, content)
+      this.showAlert(name)
+    } catch (err) {
+      this.showAlert(name, err)
+    }
+  }
+
+  showAlert(name: string, err?: string) {
+    if (!err) {
+      const message = `${name} created / updated inside File Manager 🦄`
+      this.docAlerts[name] = { message, type: 'success' }
+    } else {
+      const message = `😓${name} documentation was not generated : ${err}`
+      this.docAlerts[name] = { message, type: 'warning' }
+    }
+    this.requestUpdate()
+    setTimeout(() => {
+      delete this.docAlerts[name]
+      this.requestUpdate()
+    }, 3000)
   }
 
   render() {
@@ -54,15 +82,50 @@ export class EthdocComponent extends LitElement {
       </button>`
       )
 
+    const docAlerts = Object
+      .keys(this.docAlerts)
+      .map(key => this.docAlerts[key])
+      .map(({ type, message }) => {
+        return html`
+        <div class="alert alert-${type}" role="alert">
+          ${message}
+        </div>`
+      })
+
+    const info = Object.keys(this.docs).length === 0
+      ? html`<p>Compile a contract with Solidity Compiler.</p>`
+      : html`<p>Click on a contract to generate documentation.</p>`
+
     return html`
       <style>
         main {
           padding: 10px;
         }
+        #alerts{
+          margin-top: 20px;
+          font-size: 0.8rem;
+        }
+        .alert {
+          animation: enter 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        @keyframes enter {
+          0% {
+            opacity: 0;
+            transform: translateY(50px) scaleY(1.2);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scaleY(1);
+          }
+        }
       </style>
       <main>
+        ${info}
         <div class="list-group">
           ${contracts}
+        </div>
+        <div id="alerts">
+        ${docAlerts}
         </div>
       </main>
     `
