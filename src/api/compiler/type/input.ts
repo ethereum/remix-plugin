@@ -39,7 +39,7 @@ export interface CompilerSettings {
   /** Sorted list of remappings */
   remappings?: string[]
   /** Optimizer settings */
-  optimizer?: Partial<CompilaterOptimizer>
+  optimizer?: Partial<CompilerOptimizer>
   /** Version of the EVM to compile for. Affects type checking and code generation */
   evmVersion:
     | 'homestead'
@@ -48,12 +48,12 @@ export interface CompilerSettings {
     | 'byzantium'
     | 'constantinople'
   /** Metadata settings */
-  metadata?: CompilaterMetadata
+  metadata?: CompilerMetadata
   /** Addresses of the libraries. If not all libraries are given here, it can result in unlinked objects whose output data is different. */
   libraries: CompilerLibrarie
 }
 
-export interface CompilaterOptimizer {
+export interface CompilerOptimizer {
   /** disabled by default */
   enable: boolean
   /**
@@ -63,7 +63,7 @@ export interface CompilaterOptimizer {
   runs: number
 }
 
-export interface CompilaterMetadata {
+export interface CompilerMetadata {
   /** Use only literal content and not URLs (false by default) */
   useLiteralContent: boolean
 }
