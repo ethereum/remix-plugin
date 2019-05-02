@@ -21,7 +21,7 @@ export interface CompilationResult {
   contracts: {
     /** If the language used has no contract names, this field should equal to an empty string. */
     [fileName: string]: {
-      [contract: string]: CompilatedContract
+      [contract: string]: CompiledContract
     }
   }
 }
@@ -117,7 +117,7 @@ export interface AstNodeAtt {
 //////////////
 // CONTRACT //
 //////////////
-export interface CompilatedContract {
+export interface CompiledContract {
   /** The Ethereum Contract ABI. If empty, it is represented as an empty array. */
   abi: ABIDescription[]
   // See the Metadata Output documentation (serialised JSON string)

@@ -1,6 +1,6 @@
 import {
   CompilationResult,
-  CompilatedContract,
+  CompiledContract,
   DeveloperDocumentation,
   UserDocumentation,
   DevMethodDoc,
@@ -40,7 +40,7 @@ const contractDocTemplate: TemplateDoc<ContractDoc> = {
 }
 
 /** Create the documentation for a contract */
-function getContractDoc(name: string, contract: CompilatedContract) {
+function getContractDoc(name: string, contract: CompiledContract) {
   const methods = {...contract.userdoc.methods, ...contract.devdoc.methods }
   const contractDoc = { ...contract.userdoc, ...contract.devdoc, methods }
 
