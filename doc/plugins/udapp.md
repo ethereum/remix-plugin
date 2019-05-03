@@ -17,11 +17,11 @@ The udapp exposes an interface for interacting with the account and transaction.
 ### Events
 `newTransaction`: Triggered when a new transaction has been sent.
 ```typescript
-client.solidity.on('sendTransaction', (tx: RemixTx) => {
+client.solidity.on('newTransaction', (tx: RemixTx) => {
   // Do something
 })
 // OR
-client.listen('udapp', 'sendTransaction', (tx: RemixTx) => {
+client.on('udapp', 'newTransaction', (tx: RemixTx) => {
   // Do something
 })
 ```

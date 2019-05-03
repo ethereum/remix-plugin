@@ -18,7 +18,7 @@ client.solidity.on('compilationFinished', (fileName: string, source: Compilation
   // Do something
 })
 // OR
-client.listen('solidity', 'compilationFinished', (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => {
+client.on('solidity', 'compilationFinished', (fileName: string, source: CompilationFileSources, languageVersion: string, data: CompilationResult) => {
   // Do something
 })
 ```

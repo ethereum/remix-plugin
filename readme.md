@@ -1,6 +1,6 @@
 # Remix Plugin
 
-> For the old api, go to [api](./doc/api.md)
+> For the old api, go to [api](./doc/old-api.md)
 
 ALPHA : This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
 
@@ -15,6 +15,11 @@ or with a unpkg :
 ```html
 <script src="https://unpkg.com/remix-plugin"></script>
 ```
+
+## Examples
+You can find examples of plugins here : 
+- [Hello World](./examples/plugins/hello-world)
+- [Lit Element]('./examples/plugins/ethdoc')
 
 ## Plugin Client
 `PluginClient` helps you communicate with the IDE through an Iframe.
@@ -31,13 +36,29 @@ const client = createIframeClient()
 ```
 
 ---
-## DevMode
+## Client Options
+
+### Custom Api
+To leverage Typescript types, you can define some custom apis.
+```typescript
+import { remixApi } from 'remix-plugin'
+const client = createIframeClient({ customApi: remixApi })
+```
+This will provide you all the types of the plugin exposed by the Remix IDE.
+For example :
+```typescript
+client.fileManager.setFile(path, content)              // With customApi
+client.call('fileManager', 'setFile', path, content)   // Without customApi
+```
+> You'll need Typescript > 3.4 to leverage those types.
+
+### DevMode
 Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
 
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
 ```typescript
 const devMode = { port: 8000 }
-const client = createIframeClient([], { devMode })
+const client = createIframeClient({ devMode })
 ```
 
 ---
@@ -51,15 +72,15 @@ client.onload().then(_ => /* Do Something now */)
 await client.onload()
 ```
 
-### Listen
+### Events
 To listen to an event you need to provide the name of the plugin your listening on, and the name of the event : 
 ```javascript
-client.listen(/* pluginName */, /* eventName */, ...arguments)
+client.on(/* pluginName */, /* eventName */, ...arguments)
 ```
 
 For exemple if you want to listen to Solidity compilation : 
 ```javascript
-client.listen('solidity', 'compilationFinished', (target, source, version, data) => {
+client.on('solidity', 'compilationFinished', (target, source, version, data) => {
     /* Do Something on Compilation */
   }
 )

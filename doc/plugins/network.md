@@ -26,7 +26,7 @@ client.solidity.on('providerChanged', (provider: NetworkProvider) => {
   // Do something
 })
 // OR
-client.listen('fileManager', 'currentFileChanged', (provider: NetworkProvider) => {
+client.on('fileManager', 'currentFileChanged', (provider: NetworkProvider) => {
   // Do something
 })
 ```

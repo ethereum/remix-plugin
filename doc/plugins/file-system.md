@@ -21,7 +21,7 @@ client.solidity.on('currentFileChanged', (fileName: string) => {
   // Do something
 })
 // OR
-client.listen('fileManager', 'currentFileChanged', (fileName: string) => {
+client.on('fileManager', 'currentFileChanged', (fileName: string) => {
   // Do something
 })
 ```
