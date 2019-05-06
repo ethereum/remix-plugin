@@ -19,7 +19,8 @@ or with a unpkg :
 ## Examples
 You can find examples of plugins here : 
 - [Hello World](./examples/plugins/hello-world)
-- [Lit Element]('./examples/plugins/ethdoc')
+- [Lit Element](./examples/plugins/ethdoc)
+- [Etherscan Verification](./examples/etherscan-verify)
 
 ## Plugin Client
 `PluginClient` helps you communicate with the IDE through an Iframe.
