@@ -177,14 +177,16 @@ client.listen('fileManager', 'statusChanged', (status: Status) => {
 The status object is used for displaying a notification. It looks like that : 
 ```typescript
 interface Status {
-  key: string  // Name of the icon from font-awesome 5 or a number to display (still as a string)
-  type: 'success' | 'info' | 'warning' | 'danger'  // Bootstrap css variable to use
+  key: number | 'edited' | 'succeed' | 'loading' | 'failed' | 'none'  // Display an icon or number
+  type?: 'success' | 'info' | 'warning' | 'error'  // Bootstrap css color
   title?: string  // Describe the status on mouseover
 }
 ```
+- If you want to remove a status use the `'none'` value for `key`.
+- If you don't define type, it would be the default value ('info' for Remix IDE).
 
 You can also change the status of your own plugin by emitting the same event : 
 ```typescript
-client.emit('statusChanged', { key: 'check', type: 'success', title: 'Documentation ready !' })
+client.emit('statusChanged', { key: 'succeed', type: 'success', title: 'Documentation ready !' })
 ```
 > The IDE can use this status to display a notification to the user.

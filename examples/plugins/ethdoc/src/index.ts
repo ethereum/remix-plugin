@@ -34,7 +34,7 @@ export class EthdocComponent extends LitElement {
     ) => {
       if (!result) return
       this.docs = createDoc(result)
-      const status: Status = { key: 'file-alt', type: 'success', title: 'New documentation ready'}
+      const status: Status = { key: 'succeed', type: 'success', title: 'New documentation ready'}
       this.client.emit('statusChanged', status)
       this.requestUpdate()
     })

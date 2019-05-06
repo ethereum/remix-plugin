@@ -15,6 +15,32 @@ client.on(
   },
 )
 
+// Get the current compilation result and make a request to the Ehterscan API
+async function getResult() {
+  const el = document.querySelector('div#results')
+  try {
+    el.innerText = 'Getting current compilation result, please wait...'
+    if (!latestCompilationResult) {
+      await client.onload()
+      const compilation = await client.call('solidity', 'getCompilationResult')
+      if (!compilation) throw new Error('no compilation result available')
+      fileName = compilation.source.target
+      latestCompilationResult = compilation
+    }
+    const address = document.querySelector('input[id="verifycontractaddress"]').value
+    if (address.trim() === '') {
+      throw new Error('Please enter a valid contract address')
+    }
+    el.innerText = `Verifying contract. Please wait...`
+    // fetch results
+    const result = await doPost(latestCompilationResult, address)
+    document.querySelector('div#results').innerText = result
+  } catch (err) {
+    el.innerText = err.message
+  }
+}
+
+// Make a POST request to the Etherscan API
 async function doPost(info, address) {
   const network = await client.call('network', 'detectNetwork')
   if (!network) {
@@ -35,8 +61,8 @@ async function doPost(info, address) {
     contractaddress: address, //Contract Address starts with 0x...
     sourceCode: info.source.sources[fileName].content, //Contract Source Code (Flattened if necessary)
     contractname: name, //ContractName
-    compilerversion: contractMetadata.compiler.version, // see http://etherscan.io/solcversions for list of support versions
-    optimizationUsed: contractMetadata.settings.optimizer.enabled, //0 = Optimization used, 1 = No Optimization
+    compilerversion: `v${contractMetadata.compiler.version}`, // see http://etherscan.io/solcversions for list of support versions
+    optimizationUsed: contractMetadata.settings.optimizer.enabled ? 1 : 0, //0 = Optimization used, 1 = No Optimization
     runs: contractMetadata.settings.optimizer.runs, //set to 200 as default unless otherwise
     constructorArguements: document.getElementById('verifycontractarguments')
       .value, //if applicable
@@ -51,40 +77,6 @@ async function doPost(info, address) {
     const json = await response.json()
     return json.result
   } catch (error) {
-    document.querySelector('div#results').innerText(error)
+    document.querySelector('div#results').innerText = error
   }
 }
-
-
-function handleCompileSuccess(result) {
-  if (result === null) {
-    throw new Error(`No compile results found for this contract, please make sure <br> the contract compiles correctly.`)
-  }
-
-}
-
-
-
-async function getResult() {
-  const el = document.querySelector('div#results')
-  try {
-    el.innerText = 'Getting current compilation result, please wait...'
-    if (!latestCompilationResult) {
-      const compilation = await client.call('solidity', 'getCompilationResult')
-      if (!compilation) throw new Error('no compilation result available')
-      fileName = compilation.source.target
-      latestCompilationResult = compilation
-    }
-    const address = document.querySelector('input[id="verifycontractaddress"]').value
-    if (address.trim() === '') {
-      throw new Error('Please enter a valid contract address')
-    }
-    el.innerText = `Verifying contract. Please wait...`
-    // fetch results
-    const result = await doPost(latestCompilationResult, address)
-    document.querySelector('div#results').innerHTML = result
-  } catch (err) {
-    el.innerText = err.message
-  }
-}
-
