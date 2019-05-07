@@ -216,6 +216,6 @@ Remix will automatically create a `<link/>` tag in the header of your plugin wit
 
 If you really want to use your own theme, you can use the `customTheme` flag in the option : 
 ```typescript
-const client = createIframeClient([customApis], { customTheme: true })
+const client = createIframeClient({ customTheme: true })
 ```
 
