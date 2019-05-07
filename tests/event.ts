@@ -1,4 +1,4 @@
-import { Plugin, PluginProfile, Message } from '../src'
+import { Plugin, PluginProfile, Message, Status } from '../src'
 import {
   TxlistenerApi,
   TxEmitter,
@@ -37,7 +37,7 @@ describe('Event', () => {
     ethdoc = new Plugin(EthdocProfile)
     vyper = new Plugin(VyperCompilerProfile)
     app = new RemixAppManager(new Store())
-    app.init([txlistener.api(), ethdoc])
+    app.init([txlistener.api(), ethdoc as any])
     app.registerOne(vyper)
   })
   test('event from module is broadcasted', () => {
@@ -67,8 +67,9 @@ describe('Event', () => {
 
   test('event from ethdoc is broadcasted', () => {
     const spy = spyOn(app, 'broadcast' as any)
-    ethdoc.events.emit('statusChanged', { key: 'check', type: 'success', title: 'Documentation ready !' })
-    expect(spy).toBeCalledWith(ethdoc.name, 'statusChanged', [{ key: 'check', type: 'success', title: 'Documentation ready !' }])
+    const status: Status = { key: 'succeed', type: 'success', title: 'Documentation ready !' }
+    ethdoc.events.emit('statusChanged', status)
+    expect(spy).toBeCalledWith(ethdoc.name, 'statusChanged', [status])
   })
 
   /*
