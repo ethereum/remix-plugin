@@ -87,7 +87,7 @@ export class PluginClient<T extends Api = any> {
   }
 
   /** Expose an event for the IDE */
-  public emit<Key extends keyof T["events"]>(key: Key, payload: T["events"][Key]): void {
+  public emit<Key extends keyof T["events"]>(key: Key, ...payload: any[]): void {
     if (!this.loaded) handleConnectionError(this.devMode)
     this.events.emit('send', { action: 'notification', key, payload })
   }
