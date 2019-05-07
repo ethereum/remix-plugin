@@ -10,9 +10,11 @@ Remix Plugin can be use (but not only) for :
 - Static Analysis.
 - Other services...
 
-> For the old api, go to [api](./doc/old-api.md)
+**ALPHA**
 
-ALPHA : This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
+Use Remix alpha version to test your plugin : http://remix-alpha.ethereum.org/
+
+This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
 
 ## Getting Started
 
@@ -72,6 +74,20 @@ You can find examples of plugins here :
 - [Etherscan Verification](./examples/etherscan-verify)
 
 ---
+## Test inside Remix IDE
+To test your plugin with remix:
+1. Go to http://remix-alpha.ethereum.org. (if your localhost is over HTTP, you need to use http for Remix IDE).
+2. Click on the plugin manager (Plug icon on the left).
+3. Click on "Connect to a Local Plugin".
+4. Fill the profile info of you plugin ().
+5. Click on "ok".
+6. A new icon should appear on the left, this is where you can find you plugin.
+
+
+<div align="center">
+  <img src="./doc/videos/remix_local_plugin.gif" width="600">
+</div>
+
 ---
 ## Client API
 
