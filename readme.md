@@ -1,5 +1,15 @@
 # Remix Plugin
 
+Remix plugin helps you extends the Remix IDE. The goal is to give access of all the features inside Remix and make them available for Ethereum Developers.
+
+Remix Plugin can be use (but not only) for : 
+- Educational Purpose.
+- Smart-Contract library managment.
+- Language Service.
+- Smart-Contract language compiler.
+- Static Analysis.
+- Other services...
+
 > For the old api, go to [api](./doc/old-api.md)
 
 ALPHA : This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
@@ -16,30 +26,23 @@ or with a unpkg :
 <script src="https://unpkg.com/remix-plugin"></script>
 ```
 
-## Examples
-You can find examples of plugins here : 
-- [Hello World](./examples/plugins/hello-world)
-- [Lit Element](./examples/plugins/ethdoc)
-- [Etherscan Verification](./examples/etherscan-verify)
+### Plugin Client
+The plugin client is how you connect your plug to remix.
 
-## Plugin Client
-`PluginClient` helps you communicate with the IDE through an Iframe.
-
-To import it you can use ES6 if installed with npm : 
+To import ( the ES6 way) with NPM use:
 ```javascript
 import { createIframeClient } from 'remix-plugin'
 const client = createIframeClient()
-
-// Or with a global variable if you used unpkg : 
-
+```
+Or if you are using unpkg use:
+```javascript
 const { createIframeClient } = remixPlugin
 const client = createIframeClient()
 ```
 
----
-## Client Options
+### Client Options
 
-### Custom Api
+#### Custom Api
 To leverage Typescript types, you can define some custom apis.
 ```typescript
 import { remixApi } from 'remix-plugin'
@@ -53,7 +56,7 @@ client.call('fileManager', 'setFile', path, content)   // Without customApi
 ```
 > You'll need Typescript > 3.4 to leverage those types.
 
-### DevMode
+#### DevMode
 Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
 
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
@@ -62,7 +65,15 @@ const devMode = { port: 8000 }
 const client = createIframeClient({ devMode })
 ```
 
+### Examples
+You can find examples of plugins here : 
+- [Hello World](./examples/plugins/hello-world)
+- [Lit Element](./examples/plugins/ethdoc)
+- [Etherscan Verification](./examples/etherscan-verify)
+
 ---
+---
+## Client API
 
 ### Loaded
 `PluginClient` listen on a first handshake from the IDE before beeing able to communicate back. For that you need to wait for the Promise / callback `onload` to be called.
@@ -144,6 +155,7 @@ Your plugin can interact with other plugins through the API. `remix-plugin` prov
 
  
 ## Remix Api
+Click on the name of the api to get the full documentation.
 
 |API            |Name                                         |Permission |Description |
 |---------------|-------------|-------------------------------|-------------
@@ -154,17 +166,6 @@ Your plugin can interact with other plugins through the API. `remix-plugin` prov
 |Udapp          |[udapp](./doc/plugins/udapp.md)              |           |Transaction listener
 
 > This API is a Work In Progress and will be extended in the future.
-
-
-## Theme
-Remix is using [Bootstrap](https://getbootstrap.com/). For better User Experience it's **highly recommanded** to use the same theme as Remix in your plugin. For that you _just_ have to use standard bootstrap classes.
-
-Remix will automatically create a `<link/>` tag in the header of your plugin with the current theme used. And it'll update the link each time the user change the theme.
-
-If you really want to use your own theme, you can use the `customTheme` flag in the option : 
-```typescript
-const client = createIframeClient([customApis], { customTheme: true })
-```
 
 ## Status
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event : 
@@ -191,3 +192,14 @@ You can also change the status of your own plugin by emitting the same event :
 client.emit('statusChanged', { key: 'succeed', type: 'success', title: 'Documentation ready !' })
 ```
 > The IDE can use this status to display a notification to the user.
+
+## CSS Theme
+Remix is using [Bootstrap](https://getbootstrap.com/). For better User Experience it's **highly recommanded** to use the same theme as Remix in your plugin. For that you _just_ have to use standard bootstrap classes.
+
+Remix will automatically create a `<link/>` tag in the header of your plugin with the current theme used. And it'll update the link each time the user change the theme.
+
+If you really want to use your own theme, you can use the `customTheme` flag in the option : 
+```typescript
+const client = createIframeClient([customApis], { customTheme: true })
+```
+

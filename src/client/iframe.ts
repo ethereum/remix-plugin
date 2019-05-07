@@ -49,6 +49,7 @@ export function connectIframe(client: PluginClient) {
           (event.source as Window).postMessage(message, event.origin as any)
         })
         client.events.emit('loaded')
+        return
       }
 
       // Check if is loaded
