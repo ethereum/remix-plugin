@@ -16,7 +16,7 @@ export interface IFileSystemApi extends Api {
 }
 
 export const fileSystemProfile: ModuleProfile<IFileSystemApi> = {
-  name: 'fsTemplate', // Will be removed when extended
+  name: 'fs', // Will be removed when extended
   kind: 'fs',
   events: ['currentFileChanged'],
   methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile'],

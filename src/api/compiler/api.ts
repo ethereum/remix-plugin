@@ -13,7 +13,7 @@ export interface ICompilerApi extends Api {
 }
 
 export const compilerProfile: ModuleProfile<ICompilerApi> = {
-  name: 'compilerTemplate', // Will be removed when extended
+  name: 'compiler', // Will be removed when extended
   kind: 'compiler',
   events: ['compilationFinished'],
   methods: ['getCompilationResult']

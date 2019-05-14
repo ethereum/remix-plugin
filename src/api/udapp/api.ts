@@ -15,7 +15,7 @@ export interface IUdappApi extends Api {
 }
 
 export const udappProfile: ModuleProfile<IUdappApi> = {
-  name: 'udappTemplate', // Will be removed when extended
+  name: 'udapp', // Will be removed when extended
   kind: 'udapp',
   events: ['newTransaction'],
   methods: ['sendTransaction', 'getAccounts', 'createVMAccount'],

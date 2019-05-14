@@ -17,7 +17,7 @@ export interface IEditorApi extends Api {
 }
 
 export const editorProfile: ModuleProfile<IEditorApi> = {
-  name: 'editorTemplate', // Will be removed when extended
+  name: 'editor', // Will be removed when extended
   kind: 'editor',
   methods: ['highlight', 'discardHighlight'],
 }
