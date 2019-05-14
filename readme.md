@@ -179,7 +179,7 @@ Click on the name of the api to get the full documentation.
 |Compiler       |[solidity](./doc/plugins/solidity.md)        |✅         |The solidity Compiler
 |Editor         |[editor](./doc/plugins/editor.md)            |           |Enables highlighting in the code Editor
 |Network        |[network](./doc/plugins/network.md)          |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
-|Udapp          |[udapp](./doc/plugins/udapp.md)              |           |Transaction listener
+|Udapp          |[udapp](./doc/plugins/udapp.md)              |✅         |Transaction listener
 
 > This API is a Work In Progress and will be extended in the future.
 
