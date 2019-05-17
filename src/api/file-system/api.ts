@@ -12,6 +12,7 @@ export interface IFileSystemApi extends Api {
     getCurrentFile(): string
     getFile(path: string): string
     setFile(path: string, content: string): void
+    switchFile(path: string): void
   }
 }
 
@@ -19,7 +20,7 @@ export const fileSystemProfile: ModuleProfile<IFileSystemApi> = {
   name: 'fs', // Will be removed when extended
   kind: 'fs',
   events: ['currentFileChanged'],
-  methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile'],
+  methods: ['getFolder', 'getCurrentFile', 'getFile', 'setFile', 'switchFile'],
 }
 
 export abstract class FileSystemApi<T extends Api>
@@ -31,8 +32,15 @@ export abstract class FileSystemApi<T extends Api>
     super(localProfile)
   }
 
+  /** Get the folder object of a path */
   abstract getFolder(path: string): Folder
+  /** Get the name of a file */
   abstract getCurrentFile(): string
+  /** Get the content of a file */
   abstract getFile(path: string): string
+  /** Set the content of a file */
   abstract setFile(path: string, content: string): void
+  /** Switch the current file to a new one */
+  abstract switchFile(path: string): void
+
 }

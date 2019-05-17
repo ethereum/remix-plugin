@@ -11,6 +11,7 @@
 |_method_ |`getCurrentFile`       |Get the name of the current file selected.
 |_method_ |`getFile`              |Get the content of a file.
 |_method_ |`setFile`              |Set the content of a file.
+|_method_ |`switchFile`           |Switch the current File to the new one
 
 ## Examples
 
@@ -53,6 +54,13 @@ const fileName = await client.call('fileManager', 'getFile', 'browser/ballot.sol
 await client.fileManager.setFile('browser/ballot.sol', 'pragma ....')
 // OR
 await client.call('fileManager', 'setFile', 'browser/ballot.sol', 'pragma ....')
+```
+
+`switchFile`: Switch the current File to the new one.
+```typescript
+await client.fileManager.switchFile('browser/ballot.sol')
+// OR
+await client.call('fileManager', 'switchFile', 'browser/ballot.sol')
 ```
 
 ## Types
