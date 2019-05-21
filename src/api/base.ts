@@ -97,6 +97,7 @@ export abstract class BaseApi<U extends Api> implements API<IBaseApi> {
             } catch (err) {
               reject(err)
             }
+            delete this.currentRequest
             // Remove current request and call next
             this.requestQueue.shift()
             if (this.requestQueue.length !== 0) this.requestQueue[0]()
