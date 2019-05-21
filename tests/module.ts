@@ -32,7 +32,18 @@ describe('Module', () => {
   })
   test('get current request', async () => {
     const requestInfo = {from: AUTHORIZED}
-    await app['calls'][compiler.name].getCompilationResult(requestInfo)
+    app['calls'][compiler.name].getCompilationResult(requestInfo)
+    expect(compiler['currentRequest']).toBe(requestInfo)  // Don't wait for request to finish
+  })
+  test('current request should be cleared after request', async () => {
+    const requestInfo = {from: AUTHORIZED}
+    app['calls'][compiler.name]
+      .getCompilationResult(requestInfo)
+      .then(_ => expect(compiler['currentRequest']).toBe(undefined))
+  })
+  test('get current request', async () => {
+    const requestInfo = {from: AUTHORIZED}
+    app['calls'][compiler.name].getCompilationResult(requestInfo)
     expect(compiler['currentRequest']).toBe(requestInfo)
   })
   test('handle error in calls', async () => {
@@ -47,7 +58,8 @@ describe('Module', () => {
     app['calls'][compiler.name]
       .getCompilationResult({from: AUTHORIZED})
       .then(result => expect(result).toBe('compilation'))
-    app['calls'][compiler.name].getCompilationResult({from: UNAUTHORIZED})
+    app['calls'][compiler.name]
+      .getCompilationResult({from: UNAUTHORIZED})
       .catch(err => expect(err.message).toMatch(/not allowed/))
     app['calls'][compiler.name]
       .getCompilationResult({from: AUTHORIZED})
