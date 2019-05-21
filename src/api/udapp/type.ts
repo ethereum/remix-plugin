@@ -15,3 +15,8 @@ export interface RemixTxReceipt {
   return: string
   createdAddress?: string
 }
+
+export interface VMAccount {
+  privateKey: string
+  balance: string
+}

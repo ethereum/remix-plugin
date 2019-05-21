@@ -1,7 +1,7 @@
 import { BaseApi } from '../base'
 import { extendsProfile } from "../profile"
 import { ModuleProfile, Api, API } from '../../types'
-import { RemixTx, RemixTxReceipt } from './type'
+import { RemixTx, RemixTxReceipt, VMAccount } from './type'
 
 export interface IUdappApi extends Api {
   events: {
@@ -10,7 +10,7 @@ export interface IUdappApi extends Api {
   methods: {
     sendTransaction(tx: RemixTx): RemixTxReceipt
     getAccounts(): string[]
-    createVMAccount(): string
+    createVMAccount(vmAccount: VMAccount): string
   }
 }
 
@@ -31,5 +31,5 @@ export abstract class UdappApi<T extends Api>
 
   abstract sendTransaction(tx: RemixTx): RemixTxReceipt
   abstract getAccounts(): string[]
-  abstract createVMAccount(): string
+  abstract createVMAccount(vmAccount: VMAccount): string
 }
