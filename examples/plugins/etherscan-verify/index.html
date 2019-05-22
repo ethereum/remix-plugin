@@ -43,13 +43,19 @@
     </label>
     
     <div class="form-group">
+      <label for="apikey">API key</label>
+      <input class="form-control" type="text" id="apikey" placeholder="apikey" />
+      <button onclick="saveAPIkey()" class="btn btn-sm btn-primary" id="apikeysave" placeholder="apikey" >Save API key</button>
+    </div>
+
+    <div class="form-group">
       <label for="verifycontractname">Contract Name</label>
       <input class="form-control" type="text" id="verifycontractname" placeholder="i.e. Ballot" />
     </div>
   
     <div class="form-group">
       <label for="verifycontractarguments">Constructor Arguments</label>
-      <input class="form-control" type="text" id="verifycontractarguments" placeholder="i.e. 10" />
+      <input class="form-control" type="text" id="verifycontractarguments" placeholder="hex encoded" />
     </div>
   
     <div class="form-group">
@@ -58,9 +64,11 @@
     </div>
   
     <button class="btn btn-lg btn-secondary" onclick="getResult()">Verify Contract</button>
+
+    <div id='results'></div>
   </article>
 
-  <div id='results'></div>
+  
 
   <script src="https://unpkg.com/remix-plugin"></script>
   <script src="index.js"></script>
