@@ -42,18 +42,20 @@ const receipt = await client.udapp.sendTransaction(transaction)
 const receipt = await client.call('udapp', 'sendTransaction', transaction)
 ```
 
-`getAccounts`: Get the name of the current file selected.
+`getAccounts`: Get an array with the accounts exposed.
 ```typescript
 const accounts = await client.udapp.getAccounts()
 // OR
 const accounts = await client.call('udapp', 'getAccounts')
 ```
 
-`createVMAccount`: Get the content of a file.
+`createVMAccount`: Add an account if using the VM provider. 
 ```typescript
-const address = await client.udapp.createVMAccount()
+const privateKey = "71975fbf7fe448e004ac7ae54cad0a383c3906055a75468714156a07385e96ce"
+const balance = "0x56BC75E2D63100000"
+const address = await client.udapp.createVMAccount({ privateKey, balance })
 // OR
-const address = await client.call('udapp', 'createVMAccount')
+const address = await client.call('udapp', 'createVMAccount', { privateKey, balance })
 ```
 
 ## Types
