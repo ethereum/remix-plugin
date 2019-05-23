@@ -24,7 +24,7 @@ function saveAPIkey (e) {
 let apikey  = localStorage.getItem(apikeyStorageKey)
 if (apikey) document.querySelector('input#apikey').value = apikey
 
-// Get the current compilation result and make a request to the Ehterscan API
+/** Get the current compilation result and make a request to the Ehterscan API */ 
 async function getResult() {
   const el = document.querySelector('div#results')
   try {
@@ -42,26 +42,26 @@ async function getResult() {
     }
     el.innerText = `Verifying contract. Please wait...`
     // fetch results
-    const result = await doPost(latestCompilationResult, address)
+    const result = await verify(latestCompilationResult, address)
     document.querySelector('div#results').innerText = result
   } catch (err) {
     el.innerText = err.message
   }
 }
 
-// Make a POST request to the Etherscan API
-async function doPost(info, address) {
-  const network = await client.call('network', 'detectNetwork')
-  if (!network) {
-    throw new Error('no known network to verify against')
-  }
-  const etherscanApi =
-    network.name === 'main'
+/**
+ * Make a POST request to the Etherscan API
+ * @param {CompilationResult} compilationResult Result of the compilation 
+ * @param {string} address Address of the contract to check
+ */
+async function verify(compilationResult, address) {
+  const network = await getNetworkName()
+  const etherscanApi = (network === 'main')
       ? `https://api.etherscan.io/api`
-      : `https://api-${network.name.toLowerCase()}.etherscan.io/api`
+      : `https://api-${network}.etherscan.io/api`
 
   const name = document.getElementById('verifycontractname').value
-  let contractMetadata = info.data.contracts[fileName][name]['metadata']
+  let contractMetadata = compilationResult.data.contracts[fileName][name]['metadata']
   contractMetadata = JSON.parse(contractMetadata)
   const ctrArgument = document.getElementById('verifycontractarguments').value ?
   document.getElementById('verifycontractarguments').value.replace('0x', '') : ''
@@ -70,60 +70,75 @@ async function doPost(info, address) {
     module: 'contract', //Do not change
     action: 'verifysourcecode', //Do not change
     contractaddress: address, //Contract Address starts with 0x...
-    sourceCode: info.source.sources[fileName].content, //Contract Source Code (Flattened if necessary)
+    sourceCode: compilationResult.source.sources[fileName].content, //Contract Source Code (Flattened if necessary)
     contractname: name, //ContractName
     compilerversion: `v${contractMetadata.compiler.version}`, // see http://etherscan.io/solcversions for list of support versions
     optimizationUsed: contractMetadata.settings.optimizer.enabled ? 1 : 0, //0 = Optimization used, 1 = No Optimization
     runs: contractMetadata.settings.optimizer.runs, //set to 200 as default unless otherwise
     constructorArguements: ctrArgument, //if applicable
   }
-  let formData = new FormData()
-  for (var k in data) {
-    formData.append(k, data[k])
-  }
+  const body = new FormData()
+  Object.keys(data).forEach(key => body.append(key, data[key]))
 
   try {
     client.emit('statusChanged', { key: 'loading', type: 'info', title: 'Verifying ...' })
-    const response = await fetch(etherscanApi, {
-      method: 'POST',
-      body: formData
-    })
-    const json = await response.json()
-    if (json.message === 'OK' && json.status === '1') checkValidation(etherscanApi, json.result)
-    if (json.message === 'NOTOK') {
-      client.emit('statusChanged', { key: 'failed', type: 'error', title: json.result })
+    const response = await fetch(etherscanApi, { method: 'POST', body })
+    const { message, result, status } = await response.json()
+    if (message === 'OK' && status === '1') {
+      checkValidation(etherscanApi, result)
       scheduleResetStatus()
     }
-    return json.result
+    if (message === 'NOTOK') {
+      client.emit('statusChanged', { key: 'failed', type: 'error', title: result })
+      scheduleResetStatus()
+    }
+    return result
   } catch (error) {
     document.querySelector('div#results').innerText = error
   }
 }
 
+/**
+ * Check the validity of the result given by Etherscan
+ * @param {string} etherscanApi The url of the Etherscan API
+ * @param {string} guid ID given back by Etherscan to check the validity of you contract
+ */
 async function checkValidation (etherscanApi, guid) {
   try {
-    let params = `?guid=${guid}&module=contract&action=checkverifystatus`
-    const response = await fetch(etherscanApi + params, {
-      method: 'GET'
-    })
-    const json = await response.json()
-    document.querySelector('div#results').innerText = json.message + ' ' + json.result
-    if (json.message === 'NOTOK' && json.result === 'Pending in queue') {
-      setTimeout(() => {
+    const params = `guid=${guid}&module=contract&action=checkverifystatus`
+    const response = await fetch(`${etherscanApi}?${params}`, { method: 'GET' })
+    let { message, result } = await response.json()
+    document.querySelector('div#results').innerText = `${message} ${result}`
+    if (message === 'NOTOK' && result === 'Pending in queue') {
+      result = await new Promise((res, rej) => setTimeout(() => {
         document.querySelector('div#results').innerText += '. Polling...'
         checkValidation(etherscanApi, guid)
-      }, 4000);
-    } else  if (json.message === 'OK') {
-      client.emit('statusChanged', { key: 'succeed', type: 'success', title: json.result + ' Verified!' })
+          .then(validityResult => res(validityResult))
+          .catch(err => rej(err))
+      }, 4000));
+    } else  if (message === 'OK') {
+      client.emit('statusChanged', { key: 'succeed', type: 'success', title: result + ' Verified!' })
     } else {
-      client.emit('statusChanged', { key: 'failed', type: 'error', title: json.result })
+      client.emit('statusChanged', { key: 'failed', type: 'error', title: result })
     }
-    scheduleResetStatus()
+    return result
   } catch (error) {
     document.querySelector('div#results').innerText = error
   }
 }
 
+async function getNetworkName() {
+  const network = await client.call('network', 'detectNetwork')
+  if (!network) {
+    throw new Error('no known network to verify against')
+  }
+  const name = network.name.toLowerCase()
+  // TODO : remove that when https://github.com/ethereum/remix-ide/issues/2017 is fixed
+  if (name === 'görli') return 'goerli'
+  return name
+}
+
+/** Reset the status of the plugin to none after 10sec */
 function scheduleResetStatus () {
   setTimeout(() => {
     client.emit('statusChanged', { key: 'none' })

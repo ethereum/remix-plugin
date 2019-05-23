@@ -1,4 +1,4 @@
-import { PluginProfile, RemixExtension } from "../../src"
+import { PluginProfile } from "../../src"
 import { Api } from '../../src'
 
 export interface VyperCompiler extends Api {
