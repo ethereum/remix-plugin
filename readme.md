@@ -63,7 +63,7 @@ Plugins communicate with the IDE through the `postMessage` API. It means that `P
 
 If you're developping a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs : 
 ```typescript
-const devMode = { port: 8000 }
+const devMode = { port: 8080 } // By default Remix IDE runs on port 8080
 const client = createIframeClient({ devMode })
 ```
 
