@@ -2,6 +2,6 @@
   "extends": "../../tsconfig.example.json",
   "include": ["src", "profile"],
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": ".plugins/ethdoc/dist"
   }
 }

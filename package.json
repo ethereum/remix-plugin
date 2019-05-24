@@ -22,10 +22,12 @@
     "start": "webpack --watch",
     "build": "webpack",
     "test": "jest",
-    "e2e:serve": "run-p e2e:ide e2e:ethdoc",
-    "e2e:ide": "cd ./examples/ide && webpack-dev-server",
-    "e2e:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
-    "build:ethdoc": "cd ./examples/plugins/ethdoc && webpack --config webpack.prod.js"
+    "e2e:serve": "run-p serve:ide serve:ethdoc",
+    "serve:ide": "cd ./examples/ide && webpack-dev-server",
+    "serve:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
+    "build:ethdoc": "cd ./examples/plugins/ethdoc && webpack --config webpack.prod.js",
+    "deploy:ethdoc": "surge ./examples/plugins/ethdoc/dist remix-ethdoc-plugin.surge.sh",
+    "deploy:etherscan": "surge ./examples/plugins/etherscan/dist remix-etherscan-plugin.surge.sh"
   },
   "dependencies": {
     "events": "^3.0.0"
@@ -39,6 +41,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^1.15.2",
     "solc": "^0.5.7",
+    "surge": "^0.20.5",
     "ts-jest": "^23.10.4",
     "ts-loader": "^5.3.3",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
