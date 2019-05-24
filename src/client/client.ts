@@ -11,10 +11,9 @@ export interface PluginOptions<T extends ModuleProfile = any> {
   devMode: PluginDevMode
 }
 
-export const defaultOptions: PluginOptions = {
+export const defaultOptions: Partial<PluginOptions> = {
   customTheme: false,
   customApi: [],
-  devMode: null,
 }
 
 /** Throw an error if client try to send a message before connection */

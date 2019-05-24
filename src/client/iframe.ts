@@ -90,7 +90,7 @@ export function connectIframe(client: PluginClient) {
 export function createIframeClient<T extends ModuleProfile>(
   options: Partial<PluginOptions<T>> = {}
 ): ApiMap<T> & PluginClient {
-  const _options = { ...defaultOptions, ...options }
+  const _options = { ...defaultOptions, ...options } as PluginOptions<T>
   const client = new PluginClient(_options)
   // Add APIS
   const apis = getApiMap(client, _options.customApi)
