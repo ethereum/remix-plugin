@@ -24,7 +24,8 @@
     "test": "jest",
     "e2e:serve": "run-p e2e:ide e2e:ethdoc",
     "e2e:ide": "cd ./examples/ide && webpack-dev-server",
-    "e2e:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server"
+    "e2e:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
+    "build:ethdoc": "cd ./examples/plugins/ethdoc && webpack --config webpack.prod.js"
   },
   "dependencies": {
     "events": "^3.0.0"
