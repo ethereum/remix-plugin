@@ -3,15 +3,16 @@ import { compilerProfile, ICompilerApi } from "./compiler"
 import { extendsProfile } from "./profile"
 import { ModuleProfile } from "../types"
 import { IFileSystemApi, fileSystemProfile } from "./file-system"
-import { editorProfile } from './editor'
-import { udappProfile } from './udapp'
-import { networkProfile } from './network'
+import { IEditorApi, editorProfile } from './editor'
+import { udappProfile, IUdappApi } from './udapp'
+import { networkProfile, INetworkApi } from './network'
 
 // SOLIDITY
 interface ISolidityApi extends ICompilerApi {
   name: 'solidity'
 }
-const solidityProfile: ModuleProfile<ISolidityApi> = {
+const remixSolidityProfile: ModuleProfile<ISolidityApi> = {
+  ...compilerProfile,
   name: 'solidity'
 }
 
@@ -19,15 +20,30 @@ const solidityProfile: ModuleProfile<ISolidityApi> = {
 interface IFileManagerApi extends IFileSystemApi {
   name: 'fileManager'
 }
-const fileManagerProfile: ModuleProfile<IFileManagerApi> = {
+const remixFileManagerProfile: ModuleProfile<IFileManagerApi> = {
+  ...fileSystemProfile,
   name: 'fileManager'
 }
 
+// EDITOR
+interface IRemixEditorApi extends IEditorApi {
+  name: 'editor'
+}
+
+// UDAPP
+interface IRemixUdappApi extends IUdappApi {
+  name: 'udapp'
+}
+
+// NETWORK
+interface IRemixNetworkApi extends INetworkApi {
+  name: 'network'
+}
 
 export const remixApi = [
-  extendsProfile(solidityProfile, compilerProfile),
-  extendsProfile(fileManagerProfile, fileSystemProfile),
-  editorProfile,
-  udappProfile,
-  networkProfile
+  extendsProfile(remixSolidityProfile, compilerProfile),
+  extendsProfile(remixFileManagerProfile, fileSystemProfile),
+  editorProfile as ModuleProfile<IRemixEditorApi>,
+  udappProfile as ModuleProfile<IRemixUdappApi>,
+  networkProfile as ModuleProfile<IRemixNetworkApi>,
 ]
