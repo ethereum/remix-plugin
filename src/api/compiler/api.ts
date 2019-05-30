@@ -9,6 +9,7 @@ export interface ICompilerApi extends Api {
   }
   methods: {
     getCompilationResult(): CompilationResult
+    compile(fileName: string): void
   }
 }
 
@@ -16,7 +17,7 @@ export const compilerProfile: ModuleProfile<ICompilerApi> = {
   name: 'compiler', // Will be removed when extended
   kind: 'compiler',
   events: ['compilationFinished'],
-  methods: ['getCompilationResult']
+  methods: ['getCompilationResult', 'compile']
 }
 
 export abstract class CompilerApi<T extends Api>
@@ -29,4 +30,5 @@ export abstract class CompilerApi<T extends Api>
   }
 
   abstract getCompilationResult(): CompilationResult
+  abstract compile(fileName: string): void
 }
