@@ -25,4 +25,8 @@ export class CompilerModule extends CompilerApi<Solidity> {
     }
     return 'compilation' as any
   }
+
+  compile(fileName: string) {
+    if (!fileName) throw new Error('Should give a file name')
+  }
 }

@@ -22,6 +22,7 @@
     "start": "webpack --watch",
     "build": "webpack",
     "test": "jest",
+    "publish": "npm run build && npm publish",
     "e2e:serve": "run-p serve:ide serve:ethdoc",
     "serve:ide": "cd ./examples/ide && webpack-dev-server",
     "serve:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
