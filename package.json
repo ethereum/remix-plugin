@@ -27,7 +27,7 @@
     "serve:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
     "build:ethdoc": "cd ./examples/plugins/ethdoc && webpack --config webpack.prod.js",
     "deploy:ethdoc": "surge ./examples/plugins/ethdoc/dist remix-ethdoc-plugin.surge.sh",
-    "deploy:etherscan": "surge ./examples/plugins/etherscan/dist remix-etherscan-plugin.surge.sh"
+    "deploy:etherscan": "surge ./examples/plugins/etherscan remix-etherscan-plugin.surge.sh"
   },
   "dependencies": {
     "events": "^3.0.0"
