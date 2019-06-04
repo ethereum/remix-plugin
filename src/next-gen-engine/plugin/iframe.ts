@@ -1,5 +1,5 @@
-import { Message } from 'src/types'
 import { ViewPlugin, ViewProfile } from './view'
+import { Message } from '../../utils'
 
 interface IframeProfile extends ViewProfile {
   url: string
