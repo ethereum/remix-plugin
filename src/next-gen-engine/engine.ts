@@ -1,30 +1,40 @@
-import { Plugin, IPlugin, PluginRequest, Profile } from './plugin'
+import { Plugin, Profile } from './plugin'
+import { PluginRequest, listenEvent } from '../utils'
+import { ApiMap } from './api'
 
-interface PluginMap {
-  [name: string]: IPlugin
+
+/** Transform an map of Api into a Map of Plugin. Used by PluginEngine for constructor */
+type PluginMap<T extends ApiMap> = {
+  [name in keyof T]: Plugin<T[name]>
 }
 
+/** The list of methods exposed by the PluginEngine */
 interface ExposedMethods {
   [name: string]: {
     [key: string]: (requestInfo: PluginRequest, ...payload: any[]) => Promise<any>
   }
 }
 
+/** The list of events exposed by the PluginEngine */
 interface ExposedEvents {
   [recipient: string]: {
     [eventName: string]: (...payload: any[]) => void
   }
 }
 
+/** A record of which plugin is listening on which event */
 interface EventRecord {
   [eventName: string]: string[]
 }
 
-interface PluginEngineSettings {
+/** Optional settings of the PluginEngine */
+export interface PluginEngineSettings {
   autoActivate: boolean
+  permissionHandler: PermissionHandler
 }
 
-interface PermissionHandler {
+/** Used to ask permission to use a plugin */
+export interface PermissionHandler {
   askPermission: (from: Profile, to: Profile) => Promise<boolean>
 }
 
@@ -32,29 +42,35 @@ abstract class AbstractPluginEngine {
   protected methods: ExposedMethods
   protected events: ExposedEvents
   protected eventsRecord: EventRecord
-  abstract permissionHandler: PermissionHandler
-  abstract register(plugins: IPlugin | IPlugin[]): void
+  protected permissionHandler: PermissionHandler
+  abstract register(plugins: Plugin | Plugin[]): void
   abstract activate(names: string | string[]): void
   abstract deactivate(names: string | string[]): void
 
   // Hooks
-  abstract onRegistration(plugin: IPlugin): void
-  abstract onActivation(plugin: IPlugin): void
-  abstract onDeactivation(plugin: IPlugin): void
+  onRegistration?(plugin: Plugin): void
+  onActivation?(plugin: Plugin): void
+  onDeactivation?(plugin: Plugin): void
 }
 
-export abstract class PluginEngine extends AbstractPluginEngine {
-  protected settings: PluginEngineSettings
-  protected plugins: PluginMap = {}
+/**
+ * Plugin Engine register, activate and deactive plugins.
+ * It broadcasts events and redirect calls.
+ */
+export class PluginEngine<T extends Readonly<ApiMap>> extends AbstractPluginEngine {
+  protected settings: Partial<PluginEngineSettings>
+  protected plugins: PluginMap<T> = {} as PluginMap<T>
   protected methods: ExposedMethods = {}
   protected events: ExposedEvents = {}
   protected eventsRecord: EventRecord = {}
 
-  abstract permissionHandler: PermissionHandler
-
-  constructor(plugins: Plugin[]) {
+  constructor(
+    plugins: PluginMap<T>,
+    settings: Partial<PluginEngineSettings> = {}
+  ) {
     super()
-    this.register(plugins)
+    this.settings = settings
+    this.register(Object.keys(plugins).map(key => plugins[key]))
   }
 
   public get actives(): string[] {
@@ -76,21 +92,21 @@ export abstract class PluginEngine extends AbstractPluginEngine {
   // REGISTER //
   //////////////
 
-  public register(plugins: IPlugin | IPlugin[]): void {
+  public register(plugins: Plugin | Plugin[]): void {
     (Array.isArray(plugins))
       ? plugins.forEach(plugin => this.registerOne(plugin))
       : this.registerOne(plugins)
   }
 
-  private registerOne(plugin: IPlugin) {
+  private registerOne(plugin: Plugin) {
     if (this.plugins[plugin.name]) return // Plugin already registered
     if (!(plugin instanceof Plugin)) {
-      throw new Error(`Plugin ${plugin.name} doesn't match the plugin interface`)
+      throw new Error(`Plugin ${(plugin as Plugin).name} doesn't match the plugin interface`)
     }
     this.plugins[plugin.name] = plugin
 
     // Call Hooks
-    this.onRegistration(plugin)
+    if (this.onRegistration) this.onRegistration(plugin)
     if (plugin.onRegistation) plugin.onRegistation()
   }
 
@@ -124,15 +140,17 @@ export abstract class PluginEngine extends AbstractPluginEngine {
     }
 
     // LISTEN ON CALL
-    plugin['call'] = async (pluginName: string, key: string, payload: any[]) => {
+    plugin['call'] = async (pluginName: string, key: string, ...payload: any[]) => {
       if (!this.isRegistered(pluginName)) {
         throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not registered`)
       }
       // Check permission: If throw, it should not activate the plugin
-      const to = this.plugins[name]
-      if (to.profile.permission) {
-        const isAllowed = await this.permissionHandler.askPermission(plugin.profile, to.profile)
-        if (!isAllowed) return
+      if (this.settings.permissionHandler) {
+        const to = this.plugins[name]
+        if (to.profile.permission) {
+          const isAllowed = await this.permissionHandler.askPermission(plugin.profile, to.profile)
+          if (!isAllowed) return
+        }
       }
       // Check if active. If autoActivate is enabled, activate pluginName
       if (!this.isActive(pluginName)) {
@@ -154,7 +172,7 @@ export abstract class PluginEngine extends AbstractPluginEngine {
     // LISTEN ON EVENTS
     this.events[name] = {}
     plugin['on'] = async (pluginName: string, event: string, cb: (...payload: any[]) => void) => {
-      const eventName = `[${pluginName}] ${event}`
+      const eventName = listenEvent(pluginName, event)
       // If not already listening
       if (!this.events[name][eventName]) {
         this.events[name][eventName] = cb
@@ -169,7 +187,7 @@ export abstract class PluginEngine extends AbstractPluginEngine {
 
     // FORWARD EVENTS
     plugin['emit'] = (event: string, ...payload: any[]) => {
-      const eventName = `[${name}] ${event}`
+      const eventName = listenEvent(name, event)
       if (this.eventsRecord[eventName]) return // Nobody is listening
       const listeners = this.eventsRecord[eventName]
       listeners.forEach(listener => {
@@ -181,7 +199,7 @@ export abstract class PluginEngine extends AbstractPluginEngine {
     }
 
     // Call hooks
-    this.onActivation(plugin)
+    if (this.onActivation) this.onActivation(plugin)
     plugin.activate()
   }
 
@@ -224,11 +242,8 @@ export abstract class PluginEngine extends AbstractPluginEngine {
     })
 
     // Call hooks
-    this.onDeactivation(plugin)
+    if (this.onDeactivation) this.onDeactivation(plugin)
     plugin.deactivate()
   }
 
-  abstract onRegistration(plugin: IPlugin): void
-  abstract onActivation(plugin: IPlugin): void
-  abstract onDeactivation(plugin: IPlugin): void
 }
