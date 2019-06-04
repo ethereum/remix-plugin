@@ -1,44 +1,20 @@
+import { PluginRequest } from '../../utils'
+import { Api, EventKey, EventParams, MethodKey, MethodParams, EventCallback, ApiMap } from '../api'
+
 export interface RequestParams {
-  name: string,
-  key: string,
+  name: string
+  key: string
   payload: any[]
 }
 
-export interface PluginRequest {
-  from: string
-}
-
-export interface Profile {
+export interface Profile<T extends Api = any> {
   name: string
-  methods: string[]
+  methods: MethodKey<T>[]
   permission?: boolean
 }
 
-export interface IPlugin<P extends Profile = any> {
-  name: string
-  profile: Profile
 
-  // Queue requests
-  addRequest(request: PluginRequest, method: P['methods'][number], args: any[]): Promise<any>
-
-  // Interaction functions
-  on(name: string, key: string, cb: (payload: any[]) => void): void
-  call(name: string, key: string, payload: any[]): Promise<any>
-  emit(key: string, payload: any[]): void
-
-  // Lifecycle trigger
-  activate(): void
-  deactivate(): void
-
-  // Lifecycle hooks
-  onRegistation?(): void
-  onActivation?(): void
-  onDeactivation?(): void
-}
-
-
-
-export abstract class Plugin implements IPlugin {
+export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
   readonly name: string
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
@@ -47,7 +23,7 @@ export abstract class Plugin implements IPlugin {
   onActivation?(): void
   onDeactivation?(): void
 
-  constructor(public profile: Profile) {}
+  constructor(public profile: Profile<T>) {}
 
   activate() {
     if (this.onActivation) this.onActivation()
@@ -67,7 +43,7 @@ export abstract class Plugin implements IPlugin {
   /** Add a request to the list of current requests */
   addRequest(
     request: PluginRequest,
-    method: Profile['methods'][number], // Extract<keyof , string>,
+    method: Profile<T>['methods'][number],
     args: any[],
   ) {
     return new Promise((resolve, reject) => {
@@ -95,16 +71,29 @@ export abstract class Plugin implements IPlugin {
     })
   }
 
-  // Interaction functions
-  on(name: string, key: string, cb: (...payload: any[]) => void) {
+  /** Listen on an event from another plugin */
+  on<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
+    name: Name,
+    key: Key,
+    cb: EventCallback<App[Name], Key>
+  ): void {
     throw new Error(`Method "listen" from ${this.name} should be hooked by PluginEngine`)
   }
-  async call(name: string, key: string, ...payload: any[]) {
+
+  /** Call a method of another plugin */
+  async call<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
+    name: Name,
+    key: Key,
+    ...payload: MethodParams<App[Name], Key>
+  ): Promise<ReturnType<App[Name]['methods'][Key]>> {
     throw new Error(`Method "call" from ${this.name} should be hooked by PluginEngine`)
   }
-  emit(key: string, ...payload: any[]) {
+
+  /** Emit an event */
+  emit<Key extends EventKey<T>>(
+    key: Key,
+    ...payload: EventParams<T, Key>
+  ): void {
     throw new Error(`Method "emit" from ${this.name} should be hooked by PluginEngine`)
   }
-
 }
-
