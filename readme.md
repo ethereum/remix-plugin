@@ -187,8 +187,8 @@ Click on the name of the api to get the full documentation.
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event :
 
 ```typescript
-client.listen('fileManager', 'statusChanged', (status: Status) => {
-  // Do Something
+client.on('fileManager', 'statusChanged', (status: Status) => {
+  // Do Something 
 })
 ```
 
