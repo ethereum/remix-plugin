@@ -18,6 +18,7 @@
   "types": "dist/index.d.ts",
   "browser": "dist/index.js",
   "module": "dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
