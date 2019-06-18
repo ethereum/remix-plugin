@@ -1,6 +1,9 @@
 import('./components')
 import { IdeManager } from './app-manager'
 
+import { PluginEngine } from '@remixproject/engine'
+
+
 // Modules = Internal Plugins
 import { FileManager, pluginManager } from './modules'
 
@@ -21,6 +24,7 @@ app.init([
 /////////////
 import { Plugin } from 'remix-plugin'
 import { ethdocProfile } from '../../plugins/ethdoc/profile'
+import { PermissionHandler } from './permission-handler';
 const ethdoc = new Plugin(ethdocProfile)
 
 // Add plugins

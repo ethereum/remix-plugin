@@ -1,4 +1,5 @@
-import { IPermissionHandler, PluginProfile, ModuleProfile, Permissions } from "../../src"
+import { Profile } from '@utils'
+import { IPermissionHandler, Permissions } from '@remixproject/engine'
 
 export class PermissionProvider {
   async confirm(message: string) {
@@ -17,9 +18,9 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
   }
 
   public async askPermission(
-    from: PluginProfile,
-    to: ModuleProfile,
-  ): Promise<void> {
+    from: Profile,
+    to: Profile,
+  ): Promise<boolean> {
     if (!this.permissions[to.name]) this.permissions[to.name] = {}
     // Never allowed
     if (!this.permissions[to.name][from.name]) {
@@ -28,11 +29,11 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      if (!allow) return false
     }
     // Remember not allow
     if (!this.permissions[to.name][from.name].allow) {
-      throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      return false
     }
     // Remember allow but hash has changed
     if (this.permissions[to.name][from.name].hash !== from.hash) {
@@ -41,11 +42,12 @@ export class PermissionHandlerWithDI implements IPermissionHandler {
         const hash = this.permissions[to.name][from.name].hash
         this.permissions[to.name][from.name] = { allow, hash }
       }
-      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      if (!allow) return false
     }
+    return true
   }
 
-  async openPermission(from: PluginProfile, to: ModuleProfile, wasAllow: boolean) {
+  async openPermission(from: Profile, to: Profile, wasAllow: boolean) {
     const msg = wasAllow
     ? `${from.name} would like to access plugin ${to}.\n Check it's new content ${from.hash}`
     : `${from.name} has changed and would like to access the plugin ${to}.\n Check it's new content ${from.hash}`
