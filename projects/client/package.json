@@ -1,0 +1,29 @@
+{
+  "name": "@remixproject/plugin",
+  "version": "0.1.2-0",
+  "description": "Library to build Plugin. Used by Remix IDE",
+  "contributors": [
+    {
+      "name": "Yann Levreau",
+      "email": "yann@ethdev.com"
+    },
+    {
+      "name": "GrandSchtroumpf",
+      "email": "grandschtroumpf@ethereum.org"
+    }
+  ],
+  "keywords": ["Ethereum", "RemixIDE", "Plugin"],
+  "license": "MIT",
+  "files": ["dist"],
+  "types": "dist/index.d.ts",
+  "browser": "dist/index.js",
+  "module": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "homepage": "https://github.com/ethereum/remix-plugin#readme"
+}

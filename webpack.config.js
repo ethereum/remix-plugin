@@ -1,14 +1,8 @@
 const path = require('path')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
-module.exports = {
+const common = {
   mode: 'production',
-  entry: './src/index.ts',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    library: 'remixPlugin',
-    libraryTarget: 'umd',
-  },
   module: {
     rules: [
       {
@@ -20,5 +14,28 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, './tsconfig.json') }),
+    ],
   },
 }
+
+module.exports = [{
+  ...common,
+  entry: './projects/engine/src/index.ts',
+  output: {
+    path: path.resolve(__dirname, 'projects/engine/dist'),
+    filename: 'index.js',
+    library: 'pluginEngine',
+    libraryTarget: 'umd',
+  },
+}, {
+  ...common,
+  entry: './projects/client/src/index.ts',
+  output: {
+    path: path.resolve(__dirname, 'projects/client/dist'),
+    filename: 'index.js',
+    library: 'remixPlugin',
+    libraryTarget: 'umd',
+  },
+}]

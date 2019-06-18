@@ -2,7 +2,6 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "baseUrl": ".",
-    "outDir": "./dist",
     "sourceMap": false,
     "declaration": true,
     "noImplicitAny": false,
@@ -10,11 +9,14 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "typeRoots": ["node_modules/@types"],
-    "types": ["jest"],
     "lib": ["es2016", "dom", "es5"],
     "paths": {
-      "remix-plugin": ["src/index.ts"]
+      "remix-plugin": ["src/index.ts"],
+      "@remixproject/engine": ["projects/engine/src"],
+      "@remixproject/plugin": ["projects/client/src"],
+      "@utils": ["projects/utils/src"],
+      "@examples/*": ["examples/*"]
     }
   },
-  "include": ["src"]
+  "exclude": ["node_modules", "old"]
 }

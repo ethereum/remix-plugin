@@ -1,5 +1,5 @@
-import { IPermissionHandler, Permissions, PluginProfile, ModuleProfile } from '../../src/types'
-
+import { Profile } from '@utils'
+import { IPermissionHandler, Permissions } from '@remixproject/engine'
 
 /**
  * Example of a PermissionHandler using localStorage
@@ -31,8 +31,8 @@ export abstract class SecurityHandler implements IPermissionHandler {
    * @param wasAllow Did the plugin have changed its hash
    */
   private async openPermission(
-    from: PluginProfile,
-    to: ModuleProfile,
+    from: Profile,
+    to: Profile,
     wasAllow: boolean,
   ): Promise<{ allow: boolean; remember: boolean }> {
     const msg = wasAllow
@@ -47,9 +47,9 @@ export abstract class SecurityHandler implements IPermissionHandler {
    * @param to The profile of the module that receive the call
    */
   public async askPermission(
-    from: PluginProfile,
-    to: ModuleProfile,
-  ): Promise<void> {
+    from: Profile,
+    to: Profile,
+  ): Promise<boolean> {
     if (!this.permissions[to.name]) this.permissions[to.name] = {}
     // Never allowed
     if (!this.permissions[to.name][from.name]) {
@@ -59,11 +59,11 @@ export abstract class SecurityHandler implements IPermissionHandler {
         this.permissions[to.name][from.name] = { allow, hash }
       }
       this.persistPermissions()
-      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      if (!allow) return false
     }
     // Remember not allow
     if (!this.permissions[to.name][from.name].allow) {
-      throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      return false
     }
     // Remember allow but hash has changed
     if (this.permissions[to.name][from.name].hash !== from.hash) {
@@ -73,8 +73,9 @@ export abstract class SecurityHandler implements IPermissionHandler {
         this.permissions[to.name][from.name] = { allow, hash }
       }
       this.persistPermissions()
-      if (!allow) throw new Error(`${from.name} is not allowed to call ${to.name}`)
+      if (!allow) return false
     }
+    return true
   }
 }
 
