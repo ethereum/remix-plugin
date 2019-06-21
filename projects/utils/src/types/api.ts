@@ -1,7 +1,9 @@
+import { StatusEvents } from './status'
+
 export interface Api {
   events: {
     [key: string]: (...args: any[]) => void
-  }
+  } & StatusEvents
   methods: {
     [key: string]: (...args: any[]) => void
   }
@@ -22,7 +24,6 @@ export type MethodParams<T extends Api, K extends MethodKey<T>> = T extends Api
   ? Parameters<T['methods'][K]>
   : any[]
 
-
 /////////
 // API //
 /////////
@@ -33,7 +34,9 @@ export interface EventApi<T extends Api> {
 }
 // Get the methods of the Api
 export type MethodApi<T extends Api> = {
-  [m in Extract<keyof T['methods'], string>]: (...args: Parameters<T['methods'][m]>) => Promise<ReturnType<T['methods'][m]>>
+  [m in Extract<keyof T['methods'], string>]: (
+    ...args: Parameters<T['methods'][m]>
+  ) => Promise<ReturnType<T['methods'][m]>>
 }
 // Create the Api interface
 export type CustomApi<T extends Api> = EventApi<T> & MethodApi<T>
@@ -49,6 +52,4 @@ export type PluginApi<T extends ApiMap> = {
 }
 
 // The interface that a Plugin should implement
-export type API<T extends Api> = {
-  [M in keyof T['methods']]: T['methods'][M]
-}
+export type API<T extends Api> = { [M in keyof T['methods']]: T['methods'][M] }

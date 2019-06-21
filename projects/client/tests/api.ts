@@ -1,10 +1,10 @@
 import { PluginClient, createApi, getApiMap, createIframeClient, listenOnThemeChanged } from '@remixproject/plugin'
-import { Api, IframeProfile, CustomApi, callEvent, listenEvent } from '@utils'
+import { Api, IframeProfile, CustomApi, callEvent, listenEvent, StatusEvents } from '@utils'
 
 interface TestApi extends Api {
   events: {
     event: (isTrue: boolean) => void
-  }
+  } & StatusEvents
   methods: {
     method: (isTrue: boolean) => boolean
   }
