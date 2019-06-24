@@ -1,6 +1,8 @@
 import { checkOrigin, PluginClient, connectIframe } from '@remixproject/plugin'
 import { listenEvent, callEvent } from '@utils'
 
+declare const global  // Needed to mock fetch
+
 function createEvent(data, postMessage?) {
   return {
     origin: 'http://remix.ethereum.org',
@@ -15,17 +17,33 @@ describe('Iframe', () => {
   let sendMessage: (event) => void
   let client: PluginClient
 
-  test('Check origin', () => {
-    const devMode = { port: 8080 }
+  test('Check origin', async () => {
+    const port = 8080
+    const origins = 'package://'
     const goodOrigin = 'http://remix.ethereum.org'
     const wrongOrigin = 'http://remix.ethereum.com'
-    const goodLocalOrigin = `http://127.0.0.1:${devMode.port}`
-    const wrongLocalOrigin = `http://localhost:${devMode.port + 1}`
+    const goodLocalOrigin = `http://127.0.0.1:${port}`
+    const wrongLocalOrigin = `http://localhost:${port + 1}`
+    const wrongExternalOrigin = `${origins}wrong`
+    const goodExternalOrigin = origins
 
-    expect(checkOrigin(goodOrigin)).toBeTruthy()
-    expect(checkOrigin(wrongOrigin)).toBeFalsy()
-    expect(checkOrigin(goodLocalOrigin, devMode)).toBeTruthy()
-    expect(checkOrigin(wrongLocalOrigin, devMode)).toBeFalsy()
+    // Mock fetch api
+    const mockFetchPromise = Promise.resolve({
+      json: () => Promise.resolve([
+        "http://remix-alpha.ethereum.org",
+        "http://remix.ethereum.org",
+        "https://remix-alpha.ethereum.org",
+        "https://remix.ethereum.org"
+      ])
+    })
+    global.fetch = jest.fn().mockImplementation(() => mockFetchPromise)
+
+    expect(await checkOrigin(goodOrigin)).toBeTruthy()
+    expect(await checkOrigin(wrongOrigin)).toBeFalsy()
+    expect(await checkOrigin(goodLocalOrigin, { port })).toBeTruthy()
+    expect(await checkOrigin(wrongLocalOrigin, { port })).toBeFalsy()
+    expect(await checkOrigin(goodExternalOrigin, { origins })).toBeTruthy()
+    expect(await checkOrigin(wrongExternalOrigin, { origins })).toBeFalsy()
   })
 
   // We use beforeAll so we don't have to wait for handshake each time
