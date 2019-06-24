@@ -7,18 +7,22 @@ import { getApiMap, listenOnThemeChanged } from './api'
  * @param origin The origin of the incoming message
  * @param devMode Devmode options
  */
-export async function checkOrigin(origin: string, devMode?: PluginDevMode) {
-  const localhost = devMode ? [
+export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode> = {}) {
+  const localhost = devMode.port ? [
     `http://127.0.0.1:${devMode.port}`,
     `http://localhost:${devMode.port}`,
     `https://127.0.0.1:${devMode.port}`,
     `https://localhost:${devMode.port}`,
   ] : []
+  const origins = devMode.origins
+    ? (typeof devMode.origins === 'string') ? [devMode.origins] : devMode.origins
+    : []
   const res = await fetch('https://raw.githubusercontent.com/ethereum/remix-plugin/master/projects/client/assets/origins.json')
-  const origins = await res.json()
+  const defaultOrigins = await res.json()
   return [
-    ...origins,
-    ...localhost
+    ...defaultOrigins,
+    ...localhost,
+    ...origins
   ].includes(origin)
 }
 

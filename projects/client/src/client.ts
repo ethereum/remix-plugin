@@ -15,7 +15,9 @@ import {
 } from '@utils'
 
 export interface PluginDevMode {
+  /** Port for localhost */
   port: number | string
+  origins: string | string[]
 }
 
 /** Options of the plugin client */
