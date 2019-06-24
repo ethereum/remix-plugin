@@ -2,7 +2,7 @@ import { HighlightPosition } from './type'
 import { StatusEvents } from '../../types'
 
 export interface IEditor {
-  events: StatusEvents
+  events: {} & StatusEvents
   methods: {
     highlight(
       position: HighlightPosition,
