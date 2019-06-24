@@ -7,18 +7,17 @@ import { getApiMap, listenOnThemeChanged } from './api'
  * @param origin The origin of the incoming message
  * @param devMode Devmode options
  */
-export function checkOrigin(origin: string, devMode?: PluginDevMode) {
+export async function checkOrigin(origin: string, devMode?: PluginDevMode) {
   const localhost = devMode ? [
     `http://127.0.0.1:${devMode.port}`,
     `http://localhost:${devMode.port}`,
     `https://127.0.0.1:${devMode.port}`,
     `https://localhost:${devMode.port}`,
   ] : []
+  const res = await fetch('https://raw.githubusercontent.com/ethereum/remix-plugin/master/projects/client/assets/origins.json')
+  const origins = await res.json()
   return [
-    "http://remix-alpha.ethereum.org",
-    "http://remix.ethereum.org",
-    "https://remix-alpha.ethereum.org",
-    "https://remix.ethereum.org",
+    ...origins,
     ...localhost
   ].includes(origin)
 }
@@ -35,7 +34,8 @@ export function connectIframe(client: PluginClient<any, any>) {
 
     // Check that the origin is the right one
     const devMode = client.options.devMode
-    if (!checkOrigin(event.origin, devMode)) return
+    const isGoodOrigin = await checkOrigin(event.origin, devMode)
+    if (!isGoodOrigin) return
 
     // Get the data
     if (!event.data) throw new Error('No data')
