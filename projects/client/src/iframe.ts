@@ -1,4 +1,4 @@
-import { PluginDevMode, PluginClient, PluginOptions, defaultOptions } from './client'
+import { PluginDevMode, PluginClient, PluginOptions } from './client'
 import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent } from '@utils'
 import { getApiMap, listenOnThemeChanged } from './api'
 
@@ -27,14 +27,14 @@ export function checkOrigin(origin: string, devMode?: PluginDevMode) {
  * Start listening on the IDE though PostMessage
  * @param client A client to put the messages into
  */
-export function connectIframe(client: PluginClient) {
+export function connectIframe(client: PluginClient<any, any>) {
   let loaded = false
 
   async function getMessage(event: MessageEvent) {
     if (!event.source) throw new Error('No source')
 
     // Check that the origin is the right one
-    const devMode = client.devMode
+    const devMode = client.options.devMode
     if (!checkOrigin(event.origin, devMode)) return
 
     // Get the data
@@ -91,14 +91,13 @@ export function connectIframe(client: PluginClient) {
 export function createIframeClient<T extends Api, App extends ApiMap>(
   options: Partial<PluginOptions<App>> = {}
 ): PluginApi<GetApi<typeof options.customApi>> & PluginClient<T, App> {
-  const _options = { ...defaultOptions, ...options } as PluginOptions<App>
-  const client = new PluginClient(_options)
+  const client = new PluginClient<T, App>(options)
   // Add APIS
-  const apis = getApiMap<ProfileMap<App>, App>(client, _options.customApi)
+  const apis = getApiMap<ProfileMap<App>, App>(client, client.options.customApi)
   Object.keys(apis).forEach(name => client[name] = apis[name])
   // Listen on changes
   connectIframe(client)
-  listenOnThemeChanged(client, _options)
+  listenOnThemeChanged(client, client.options)
   return client as any
 }
 
