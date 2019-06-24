@@ -4,6 +4,7 @@ import { filSystemProfile, IFileSystem } from './file-system'
 import { editorProfile, IEditor } from './editor'
 import { networkProfile, INetwork } from './network'
 import { udappProfile, IUdapp } from './udapp'
+import { themeProfile, ITheme } from './theme'
 
 export interface IRemixApi {
   solidity: ICompiler
@@ -11,6 +12,7 @@ export interface IRemixApi {
   editor: IEditor
   network: INetwork
   udapp: IUdapp
+  theme: ITheme
 }
 
 export type RemixApi = Readonly<IRemixApi>
@@ -22,6 +24,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   editor: editorProfile,
   network: networkProfile,
   udapp: udappProfile,
+  theme: themeProfile
 })
 
 /** Profiles of all the remix's Native Plugins */
@@ -31,4 +34,5 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   editor: editorProfile,
   network: networkProfile,
   udapp: udappProfile,
+  theme: themeProfile
 })

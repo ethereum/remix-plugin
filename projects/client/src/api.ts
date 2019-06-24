@@ -1,11 +1,11 @@
 import { PluginClient, PluginOptions } from './client'
-import { Profile, Api, MethodApi, CustomApi, ProfileMap, ApiMapFromProfileMap, PluginApi, ApiMap } from '@utils'
+import { Profile, Api, MethodApi, CustomApi, ProfileMap, ApiMapFromProfileMap, PluginApi, ApiMap, Theme } from '@utils'
 
 /**
  * Create an Api
  * @param profile The profile of the api
  */
-export function createApi<T extends Api>(client: PluginClient, profile: Profile<T>): CustomApi<T> {
+export function createApi<T extends Api>(client: PluginClient<any, any>, profile: Profile<T>): CustomApi<T> {
   if (typeof profile.name !== 'string') {
     throw new Error('Profile should have a name')
   }
@@ -23,7 +23,7 @@ export function createApi<T extends Api>(client: PluginClient, profile: Profile<
 
 /** Transform a list of profile into a map of API */
 export function getApiMap<T extends ProfileMap<App>, App extends ApiMap>(
-  client: PluginClient,
+  client: PluginClient<any, App>,
   profiles: T
 ): PluginApi<ApiMapFromProfileMap<T>> {
   return Object.keys(profiles).reduce((acc, name) => {
@@ -37,13 +37,10 @@ export function getApiMap<T extends ProfileMap<App>, App extends ApiMap>(
 // COMMON API //
 ////////////////
 
-export interface Theme {
-  url: string
-  quality: 'dark' | 'light'
-}
+
 
 /** Start listening on theme changed */
-export function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions<any>>) {
+export function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
   if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')
