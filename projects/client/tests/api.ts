@@ -18,7 +18,7 @@ const profile: IframeProfile<TestApi> = {
 }
 
 describe('Client Api', () => {
-  let client: PluginClient<TestApi>
+  let client: PluginClient<TestApi, any>
   let api: CustomApi<TestApi>
   beforeEach(() => {
     client = new PluginClient()
