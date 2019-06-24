@@ -42,7 +42,7 @@ describe('Client is not loaded yet', () => {
   })
 
   test('Call should throw when client is not loaded', async () => {
-    expect(() => client.call('name', 'key'))
+    expect(() => client.call('fileManager', 'getFile', 'browser/ballot.sol'))
       .toThrow('If you are using a local IDE, make sure to add devMode in client options')
   })
 })
@@ -60,7 +60,7 @@ describe('Client is loaded', () => {
   // CALL
 
   test('"Call" should trigger a send event', async (done) => {
-    const name = 'name', key = 'key', payload = 'payload'
+    const name = 'fileManager', key = 'getFile', payload = 'browser/ballot.sol'
     client.events.on('send', (msg) => {
       expect(msg).toEqual({ action: 'request', name, key, payload: [payload], id: 1 })
       done()
@@ -69,7 +69,7 @@ describe('Client is loaded', () => {
   })
 
   test('Call should wait for a response', async (done) => {
-    const name = 'name', key = 'key', payload = 'payload'
+    const name = 'fileManager', key = 'getFile', payload = 'browser/ballot.sol'
     client.call(name, key, payload).then((result) => {
       expect(result).toBeTruthy()
       done()
@@ -78,7 +78,7 @@ describe('Client is loaded', () => {
   })
 
   test('Call should throw an error', (done) => {
-    const name = 'name', key = 'key', payload = 'payload'
+    const name = 'fileManager', key = 'getFile', payload = 'browser/ballot.sol'
     client.call(name, key, payload).catch((error) => {
       expect(error.message).toBe('Error from IDE : error')
       done()
@@ -89,7 +89,7 @@ describe('Client is loaded', () => {
   // ON
 
   test('"On" should listen for event', (done) => {
-    const name = 'name', key = 'key', payload = 'payload'
+    const name = 'fileManager', key = 'currentFileChanged', payload = 'browser/ballot.sol'
     client.on(name, key, (result) => {
       expect(result).toEqual(payload)
       done()
