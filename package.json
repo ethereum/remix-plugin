@@ -48,7 +48,7 @@
     "solc": "^0.5.7",
     "surge": "^0.20.5",
     "ts-jest": "^24.0.1",
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^5.4.5",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
     "tslint": "^5.11.0",
     "typescript": "^3.5.2",
