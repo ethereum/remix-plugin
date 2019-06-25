@@ -1,5 +1,5 @@
-import { Plugin, IframePlugin } from '../plugin'
-import { PluginRequest, listenEvent, ApiMap, Profile, IframeProfile, Api } from '@utils'
+import { Plugin } from '../plugin'
+import { PluginRequest, listenEvent, ApiMap, IframeProfile, Api } from '../../../utils'
 import { IPermissionHandler } from './persmission'
 
 /** Transform an map of Api into a Map of Plugin. Used by PluginEngine for constructor */

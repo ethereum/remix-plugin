@@ -12,7 +12,7 @@ import {
   callEvent,
   listenEvent,
   RemixApi,
-} from '@utils'
+} from '../../utils'
 
 export interface PluginDevMode {
   /** Port for localhost */

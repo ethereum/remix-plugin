@@ -1,5 +1,5 @@
 import { PluginDevMode, PluginClient, PluginOptions } from './client'
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent } from '@utils'
+import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi } from '../../utils'
 import { getApiMap, listenOnThemeChanged } from './api'
 
 /**
@@ -92,7 +92,7 @@ export function connectIframe(client: PluginClient<any, any>) {
  * Create a plugin client that listen on PostMessage
  * @param options The options for the client
  */
-export function createIframeClient<T extends Api, App extends ApiMap>(
+export function createIframeClient<T extends Api, App extends ApiMap = RemixApi>(
   options: Partial<PluginOptions<App>> = {}
 ): PluginApi<GetApi<typeof options.customApi>> & PluginClient<T, App> {
   const client = new PluginClient<T, App>(options)

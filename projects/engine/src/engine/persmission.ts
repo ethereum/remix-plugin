@@ -1,4 +1,4 @@
-import { Profile } from '@utils'
+import { Profile } from '../../../utils'
 
 /** Used to ask permission to use a plugin */
 export interface IPermissionHandler {

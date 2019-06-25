@@ -3,7 +3,7 @@ import { callEvent, listenEvent } from '@utils'
 
 // Handle Error
 test('Handle Connection Error', () => {
-  const devMode = { port:  8080 }
+  const devMode = { port:  8080, origins: [] }
   expect(() => handleConnectionError(devMode))
     .toThrow(`Make sure the port of the IDE is ${devMode.port}`)
   expect(() => handleConnectionError())
