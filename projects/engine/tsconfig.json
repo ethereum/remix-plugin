@@ -4,5 +4,5 @@
     "types": ["jest"],
     "outDir": "./dist"
   },
-  "include": ["src/*.ts", "tests/*.ts"],
+  "include": ["./index.ts"],
 }
