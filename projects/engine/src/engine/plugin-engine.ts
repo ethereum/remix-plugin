@@ -108,7 +108,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
   private registerOne(plugin: Plugin<Api, T>) {
     if (this.plugins[plugin.name]) return // Plugin already registered
-    if (!(plugin instanceof Plugin)) {
+    if (!plugin.profile) {
       throw new Error(`Plugin ${(plugin as Plugin).name} doesn't match the plugin interface`)
     }
     this.plugins[plugin.name as keyof T] = plugin
