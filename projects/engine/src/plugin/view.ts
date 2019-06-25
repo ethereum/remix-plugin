@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { Profile, ViewProfile } from '@utils'
+import { Profile, ViewProfile } from '../../../utils'
 
 
 export function isView<P extends Profile>(profile: Profile): profile is (ViewProfile & P) {

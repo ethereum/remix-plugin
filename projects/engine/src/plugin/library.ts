@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { Api, Profile, LibraryProfile } from '@utils'
+import { Api, Profile, LibraryProfile } from '../../../utils'
 
 export type LibraryApi<T extends Api, P extends Profile> = {
   [method in P['methods'][number]]: T['methods'][method]

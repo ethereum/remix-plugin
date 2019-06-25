@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { HostProfile } from '@utils'
+import { HostProfile } from '../../../utils'
 
 
 interface ViewMap {

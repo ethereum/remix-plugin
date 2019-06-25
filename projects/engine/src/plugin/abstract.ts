@@ -9,7 +9,7 @@ import {
   Profile,
   PluginRequest,
   PluginApi,
-} from '@utils'
+} from '../../../utils'
 
 export interface RequestParams {
   name: string

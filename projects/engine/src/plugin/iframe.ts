@@ -1,5 +1,5 @@
 import { ViewPlugin } from './view'
-import { Message, IframeProfile } from '@utils'
+import { Message, IframeProfile } from '../../../utils'
 
 
 interface PluginPendingRequest {

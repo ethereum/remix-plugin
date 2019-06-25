@@ -1,5 +1,5 @@
 import { PluginClient, PluginOptions } from './client'
-import { Profile, Api, MethodApi, CustomApi, ProfileMap, ApiMapFromProfileMap, PluginApi, ApiMap, Theme } from '@utils'
+import { Profile, Api, MethodApi, CustomApi, ProfileMap, ApiMapFromProfileMap, PluginApi, ApiMap, Theme } from '../../utils'
 
 /**
  * Create an Api
