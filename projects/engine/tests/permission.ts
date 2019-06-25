@@ -1,7 +1,7 @@
 import { PermissionHandler } from '@examples/permission/simple-permission'
 import { FileManager, Solidity } from '@examples/native-plugins'
 import { Plugin } from '../src/plugin'
-import { PluginEngine, PluginMap } from '../src/engine'
+import { PluginEngine } from '../src/engine'
 
 
 // A Not Native plugin only for testing purpose
