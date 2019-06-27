@@ -152,9 +152,13 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
       if (!this.isRegistered(pluginName)) {
         throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not registered`)
       }
+      if (!this.methods[pluginName][key]) {
+        throw new Error(`Cannot call method ${key} of ${pluginName} from ${name}, because ${key} is not exposed`)
+      }
+      const to: Plugin = this.plugins[pluginName]
+
       // Check permission: If throw, it should not activate the plugin
       if (this.settings.permissionHandler && !this.isNative(plugin.profile)) {
-        const to: Plugin = this.plugins[pluginName]
         if (to.profile.permission) {
           const isAllowed = await this.settings.permissionHandler.askPermission(plugin.profile, to.profile)
           if (!isAllowed) {
@@ -162,18 +166,17 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
           }
         }
       }
-      // Check if active. If autoActivate is enabled, activate pluginName
+      // Check if active: If autoActivate is enabled, activate pluginName
       if (!this.isActive(pluginName)) {
-        throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not activated yet`)
-        /* @todo: Add this for autoactivation of plugin
-        if (this.settings.autoActivate) {
+        // throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not activated yet`)
+        if (this.settings.autoActivate && this.isNative(plugin.profile)) {
+          if (this.settings.permissionHandler) {
+            this.settings.permissionHandler.onActivation(plugin.profile, to.profile)
+          }
           this.activateOne(pluginName)
         } else {
           throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not activated yet`)
-        }*/
-      }
-      if (!this.methods[pluginName][key]) {
-        throw new Error(`Cannot call method ${key} of ${pluginName} from ${name}, because ${key} is not exposed`)
+        }
       }
       const request = { from: name }
       return this.methods[pluginName][key](request, ...payload)
