@@ -22,7 +22,7 @@ const common = {
 
 module.exports = [{
   ...common,
-  entry: './projects/engine/src/index.ts',
+  entry: './projects/engine/index.ts',
   output: {
     path: path.resolve(__dirname, 'projects/engine/dist'),
     filename: 'index.js',
@@ -31,7 +31,7 @@ module.exports = [{
   },
 }, {
   ...common,
-  entry: './projects/client/src/index.ts',
+  entry: './projects/client/index.ts',
   output: {
     path: path.resolve(__dirname, 'projects/client/dist'),
     filename: 'index.js',
