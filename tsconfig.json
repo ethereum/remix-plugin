@@ -12,9 +12,9 @@
     "lib": ["es2016", "dom", "es5"],
     "paths": {
       "remix-plugin": ["src/index.ts"],
-      "@remixproject/engine": ["projects/engine"],
-      "@remixproject/plugin": ["projects/client"],
-      "@utils": ["projects/utils"],
+      "@remixproject/engine": ["./projects/engine/src"],
+      "@remixproject/plugin": ["./projects/client/src"],
+      "@utils": ["./projects/utils/src"],
       "@examples/*": ["examples/*"]
     }
   },

@@ -12,6 +12,6 @@
       "args": ["--runInBand", "--config=${workspaceFolder}\\jest.config.js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
-},
+    },
   ]
 }
