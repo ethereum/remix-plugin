@@ -1,7 +1,6 @@
 import { PermissionHandler } from '@examples/permission/simple-permission'
 import { FileManager, Solidity } from '@examples/native-plugins'
-import { Plugin } from '../src/plugin'
-import { PluginEngine } from '../src/engine'
+import { Plugin, PluginEngine } from '@remixproject/engine'
 
 
 // A Not Native plugin only for testing purpose

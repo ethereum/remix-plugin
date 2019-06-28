@@ -81,4 +81,26 @@ describe('Remix Engine', () => {
     }
     fileManager.emit('currentFileChanged', 'newFile')
   })
+
+  test('Can change settings of engine', () => {
+    expect(engine['settings'].autoActivate).toBeFalsy()
+    engine.setSettings('autoActivate', true)
+    expect(engine['settings'].autoActivate).toBeTruthy()
+  })
+
+  test('Engine do not autoactivate plugin by default', () => {
+    engine.activate('solidity')
+    solidity.call('fileManager', 'setFile', 'browser/file.sol', 'content')
+    const spy = spyOn(engine, 'onActivation')
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  test('Engine autoactivate plugin with settings', () => {
+    engine.setSettings('autoActivate', true)
+    engine.activate('solidity')
+    console.log(engine['settings'])
+    solidity.call.call(engine, 'fileManager', 'setFile', 'browser/file.sol', 'content')
+    const spy = spyOn(engine, 'onActivation')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
 })
