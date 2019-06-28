@@ -50,6 +50,12 @@ abstract class AbstractPluginEngine {
   abstract activate(names: string | string[]): void
   abstract deactivate(names: string | string[]): void
 
+  abstract setSettings(settings: Partial<PluginEngineSettings>): void
+  abstract setSettings<K extends keyof PluginEngineSettings>(
+    keyOrSetting: K | Partial<PluginEngineSettings>,
+    value?: PluginEngineSettings[K]
+  ): void
+
   // Hooks
   onRegistration?(plugin: Plugin): void
   onActivation?(plugin: Plugin): void
@@ -94,6 +100,21 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   /** Either it's not an IframeProfile or it's */
   private isNative(profile: Partial<IframeProfile>) {
     return !profile.url || this.settings.natives.includes(profile.name)
+  }
+
+  //////////////
+  // SETTINGS //
+  //////////////
+  /** Update settings of the engine */
+  public setSettings(settings: Partial<PluginEngineSettings>): void
+  public setSettings<K extends keyof PluginEngineSettings>(key: K, value?: PluginEngineSettings[K]): void
+  public setSettings<K extends keyof PluginEngineSettings>(
+    keyOrSetting: K | Partial<PluginEngineSettings>,
+    value?: PluginEngineSettings[K]
+  ): void {
+    typeof keyOrSetting === 'string'
+      ? this.settings = {...this.settings, [keyOrSetting]: value }
+      : this.settings = {...this.settings, ...keyOrSetting }
   }
 
   //////////////
@@ -142,7 +163,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     if (plugin.profile.methods) {
       plugin.profile.methods.forEach(method => {
         this.methods[name][method] = (request: PluginRequest, ...payload: any[]) => {
-          return plugin.addRequest(request, method, payload)
+          return plugin['addRequest'](request, method, payload)
         }
       })
     }
@@ -152,13 +173,12 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
       if (!this.isRegistered(pluginName)) {
         throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not registered`)
       }
-      if (!this.methods[pluginName][key]) {
-        throw new Error(`Cannot call method ${key} of ${pluginName} from ${name}, because ${key} is not exposed`)
-      }
+
       const to: Plugin = this.plugins[pluginName]
+      const isNative = this.isNative(plugin.profile)
 
       // Check permission: If throw, it should not activate the plugin
-      if (this.settings.permissionHandler && !this.isNative(plugin.profile)) {
+      if (this.settings.permissionHandler && !isNative) {
         if (to.profile.permission) {
           const isAllowed = await this.settings.permissionHandler.askPermission(plugin.profile, to.profile)
           if (!isAllowed) {
@@ -166,10 +186,9 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
           }
         }
       }
-      // Check if active: If autoActivate is enabled, activate pluginName
+      // Check if active: If autoActivate is enabled and if plugin is native, activate pluginName
       if (!this.isActive(pluginName)) {
-        // throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not activated yet`)
-        if (this.settings.autoActivate && this.isNative(plugin.profile)) {
+        if (this.settings.autoActivate && isNative) {
           if (this.settings.permissionHandler) {
             this.settings.permissionHandler.onActivation(plugin.profile, to.profile)
           }
@@ -178,6 +197,11 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
           throw new Error(`Cannot call ${pluginName} from ${name}, because ${pluginName} is not activated yet`)
         }
       }
+
+      if (!this.methods[pluginName][key]) {
+        throw new Error(`Cannot call method ${key} of ${pluginName} from ${name}, because ${key} is not exposed`)
+      }
+
       const request = { from: name }
       return this.methods[pluginName][key](request, ...payload)
     }

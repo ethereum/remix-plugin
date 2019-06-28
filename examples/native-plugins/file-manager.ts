@@ -7,8 +7,7 @@ const fileManagerProfile = {
   permission: true
 }
 
-export class FileManager extends Plugin<IFileSystem, RemixApi>
-  implements API<IFileSystem> {
+export class FileManager extends Plugin<IFileSystem, RemixApi> implements API<IFileSystem> {
   private files: {
     [path: string]: string
   } = {}
