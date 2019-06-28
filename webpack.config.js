@@ -8,7 +8,7 @@ const common = {
       {
         test: /\.ts?$/,
         use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/, 
       },
     ],
   },
@@ -20,7 +20,8 @@ const common = {
   },
 }
 
-module.exports = [{
+// ENGINE
+const engine = {
   ...common,
   entry: './projects/engine/index.ts',
   output: {
@@ -29,7 +30,14 @@ module.exports = [{
     library: 'pluginEngine',
     libraryTarget: 'umd',
   },
-}, {
+}
+engine.module.rules.options = {
+  configFile: './projects/engine/tsconfig.prod.json'
+}
+
+
+// CLIENT
+const client = {
   ...common,
   entry: './projects/client/index.ts',
   output: {
@@ -37,5 +45,10 @@ module.exports = [{
     filename: 'index.js',
     library: 'remixPlugin',
     libraryTarget: 'umd',
-  },
-}]
+  }
+}
+client.module.rules.options = {
+  configFile: './projects/client/tsconfig.prod.json'
+}
+
+module.exports = [engine, client]
