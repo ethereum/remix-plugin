@@ -1,5 +1,5 @@
 import { IFileSystem } from './api'
-import { LibraryProfile } from '@utils'
+import { LibraryProfile } from '../../types'
 
 export const filSystemProfile: LibraryProfile<IFileSystem> = {
   name: 'fs',

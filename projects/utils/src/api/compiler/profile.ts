@@ -1,5 +1,5 @@
 import { ICompiler } from './api'
-import { LibraryProfile } from '@utils'
+import { LibraryProfile } from '../../types'
 
 export const compilerProfile: LibraryProfile<ICompiler> = {
   name: 'compiler',
