@@ -98,9 +98,8 @@ describe('Remix Engine', () => {
   test('Engine autoactivate plugin with settings', () => {
     engine.setSettings('autoActivate', true)
     engine.activate('solidity')
-    console.log(engine['settings'])
-    solidity.call.call(engine, 'fileManager', 'setFile', 'browser/file.sol', 'content')
-    const spy = spyOn(engine, 'onActivation')
+    const spy = spyOn(fileManager, 'activate')
+    solidity.call('fileManager', 'setFile', 'browser/file.sol', 'content')
     expect(spy).toHaveBeenCalledTimes(1)
   })
 })
