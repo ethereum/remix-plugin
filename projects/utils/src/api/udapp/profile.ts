@@ -1,5 +1,5 @@
 import { IUdapp } from './api'
-import { LibraryProfile } from '@utils'
+import { LibraryProfile } from '../../types'
 
 export const udappProfile: LibraryProfile<IUdapp> = {
   name: 'udapp',

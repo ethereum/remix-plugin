@@ -1,5 +1,5 @@
 import { ITheme } from './api'
-import { LibraryProfile } from '@utils'
+import { LibraryProfile } from '../../types'
 
 export const themeProfile: LibraryProfile<ITheme> = {
   name: 'theme',

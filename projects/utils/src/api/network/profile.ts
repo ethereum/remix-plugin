@@ -1,5 +1,5 @@
 import { INetwork } from './api'
-import { LibraryProfile } from '@utils'
+import { LibraryProfile } from '../../types'
 
 export const networkProfile: LibraryProfile<INetwork> = {
   name: 'network',
