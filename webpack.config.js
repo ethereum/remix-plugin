@@ -7,8 +7,8 @@ const common = {
     rules: [
       {
         test: /\.ts?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/, 
+        exclude: [/node_modules/],
+        loader: "ts-loader",
       },
     ],
   },
@@ -23,7 +23,8 @@ const common = {
 // ENGINE
 const engine = {
   ...common,
-  entry: './projects/engine/index.ts',
+  entry: './projects/engine',
+
   output: {
     path: path.resolve(__dirname, 'projects/engine/dist'),
     filename: 'index.js',
@@ -31,15 +32,11 @@ const engine = {
     libraryTarget: 'umd',
   },
 }
-engine.module.rules.options = {
-  configFile: './projects/engine/tsconfig.prod.json'
-}
-
 
 // CLIENT
 const client = {
   ...common,
-  entry: './projects/client/index.ts',
+  entry: './projects/client',
   output: {
     path: path.resolve(__dirname, 'projects/client/dist'),
     filename: 'index.js',
@@ -47,8 +44,6 @@ const client = {
     libraryTarget: 'umd',
   }
 }
-client.module.rules.options = {
-  configFile: './projects/client/tsconfig.prod.json'
-}
+
 
 module.exports = [engine, client]
