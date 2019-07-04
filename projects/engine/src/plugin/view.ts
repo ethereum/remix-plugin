@@ -13,12 +13,12 @@ export abstract class ViewPlugin extends Plugin {
     super(profile)
   }
 
-  activate() {
-    this.call(this.profile.location, 'addHost', this.name, this.render())
+  async activate() {
+    await this.call(this.profile.location, 'addView', this.profile, this.render())
     super.activate()
   }
 
   deactivate() {
-    this.call(this.profile.location, 'removeHost', this.name)
+    this.call(this.profile.location, 'removeView', this.profile)
   }
 }
