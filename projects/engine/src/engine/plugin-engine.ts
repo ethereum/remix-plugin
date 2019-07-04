@@ -253,6 +253,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     // Call hooks
     if (this.onActivation) this.onActivation(plugin)
     plugin.activate()
+    if (this.onActivated) this.onActivated(plugin)
   }
 
   //////////////////
