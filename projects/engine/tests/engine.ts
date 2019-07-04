@@ -25,20 +25,20 @@ describe('Remix Engine', () => {
     engine = new RemixPluginEngine(plugins)
   })
 
-  test('Activation', () => {
-    const spyEngine = spyOn(engine, 'onActivation')
+  test('Activation', async () => {
+    const spyEngine = spyOn(engine, 'onActivated')
     const spyPlugin = spyOn(solidity, 'onActivation')
-    engine.activate('solidity')
+    await engine.activate('solidity')
     expect(spyEngine).toBeCalledWith(solidity)
     expect(spyPlugin).toBeCalledTimes(1)
     expect(engine.actives).toEqual(['solidity'])
   })
 
-  test('Deactivation', () => {
-    const spyEngine = spyOn(engine, 'onDeactivation')
+  test('Deactivation', async () => {
+    const spyEngine = spyOn(engine, 'onDeactivated')
     const spyPlugin = spyOn(solidity, 'onDeactivation')
-    engine.activate('solidity')
-    engine.deactivate('solidity')
+    await engine.activate('solidity')
+    await engine.deactivate('solidity')
     expect(spyEngine).toBeCalledWith(solidity)
     expect(spyPlugin).toBeCalledTimes(1)
     expect(engine.actives).toEqual([])
@@ -91,7 +91,7 @@ describe('Remix Engine', () => {
   test('Engine do not autoactivate plugin by default', () => {
     engine.activate('solidity')
     solidity.call('fileManager', 'setFile', 'browser/file.sol', 'content')
-    const spy = spyOn(engine, 'onActivation')
+    const spy = spyOn(engine, 'onActivated')
     expect(spy).not.toHaveBeenCalled()
   })
 

@@ -7,11 +7,11 @@ type RemixApiMap = Readonly<{
 }>
 
 export class RemixPluginEngine extends PluginEngine<RemixApiMap> {
-  onActivation(plugin: Plugin) {
+  onActivated(plugin: Plugin) {
     // Not implemented yet
   }
 
-  onDeactivation(plugin: Plugin) {
+  onDeactivated(plugin: Plugin) {
     // Not implemented yet
   }
 

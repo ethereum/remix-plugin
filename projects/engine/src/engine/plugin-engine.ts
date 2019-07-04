@@ -58,8 +58,8 @@ abstract class AbstractPluginEngine {
 
   // Hooks
   onRegistration?(plugin: Plugin): void
-  onActivation?(plugin: Plugin): void
-  onDeactivation?(plugin: Plugin): void
+  onActivated?(plugin: Plugin): void
+  onDeactivated?(plugin: Plugin): void
 }
 
 /**
@@ -144,14 +144,14 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   //////////////
 
   /** Activate one or several plugins */
-  public activate(names: Extract<keyof T, string> | Extract<keyof T, string>[]) {
-    (Array.isArray(names))
-      ? names.forEach(name => this.activateOne(name))
+  public async activate(names: Extract<keyof T, string> | Extract<keyof T, string>[]) {
+    return (Array.isArray(names))
+      ? Promise.all(names.map(name => this.activateOne(name)))
       : this.activateOne(names)
   }
 
   /** Activate one plugin */
-  private activateOne(name: string) {
+  private async activateOne(name: string) {
     if (this.isActive(name)) return // Plugin already activated
     if (!this.isRegistered(name)) {
       throw new Error(`Plugin ${name} is not register yet. It cannot be activated`)
@@ -251,8 +251,8 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     plugin['app'] = Object.freeze(app)
 
     // Call hooks
-    if (this.onActivation) this.onActivation(plugin)
-    plugin.activate()
+    await plugin.activate()
+    if (this.onActivated) this.onActivated(plugin)
   }
 
   //////////////////
@@ -260,14 +260,14 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   //////////////////
 
   /** Deactivate one or several plugins */
-  public deactivate(names: string | string[]) {
-    (Array.isArray(names))
-      ? names.forEach(name => this.deactivateOne(name))
+  public async deactivate(names: string | string[]) {
+    return (Array.isArray(names))
+      ? Promise.all(names.map(name => this.deactivateOne(name)))
       : this.deactivateOne(names)
   }
 
   /** Deactivate one plugin */
-  private deactivateOne(name: string) {
+  private async deactivateOne(name: string) {
     const plugin = this.plugins[name]
 
     // REMOVE CALL / LISTEN / EMIT
@@ -297,8 +297,8 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     delete plugin['app']
 
     // Call hooks
-    if (this.onDeactivation) this.onDeactivation(plugin)
-    plugin.deactivate()
+    await plugin.deactivate()
+    if (this.onDeactivated) this.onDeactivated(plugin)
   }
 
 }
