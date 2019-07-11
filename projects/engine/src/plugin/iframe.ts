@@ -102,7 +102,7 @@ export class IframePlugin extends ViewPlugin {
     if (this.iframe.contentWindow) {
       throw new Error(`${this.name} plugin is already rendered`)
     }
-    this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms')
+    this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake
