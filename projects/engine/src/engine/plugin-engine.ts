@@ -270,13 +270,23 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   private async deactivateOne(name: string) {
     const plugin = this.plugins[name]
 
+    // Call hooks
+    await plugin.deactivate()
+    if (this.onDeactivated) this.onDeactivated(plugin)
+
     // REMOVE CALL / LISTEN / EMIT
-    const deactivatedWarning = () => {
-      throw new Error(`Plugin ${name} is currently deactivated. Activate it to use this method`)
+    const deactivatedWarning = (message: string) => {
+      return `Plugin ${name} is currently deactivated. ${message}. Activate ${name} first`
     }
-    plugin['call'] = deactivatedWarning
-    plugin['on'] = deactivatedWarning
-    plugin['emit'] = deactivatedWarning
+    plugin['call'] = (pluginName: string, key: string, ...payload: any[]) => {
+      throw new Error(deactivatedWarning(`It cannot call method ${key} of plugin ${pluginName}.`))
+    }
+    plugin['on'] = (pluginName: string, event: string) => {
+      throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${pluginName}.`))
+    }
+    plugin['emit'] = (event: string, ...payload: any[]) => {
+      throw new Error(deactivatedWarning(`It cannot emit the event ${event}`))
+    }
 
     // REMOVE EXPOSED METHODS
     delete this.methods[name]
@@ -295,10 +305,6 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
     // REMOVE PLUGIN APP
     delete plugin['app']
-
-    // Call hooks
-    await plugin.deactivate()
-    if (this.onDeactivated) this.onDeactivated(plugin)
   }
 
 }
