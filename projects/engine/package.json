@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine",
-  "version": "0.1.3",
+  "version": "0.1.3-1",
   "description": "Plugin Engine that power Remix IDE",
   "contributors": [
     {
@@ -12,9 +12,15 @@
       "email": "grandschtroumpf@ethereum.org"
     }
   ],
-  "keywords": ["Ethereum", "RemixIDE", "Plugin"],
+  "keywords": [
+    "Ethereum",
+    "RemixIDE",
+    "Plugin"
+  ],
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "browser": "dist/index.js",
