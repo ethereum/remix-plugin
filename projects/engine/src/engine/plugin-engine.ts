@@ -272,7 +272,6 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
     // Call hooks
     await plugin.deactivate()
-    if (this.onDeactivated) this.onDeactivated(plugin)
 
     // REMOVE CALL / LISTEN / EMIT
     const deactivatedWarning = (message: string) => {
@@ -305,6 +304,9 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
     // REMOVE PLUGIN APP
     delete plugin['app']
+
+    // Once everything is deactivated
+    if (this.onDeactivated) this.onDeactivated(plugin)
   }
 
 }
