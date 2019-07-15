@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { Api, Profile, LibraryProfile } from '../../../utils'
+import { Api, Profile, LibraryProfile, ViewProfile } from '../../../utils'
 
 export type LibraryApi<T extends Api, P extends Profile> = {
   [method in P['methods'][number]]: T['methods'][method]
@@ -8,24 +8,42 @@ export type LibraryApi<T extends Api, P extends Profile> = {
     on: (name: string, cb: (...args: any[]) => void) => void
     emit: (name: string, ...args: any[]) => void
   }
+} & {
+  render?(): Element
 }
 
+interface LibraryViewProfile extends Profile, LibraryProfile {
+  location?: string
+}
+
+export function isViewLibrary(profile): profile is LibraryViewProfile {
+  return !!profile.location
+}
 
 export class LibraryPlugin<
   T extends Api,
-  P extends (Profile & LibraryProfile)
+  P extends LibraryViewProfile
 > extends Plugin {
 
-  constructor(private library: LibraryApi<T, P>, public profile: P) {
+  private isView: boolean
+
+  constructor(protected library: LibraryApi<T, P>, public profile: P) {
     super(profile)
     profile.methods.forEach(method => {
       if (!library[method]) {
         throw new Error(`Method ${method} is exposed by LibraryPlugin ${profile.name}. But library doesn't expose this method`)
       }
     })
+    this.isView = isViewLibrary(profile)
+    if (this.isView && !this['render']) {
+      throw new Error(`Profile ${profile.name} define the location ${profile.location}, but method "render" is not implemented`)
+    }
   }
 
-  activate() {
+  async activate() {
+    if (this.isView) {
+      await this.call(this.profile.location, 'addView', this.profile, this['render']())
+    }
     super.activate()
     // Forward event to the library
     if (this.profile.notifications) {
@@ -50,6 +68,13 @@ export class LibraryPlugin<
     }
   }
 
+  deactivate() {
+    if (this.isView) {
+      this.call(this.profile.location, 'removeView', this.profile)
+    }
+    super.deactivate()
+  }
+
   /** Call a method from this plugin */
   protected callPluginMethod(key: string, payload: any[]) {
     if (!this.library[key]) {
@@ -58,4 +83,3 @@ export class LibraryPlugin<
     return this.library[key](...payload)
   }
 }
-
