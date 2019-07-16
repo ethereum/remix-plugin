@@ -28,7 +28,7 @@ export class IframePlugin extends ViewPlugin {
   }
 
   /** Call a method from this plugin */
-  protected callPluginMethod(key: string, payload: any[]) {
+  protected callPluginMethod(key: string, payload: any[] = []): Promise<any> {
     const action = 'request'
     const id = this.id++
     const requestInfo = this.currentRequest
@@ -106,18 +106,15 @@ export class IframePlugin extends ViewPlugin {
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.src = this.profile.url
     // Wait for the iframe to load and handshake
-    this.iframe.onload = () => {
+    this.iframe.onload = async () => {
       if (!this.iframe.contentWindow) {
         throw new Error(`${this.name} plugin is cannot find url ${this.profile.url}`)
       }
       window.addEventListener(...this.listener)
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
-      this.postMessage({
-        action: 'request',
-        name: this.name,
-        key: 'handshake',
-      })
+      const methods: string[] = await this.callPluginMethod('handshake')
+      this.profile.methods = methods
     }
     return this.iframe
   }
