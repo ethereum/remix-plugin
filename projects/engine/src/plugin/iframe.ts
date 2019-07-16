@@ -114,7 +114,9 @@ export class IframePlugin extends ViewPlugin {
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
       const methods: string[] = await this.callPluginMethod('handshake')
-      this.profile.methods = methods
+      if (methods) {
+        this.profile.methods = methods
+      }
     }
     return this.iframe
   }
