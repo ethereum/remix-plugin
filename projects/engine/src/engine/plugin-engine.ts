@@ -83,10 +83,6 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     this.register(Object.keys(plugins).map(key => plugins[key]))
   }
 
-  // public get actives(): string[] {
-  //   return Object.keys(this.methods)
-  // }
-
   /////////////
   // HELPERS //
   /////////////
