@@ -61,16 +61,6 @@ describe('Remix Engine', () => {
     engine['events']['solidity'][event]('newFile')
   })
 
-  test('Engine can call a method from an active plugin', async () => {
-    engine.activate(['solidity', 'fileManager'])
-    fileManager['files'] = { newFile: 'myContract' }
-    const content = await engine['methods']['fileManager']['getFile'](
-      { from: 'solidity' },
-      'newFile',
-    )
-    expect(content).toEqual('myContract')
-  })
-
   test('Engine catch event emitted by activated plugins', done => {
     engine.activate(['solidity', 'fileManager'])
     const event = listenEvent('fileManager', 'currentFileChanged')
