@@ -43,7 +43,7 @@ describe('Client is not loaded yet', () => {
 
   test('Call should throw when client is not loaded', async () => {
     expect(() => client.call('fileManager', 'getFile', 'browser/ballot.sol'))
-      .toThrow('If you are using a local IDE, make sure to add devMode in client options')
+      .toThrow('Not connected to the IDE. Make sure the port of the IDE is 8080')
   })
 })
 
