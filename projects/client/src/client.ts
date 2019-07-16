@@ -12,6 +12,7 @@ import {
   callEvent,
   listenEvent,
   RemixApi,
+  remixProfiles
 } from '../../utils'
 
 export interface PluginDevMode {
@@ -24,16 +25,17 @@ export interface PluginDevMode {
 export interface PluginOptions<T extends ApiMap> {
   customTheme: boolean
   customApi: ProfileMap<T>
-  devMode: PluginDevMode
+  devMode: Partial<PluginDevMode>
 }
 
 export const defaultOptions: Partial<PluginOptions<any>> = {
   customTheme: false,
-  customApi: {},
+  customApi: remixProfiles,
+  devMode: { port: 8080 }
 }
 
 /** Throw an error if client try to send a message before connection */
-export function handleConnectionError(devMode?: PluginDevMode) {
+export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
   const err = devMode
     ? `Make sure the port of the IDE is ${devMode.port}`
     : 'If you are using a local IDE, make sure to add devMode in client options'
@@ -48,6 +50,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   public events = new EventEmitter()
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
+  public methods: string[]
 
   constructor(options: Partial<PluginOptions<App>> = {}) {
     this.options = {

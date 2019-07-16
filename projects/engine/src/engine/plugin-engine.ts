@@ -72,6 +72,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   protected methods: ExposedMethods = {}
   protected events: ExposedEvents = {}
   protected listeners: EventRecord = {}
+  protected actives: string[] = []
 
   constructor(
     plugins: Partial<PluginMap<T>>,
@@ -82,9 +83,9 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     this.register(Object.keys(plugins).map(key => plugins[key]))
   }
 
-  public get actives(): string[] {
-    return Object.keys(this.methods)
-  }
+  // public get actives(): string[] {
+  //   return Object.keys(this.methods)
+  // }
 
   /////////////
   // HELPERS //
@@ -94,7 +95,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   }
 
   private isActive(name: string): boolean {
-    return !!this.methods[name]
+    return !!this.actives.includes(name)
   }
 
   /** Either it's not an IframeProfile or it's */
@@ -158,15 +159,17 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
     }
     const plugin = this.plugins[name]
 
+    this.actives.push(name)
+
     // EXPOSES METHODS
-    this.methods[name] = {}
-    if (plugin.profile.methods) {
-      plugin.profile.methods.forEach(method => {
-        this.methods[name][method] = (request: PluginRequest, ...payload: any[]) => {
-          return plugin['addRequest'](request, method, payload)
-        }
-      })
-    }
+    // this.methods[name] = {}
+    // if (plugin.profile.methods) {
+    //   plugin.profile.methods.forEach(method => {
+    //     this.methods[name][method] = (request: PluginRequest, ...payload: any[]) => {
+    //       return plugin['addRequest'](request, method, payload)
+    //     }
+    //   })
+    // }
 
     // LISTEN ON CALL
     async function call(pluginName: string, key: string, ...payload: any[]) {
@@ -198,12 +201,15 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
         }
       }
 
-      if (!this.methods[pluginName][key]) {
-        throw new Error(`Cannot call method ${key} of ${pluginName} from ${name}, because ${key} is not exposed`)
+      if (!to.profile.methods.includes(key)) {
+        const notExposedMsg = `Cannot call method "${key}" of "${pluginName}" from "${name}", because "${key}" is not exposed.`
+        const exposedMethodsMsg = `Here is the list of exposed methods: ${to.profile.methods.map(method => `"${method}"`).join(',')}`
+        throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
       }
 
       const request = { from: name }
-      return this.methods[pluginName][key](request, ...payload)
+      return to['addRequest'](request, key, payload)
+      // return this.methods[pluginName][key](request, ...payload)
     }
     plugin['call'] = call.bind(this)
 
@@ -272,6 +278,9 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
     // Call hooks
     await plugin.deactivate()
+
+    const index = this.actives.indexOf(name)
+    this.actives.splice(index, 1)
 
     // REMOVE CALL / LISTEN / EMIT
     const deactivatedWarning = (message: string) => {
