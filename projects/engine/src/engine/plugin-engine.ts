@@ -161,16 +161,6 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
     this.actives.push(name)
 
-    // EXPOSES METHODS
-    // this.methods[name] = {}
-    // if (plugin.profile.methods) {
-    //   plugin.profile.methods.forEach(method => {
-    //     this.methods[name][method] = (request: PluginRequest, ...payload: any[]) => {
-    //       return plugin['addRequest'](request, method, payload)
-    //     }
-    //   })
-    // }
-
     // LISTEN ON CALL
     async function call(pluginName: string, key: string, ...payload: any[]) {
       if (!this.isRegistered(pluginName)) {
@@ -209,7 +199,6 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
 
       const request = { from: name }
       return to['addRequest'](request, key, payload)
-      // return this.methods[pluginName][key](request, ...payload)
     }
     plugin['call'] = call.bind(this)
 
