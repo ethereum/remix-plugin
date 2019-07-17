@@ -20,7 +20,7 @@ const position = {                  // Range of code to highlight
 const file = 'browser/ballot.sol'   // File to highlight
 const color = '#e6e6e6'             // Color of the highlight
 
-await client.call('editor', position, file, color)
+await client.call('editor', 'highlight', position, file, color)
 // OR
 await client.editor.highlight(position, file, color)
 ```
