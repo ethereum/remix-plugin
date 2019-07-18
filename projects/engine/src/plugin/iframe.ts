@@ -34,7 +34,7 @@ export class IframePlugin extends ViewPlugin {
     const requestInfo = this.currentRequest
     const name = this.name
     const promise = new Promise((res, rej) => {
-      this.pendingRequest[id] = (result: any, error: Error) => error ? rej (error) : res(result)
+      this.pendingRequest[id] = (result: any[], error: Error) => error ? rej (error) : res(result)
     })
     this.postMessage({ id, action, key, payload, requestInfo, name })
     return promise
@@ -62,7 +62,7 @@ export class IframePlugin extends ViewPlugin {
       case 'request': {
         const action = 'response'
         try {
-          const payload = await this.call(message.name, message.key, message.payload)
+          const payload = await this.call(message.name, message.key, ...message.payload)
           const error = undefined
           this.postMessage({ ...message, action, payload, error })
         } catch (err) {
