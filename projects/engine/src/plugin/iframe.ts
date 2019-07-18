@@ -33,10 +33,11 @@ export class IframePlugin extends ViewPlugin {
     const id = this.id++
     const requestInfo = this.currentRequest
     const name = this.name
-    this.postMessage({ id, action, key, payload, requestInfo, name })
-    return new Promise((res, rej) => {
+    const promise = new Promise((res, rej) => {
       this.pendingRequest[id] = (result: any, error: Error) => error ? rej (error) : res(result)
     })
+    this.postMessage({ id, action, key, payload, requestInfo, name })
+    return promise
   }
 
   /** Get message from the iframe */

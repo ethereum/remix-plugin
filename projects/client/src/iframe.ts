@@ -53,6 +53,7 @@ export function connectIframe(client: PluginClient<any, any>) {
           (event.source as Window).postMessage(msg, event.origin as any)
         })
         client.events.emit('loaded')
+        // Send back the list of methods exposed by the plugin
         const message = {action: 'response', name, key, id, payload: client.methods};
         (event.source as Window).postMessage(message, event.origin)
         return
