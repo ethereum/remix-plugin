@@ -100,6 +100,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   ): void {
     const eventName = listenEvent(name, key)
     this.events.on(eventName, cb)
+    this.events.emit('send', { action: 'listen', name, key, id: this.id })
   }
 
   /** Expose an event for the IDE */
