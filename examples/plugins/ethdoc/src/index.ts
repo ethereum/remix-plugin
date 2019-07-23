@@ -1,5 +1,6 @@
 import { LitElement, html, customElement } from 'lit-element'
-import { createIframeClient, remixApi, CompilationFileSources, CompilationResult, Status } from 'remix-plugin'
+import { createIframeClient } from '@remixproject/plugin'
+import { remixApi, CompilationFileSources, CompilationResult, Status } from '@utils'
 import { createDoc } from './ethdoc'
 
 interface ContractMap {
@@ -17,15 +18,17 @@ interface AlertMap {
 export class EthdocComponent extends LitElement {
 
   /** client to communicate with the IDE */
-  private client = createIframeClient({
-    customApi: remixApi,
-    devMode: { port: 8080 }
-  })
+  private client = createIframeClient()
   private docs: ContractMap = {}
   private docAlerts: AlertMap = {}
 
   constructor() {
     super()
+    this.init()
+  }
+
+  async init() {
+    await this.client.onload()
     this.client.solidity.on('compilationFinished', (
       file: string,
       src: CompilationFileSources,

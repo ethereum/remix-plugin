@@ -1,7 +1,10 @@
 {
-  "extends": "../../tsconfig.example.json",
+  "extends": "../../../tsconfig.json",
   "include": ["src", "profile"],
   "compilerOptions": {
-    "outDir": ".plugins/ethdoc/dist"
+    "outDir": ".plugins/ethdoc/dist",
+    "module": "es6",
+    "target": "esnext",
+    "experimentalDecorators": true
   }
 }

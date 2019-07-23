@@ -1,28 +1,11 @@
 const path = require('path')
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
+const common = require('./webpack.common')
 
-const common = {
-  mode: 'production',
-  module: {
-    rules: [
-      {
-        test: /\.ts?$/,
-        exclude: [/node_modules/],
-        loader: "ts-loader",
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, './tsconfig.json') }),
-    ],
-  },
-}
 
 // ENGINE
 const engine = {
   ...common,
+  mode: 'production',
   entry: './projects/engine',
 
   output: {
@@ -36,6 +19,7 @@ const engine = {
 // CLIENT
 const client = {
   ...common,
+  mode: 'production',
   entry: './projects/client',
   output: {
     path: path.resolve(__dirname, 'projects/client/dist'),
