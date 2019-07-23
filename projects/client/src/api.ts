@@ -40,17 +40,13 @@ export function getApiMap<T extends ProfileMap<App>, App extends ApiMap>(
 
 
 /** Start listening on theme changed */
-export function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
+export async function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
   if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')
   document.head.appendChild(cssLink)
-  // Theme changed
-  client.on('theme', 'themeChanged', (theme: Theme) => {
-    setTheme(cssLink, theme)
-  })
-  // When client is loaded, get the current Theme
   client.onload(async () => {
+    client.on('theme', 'themeChanged', (_theme: Theme) => setTheme(cssLink, _theme))
     const theme = await client.call('theme', 'currentTheme')
     setTheme(cssLink, theme)
   })
@@ -58,6 +54,7 @@ export function listenOnThemeChanged(client: PluginClient<any, any>, options?: P
 }
 
 function setTheme(cssLink: HTMLLinkElement, theme: Theme) {
+  console.log('setTheme', cssLink, theme)
   cssLink.setAttribute('href', theme.url)
   document.documentElement.style.setProperty('--theme', theme.quality)
 }

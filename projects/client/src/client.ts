@@ -46,7 +46,6 @@ export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
 export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   private loaded = false
   private id = 0
-  private loadedCB: () => void
   public events = new EventEmitter()
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
@@ -57,10 +56,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
       ...defaultOptions,
       ...options
     } as PluginOptions<App>
-    this.events.once('loaded', () => {
-      this.loaded = true
-      if (this.loadedCB) this.loadedCB()
-    })
+    this.events.once('loaded', () => this.loaded = true)
   }
 
   // Wait until this connection is settled
@@ -70,7 +66,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
         res()
         if (cb) cb()
       }
-      this.loaded ? loadFn() : (this.loadedCB = loadFn)
+      this.loaded ? loadFn() : this.events.once('loaded', () => loadFn())
     })
   }
 
