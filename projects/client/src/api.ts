@@ -54,7 +54,6 @@ export async function listenOnThemeChanged(client: PluginClient<any, any>, optio
 }
 
 function setTheme(cssLink: HTMLLinkElement, theme: Theme) {
-  console.log('setTheme', cssLink, theme)
   cssLink.setAttribute('href', theme.url)
   document.documentElement.style.setProperty('--theme', theme.quality)
 }
