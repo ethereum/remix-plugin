@@ -6,7 +6,7 @@ import {
   DevMethodDoc,
   FunctionDescription,
   UserMethodDoc,
-} from 'remix-plugin'
+} from '@utils'
 
 type TemplateDoc<T> = { [key in keyof T]: (...params: any[]) => string }
 
