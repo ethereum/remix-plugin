@@ -86,17 +86,17 @@ describe('Common Apis', () => {
   beforeEach(() => {
     client = new PluginClient()
   })
-  test('Should listen on theme changed', () => {
-    const link = listenOnThemeChanged(client) as HTMLLinkElement
+  test('Should listen on theme changed', async () => {
+    const link = await listenOnThemeChanged(client) as HTMLLinkElement
     expect(link.getAttribute('rel')).toBe('stylesheet')
     client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
     setTimeout(() => {
       expect(link.getAttribute('href')).toBe('url')
     }, 100)
   })
-  test('If theme is custom, do not change the url', () => {
+  test('If theme is custom, do not change the url', async () => {
     const options = { customTheme: true, customApi: { test: profile } }
-    const link = listenOnThemeChanged(client, options) as HTMLLinkElement
+    const link = await listenOnThemeChanged(client, options) as HTMLLinkElement
     client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
     setTimeout(() => {
       expect(link.getAttribute('href')).toBeUndefined()
