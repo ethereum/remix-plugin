@@ -22,7 +22,7 @@ describe('Client Api', () => {
   let api: CustomApi<TestApi>
   beforeEach(() => {
     client = new PluginClient()
-    client['loaded'] = true
+    client['isLoaded'] = true
     api = createApi(client, profile)
   })
 

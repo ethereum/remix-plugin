@@ -44,8 +44,8 @@ export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
 
 
 export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
-  private loaded = false
   private id = 0
+  public isLoaded = false
   public events = new EventEmitter()
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
@@ -56,7 +56,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
       ...defaultOptions,
       ...options
     } as PluginOptions<App>
-    this.events.once('loaded', () => this.loaded = true)
+    this.events.once('loaded', () => this.isLoaded = true)
   }
 
   // Wait until this connection is settled
@@ -66,7 +66,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
         res()
         if (cb) cb()
       }
-      this.loaded ? loadFn() : this.events.once('loaded', () => loadFn())
+      this.isLoaded ? loadFn() : this.events.once('loaded', () => loadFn())
     })
   }
 
@@ -76,7 +76,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     key: Key,
     ...payload: MethodParams<App[Name], Key>
   ): Promise<ReturnType<App[Name]['methods'][Key]>> {
-    if (!this.loaded) handleConnectionError(this.options.devMode)
+    if (!this.isLoaded) handleConnectionError(this.options.devMode)
     this.id++
     return new Promise((res, rej) => {
       const eventName = callEvent(name, key, this.id)
@@ -101,7 +101,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
 
   /** Expose an event for the IDE */
   public emit<Key extends EventKey<T>>(key: Key, ...payload: EventParams<T, Key>): void {
-    if (!this.loaded) handleConnectionError(this.options.devMode)
+    if (!this.isLoaded) handleConnectionError(this.options.devMode)
     this.events.emit('send', { action: 'notification', key, payload })
   }
 }

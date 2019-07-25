@@ -31,7 +31,7 @@ export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode
  * @param client A client to put the messages into
  */
 export function connectIframe(client: PluginClient<any, any>) {
-  let loaded = false
+  let isLoaded = false
 
   async function getMessage(event: MessageEvent) {
     if (!event.source) throw new Error('No source')
@@ -46,9 +46,9 @@ export function connectIframe(client: PluginClient<any, any>) {
     const { action, key, name, payload, id, requestInfo, error } = event.data as Message
     try {
 
-      // If handshake set loaded
+      // If handshake set isLoaded
       if (action === 'request' && key === 'handshake') {
-        loaded = true
+        isLoaded = true
         client.events.on('send', (msg: Message) => {
           (event.source as Window).postMessage(msg, event.origin as any)
         })
@@ -59,8 +59,8 @@ export function connectIframe(client: PluginClient<any, any>) {
         return
       }
 
-      // Check if is loaded
-      if (!loaded) throw new Error('Handshake before communicating')
+      // Check if is isLoaded
+      if (!isLoaded) throw new Error('Handshake before communicating')
 
       switch (action) {
         case 'notification': {
