@@ -21,7 +21,7 @@ describe('Client is not loaded yet', () => {
 
   test('Client has default values', () => {
     expect(client).toBeDefined()
-    expect(client['loaded']).toBeFalsy()
+    expect(client['isLoaded']).toBeFalsy()
     expect(client['id']).toBe(0)
   })
 
