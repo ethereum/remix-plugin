@@ -63,4 +63,4 @@ const address = await client.call('udapp', 'createVMAccount', { privateKey, bala
 `RemixTxReceipt`: A modified version of the transaction receipt for Remix.
 
 
-> Type Definitions can be found [here](../../src/api/udapp/type.ts)
+> Type Definitions can be found [here](../../projects/utils/src/api/udapp/type.ts)

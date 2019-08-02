@@ -1,3 +1,7 @@
+## DEPRECATED
+
+This code is deprecated. Please use `@remixproject/plugin` instead.
+
 # Remix Plugin
 
 Remix plugin helps you extends the Remix IDE. The goal is to give access of all the features inside Remix and make them available for Ethereum Developers.
@@ -12,18 +16,20 @@ Remix Plugin can be use (but not only) for :
 
 **ALPHA**
 
-Use Remix alpha version to test your plugin : http://remix-alpha.ethereum.org/.
+Use Remix alpha version to test your plugin : http://remix-alpha.ethereum.org/
+
+This version is still a work in progress and some breaks may be expected (especially names). But the overall stucture should remain unchanged.
 
 ## Getting Started
 
 Installation :
 ```bash
-npm install @remixproject/plugin
+npm install remix-plugin
 ```
 
 or with a unpkg :
 ```html
-<script src="https://unpkg.com/@remixproject/plugin"></script>
+<script src="https://unpkg.com/remix-plugin"></script>
 ```
 
 ### Plugin Client
@@ -31,7 +37,7 @@ The plugin client is how you connect your plugin to remix.
 
 To import ( the ES6 way) with NPM use:
 ```javascript
-import { createIframeClient } from '@remixproject/plugin'
+import { createIframeClient } from 'remix-plugin'
 const client = createIframeClient()
 ```
 Or if you are using unpkg use:
@@ -40,13 +46,36 @@ const { createIframeClient } = remixPlugin
 const client = createIframeClient()
 ```
 
+### Client Options
+
+#### Custom Api
+To leverage Typescript types, you can define some custom apis.
+```typescript
+import { remixApi } from 'remix-plugin'
+const client = createIframeClient({ customApi: remixApi })
+```
+This will provide you all the types of the plugin exposed by the Remix IDE.
+For example :
+```typescript
+client.fileManager.setFile(path, content)              // With customApi
+client.call('fileManager', 'setFile', path, content)   // Without customApi
+```
+> You'll need Typescript > 3.4 to leverage those types.
+
+#### DevMode
+Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
+
+If you're developing a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs :
+```typescript
+const devMode = { port: 8080 } // By default Remix IDE runs on port 8080
+const client = createIframeClient({ devMode })
+```
 
 ### Examples
 You can find examples of plugins here :
 - [Hello World](./examples/plugins/hello-world)
 - [Lit Element](./examples/plugins/ethdoc)
 - [Etherscan Verification](./examples/plugins/etherscan)
-- [3box storage](https://github.com/pldespaigne/remix-3box-plugin)
 
 ---
 ## Test inside Remix IDE
@@ -89,8 +118,6 @@ client.on('solidity', 'compilationFinished', (target, source, version, data) => 
 )
 ```
 
-⚠️ Be sure that your plugin is loaded before listening on an event.
-
 > See all available event [below](#api).
 
 ### Call
@@ -126,21 +153,9 @@ async function deployReadme(content) {
 
 > Note: Be sure that your plugin is loaded before making any call.
 
-### Expose methods
-Your plugin can also exposed methods to other plugins. For that you need to extends the `PluginClient` class, and override the `methods` property : 
-```typescript
-class MyPlugin extends PluginClient {
-  methods: ['sayHello'];
-
-  sayHello(name: string) {
-    return `Hello ${name} !`;
-  }
-}
-const client = buildIframeClient(new MyPlugin())
-```
-> When extending the `PluginClient` you need to connect your client to the iframe with `buildIframeClient`.
-
-You can find an exemple [here](https://github.com/pldespaigne/remix-3box-plugin).
+<div align="center">
+<img src="./doc/imgs/remix-client.png" width="300">
+</div>
 
 ### Testing your plugin
 You can test your plugin direcly on the [alpha version of Remix-IDE](https://remix-alpha.ethereum.org). Go to the `pluginManager` (plug icon in the sidebar), and click "Connect to a Local Plugin".
@@ -152,23 +167,11 @@ Here you can add :
 
 > Note: No need to do anything if you localhost auto-reload, a new `handshake` will be send by the IDE.
 
-### Publish your plugin on Remix IDE
-To publish on Remix IDE, uou need to create a `Profile` for you plugin with the following field : 
-```typescript
-interface Profile {
-  name: string, // The name of your plugin in camelCase (used inside client.call(name, method, payload)).
-  displayName: string, // The name displayed by the IDE
-  description: string, // A description to display in the IDE
-  events: [], // Name of the events
-  methods: ['sayHello'], // Name of the methods exposed by the plugin
-  url: string, // URL where your plugin is hosted
-  icon: string, // Url of the icon to display on tab
-  location: 'mainPanel' | 'sidePanel' | 'none' // Where your plugin should be displayed in the IDE
-}
-```
+### Publish your plugin
+This is not available now.
 
 # API
-Your plugin can interact with other plugins through the API. `@remixproject/plugin` provide a set of default plugins integrated inside the Remix IDE. Some of the APIs have to be used with caution. So they might ask the permission of the user.
+Your plugin can interact with other plugins through the API. `remix-plugin` provide a set of default plugins integrated inside the Remix IDE. Some of the APIs have to be used with caution. So they might ask the permission of the user.
 
 
 ## Remix Api
@@ -181,8 +184,6 @@ Click on the name of the api to get the full documentation.
 |Editor         |[editor](./doc/plugins/editor.md)            |           |Enables highlighting in the code Editor
 |Network        |[network](./doc/plugins/network.md)          |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
 |Udapp          |[udapp](./doc/plugins/udapp.md)              |✅         |Transaction listener
-|Unit Testing   |[solidityUnitTesting](./doc/plugins/unit-testing.md) |    |Unit testing library in solidity
-|Content Import |[contentImport](./doc/plugins/content-import.md) |        |Import files from  github, swarm, ipfs, http or https.
 
 > This API is a Work In Progress and will be extended in the future.
 
@@ -212,18 +213,7 @@ client.emit('statusChanged', { key: 'succeed', type: 'success', title: 'Document
 ```
 > The IDE can use this status to display a notification to the user.
 
-
-
-### Typescript
-Every plugin has been strong typed to make it easier to use the client.
-
-> You'll need Typescript > 3.4 to leverage those types.
-
-
-
-### Client Options
-
-#### CSS Theme
+## CSS Theme
 Remix is using [Bootstrap](https://getbootstrap.com/). For better User Experience it's **highly recommanded** to use the same theme as Remix in your plugin. For that you _just_ have to use standard bootstrap classes.
 
 Remix will automatically create a `<link/>` tag in the header of your plugin with the current theme used. And it'll update the link each time the user change the theme.
@@ -233,23 +223,3 @@ If you really want to use your own theme, you can use the `customTheme` flag in 
 const client = createIframeClient({ customTheme: true })
 ```
 
-#### Custom Api
-By default `@remixproject/plugin` will use remix IDE api. If you want to extends the API you can specify it in the `customApi` option: 
-
-```typescript
-import { remixProfiles } from '
-const myCustomApi = {
-  ...remixProfiles
-}
-const client = createIframeClient({ customApi: myCustomApi })
-```
-
-
-#### DevMode
-Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
-
-If you're developing a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs. By default the port used is *8080*. To change it you can do:
-```typescript
-const devMode = { port: 3000 }
-const client = createIframeClient({ devMode })
-```

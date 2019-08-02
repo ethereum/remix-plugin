@@ -1,11 +1,12 @@
 # Breaking changes 
 (please reach out to our gitter channel - https://gitter.im/ethereum/remix-dev - for any questions)
 
+
 ## remix-plugin -> @remixproject
 - `remix-plugin` is now divided into two packages to lower the amount of code need per package.
   - `@remixproject/plugin`: Library to build plugin and interact with the IDE.
   - `@remixproject/engine`: Library to build a plugin engine. Used by RemixIDE.
-
+- You need to wait for your plugin to be loaded before listening to an event
 
 ## api < 0.5 -> api 0.5
 - `RemixExtension` is now called `RemixClient`.

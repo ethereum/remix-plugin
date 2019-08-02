@@ -36,4 +36,4 @@ const result = await client.call('solidity', 'getCompilationResult')
 
 `CompilationResult`: The result of the compilation matches the [Solidity Compiler Output documentation](https://solidity.readthedocs.io/en/latest/using-the-compiler.html#output-description).
 
-> Type Definitions can be found [here](../../src/api/compiler/type)
+> Type Definitions can be found [here](../../projects/utils/src/api/compiler/type)

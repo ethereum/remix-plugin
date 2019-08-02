@@ -72,4 +72,4 @@ await client.call('network', 'removeNetwork', 'local')
 `Network`: A simple object with the `name` and `id` of the network.
 `CustomNetwork`: A simple object with a `name` and `url`.
 
-> Type Definitions can be found [here](../../src/api/network/type.ts)
+> Type Definitions can be found [here](../../projects/utils/src/api/network/type.ts)

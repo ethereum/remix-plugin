@@ -48,4 +48,4 @@ interface HighlightPosition {
 }
 ```
 
-> Type Definitions can be found [here](../../src/api/editor/type.ts)
+> Type Definitions can be found [here](../../projects/utils/src/api/editor/type.ts)

@@ -66,4 +66,4 @@ await client.call('fileManager', 'switchFile', 'browser/ballot.sol')
 ## Types
 `Folder`: A map with the file name as the key and the metadata of this file as value.
 
-> Type Definitions can be found [here](../../src/api/file-system/type.ts)
+> Type Definitions can be found [here](../../projects/utils/src/api/file-system/type.ts)
