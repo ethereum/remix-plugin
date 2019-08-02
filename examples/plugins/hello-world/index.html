@@ -12,12 +12,10 @@
     Create Hello World File
   </button>
 
-  <script src="https://unpkg.com/remix-plugin"></script>
+  <script src="https://unpkg.com/@remixproject/plugin"></script>
   <script>
     const { createIframeClient } = remixPlugin;
-    const client = createIframeClient({
-      devMode: { port: 8080 }
-    });
+    const client = createIframeClient();
 
     async function showHelloWorld() {
       await client.onload();  // Wait for connection
