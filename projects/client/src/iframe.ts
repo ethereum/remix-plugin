@@ -99,6 +99,16 @@ export function createIframeClient<T extends Api, App extends ApiMap = RemixApi>
   options: Partial<PluginOptions<App>> = {}
 ): PluginApi<GetApi<typeof options.customApi>> & PluginClient<T, App> {
   const client = new PluginClient<T, App>(options)
+  return buildIframeClient(client)
+}
+
+/**
+ * Connect the client to the iframe
+ * @param client A plugin client
+ */
+export function buildIframeClient<T extends Api, App extends ApiMap = RemixApi>(
+  client: PluginClient<T, App>
+): PluginApi<GetApi<typeof client.options.customApi>> & PluginClient<T, App> {
   // Add APIS
   const apis = getApiMap<ProfileMap<App>, App>(client, client.options.customApi)
   Object.keys(apis).forEach(name => client[name] = apis[name])

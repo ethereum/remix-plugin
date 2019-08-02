@@ -1,4 +1,4 @@
-import { checkOrigin, PluginClient, connectIframe } from '@remixproject/plugin'
+import { checkOrigin, PluginClient, connectIframe, createIframeClient, buildIframeClient } from '@remixproject/plugin'
 import { listenEvent, callEvent } from '@utils'
 
 declare const global  // Needed to mock fetch
@@ -52,10 +52,6 @@ describe('Iframe', () => {
     client = new PluginClient()
     connectIframe(client)
   })
-
-  // test('Should throw when no source', () => {
-  //   expect(() => sendMessage({})).toThrow('No Source')
-  // })
 
   test('Return error to parent if not loaded', (done) => {
     const msg = { action: 'notification', name: 'name', key: 'key', id: 1 }
@@ -131,4 +127,15 @@ describe('Iframe', () => {
     sendMessage(event)
   })
 
+  // Create Iframe
+  test('Build an Iframe Plugin from extended PluginClient', () => {
+    class Client extends PluginClient {}
+    const iframeClient = buildIframeClient(new Client())
+    expect(iframeClient['fileManager']).toBeDefined()
+    expect(iframeClient['network']).toBeDefined()
+    expect(iframeClient['solidity']).toBeDefined()
+    expect(iframeClient['solidityUnitTesting']).toBeDefined()
+    expect(iframeClient['theme']).toBeDefined()
+    expect(iframeClient['udapp']).toBeDefined()
+  })
 })
