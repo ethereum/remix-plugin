@@ -213,14 +213,6 @@ client.emit('statusChanged', { key: 'succeed', type: 'success', title: 'Document
 > The IDE can use this status to display a notification to the user.
 
 
-
-### Typescript
-Every plugin has been strong typed to make it easier to use the client.
-
-> You'll need Typescript > 3.4 to leverage those types.
-
-
-
 ### Client Options
 
 #### CSS Theme
@@ -234,16 +226,25 @@ const client = createIframeClient({ customTheme: true })
 ```
 
 #### Custom Api
-By default `@remixproject/plugin` will use remix IDE api. If you want to extends the API you can specify it in the `customApi` option: 
+By default `@remixproject/plugin` will use remix IDE api.
+If you want to extends the API you can specify it in the `customApi` option.
+
+A good use case is when you want to use an external plugin not maintained by Remix team: 
 
 ```typescript
-import { remixProfiles } from '
-const myCustomApi = {
-  ...remixProfiles
+import { remixProfiles, IRemixApi } from '@remixproject/plugin'
+interface ICustomApi extends IRemixApi {
+  pluginName: IExternalPluginApi  // Type can come from an npm package for example
+}
+
+const myCustomApi: ICustomApi = {
+  ...remixProfiles,
+  pluginName: externalPluginProfile // Add the profile from another external plugin
 }
 const client = createIframeClient({ customApi: myCustomApi })
 ```
 
+> You'll need Typescript > 3.4 to leverage the types.
 
 #### DevMode
 Plugins communicate with the IDE through the `postMessage` API. It means that `PluginClient` needs to know the origin of your IDE.
