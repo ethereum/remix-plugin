@@ -15,6 +15,7 @@
       "@remixproject/engine": ["./projects/engine/src"],
       "@remixproject/plugin": ["./projects/client/src"],
       "@utils": ["./projects/utils/src"],
+      "@utils/*": ["./projects/utils/src/*"],
       "@examples/*": ["examples/*"]
     }
   },
