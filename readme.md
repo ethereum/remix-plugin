@@ -229,19 +229,23 @@ const client = createIframeClient({ customTheme: true })
 By default `@remixproject/plugin` will use remix IDE api.
 If you want to extends the API you can specify it in the `customApi` option.
 
-A good use case is when you want to use an external plugin not maintained by Remix team: 
+A good use case is when you want to use an external plugin not maintained by Remix team (3box plugin for example): 
 
 ```typescript
 import { remixProfiles, IRemixApi } from '@remixproject/plugin'
 interface ICustomApi extends IRemixApi {
-  pluginName: IExternalPluginApi  // Type can come from an npm package for example
+  box: IBox;
 }
 
-const myCustomApi: ICustomApi = {
+export type CustomApi = Readonly<ICustomApi>;
+
+export type RemixClient = PluginClient<any, CustomApi> & PluginApi<CustomApi>;
+
+const customApi: ProfileMap<RemixIDE> = Object.freeze({
   ...remixProfiles,
-  pluginName: externalPluginProfile // Add the profile from another external plugin
-}
-const client = createIframeClient({ customApi: myCustomApi })
+  box: boxProfile
+});
+const client = createIframeClient({ customApi })
 ```
 
 > You'll need Typescript > 3.4 to leverage the types.
