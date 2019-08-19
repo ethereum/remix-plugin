@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Library to build Plugin. Used by Remix IDE",
   "contributors": [
     {
