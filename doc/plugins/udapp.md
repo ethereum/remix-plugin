@@ -8,7 +8,7 @@ The udapp exposes an interface for interacting with the account and transaction.
 |Type     |Name                 |Description
 |---------|---------------------|--
 |_event_  |`newTransaction`     |Triggered when a new transaction has been sent.
-|_method_ |`sendTransaction`    |Send a transaction **only for JavaScript VM**.
+|_method_ |`sendTransaction`    |Send a transaction **only for testing networks**.
 |_method_ |`getAccounts`        |Get an array with the accounts exposed.
 |_method_ |`createVMAccount`    |Add an account if using the VM provider. 
 
@@ -27,7 +27,7 @@ client.on('udapp', 'newTransaction', (tx: RemixTx) => {
 ```
 
 ### Methods
-`sendTransaction`: Send a transaction **only for JavaScript VM**.
+`sendTransaction`: Send a transaction **only for testing networks**.
 ```typescript
 const transaction: RemixTx = {
   gasLimit: '0x2710',
