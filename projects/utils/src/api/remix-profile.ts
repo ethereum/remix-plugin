@@ -7,15 +7,17 @@ import { udappProfile, IUdapp } from './udapp'
 import { themeProfile, ITheme } from './theme'
 import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
+import { ISettings, settingsProfile } from './settings'
 
 export interface IRemixApi {
   solidity: ICompiler
   fileManager: IFileSystem
-  solidityUnitTesting: IUnitTesting,
+  solidityUnitTesting: IUnitTesting
   editor: IEditor
   network: INetwork
   udapp: IUdapp
   contentImport: IContentImport
+  settings: ISettings
   theme: ITheme
 }
 
@@ -30,6 +32,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   network: networkProfile,
   udapp: udappProfile,
   contentImport: contentImportProfile,
+  settings: settingsProfile,
   theme: themeProfile,
 })
 
@@ -42,5 +45,6 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   network: networkProfile,
   udapp: udappProfile,
   contentImport: contentImportProfile,
+  settings: settingsProfile,
   theme: themeProfile
 })
