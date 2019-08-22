@@ -19,7 +19,7 @@ export interface IBox {
     setSpacePrivateValue<Box extends Record<string, string> = any>(key: Extract<keyof Box, string>, value: string): boolean
     getSpacePublicValue<Box extends Record<string, string> = any>(key: Extract<keyof Box, string>): string
     setSpacePublicValue<Box extends Record<string, string> = any>(key: Extract<keyof Box, string>, value: string): boolean
-    getSpacePublicData(address: string, spaceName: string): Record<string, string>
+    getSpacePublicData(address: string, spaceName?: string): Record<string, string>
     getSpaceName(): string
   }
 }
