@@ -182,7 +182,7 @@ Click on the name of the api to get the full documentation.
 |Network        |[network](./doc/plugins/network.md)          |           |Defines the network (mainnet, ropsten, ...) and provider (web3, vm, injected) used
 |Udapp          |[udapp](./doc/plugins/udapp.md)              |✅         |Transaction listener
 |Unit Testing   |[solidityUnitTesting](./doc/plugins/unit-testing.md) |    |Unit testing library in solidity
-|Settings       |[settings](./doc/plugins/settings.md)        |           |Global settings of the IDE
+|Settings       |[settings](./doc/plugins/settings.md)        |✅         |Global settings of the IDE
 |Content Import |[contentImport](./doc/plugins/content-import.md) |        |Import files from  github, swarm, ipfs, http or https.
 
 > This API is a Work In Progress and will be extended in the future.
