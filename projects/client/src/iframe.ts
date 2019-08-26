@@ -2,28 +2,35 @@ import { PluginDevMode, PluginClient, PluginOptions } from './client'
 import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi } from '../../utils'
 import { getApiMap, listenOnThemeChanged } from './api'
 
-/**
- * Check if the sender has the right origin
- * @param origin The origin of the incoming message
- * @param devMode Devmode options
- */
-export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode> = {}) {
+/** Fetch the default origins for remix */
+export async function getDefaultOrigins() {
+  const res = await fetch('https://raw.githubusercontent.com/ethereum/remix-plugin/master/projects/client/assets/origins.json')
+  return res.json()
+}
+
+/** Get all the origins */
+export async function getAllOrigins(devMode: Partial<PluginDevMode> = {}): Promise<string[]> {
   const localhost = devMode.port ? [
     `http://127.0.0.1:${devMode.port}`,
     `http://localhost:${devMode.port}`,
     `https://127.0.0.1:${devMode.port}`,
     `https://localhost:${devMode.port}`,
   ] : []
-  const origins = devMode.origins
+  const devOrigins = devMode.origins
     ? (typeof devMode.origins === 'string') ? [devMode.origins] : devMode.origins
     : []
-  const res = await fetch('https://raw.githubusercontent.com/ethereum/remix-plugin/master/projects/client/assets/origins.json')
-  const defaultOrigins = await res.json()
-  return [
-    ...defaultOrigins,
-    ...localhost,
-    ...origins
-  ].includes(origin)
+  const defaultOrigins = await getDefaultOrigins()
+  return [ ...defaultOrigins, ...localhost, ...devOrigins]
+}
+
+/**
+ * Check if the sender has the right origin
+ * @param origin The origin of the incoming message
+ * @param devMode Devmode options
+ */
+export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode> = {}) {
+  const allOrigins = await getAllOrigins(devMode)
+  return allOrigins.includes(origin)
 }
 
 /**
@@ -89,6 +96,17 @@ export function connectIframe(client: PluginClient<any, any>) {
   }
 
   window.addEventListener('message', getMessage, false)
+
+  // Request handshake
+  getAllOrigins(client.options.devMode)
+    .then(origins => {
+      origins.map((origin, i) => {
+        // Use negative value to be sure it won't overlap with another call
+        const handshake = { action: 'request', key: 'handshake', id: -i }
+        window.parent.postMessage(handshake, origin)
+      })
+    })
+    .catch()
 }
 
 /**

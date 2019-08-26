@@ -25,13 +25,17 @@ export interface PluginDevMode {
 export interface PluginOptions<T extends ApiMap> {
   customTheme: boolean
   customApi: ProfileMap<T>
+  /** options only available for dev mode */
   devMode: Partial<PluginDevMode>
+  /** list of accepted parent origins */
+  origins: string[]
 }
 
 export const defaultOptions: Partial<PluginOptions<any>> = {
   customTheme: false,
   customApi: remixProfiles,
-  devMode: { port: 8080 }
+  devMode: { port: 8080 },
+  origins: []
 }
 
 /** Throw an error if client try to send a message before connection */
@@ -79,8 +83,8 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     if (!this.isLoaded) handleConnectionError(this.options.devMode)
     this.id++
     return new Promise((res, rej) => {
-      const eventName = callEvent(name, key, this.id)
-      this.events.once(eventName, (result: any[], error) => {
+      const callName = callEvent(name, key, this.id)
+      this.events.once(callName, (result: any[], error) => {
         const resultArray = Array.isArray(result) ? result : [result]
         error ? rej(new Error(`Error from IDE : ${error}`)) : res(...resultArray)
       })
