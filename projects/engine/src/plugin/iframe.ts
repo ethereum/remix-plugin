@@ -44,6 +44,16 @@ export class IframePlugin extends ViewPlugin {
   private async getMessage(event: MessageEvent) {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     const message: Message = event.data
+
+    // Check for handshake request from the client
+    if (message.action === 'request' && message.key === 'handshake') {
+      const methods: string[] = await this.callPluginMethod('handshake')
+      if (methods) {
+        this.profile.methods = methods
+      }
+      return
+    }
+
     switch (message.action) {
       // Start listening on an event
       case 'listen': {
@@ -111,9 +121,9 @@ export class IframePlugin extends ViewPlugin {
       if (!this.iframe.contentWindow) {
         throw new Error(`${this.name} plugin is cannot find url ${this.profile.url}`)
       }
-      window.addEventListener(...this.listener)
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
+      window.addEventListener(...this.listener)
       const methods: string[] = await this.callPluginMethod('handshake')
       if (methods) {
         this.profile.methods = methods
