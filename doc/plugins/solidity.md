@@ -8,6 +8,7 @@
 |---------|-----------------------|------------|
 |_event_  |`compilationFinished`  |Triggered when a compilation finishes.
 |_method_ |`getCompilationResult` |Get the current result of the compilation.
+|_method_ |`compile`              |Run solidity compiler against a file.
 
 ## Examples
 
@@ -29,6 +30,14 @@ client.on('solidity', 'compilationFinished', (fileName: string, source: Compilat
 const result = await client.solidity.getCompilationResult()
 // OR
 const result = await client.call('solidity', 'getCompilationResult')
+```
+
+`compile`:
+```typescript
+const fileName = 'browser/ballot.sol'
+await client.solidity.compile(fileName)
+// OR
+await client.call('solidity', 'compile', 'fileName')
 ```
 
 ## Types
