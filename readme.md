@@ -196,7 +196,6 @@ List of plugins developed by the community.
 |---------------|---------------------------------------------|-----------|-------------
 |3Box           |[box](./doc/external-api/3box.md)          |           |Decentralized storage.
 
-> This 
 
 ## Status
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event :
