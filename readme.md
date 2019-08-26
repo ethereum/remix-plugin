@@ -171,11 +171,13 @@ interface Profile {
 Your plugin can interact with other plugins through the API. `@remixproject/plugin` provide a set of default plugins integrated inside the Remix IDE. Some of the APIs have to be used with caution. So they might ask the permission of the user.
 
 
-## Remix Api
-Click on the name of the api to get the full documentation.
+## Remix IDE API
+List of native plugins exposed by Remix IDE
+
+_Click on the name of the api to get the full documentation._
 
 |API            |Name                                         |Permission |Description |
-|---------------|-------------|-------------------------------|-------------
+|---------------|---------------------------------------------|-----------|-------------
 |File System    |[fileManager](./doc/plugins/file-system.md)  |✅         |Manages the File System
 |Compiler       |[solidity](./doc/plugins/solidity.md)        |✅         |The solidity Compiler
 |Editor         |[editor](./doc/plugins/editor.md)            |           |Enables highlighting in the code Editor
@@ -186,6 +188,15 @@ Click on the name of the api to get the full documentation.
 |Content Import |[contentImport](./doc/plugins/content-import.md) |        |Import files from  github, swarm, ipfs, http or https.
 
 > This API is a Work In Progress and will be extended in the future.
+
+## External API
+List of plugins developed by the community.
+
+|API            |Name                                         |Permission |Description |
+|---------------|---------------------------------------------|-----------|-------------
+|3Box           |[box](./doc/external-api/3box.md)          |           |Decentralized storage.
+
+> This 
 
 ## Status
 Every plugin has a status object that can display notifications on the IDE. You can listen on a change of status from any plugin using `statusChanged` event :
