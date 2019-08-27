@@ -27,15 +27,12 @@ export interface PluginOptions<T extends ApiMap> {
   customApi: ProfileMap<T>
   /** options only available for dev mode */
   devMode: Partial<PluginDevMode>
-  /** list of accepted parent origins */
-  origins: string[]
 }
 
 export const defaultOptions: Partial<PluginOptions<any>> = {
   customTheme: false,
   customApi: remixProfiles,
-  devMode: { port: 8080 },
-  origins: []
+  devMode: { port: 8080, origins: [] },
 }
 
 /** Throw an error if client try to send a message before connection */
