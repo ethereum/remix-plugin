@@ -2,5 +2,6 @@
   "http://remix-alpha.ethereum.org",
   "http://remix.ethereum.org",
   "https://remix-alpha.ethereum.org",
-  "https://remix.ethereum.org"
+  "https://remix.ethereum.org",
+  "package://6h6bha4nc35"
 ]
