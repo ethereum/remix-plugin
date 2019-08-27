@@ -97,16 +97,11 @@ export function connectIframe(client: PluginClient<any, any>) {
 
   window.addEventListener('message', getMessage, false)
 
-  // Request handshake
-  getAllOrigins(client.options.devMode)
-    .then(origins => {
-      origins.map((origin, i) => {
-        // Use negative value to be sure it won't overlap with another call
-        const handshake = { action: 'request', key: 'handshake', id: -i }
-        window.parent.postMessage(handshake, origin)
-      })
-    })
-    .catch()
+  // Request handshake if not loaded
+  if (!isLoaded) {
+    const handshake = { action: 'request', key: 'handshake', id: -1 }
+    window.parent.postMessage(handshake, '*')
+  }
 }
 
 /**
