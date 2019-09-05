@@ -2,5 +2,6 @@
   "http://remix-alpha.ethereum.org",
   "http://remix.ethereum.org",
   "https://remix-alpha.ethereum.org",
-  "https://remix.ethereum.org"
+  "https://remix.ethereum.org",
+  "package://e23510c359fc83e91886f73a5518afc0.mod"
 ]
