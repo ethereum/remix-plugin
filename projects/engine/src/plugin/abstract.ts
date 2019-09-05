@@ -57,16 +57,24 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
       // Add a new request to the queue
       this.requestQueue.push(async () => {
         this.currentRequest = request
-        try {
+        let timedout = false
+        let letcontinue = () => {
+          if (timedout) reject(`call to plugin has timed out ${this.profile.name} - ${method} - ${JSON.stringify(this.currentRequest)}`)
+          delete this.currentRequest
+          // Remove current request and call next
+          this.requestQueue.shift()
+          if (this.requestQueue.length !== 0) this.requestQueue[0]()
+        }
+
+        try {          
+          setTimeout(() => { timedout = true, letcontinue() }, 10000)
           const result = await this.callPluginMethod(method, args)
+          if (timedout) return
           resolve(result)
         } catch (err) {
           reject(err)
         }
-        delete this.currentRequest
-        // Remove current request and call next
-        this.requestQueue.shift()
-        if (this.requestQueue.length !== 0) this.requestQueue[0]()
+        letcontinue()
       })
       // If there is only one request waiting, call it
       if (this.requestQueue.length === 1) {
