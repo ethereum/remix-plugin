@@ -2,19 +2,6 @@ const { createIframeClient } = remixPlugin
 const devMode = { port: 8080 }
 const client = createIframeClient({ devMode })
 
-let latestCompilationResult = null
-let fileName
-
-// Listen on new compilation result
-client.on(
-  'solidity',
-  'compilationFinished',
-  (file, source, languageVersion, data) => {
-    fileName = file
-    latestCompilationResult = { data, source }
-  },
-)
-
 const apikeyStorageKey = 'etherscan-api-key'
 function saveAPIkey (e) {
   const value = document.querySelector('input#apikey').value
@@ -29,20 +16,17 @@ async function getResult() {
   const el = document.querySelector('div#results')
   try {
     el.innerText = 'Getting current compilation result, please wait...'
-    if (!latestCompilationResult) {
-      await client.onload()
-      const compilation = await client.call('solidity', 'getCompilationResult')
-      if (!compilation) throw new Error('no compilation result available')
-      fileName = compilation.source.target
-      latestCompilationResult = compilation
-    }
+    await client.onload()
+    const compilation = await client.call('solidity', 'getCompilationResult')
+    if (!compilation) throw new Error('no compilation result available')
+    const fileName = compilation.source.target
     const address = document.querySelector('input[id="verifycontractaddress"]').value
     if (address.trim() === '') {
       throw new Error('Please enter a valid contract address')
     }
     el.innerText = `Verifying contract. Please wait...`
     // fetch results
-    const result = await verify(latestCompilationResult, address)
+    const result = await verify(compilation, address, fileName)
     document.querySelector('div#results').innerText = result
   } catch (err) {
     el.innerText = err.message
@@ -54,7 +38,7 @@ async function getResult() {
  * @param {CompilationResult} compilationResult Result of the compilation 
  * @param {string} address Address of the contract to check
  */
-async function verify(compilationResult, address) {
+async function verify(compilationResult, address, fileName) {
   const network = await getNetworkName()
   const etherscanApi = (network === 'main')
       ? `https://api.etherscan.io/api`
