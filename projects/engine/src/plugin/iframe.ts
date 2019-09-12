@@ -136,7 +136,7 @@ export class IframePlugin extends ViewPlugin {
     return this.iframe
   }
 
-  transformUrl (url: string) {
+  private transformUrl (url: string) {
     const network = Object.keys(this.gateways).find(key => url.startsWith(key))
     return network ? url.replace(network, this.gateways[network]) : url
   }
