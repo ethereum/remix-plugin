@@ -16,6 +16,10 @@ export class IframePlugin extends ViewPlugin {
   private origin: string
   private source: Window
   private pendingRequest: PluginPendingRequest = {}
+  private gateways = {
+    'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
+    'swarm://': 'https://swarm-gateways.net/bzz-raw://'
+  }
 
   constructor(public profile: IframeProfile) {
     super(profile)
@@ -133,14 +137,10 @@ export class IframePlugin extends ViewPlugin {
   }
 
   transformUrl (url) {
-    const map = {
-      'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
-      'swarm://': 'https://swarm-gateways.net/bzz-raw://'
-    }
     let transformed: string = url
-    Object.keys(map).forEach((value) => {
+    Object.keys(this.gateways).forEach((value) => {
       if (url.startsWith(value)) {
-        transformed = url.replace(value, map[value])
+        transformed = url.replace(value, this.gateways[value])
         return
       }
     })
