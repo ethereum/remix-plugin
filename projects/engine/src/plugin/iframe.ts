@@ -115,7 +115,7 @@ export class IframePlugin extends ViewPlugin {
     }
     this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
-    this.iframe.src = this.profile.url
+    this.iframe.src = this.transformUrl(this.profile.url)
     // Wait for the iframe to load and handshake
     this.iframe.onload = async () => {
       if (!this.iframe.contentWindow) {
@@ -130,5 +130,20 @@ export class IframePlugin extends ViewPlugin {
       }
     }
     return this.iframe
+  }
+
+  transformUrl (url) {
+    const map = {
+      'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
+      'swarm://': 'https://swarm-gateways.net/bzz-raw://'
+    }
+    let transformed: string = url
+    Object.keys(map).forEach((value) => {
+      if (url.startsWith(value)) {
+        transformed = url.replace(value, map[value])
+        return
+      }
+    })
+    return transformed
   }
 }
