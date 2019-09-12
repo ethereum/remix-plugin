@@ -137,13 +137,7 @@ export class IframePlugin extends ViewPlugin {
   }
 
   transformUrl (url: string) {
-    let transformed: string = url
-    Object.keys(this.gateways).forEach((value) => {
-      if (url.startsWith(value)) {
-        transformed = url.replace(value, this.gateways[value])
-        return
-      }
-    })
-    return transformed
+    const network = Object.keys(this.gateways).find(key => url.startsWith(key))
+    return network ? url.replace(network, this.gateways[network]) : url
   }
 }
