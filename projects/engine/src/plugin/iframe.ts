@@ -136,7 +136,7 @@ export class IframePlugin extends ViewPlugin {
     return this.iframe
   }
 
-  transformUrl (url) {
+  transformUrl (url: string) {
     let transformed: string = url
     Object.keys(this.gateways).forEach((value) => {
       if (url.startsWith(value)) {
