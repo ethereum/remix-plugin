@@ -1,5 +1,6 @@
 import { ViewPlugin } from './view'
 import { Message, IframeProfile } from '../../../utils'
+import { transformUrl } from './util'
 
 
 interface PluginPendingRequest {
@@ -16,10 +17,6 @@ export class IframePlugin extends ViewPlugin {
   private origin: string
   private source: Window
   private pendingRequest: PluginPendingRequest = {}
-  private gateways = {
-    'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
-    'swarm://': 'https://swarm-gateways.net/bzz-raw://'
-  }
 
   constructor(public profile: IframeProfile) {
     super(profile)
@@ -119,7 +116,7 @@ export class IframePlugin extends ViewPlugin {
     }
     this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
-    this.iframe.src = this.transformUrl(this.profile.url)
+    this.iframe.src = transformUrl(this.profile.url)
     // Wait for the iframe to load and handshake
     this.iframe.onload = async () => {
       if (!this.iframe.contentWindow) {
@@ -134,10 +131,5 @@ export class IframePlugin extends ViewPlugin {
       }
     }
     return this.iframe
-  }
-
-  private transformUrl (url: string) {
-    const network = Object.keys(this.gateways).find(key => url.startsWith(key))
-    return network ? url.replace(network, this.gateways[network]) : url
-  }
+  }  
 }
