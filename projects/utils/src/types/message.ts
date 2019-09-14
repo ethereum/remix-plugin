@@ -1,6 +1,6 @@
 export interface PluginRequest {
   from: string,
-  fromNative: boolean
+  isFromNative: boolean
 }
 
 export interface Message {

@@ -193,7 +193,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
         throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
       }
 
-      const request = { from: name, fromNative: this.settings.native.includes(name)}
+      const request = { from: name, isFromNative: isNative }
       return to['addRequest'](request, key, payload)
     }
     plugin['call'] = call.bind(this)
