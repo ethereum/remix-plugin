@@ -24,7 +24,7 @@
     "build": "webpack",
     "test": "jest",
     "test:engine": "jest ./project/engine",
-    "publish:all": "npm run build && npm run publish:engine && npm run publish:plugin",
+    "publish": "npm run build && npm run publish:engine && npm run publish:plugin",
     "publish:engine": "cd projects/engine && npm publish --access public",
     "publish:plugin": "cd projects/client && npm publish --access public",
     "e2e:serve": "run-p serve:ide serve:ethdoc",
