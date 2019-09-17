@@ -1,5 +1,5 @@
 
-export let defaultGateways: {
+export const defaulGateways = {
     'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
     'swarm://': 'https://swarm-gateways.net/bzz-raw://'
 }
