@@ -12,7 +12,7 @@ The network exposes methods and events about :
 |---------|---------------------|--
 |_event_  |`providerChanged`    |Triggered when the provider changes.
 |_method_ |`getNetworkProvider` |Get the current provider.
-|_method_ |`getEndpoint`        |Get the URL of the provider if `injected`.
+|_method_ |`getEndpoint`        |Get the URL of the provider if `web3`.
 |_method_ |`detectNetwork`      |Get the current network used.
 |_method_ |`addNetwork`         |Add a custom network.
 |_method_ |`removeNetwork`      |Remove a custom network.
@@ -39,7 +39,7 @@ const provider = await client.network.getNetworkProvider()
 const provider = await client.call('network', 'getNetworkProvider')
 ```
 
-`getEndpoint`: Get the URL of the provider if `injected`.
+`getEndpoint`: Get the URL of the provider if `web3`.
 ```typescript
 const endpoint = await client.network.getEndpoint()
 // OR
