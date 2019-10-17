@@ -81,9 +81,10 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     this.id++
     return new Promise((res, rej) => {
       const callName = callEvent(name, key, this.id)
-      this.events.once(callName, (result: any[], error) => {
-        const resultArray = Array.isArray(result) ? result : [result]
-        error ? rej(new Error(`Error from IDE : ${error}`)) : res(...resultArray)
+      this.events.once(callName, (result: any, error) => {
+        error
+          ? rej(new Error(`Error from IDE : ${error}`))
+          : res(result)
       })
       this.events.emit('send', { action: 'request', name, key, payload, id: this.id })
     })
