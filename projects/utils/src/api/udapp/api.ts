@@ -1,9 +1,9 @@
-import { RemixTx, RemixTxReceipt, VMAccount } from './type'
+import { RemixTx, RemixTxReceipt, RemixTxEvent, VMAccount } from './type'
 import { StatusEvents } from '../../types'
 
 export interface IUdapp {
   events: {
-    newTransaction: (transaction: RemixTx) => void
+    newTransaction: (transaction: RemixTxEvent) => void
   } & StatusEvents
   methods: {
     sendTransaction(tx: RemixTx): RemixTxReceipt

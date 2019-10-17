@@ -1,4 +1,4 @@
-export type RemixTx = {
+export type RemixTxEvent = {
   contractAddress: string
   data: string
   envMode: 'vm'
@@ -33,6 +33,15 @@ export type RemixTx = {
   value: { c: number[], e: number, s: number }
 }
 
+export interface RemixTx {
+  data: string
+  from: string
+  to?: string
+  timestamp?: string
+  gasLimit: string
+  value: string
+  useCall: boolean
+}
 
 export interface RemixTxReceipt {
   transactionHash: string
