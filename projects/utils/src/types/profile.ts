@@ -12,7 +12,7 @@ export interface ViewProfile<T extends Api = any> extends Profile<T> {
   location: string
 }
 
-export interface IframeProfile<T extends Api = any> extends ViewProfile<T> {
+export interface ExternalProfile<T extends Api = any> extends ViewProfile<T> {
   url: string
 }
 
