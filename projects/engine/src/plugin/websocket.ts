@@ -1,7 +1,5 @@
-import { ViewPlugin } from './view'
+import { Plugin } from './abstract'
 import { Message, ExternalProfile } from '../../../utils'
-import { transformUrl } from './util'
-
 
 interface PluginPendingRequest {
   [id: number]: (result: any, error: Error) => void
@@ -9,22 +7,32 @@ interface PluginPendingRequest {
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 
-export class IframePlugin extends ViewPlugin {
+export class WebsocketPlugin extends Plugin {
   // Listener is needed to remove the listener
   private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
   private id = 0
-  private iframe = document.createElement('iframe')
-  private origin: string
-  private source: Window
   private pendingRequest: PluginPendingRequest = {}
+  private socket: WebSocket
+  private isOpen: boolean
 
   constructor(public profile: ExternalProfile) {
     super(profile)
+    this.socket = new WebSocket(profile.url)
+  }
+
+  activate() {
+    this.socket.addEventListener('open', async () => {
+      this.isOpen = true
+      this.socket.addEventListener(...this.listener)
+      const methods: string[] = await this.callPluginMethod('handshake')
+      if (methods) {
+        this.profile.methods = methods
+      }
+    })
   }
 
   deactivate() {
-    this.iframe.remove()
-    window.removeEventListener(...this.listener)
+    this.socket.removeEventListener(...this.listener)
     super.deactivate()
   }
 
@@ -43,7 +51,7 @@ export class IframePlugin extends ViewPlugin {
 
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
-    if (event.origin !== this.origin) return // Filter only messages that comes from this origin
+    if (event.origin !== this.socket.url) return // Filter only messages that comes from this origin
     const message: Message = event.data
 
     // Check for handshake request from the client
@@ -101,35 +109,10 @@ export class IframePlugin extends ViewPlugin {
    * @param message The message to post
    */
   private postMessage(message: Partial<Message>) {
-    if (!this.source) {
-      throw new Error('No window attached to Iframe yet')
+    if (!this.isOpen) {
+      throw new Error('Websocket connection is not open yet')
     }
-    this.source.postMessage(message, this.origin)
+    this.socket.send(JSON.stringify(message))
   }
 
-  /**
-   * Create and return the iframe
-   */
-  render() {
-    if (this.iframe.contentWindow) {
-      throw new Error(`${this.name} plugin is already rendered`)
-    }
-    this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
-    this.iframe.setAttribute('seamless', 'true')
-    this.iframe.src = transformUrl(this.profile.url)
-    // Wait for the iframe to load and handshake
-    this.iframe.onload = async () => {
-      if (!this.iframe.contentWindow) {
-        throw new Error(`${this.name} plugin is cannot find url ${this.profile.url}`)
-      }
-      this.origin = new URL(this.iframe.src).origin
-      this.source = this.iframe.contentWindow
-      window.addEventListener(...this.listener)
-      const methods: string[] = await this.callPluginMethod('handshake')
-      if (methods) {
-        this.profile.methods = methods
-      }
-    }
-    return this.iframe
-  }
 }
