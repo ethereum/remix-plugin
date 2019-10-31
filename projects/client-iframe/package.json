@@ -1,0 +1,34 @@
+{
+  "name": "@remixproject/plugin-iframe",
+  "version": "0.0.1",
+  "description": "Library to build Plugin over an Iframe. Used by Remix IDE",
+  "contributors": [{
+    "name": "GrandSchtroumpf",
+    "email": "grandschtroumpf@ethereum.org"
+  }],
+  "dependencies": {
+    "@remixproject/plugin": "^0.1.18"
+  },
+  "keywords": [
+    "Ethereum",
+    "RemixIDE",
+    "Plugin",
+    "Iframe"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "browser": "dist/index.js",
+  "module": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "homepage": "https://github.com/ethereum/remix-plugin#readme"
+}
