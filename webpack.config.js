@@ -29,5 +29,30 @@ const client = {
   }
 }
 
+// Websocket client
+const wsClient = {
+  ...common,
+  mode: 'production',
+  entry: './projects/client-ws',
+  output: {
+    path: path.resolve(__dirname, 'projects/client-ws/dist'),
+    filename: 'index.js',
+    library: 'wsPlugin',
+    libraryTarget: 'umd',
+  }
+}
 
-module.exports = [engine, client]
+// Websocket client
+const iframeClient = {
+  ...common,
+  mode: 'production',
+  entry: './projects/client-iframe',
+  output: {
+    path: path.resolve(__dirname, 'projects/client-iframe/dist'),
+    filename: 'index.js',
+    library: 'iframePlugin',
+    libraryTarget: 'umd',
+  }
+}
+
+module.exports = [engine, client, wsClient, iframeClient]
