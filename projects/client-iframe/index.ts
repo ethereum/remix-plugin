@@ -1,5 +1,5 @@
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi } from '../utils'
-import { PluginDevMode, PluginClient, PluginOptions, getApiMap, listenOnThemeChanged } from '@remixproject/plugin'
+import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme } from '../utils'
+import { PluginDevMode, PluginClient, PluginOptions, getApiMap } from '@remixproject/plugin'
 
 /** Fetch the default origins for remix */
 export async function getDefaultOrigins() {
@@ -21,6 +21,29 @@ export async function getAllOrigins(devMode: Partial<PluginDevMode> = {}): Promi
   const defaultOrigins = await getDefaultOrigins()
   return [ ...defaultOrigins, ...localhost, ...devOrigins]
 }
+
+
+
+/** Start listening on theme changed */
+export async function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
+  if (options && options.customTheme) return
+  const cssLink = document.createElement('link')
+  cssLink.setAttribute('rel', 'stylesheet')
+  document.head.prepend(cssLink)
+  client.onload(async () => {
+    client.on('theme', 'themeChanged', (_theme: Theme) => setTheme(cssLink, _theme))
+    const theme = await client.call('theme', 'currentTheme')
+    setTheme(cssLink, theme)
+  })
+  return cssLink
+}
+
+
+function setTheme(cssLink: HTMLLinkElement, theme: Theme) {
+  cssLink.setAttribute('href', theme.url)
+  document.documentElement.style.setProperty('--theme', theme.quality)
+}
+
 
 /**
  * Check if the sender has the right origin

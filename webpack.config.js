@@ -1,7 +1,6 @@
 const path = require('path')
 const common = require('./webpack.common')
 
-
 // ENGINE
 const engine = {
   ...common,
@@ -37,9 +36,9 @@ const wsClient = {
   output: {
     path: path.resolve(__dirname, 'projects/client-ws/dist'),
     filename: 'index.js',
-    library: 'wsPlugin',
     libraryTarget: 'umd',
-  }
+  },
+  target: 'node'
 }
 
 // Websocket client

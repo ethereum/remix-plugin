@@ -1,12 +1,12 @@
 import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi } from '../utils'
-import { PluginClient, PluginOptions, getApiMap, listenOnThemeChanged } from '@remixproject/plugin'
+import { getApiMap } from '@remixproject/plugin/api'
+import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
 
 import WebSocket from 'ws'
 
 export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
   let isLoaded = false
   async function getMessage(event: WebSocket.Data) {
-
     // Get the data
     const { action, key, name, payload, id, requestInfo, error } = JSON.parse(event.toString()) as Message
     try {
@@ -14,13 +14,11 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
       // If handshake set isLoaded
       if (action === 'request' && key === 'handshake') {
         isLoaded = true
-        client.events.on('send', (msg: Message) => {
-          socket.emit(JSON.stringify(msg))
-        })
+        client.events.on('send', (msg: Message) => socket.send(JSON.stringify(msg)))
         client.events.emit('loaded')
         // Send back the list of methods exposed by the plugin
         const message = {action: 'response', name, key, id, payload: client.methods}
-        socket.emit(JSON.stringify(message))
+        socket.send(JSON.stringify(message))
         return
       }
 
@@ -43,13 +41,13 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
           client.currentRequest = requestInfo
           const result = await client[key](...payload)
           const message = {action: 'response', name, key, id, payload: result}
-          socket.emit(JSON.stringify(message))
+          socket.send(JSON.stringify(message))
           break
         }
       }
     } catch (err) {
       const message = { action, name, key, id, error: err.message }
-      socket.emit(JSON.stringify(message))
+      socket.send(JSON.stringify(message))
     }
   }
   socket.on('message', getMessage)
@@ -57,7 +55,7 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
   // Request handshake if not loaded
   if (!isLoaded) {
     const handshake = { action: 'request', key: 'handshake', id: -1 }
-    window.parent.postMessage(handshake, '*')
+    socket.send(JSON.stringify(handshake))
   }
 }
 
@@ -74,7 +72,6 @@ export function buildWebsocketClient<T extends Api, App extends ApiMap = RemixAp
   Object.keys(apis).forEach(name => client[name] = apis[name])
   // Listen on changes
   connectWS(socket, client)
-  listenOnThemeChanged(client, client.options)
   return client as any
 }
 
@@ -85,7 +82,7 @@ export function buildWebsocketClient<T extends Api, App extends ApiMap = RemixAp
  */
 export function createWebsocketClient<T extends Api, App extends ApiMap = RemixApi>(
   socket: WebSocket,
-  options: Partial<PluginOptions<App>> = {}
+  options: Partial<PluginOptions<App>> = { customTheme: true }
 ): PluginApi<GetApi<typeof options.customApi>> & PluginClient<T, App> {
   const client = new PluginClient<T, App>(options)
   return buildWebsocketClient(socket, client)
