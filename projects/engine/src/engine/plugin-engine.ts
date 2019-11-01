@@ -1,5 +1,5 @@
 import { Plugin } from '../plugin'
-import { PluginRequest, listenEvent, ApiMap, IframeProfile, Api } from '../../../utils'
+import { PluginRequest, listenEvent, ApiMap, ExternalProfile, Api } from '../../../utils'
 import { IPermissionHandler } from './persmission'
 
 /** Transform an map of Api into a Map of Plugin. Used by PluginEngine for constructor */
@@ -95,7 +95,7 @@ export class PluginEngine<T extends ApiMap> extends AbstractPluginEngine {
   }
 
   /** Either it's not an IframeProfile or it's */
-  private isNative(profile: Partial<IframeProfile>) {
+  private isNative(profile: Partial<ExternalProfile>) {
     return !profile.url || this.settings.natives.includes(profile.name)
   }
 

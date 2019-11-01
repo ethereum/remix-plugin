@@ -6,34 +6,48 @@ interface PluginPendingRequest {
 }
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
+type ReconnectListener = ['close', () => void, false]
 
 export class WebsocketPlugin extends Plugin {
   // Listener is needed to remove the listener
   private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
+  private readonly reconnectOnclose: ReconnectListener = ['close', () => this.reconnect(), false]
   private id = 0
   private pendingRequest: PluginPendingRequest = {}
   private socket: WebSocket
-  private isOpen: boolean
 
   constructor(public profile: ExternalProfile) {
     super(profile)
-    this.socket = new WebSocket(profile.url)
   }
 
-  activate() {
+  async activate() {
+    this.connect()
+    this.socket.addEventListener(...this.reconnectOnclose)
+  }
+
+  deactivate() {
+    this.socket.removeEventListener(...this.reconnectOnclose)
+    this.socket.removeEventListener(...this.listener)
+    this.socket.close()
+    super.deactivate()
+  }
+
+  /** Try to reconnect to net websocket if closes */
+  private reconnect() {
+    setTimeout(() => this.connect(), 1000) // Try to reconnect if connection failed
+  }
+
+  /** Connect to the websocket */
+  private async connect() {
+    this.socket = new WebSocket(this.profile.url)
+    console.log('[IDE] Connect')
     this.socket.addEventListener('open', async () => {
-      this.isOpen = true
       this.socket.addEventListener(...this.listener)
       const methods: string[] = await this.callPluginMethod('handshake')
       if (methods) {
         this.profile.methods = methods
       }
     })
-  }
-
-  deactivate() {
-    this.socket.removeEventListener(...this.listener)
-    super.deactivate()
   }
 
   /** Call a method from this plugin */
@@ -51,8 +65,7 @@ export class WebsocketPlugin extends Plugin {
 
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
-    if (event.origin !== this.socket.url) return // Filter only messages that comes from this origin
-    const message: Message = event.data
+    const message: Message = JSON.parse(event.data)
 
     // Check for handshake request from the client
     if (message.action === 'request' && message.key === 'handshake') {
@@ -109,7 +122,7 @@ export class WebsocketPlugin extends Plugin {
    * @param message The message to post
    */
   private postMessage(message: Partial<Message>) {
-    if (!this.isOpen) {
+    if (this.socket.readyState !== this.socket.OPEN) {
       throw new Error('Websocket connection is not open yet')
     }
     this.socket.send(JSON.stringify(message))

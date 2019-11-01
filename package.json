@@ -27,6 +27,8 @@
     "publish": "npm run build && npm run publish:engine && npm run publish:plugin",
     "publish:engine": "cd projects/engine && npm publish --access public",
     "publish:plugin": "cd projects/client && npm publish --access public",
+    "publish:plugin-ws": "cd projects/client-ws && npm publish --access public",
+    "publish:plugin-iframe": "cd projects/client-iframe && npm publish --access public",
     "e2e:serve": "run-p serve:ide serve:ethdoc",
     "serve:ide": "cd ./examples/ide && webpack-dev-server",
     "serve:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
