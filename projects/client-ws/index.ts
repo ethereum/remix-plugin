@@ -1,4 +1,4 @@
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi } from '../utils'
+import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, getMethodPath } from '../utils'
 import { getApiMap } from '@remixproject/plugin/api'
 import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
 
@@ -39,7 +39,8 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
             throw new Error(`Method ${key} doesn't exist on plugin ${name}`)
           }
           client.currentRequest = requestInfo
-          const result = await client[key](...payload)
+          const methodPath = getMethodPath(requestInfo.path, key)
+          const result = await client[methodPath](...payload)
           const message = {action: 'response', name, key, id, payload: result}
           socket.send(JSON.stringify(message))
           break
