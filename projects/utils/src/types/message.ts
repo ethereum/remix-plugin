@@ -1,6 +1,10 @@
 export interface PluginRequest {
+  /** The name of the plugin making the request */
   from: string,
-  isFromNative: boolean
+  /** @deprecated Will be remove in the next version */
+  isFromNative: boolean,
+  /** The path to access the request inside the plugin */
+  path: string
 }
 
 export interface Message {
