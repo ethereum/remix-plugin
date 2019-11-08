@@ -96,11 +96,12 @@ export class Engine {
   /**
    * Call a method of a plugin from another
    * @param caller The name of the plugin that call the method
-   * @param target The name of the plugin that manage the method
+   * @param path The path of the plugin that manage the method
    * @param method The name of the method
    * @param payload The argument to pass to the method
    */
-  private async callMethod(caller: string, target: string, method: string, ...payload: any[]) {
+  private async callMethod(caller: string, path: string, method: string, ...payload: any[]) {
+    const target = path.split('.').shift()
     if (!this.plugins[target]) {
       throw new Error(`Cannot call ${target} from ${caller}, because ${target} is not registered`)
     }
@@ -135,7 +136,7 @@ export class Engine {
       throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
     }
 
-    const request = { from: caller }
+    const request = { from: caller, path }
     return this.plugins[target]['addRequest'](request, method, payload)
   }
 
