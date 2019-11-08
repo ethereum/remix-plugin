@@ -1,4 +1,4 @@
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme } from '../utils'
+import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme, getMethodPath } from '../utils'
 import { PluginDevMode, PluginClient, PluginOptions, getApiMap } from '@remixproject/plugin'
 
 /** Fetch the default origins for remix */
@@ -55,6 +55,7 @@ export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode
   return allOrigins.includes(origin)
 }
 
+
 /**
  * Start listening on the IDE though PostMessage
  * @param client A client to put the messages into
@@ -105,7 +106,8 @@ export function connectIframe(client: PluginClient<any, any>) {
             throw new Error(`Method ${key} doesn't exist on plugin ${name}`)
           }
           client.currentRequest = requestInfo
-          const result = await client[key](...payload)
+          const methodPath = getMethodPath(key, requestInfo.path)
+          const result = await client[methodPath](...payload)
           const message = {action: 'response', name, key, id, payload: result};
           (event.source as Window).postMessage(message, event.origin)
           break
