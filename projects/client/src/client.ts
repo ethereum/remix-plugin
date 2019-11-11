@@ -14,6 +14,8 @@ import {
   RemixApi,
   remixProfiles
 } from '../../utils'
+import { IPluginService } from './types'
+import { createService, activateService } from './service'
 
 export interface PluginDevMode {
   /** Port for localhost */
@@ -51,6 +53,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
   public methods: string[]
+  public activateService: Record<string, any> = {}
 
   constructor(options: Partial<PluginOptions<App>> = {}) {
     this.options = {
@@ -70,6 +73,10 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
       this.isLoaded ? loadFn() : this.events.once('loaded', () => loadFn())
     })
   }
+
+  //////////////////////
+  // CALL / ON / EMIT //
+  //////////////////////
 
   /** Make a call to another plugin */
   public call<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
@@ -106,4 +113,46 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     if (!this.isLoaded) handleConnectionError(this.options.devMode)
     this.events.emit('send', { action: 'notification', key, payload })
   }
+
+
+  /////////////
+  // SERVICE //
+  /////////////
+
+  /**
+   * Create a service under the client node
+   * @param name The name of the service
+   * @param service The service
+   */
+  async createService<S extends Record<string, any>>(name: string, service: IPluginService<S>) {
+    if (this.methods.includes(name)) {
+      throw new Error('A service cannot have the same name as an exposed method')
+    }
+    const _service = createService(name, service)
+    await activateService(this as any, _service)
+    return _service
+  }
+
+    /**
+   * Prepare a service to be lazy loaded
+   * @param name The name of the subservice inside this service
+   * @param factory A function to create the service on demand
+   */
+  prepareService<S extends Record<string, any>>(name: string, factory: () => S): () => Promise<IPluginService<S>> {
+    if (this.methods.includes(name)) {
+      throw new Error('A service cannot have the same name as an exposed method')
+    }
+    return this.activateService[name] = async () => {
+      const service = factory()
+      const _service = createService(name, service)
+      await activateService(this as any, _service)
+      delete this.activateService[name]
+      return _service
+    }
+  }
+
+  //////////
+  // NODE //
+  //////////
+
 }
