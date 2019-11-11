@@ -58,7 +58,7 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
       this.requestQueue.push(async () => {
         this.currentRequest = request
         let timedout = false
-        let letcontinue = () => {
+        const letcontinue = () => {
           if (timedout) reject(`call to plugin has timed out ${this.profile.name} - ${method} - ${JSON.stringify(this.currentRequest)}`)
           delete this.currentRequest
           // Remove current request and call next
@@ -66,7 +66,7 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
 
-        try {          
+        try {
           setTimeout(() => { timedout = true, letcontinue() }, 10000)
           const result = await this.callPluginMethod(method, args)
           if (timedout) return
