@@ -2,7 +2,6 @@ import { StatusEvents } from '../../types'
 
 export interface IGitSystem {
   events: {
-    //TODO:
   } & StatusEvents
   methods: {
     //Priority
