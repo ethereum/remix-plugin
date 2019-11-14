@@ -8,7 +8,7 @@ import { themeProfile, ITheme } from './theme'
 import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
 import { ISettings, settingsProfile } from './settings'
-import { versionControllProfile, IVersionControllSystem } from './version-control';
+import { gitProfile, IGitSystem } from './git';
 
 export interface IRemixApi {
   solidity: ICompiler
@@ -41,7 +41,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
 export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   solidity: { ...compilerProfile, name: 'solidity' } as Profile<ICompiler>,
   fileManager: { ...filSystemProfile, name: 'fileManager' } as Profile<IFileSystem>,
-  versionControl: { ...versionControllProfile, name: 'versionControl' } as Profile<IVersionControllSystem>,
+  git: { ...gitProfile, name: 'git' } as Profile<IGitSystem>,
   solidityUnitTesting: { ...unitTestProfile, name: 'solidityUnitTesting' } as Profile<IUnitTesting>,
   editor: editorProfile,
   network: networkProfile,

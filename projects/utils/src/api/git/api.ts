@@ -1,23 +1,23 @@
 import { StatusEvents } from '../../types'
 
-export interface IVersionControllSystem {
+export interface IGitSystem {
   events: {
     //TODO:
   } & StatusEvents
   methods: {
     //Priority
-    gitClone(url: string): void
-    gitCheckout(cmd: string): void // Switch branches or restore working tree files
-    gitInit(): void
-    gitAdd(cmd: string): void 
-    gitCommit(cmd: string): void
-    gitFetch(cmd: string): void
-    gitPull(cmd: string): void
-    gitPush(cmd: string): void
-    gitReset(cmd: string): void
-    gitStatus(cmd: string): void
-    gitRemote(cmd: string): void 
-    gitLog(): void
+    clone(url: string): string
+    checkout(cmd: string): string // Switch branches or restore working tree files
+    init(): string
+    add(cmd: string): string 
+    commit(cmd: string): string
+    fetch(cmd: string): string
+    pull(cmd: string): string
+    push(cmd: string): string
+    reset(cmd: string): string
+    status(cmd: string): string
+    remote(cmd: string): string 
+    log(): string
 
     //Less priority
     /*
