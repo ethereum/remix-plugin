@@ -34,7 +34,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   udapp: udappProfile,
   contentImport: contentImportProfile,
   settings: settingsProfile,
-  theme: themeProfile
+  theme: themeProfile,
 })
 
 /** Profiles of all the remix's Native Plugins */
