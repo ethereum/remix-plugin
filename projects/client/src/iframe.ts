@@ -1,5 +1,5 @@
 import { PluginDevMode, PluginClient, PluginOptions } from './client'
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme } from '../../utils'
+import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme, getMethodPath } from '../../utils'
 import { getApiMap } from './api'
 
 /** Fetch the default origins for remix */
@@ -103,6 +103,8 @@ export function connectIframe(client: PluginClient<any, any>) {
             throw new Error(`Method ${key} doesn't exist on plugin ${name}`)
           }
           client.currentRequest = requestInfo
+          // const method = getMethodPath(requestInfo.path, key)
+          // const result = await client[method](...payload)
           const result = await client[key](...payload)
           const message = {action: 'response', name, key, id, payload: result};
           (event.source as Window).postMessage(message, event.origin)
