@@ -1,5 +1,5 @@
 
 export type IPluginService<T extends Record<string, any> = any> = {
   methods: string[]
-  path: string
+  readonly path: string
 } & T
