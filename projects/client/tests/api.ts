@@ -1,5 +1,5 @@
 import { PluginClient, createApi, getApiMap, createIframeClient, listenOnThemeChanged } from '@remixproject/plugin'
-import { Api, IframeProfile, CustomApi, callEvent, listenEvent, StatusEvents } from '@utils'
+import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents } from '@utils'
 
 interface TestApi extends Api {
   events: {
@@ -10,7 +10,7 @@ interface TestApi extends Api {
   }
 }
 
-const profile: IframeProfile<TestApi> = {
+const profile: ExternalProfile<TestApi> = {
   name: 'test',
   methods: ['method'],
   location: 'sidePanel',
@@ -23,7 +23,7 @@ describe('Client Api', () => {
   beforeEach(() => {
     client = new PluginClient()
     client['isLoaded'] = true
-    api = createApi(client, profile)
+    api = createApi<TestApi>(client, profile)
   })
 
   test('Should create an Api', () => {
