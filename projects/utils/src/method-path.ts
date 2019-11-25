@@ -1,6 +1,6 @@
 
 /** Create a method path based on the method name and the path */
-export function getMethodPath(method: string, path: string) {
+export function getMethodPath(method: string, path?: string) {
   if (!path) {
     return method
   }

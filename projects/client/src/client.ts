@@ -53,7 +53,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
   public methods: string[]
-  public activateService: Record<string, any> = {}
+  public activateService: Record<string, () => Promise<any>> = {}
 
   constructor(options: Partial<PluginOptions<App>> = {}) {
     this.options = {
@@ -125,7 +125,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
    * @param service The service
    */
   async createService<S extends Record<string, any>>(name: string, service: IPluginService<S>) {
-    if (this.methods.includes(name)) {
+    if (this.methods && this.methods.includes(name)) {
       throw new Error('A service cannot have the same name as an exposed method')
     }
     const _service = createService(name, service)
@@ -139,11 +139,11 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
    * @param factory A function to create the service on demand
    */
   prepareService<S extends Record<string, any>>(name: string, factory: () => S): () => Promise<IPluginService<S>> {
-    if (this.methods.includes(name)) {
-      throw new Error('A service cannot have the same name as an exposed method')
-    }
     return this.activateService[name] = async () => {
-      const service = factory()
+      if (this.methods && this.methods.includes(name)) {
+        throw new Error('A service cannot have the same name as an exposed method')
+      }
+      const service = await factory()
       const _service = createService(name, service)
       await activateService(this as any, _service)
       delete this.activateService[name]
