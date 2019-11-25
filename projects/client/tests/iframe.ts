@@ -1,4 +1,5 @@
-import { checkOrigin, PluginClient, connectIframe, createIframeClient, buildIframeClient } from '@remixproject/plugin'
+import {  PluginClient, } from '../src/client'
+import { checkOrigin, connectIframe, buildIframeClient } from '../src/iframe'
 import { listenEvent, callEvent } from '@utils'
 
 declare const global  // Needed to mock fetch
@@ -12,6 +13,8 @@ function createEvent(data, postMessage?) {
     data
   }
 }
+
+const baseMsg = { name: 'name', key: 'key', id: 1 }
 
 describe('Iframe', () => {
   let sendMessage: (event) => void
@@ -54,7 +57,7 @@ describe('Iframe', () => {
   })
 
   test('Return error to parent if not loaded', (done) => {
-    const msg = { action: 'notification', name: 'name', key: 'key', id: 1 }
+    const msg = { ...baseMsg, action: 'notification' }
     const errorMessage = (message) => {
       expect(message).toEqual({ ...msg, error: 'Handshake before communicating'})
       done()
@@ -73,7 +76,7 @@ describe('Iframe', () => {
   })
 
   test('Send notification', (done) => {
-    const msg = { action: 'notification', name: 'name', key: 'key', payload: [true] }
+    const msg = { ...baseMsg, action: 'notification', payload: [true] }
     client.events.on(listenEvent(msg.name, msg.key), (payload) => {
       expect(payload).toBeTruthy()
       done()
@@ -82,7 +85,7 @@ describe('Iframe', () => {
   })
 
   test('Send response with payload', (done) => {
-    const msg = { action: 'response', name: 'name', key: 'key', id: 1, payload: [true] }
+    const msg = { ...baseMsg, action: 'response', payload: [true] }
     const listener = (payload) => {
       expect(payload).toBeTruthy()
       client.events.removeListener(callEvent(msg.name, msg.key, msg.id), listener)
@@ -93,7 +96,7 @@ describe('Iframe', () => {
   })
 
   test('Send response with error', (done) => {
-    const msg = { action: 'response', name: 'name', key: 'key', id: 1, error: 'error' }
+    const msg = { ...baseMsg, action: 'response', error: 'error' }
     const listener = (payload, err) => {
       expect(payload).toBeUndefined()
       expect(err).toBe(msg.error)
@@ -105,23 +108,62 @@ describe('Iframe', () => {
   })
 
   test('Request method from parent succeed', (done) => {
-    const msg = { action: 'request', name: 'name', key: 'key', id: 1, payload: [true] }
+    const msg = { ...baseMsg, action: 'request', payload: [true] }
     client[msg.key] = (isTrue: boolean) => !isTrue
     const event = createEvent(msg, (result) => {
       expect(result).toEqual({ ...msg,  action: 'response', payload: false })
+      delete client[msg.key]  // Need to delete because we use beforeAll
       done()
     })
     sendMessage(event)
   })
 
   test('Request method from parent failed', (done) => {
-    const msg = { action: 'request', name: 'name', key: 'key', id: 1 }
-    delete client[msg.key]  // Need to delete because we use beforeAll
+    const msg = { ...baseMsg, action: 'request' }
     const event = createEvent(msg, (result) => {
       expect(result).toEqual({
         ...msg,
         error: `Method ${msg.key} doesn't exist on plugin ${msg.name}`
       })
+      done()
+    })
+    sendMessage(event)
+  })
+
+  // Request Info with one level path -> no change
+  test('Request method from parent with requestInfo', (done) => {
+    const requestInfo = { path: 'remixd' }
+    const msg = { ...baseMsg, action: 'request', payload: [true], requestInfo }
+    client[msg.key] = (isTrue: boolean) => !isTrue
+    const event = createEvent(msg, (result) => {
+      expect(result).toEqual({ ...baseMsg, action: 'response', payload: false })
+      delete client[msg.key]  // Need to delete because we use beforeAll
+      done()
+    })
+    sendMessage(event)
+  })
+
+  // Request Info with two level path -> call service
+  test('Request method from parent with service requestInfo', (done) => {
+    const requestInfo = { path: 'remixd.cmd' }
+    const msg = { ...baseMsg, action: 'request', id: 1, payload: [true], requestInfo }
+    client['cmd.key'] = (isTrue: boolean) => !isTrue
+    const event = createEvent(msg, (result) => {
+      expect(result).toEqual({ ...baseMsg, action: 'response', payload: false })
+      delete client['cmd.key']  // Need to delete because we use beforeAll
+      done()
+    })
+    sendMessage(event)
+  })
+
+  // Request Info with two level path -> call service
+  test('Request method from parent with subservice requestInfo', (done) => {
+    const requestInfo = { path: 'remixd.cmd.git' }
+    const msg = {  ...baseMsg, action: 'request', payload: [true], requestInfo }
+    client['cmd.git.key'] = (isTrue: boolean) => !isTrue
+    const event = createEvent(msg, (result) => {
+      expect(result).toEqual({  ...baseMsg, action: 'response', payload: false })
+      delete client['cmd.git.key']  // Need to delete because we use beforeAll
       done()
     })
     sendMessage(event)
