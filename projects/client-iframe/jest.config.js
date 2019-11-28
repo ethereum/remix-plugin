@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'plugin',
+  name: 'plugin-iframe',
   preset: '../../jest.config.js',
   coverageDirectory: '../../coverage/plugin'
 };
