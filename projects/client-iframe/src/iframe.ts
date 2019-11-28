@@ -1,62 +1,11 @@
-import { PluginDevMode, PluginClient, PluginOptions } from './client'
-import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, RemixApi, Theme, getMethodPath } from '../../utils'
-import { getApiMap } from './api'
-
-/** Fetch the default origins for remix */
-export async function getDefaultOrigins() {
-  const res = await fetch('https://raw.githubusercontent.com/ethereum/remix-plugin/master/projects/client/assets/origins.json')
-  return res.json()
-}
-
-/** Get all the origins */
-export async function getAllOrigins(devMode: Partial<PluginDevMode> = {}): Promise<string[]> {
-  const localhost = devMode.port ? [
-    `http://127.0.0.1:${devMode.port}`,
-    `http://localhost:${devMode.port}`,
-    `https://127.0.0.1:${devMode.port}`,
-    `https://localhost:${devMode.port}`,
-  ] : []
-  const devOrigins = devMode.origins
-    ? (typeof devMode.origins === 'string') ? [devMode.origins] : devMode.origins
-    : []
-  const defaultOrigins = await getDefaultOrigins()
-  return [ ...defaultOrigins, ...localhost, ...devOrigins]
-}
-
-
-/** Start listening on theme changed */
-export async function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
-  if (options && options.customTheme) return
-  const cssLink = document.createElement('link')
-  cssLink.setAttribute('rel', 'stylesheet')
-  document.head.prepend(cssLink)
-  client.onload(async () => {
-    client.on('theme', 'themeChanged', (_theme: Theme) => setTheme(cssLink, _theme))
-    const theme = await client.call('theme', 'currentTheme')
-    setTheme(cssLink, theme)
-  })
-  return cssLink
-}
-
-function setTheme(cssLink: HTMLLinkElement, theme: Theme) {
-  cssLink.setAttribute('href', theme.url)
-  document.documentElement.style.setProperty('--theme', theme.quality)
-}
-
-/**
- * Check if the sender has the right origin
- * @param origin The origin of the incoming message
- * @param devMode Devmode options
- */
-export async function checkOrigin(origin: string, devMode: Partial<PluginDevMode> = {}) {
-  const allOrigins = await getAllOrigins(devMode)
-  return allOrigins.includes(origin)
-}
+import { PluginClient, PluginOptions, getApiMap } from '@remixproject/plugin'
+import { Message, listenEvent, callEvent, getMethodPath, Api, ApiMap, RemixApi, PluginApi, ProfileMap } from '@utils'
+import { listenOnThemeChanged } from './theme'
+import { checkOrigin } from './origin'
 
 /**
  * Start listening on the IDE though PostMessage
  * @param client A client to put the messages into
- * @deprecated Use `@remixproject/plugin-iframe` instead
  */
 export function connectIframe(client: PluginClient<any, any>) {
   let isLoaded = false
@@ -107,7 +56,6 @@ export function connectIframe(client: PluginClient<any, any>) {
           }
           client.currentRequest = requestInfo
           const result = await client[method](...payload)
-          // const result = await client[key](...payload)
           const message = {action: 'response', name, key, id, payload: result};
           (event.source as Window).postMessage(message, event.origin)
           break
@@ -131,7 +79,6 @@ export function connectIframe(client: PluginClient<any, any>) {
 /**
  * Create a plugin client that listen on PostMessage
  * @param options The options for the client
- * @deprecated Use `@remixproject/plugin-iframe` instead
  */
 export function createIframeClient<T extends Api, App extends ApiMap = RemixApi>(
   options: Partial<PluginOptions<App>> = {}
@@ -143,7 +90,6 @@ export function createIframeClient<T extends Api, App extends ApiMap = RemixApi>
 /**
  * Connect the client to the iframe
  * @param client A plugin client
- * @deprecated Use `@remixproject/plugin-iframe` instead
  */
 export function buildIframeClient<T extends Api, App extends ApiMap = RemixApi>(
   client: PluginClient<T, App>
