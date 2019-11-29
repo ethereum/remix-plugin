@@ -1,5 +1,5 @@
 import { PluginClient } from '@remixproject/plugin'
-import { connectIframe, buildIframeClient } from '../index'
+import { connectIframe, buildIframeClient } from '../src/iframe'
 import { listenEvent, callEvent } from '@utils'
 
 declare const global  // Needed to mock fetch

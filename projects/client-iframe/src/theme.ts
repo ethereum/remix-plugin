@@ -2,7 +2,7 @@ import { PluginClient, PluginOptions } from "@remixproject/plugin"
 import { Theme } from "@utils"
 
 /** Start listening on theme changed */
-export async function listenOnThemeChanged(client: PluginClient<any, any>, options?: Partial<PluginOptions<any>>) {
+export async function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions<any>>) {
   if (options && options.customTheme) return
   const cssLink = document.createElement('link')
   cssLink.setAttribute('rel', 'stylesheet')

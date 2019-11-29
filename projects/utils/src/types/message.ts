@@ -13,6 +13,6 @@ export interface Message {
   name: string
   key: string
   payload: any
-  requestInfo: PluginRequest
-  error?: Error
+  requestInfo: Partial<PluginRequest>
+  error?: Error | string
 }

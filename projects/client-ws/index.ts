@@ -2,11 +2,20 @@ import { Message, PluginApi, ApiMap, ProfileMap, Api, listenEvent, callEvent, Re
 import { getApiMap } from '@remixproject/plugin/api'
 import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
 
-import WebSocket from 'ws'
+// import WebSocket from 'ws'
 
-export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
+export interface WS {
+  send(data: string): void
+  on(type: 'message', cb: (event: WSData) => any): this
+}
+
+export interface WSData {
+  toString(): string
+}
+
+export function connectWS(socket: WS, client: PluginClient) {
   let isLoaded = false
-  async function getMessage(event: WebSocket.Data) {
+  async function getMessage(event: WSData) {
     // Get the data
     const { action, key, name, payload, id, requestInfo, error } = JSON.parse(event.toString()) as Message
     try {
@@ -35,12 +44,13 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
           break
         }
         case 'request': {
-          if (!client[key]) {
-            throw new Error(`Method ${key} doesn't exist on plugin ${name}`)
+          const path = requestInfo && requestInfo.path
+          const method = getMethodPath(key, path)
+          if (!client[method]) {
+            throw new Error(`Method ${method} doesn't exist on plugin ${name}`)
           }
           client.currentRequest = requestInfo
-          const methodPath = getMethodPath(requestInfo.path, key)
-          const result = await client[methodPath](...payload)
+          const result = await client[method](...payload)
           const message = {action: 'response', name, key, id, payload: result}
           socket.send(JSON.stringify(message))
           break
@@ -65,7 +75,7 @@ export function connectWS(socket: WebSocket, client: PluginClient<any, any>) {
  * @param client A plugin client
  */
 export function buildWebsocketClient<T extends Api, App extends ApiMap = RemixApi>(
-  socket: WebSocket,
+  socket: WS,
   client: PluginClient<T, App>
 ): PluginApi<GetApi<typeof client.options.customApi>> & PluginClient<T, App> {
   // Add APIS
@@ -82,7 +92,7 @@ export function buildWebsocketClient<T extends Api, App extends ApiMap = RemixAp
  * @param options The options for the client
  */
 export function createWebsocketClient<T extends Api, App extends ApiMap = RemixApi>(
-  socket: WebSocket,
+  socket: WS,
   options: Partial<PluginOptions<App>> = { customTheme: true }
 ): PluginApi<GetApi<typeof options.customApi>> & PluginClient<T, App> {
   const client = new PluginClient<T, App>(options)

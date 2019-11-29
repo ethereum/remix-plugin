@@ -1,4 +1,5 @@
-import { PluginClient, PluginOptions, getApiMap } from '@remixproject/plugin'
+import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
+import { getApiMap } from '@remixproject/plugin/api'
 import { Message, listenEvent, callEvent, getMethodPath, Api, ApiMap, RemixApi, PluginApi, ProfileMap } from '@utils'
 import { listenOnThemeChanged } from './theme'
 import { checkOrigin } from './origin'
@@ -7,7 +8,7 @@ import { checkOrigin } from './origin'
  * Start listening on the IDE though PostMessage
  * @param client A client to put the messages into
  */
-export function connectIframe(client: PluginClient<any, any>) {
+export function connectIframe(client: PluginClient) {
   let isLoaded = false
 
   async function getMessage(event: MessageEvent) {
@@ -98,7 +99,7 @@ export function buildIframeClient<T extends Api, App extends ApiMap = RemixApi>(
   const apis = getApiMap<ProfileMap<App>, App>(client, client.options.customApi)
   Object.keys(apis).forEach(name => client[name] = apis[name])
   // Listen on changes
-  connectIframe(client)
+  connectIframe(client as any)
   listenOnThemeChanged(client, client.options)
   return client as any
 }
