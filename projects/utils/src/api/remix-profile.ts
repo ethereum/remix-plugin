@@ -9,8 +9,10 @@ import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
 import { ISettings, settingsProfile } from './settings'
 import { gitProfile, IGitSystem } from './git';
+import { IPluginManager, pluginManagerProfile } from './plugin-manager'
 
 export interface IRemixApi {
+  manager: IPluginManager,
   solidity: ICompiler
   fileManager: IFileSystem
   solidityUnitTesting: IUnitTesting
@@ -26,6 +28,7 @@ export type RemixApi = Readonly<IRemixApi>
 
 /** @deprecated Use remixProfiles instead. Will be remove in next version */
 export const remixApi: ProfileMap<RemixApi> = Object.freeze({
+  manager: pluginManagerProfile,
   solidity: { ...compilerProfile, name: 'solidity' } as Profile<ICompiler>,
   fileManager: { ...filSystemProfile, name: 'fileManager' } as Profile<IFileSystem>,
   solidityUnitTesting: { ...unitTestProfile, name: 'solidityUnitTesting' } as Profile<IUnitTesting>,
@@ -39,6 +42,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
 
 /** Profiles of all the remix's Native Plugins */
 export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
+  manager: pluginManagerProfile,
   solidity: { ...compilerProfile, name: 'solidity' } as Profile<ICompiler>,
   fileManager: { ...filSystemProfile, name: 'fileManager' } as Profile<IFileSystem>,
   git: { ...gitProfile, name: 'git' } as Profile<IGitSystem>,
