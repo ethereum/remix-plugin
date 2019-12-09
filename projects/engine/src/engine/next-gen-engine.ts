@@ -1,28 +1,42 @@
-import { PluginManager, IPluginManager } from "../plugin/manager"
+import { IPluginManager } from "../plugin/manager"
 import { Plugin } from '../plugin/abstract'
 import { listenEvent } from "../../../utils"
 
 export class Engine {
-  private manager: IPluginManager
-  private plugins: Record<string, Plugin>
-  private events: Record<string, any>
-  private listeners: Record<string, any>
+  private plugins: Record<string, Plugin> = {}
+  private events: Record<string, any> = {}
+  private listeners: Record<string, any> = {}
+  private isLoaded = false
 
+  private managerLoaded: () => void
   onRegistration?(plugin: Plugin): void
-  onActivated?(plugin: Plugin): void
-  onDeactivated?(plugin: Plugin): void
 
-  constructor(managerProfile) {
-    this.manager = new PluginManager(managerProfile)
-    this.register(this.manager)
-    this.activateManager()
+  constructor(private manager: IPluginManager) {
+    this.plugins['manager'] = manager
+    // Activate the Engine & start listening on activation and deactivation
+    this.activatePlugin('manager').then(() => {
+      this.manager['engineActivatePlugin'] = (name: string) => this.activatePlugin(name)
+      this.manager['engineDeactivatePlugin'] = (name: string) => this.deactivatePlugin(name)
+      this.isLoaded = true
+      // Run callback on `onload` if any
+      if (this.managerLoaded) this.managerLoaded()
+    })
   }
 
-  /** Activate the Engine & start listening on activation and deactivation */
-  private async activateManager() {
-    await this.activatePlugin('manager')
-    this.addListener('__root__', 'manager', 'activated', ({name}) => this.activatePlugin(name))
-    this.addListener('__root__', 'manager', 'deactivated', ({name}) => this.deactivatePlugin(name))
+  /** Wait for the engine to have loaded the manager */
+  async onload(cb?: () => void): Promise<void> {
+    return new Promise((res, rej) => {
+      if (this.isLoaded) { // If already loaded resolve
+        res()
+        cb()
+      } else { // Else store the callback
+        this.managerLoaded = () => {
+          res()
+          cb()
+          delete this.managerLoaded // Cleanup once it's loaded
+        }
+      }
+    })
   }
 
   /**
@@ -35,7 +49,7 @@ export class Engine {
     const eventName = listenEvent(emitter, event)
     if (!this.listeners[eventName]) return // Nobody is listening
     const listeners = this.listeners[eventName] || []
-    listeners.forEach(listener => {
+    listeners.forEach((listener: string) => {
       if (!this.events[listener][eventName]) {
         throw new Error(`Plugin ${listener} should be listening on event ${event} from ${emitter}. But no callback have been found`)
       }
@@ -59,8 +73,8 @@ export class Engine {
     // Record that "listener" is listening on "emitter"
     if (!this.listeners[eventName]) this.listeners[eventName] = []
     // If not already recorded
-    if (!this.listeners[eventName].includes(name)) {
-      this.listeners[eventName].push(name)
+    if (!this.listeners[eventName].includes(listener)) {
+      this.listeners[eventName].push(listener)
     }
   }
 
@@ -198,7 +212,6 @@ export class Engine {
 
     // Call hooks
     await plugin.activate()
-    if (this.onActivated) this.onActivated(plugin)
   }
 
   /**
@@ -248,25 +261,35 @@ export class Engine {
 
     // REMOVE EVENT RECORD
     Object.keys(this.listeners).forEach(eventName => {
-      this.listeners[eventName].forEach((listener, i) => {
+      this.listeners[eventName].forEach((listener: string, i: number) => {
         if (listener === name) this.listeners[eventName].splice(i, 1)
       })
     })
 
-    // Once everything is deactivated
-    if (this.onDeactivated) this.onDeactivated(plugin)
   }
 
   /**
    * Register a plugin to the engine and update the manager
    * @param plugin The plugin
    */
-  register(plugin: Plugin) {
-    if (this.plugins[plugin.name]) {
-      throw new Error(`Plugin ${plugin.name} is already register.`)
+  register(plugins: Plugin | Plugin[]) {
+    const register = (plugin: Plugin) => {
+      if (this.plugins[plugin.name]) {
+        throw new Error(`Plugin ${plugin.name} is already register.`)
+      }
+      this.plugins[plugin.name] = plugin
+      this.manager.addProfile(plugin.profile)
+      if (plugin.onRegistration) plugin.onRegistration()
+      if (this.onRegistration) this.onRegistration(plugin)
     }
-    this.plugins[plugin.name] = plugin
-    this.manager.addProfile(plugin.profile)
-    if (this.onRegistration) this.onRegistration(plugin)
+    return Array.isArray(plugins) ? plugins.map(plugin => register(plugin)) : register(plugins)
+  }
+
+  /**
+   * Check is a name is already registered
+   * @param name Name of the plugin
+   */
+  isRegistered(name: string) {
+    return !!this.plugins[name]
   }
 }

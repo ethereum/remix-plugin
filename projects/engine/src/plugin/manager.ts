@@ -11,23 +11,31 @@ export type IPluginManager = {
   isActive(name: string): Promise<boolean>
   toggleActive(name: string): any
   addProfile(profile: Partial<Profile>): any
-  removeProfile(name: string): any
   canCall(from: Profile, to: Profile, method: string): Promise<boolean>
   canActivate(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
 export class PluginManager extends Plugin implements IPluginManager {
-  protected profiles: Record<string, Profile>
+  /** Run engine activation. Implemented by Engine */
+  private engineActivatePlugin: (name: string) => Promise<any>
+  /** Run engine deactivation. Implemented by Engine */
+  private engineDeactivatePlugin: (name: string) => Promise<any>
+  protected profiles: Record<string, Profile> = {}
   protected actives: string[] = []
-  public methods = ['getProfile', 'updateProfile', 'activate', 'deactivate']
+  public methods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin']
 
-  protected onPluginActivated?(name: string): any
-  protected onPluginDeactivated?(name: string): any
+  protected onPluginActivated?(profile: Profile): any
+  protected onPluginDeactivated?(profile: Profile): any
   protected onProfileAdded?(profile: Profile): any
-  protected onProfileRemoved?(name: string): any
 
   constructor(profile: Profile) {
     super(profile)
+    this.profiles[profile.name] = profile // Initialise with own profile (cannot use addProfile because manager is not activated yet)
+  }
+
+  /** Return the name of the caller. If no request provided, this mean that the method has been called from the IDE so we use "manager" */
+  get requestFrom() {
+    return this.currentRequest ? this.currentRequest.from : 'manager'
   }
 
   /**
@@ -45,7 +53,7 @@ export class PluginManager extends Plugin implements IPluginManager {
    * @note Only the caller plugin should be able to update its profile
    */
   updateProfile(profile: Partial<Profile>) {
-    if (profile.name !== this.currentRequest.from) {
+    if (profile.name !== this.requestFrom) {
       throw new Error('A plugin cannot update the profile of another one.')
     }
     if (!this.profiles[profile.name]) {
@@ -78,18 +86,6 @@ export class PluginManager extends Plugin implements IPluginManager {
   }
 
   /**
-   * Remove a profile from the list
-   * @param name The name of the profile to remove
-   */
-  removeProfile(name: string) {
-    delete this.profiles[name]
-    this.emit('profileRemoved', name)
-    if (this.onProfileRemoved) {
-      this.onProfileRemoved(name)
-    }
-  }
-
-  /**
    * Verify if a plugin is currently active
    * @param name Name of the plugin
    */
@@ -101,61 +97,74 @@ export class PluginManager extends Plugin implements IPluginManager {
    * Check if caller can activate plugin and activate it if authorized
    * @param name The name of the plugin to activate
    */
-  async activatePlugin(name: string) {
-    const isActive = await this.isActive(name)
-    if (isActive) return
-    const [ to, from ] = await Promise.all([
-      this.getProfile(this.currentRequest.from),
-      this.getProfile(name)
-    ])
-    const canActivate = await this.canActivate(from, to)
-    if (canActivate) {
-      await this.toggleActive(name)
-    } else {
-      throw new Error(`Plugin ${this.currentRequest.from} has no right to activate plugin ${name}`)
+  async activatePlugin(names: string | string[]) {
+    const activate = async (name: string) => {
+      const isActive = await this.isActive(name)
+      if (isActive) return
+      const [ to, from ] = await Promise.all([
+        this.getProfile(name),
+        this.getProfile(this.requestFrom)
+      ])
+      const canActivate = await this.canActivate(from, to)
+      if (canActivate) {
+        await this.toggleActive(name)
+      } else {
+        throw new Error(`Plugin ${this.requestFrom} has no right to activate plugin ${name}`)
+      }
     }
+    return Array.isArray(names) ? names.map(activate) : activate(names)
   }
 
   /**
    * Check if caller can deactivate plugin and deactivate it if authorized
    * @param name The name of the plugin to activate
    */
-  async deactivatePlugin(name: string) {
-    const isActive = await this.isActive(name)
-    if (!isActive) return
-    const [ to, from ] = await Promise.all([
-      this.getProfile(this.currentRequest.from),
-      this.getProfile(name)
-    ])
-    const canDeactivate = await this.canDeactivate(from, to)
-    if (canDeactivate) {
-      await this.toggleActive(name)
-    } else {
-      throw new Error(`Plugin ${this.currentRequest.from} has no right to deactivate plugin ${name}`)
+  async deactivatePlugin(names: string | string[]) {
+    const deactivate = async (name: string) => {
+      const isActive = await this.isActive(name)
+      if (!isActive) return
+      const [ to, from ] = await Promise.all([
+        this.getProfile(name),
+        this.getProfile(this.requestFrom)
+      ])
+      const canDeactivate = await this.canDeactivate(from, to)
+      if (canDeactivate) {
+        await this.toggleActive(name)
+      } else {
+        throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
+      }
     }
+    return Array.isArray(names) ? names.map(deactivate) : deactivate(names)
   }
 
   /**
    * Activate or deactivate by bypassing permission
    * @param name The name of the plugin to activate
-   * @note This method should ONLY be used by the engine
-   * @note This method can be override
+   * @note This method should ONLY be used by the IDE
    */
-  async toggleActive(name: string) {
-    const isActive = await this.isActive(name)
-    if (isActive) {
-      this.actives = this.actives.filter(pluginName => pluginName !== name)
-      this.emit('pluginDeactivated', name)
-      if (this.onPluginDeactivated) {
-        this.onPluginDeactivated(name)
-      }
-    } else {
-      this.actives.push(name)
-      this.emit('pluginActivated', name)
-      if (this.onPluginActivated) {
-        this.onPluginActivated(name)
+  async toggleActive(names: string | string[]) {
+    const toggle = async (name: string) => {
+      const [isActive, profile] = await Promise.all([
+        this.isActive(name),
+        this.getProfile(name)
+      ])
+      if (isActive) {
+        await this.engineDeactivatePlugin(name)
+        this.actives = this.actives.filter(pluginName => pluginName !== name)
+        this.emit('pluginDeactivated', profile)
+        if (this.onPluginDeactivated) {
+          this.onPluginDeactivated(profile)
+        }
+      } else {
+        await this.engineActivatePlugin(name)
+        this.actives.push(name)
+        this.emit('pluginActivated', profile)
+        if (this.onPluginActivated) {
+          this.onPluginActivated(profile)
+        }
       }
     }
+    return Array.isArray(names) ? names.map(toggle) : toggle(names)
   }
 
   /**
@@ -175,6 +184,9 @@ export class PluginManager extends Plugin implements IPluginManager {
    * @note This method should be overrided
    */
   async canDeactivate(from: Profile, to: Profile) {
+    if (from.name === 'manager') {
+      return true
+    }
     return false
   }
 
