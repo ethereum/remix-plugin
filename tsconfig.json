@@ -19,7 +19,7 @@
       "@remixproject/plugin-iframe": ["./projects/client-iframe"],
       "@utils": ["./projects/utils/src"],
       "@utils/*": ["./projects/utils/src/*"],
-      "@examples/*": ["examples/*"]
+      "@examples/*": ["./examples/*"]
     }
   },
   "exclude": ["node_modules", "old"]

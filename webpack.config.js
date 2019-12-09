@@ -1,12 +1,30 @@
 const path = require('path')
-const common = require('./webpack.common')
+
+function config(project) {
+  return {
+    mode: 'production',
+    entry: `./projects/${project}`,
+    module: {
+      rules: [
+        {
+          test: /\.ts?$/,
+          exclude: [/node_modules/],
+          loader: "ts-loader",
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.ts', '.js'],
+      plugins: [
+        new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, './tsconfig.json') }),
+      ],
+    },
+  }
+}
 
 // ENGINE
 const engine = {
-  ...common,
-  mode: 'production',
-  entry: './projects/engine',
-
+  ...config('engine'),
   output: {
     path: path.resolve(__dirname, 'projects/engine/dist'),
     filename: 'index.js',
@@ -17,9 +35,7 @@ const engine = {
 
 // CLIENT
 const client = {
-  ...common,
-  mode: 'production',
-  entry: './projects/client',
+  ...config('client'),
   output: {
     path: path.resolve(__dirname, 'projects/client/dist'),
     filename: 'index.js',
@@ -30,9 +46,7 @@ const client = {
 
 // Websocket client
 const wsClient = {
-  ...common,
-  mode: 'production',
-  entry: './projects/client-ws',
+  ...config('client-ws'),
   output: {
     path: path.resolve(__dirname, 'projects/client-ws/dist'),
     filename: 'index.js',
@@ -43,9 +57,7 @@ const wsClient = {
 
 // Websocket client
 const iframeClient = {
-  ...common,
-  mode: 'production',
-  entry: './projects/client-iframe',
+  ...config('client-iframe'),
   output: {
     path: path.resolve(__dirname, 'projects/client-iframe/dist'),
     filename: 'index.js',
