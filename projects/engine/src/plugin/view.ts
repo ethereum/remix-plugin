@@ -20,5 +20,6 @@ export abstract class ViewPlugin extends Plugin {
 
   deactivate() {
     this.call(this.profile.location, 'removeView', this.profile)
+    super.deactivate()
   }
 }
