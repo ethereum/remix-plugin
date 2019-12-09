@@ -4,7 +4,6 @@ export interface IPluginManager {
   events: {
     profileUpdated(profile: Profile): void
     profileAdded(profile: Profile): void
-    profileRemoved(name: string): void
     pluginDeactivated(profile: Profile): void
     pluginActivated(profile: Profile): void
   } & StatusEvents

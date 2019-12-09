@@ -23,7 +23,7 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
   /** Give access to all the plugins registered by the engine */
   protected app: PluginApi<App>
   // Lifecycle hooks
-  onRegistation?(): void
+  onRegistration?(): void
   onActivation?(): void
   onDeactivation?(): void
 
@@ -90,6 +90,23 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
     cb: EventCallback<App[Name], Key>,
   ): void {
     throw new Error(`Method "on" from ${this.name} should be hooked by PluginEngine`)
+  }
+
+  /** Listen once an event from another plugin then remove event listener */
+  once<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
+    name: Name,
+    key: Key,
+    cb: EventCallback<App[Name], Key>,
+  ): void {
+    throw new Error(`Method "once" from ${this.name} should be hooked by PluginEngine`)
+  }
+
+  /** Stop listening on an event from another plugin */
+  off<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
+    name: Name,
+    key: Key,
+  ): void {
+    throw new Error(`Method "off" from ${this.name} should be hooked by PluginEngine`)
   }
 
   /** Call a method of another plugin */
