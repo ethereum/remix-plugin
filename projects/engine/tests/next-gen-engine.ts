@@ -1,6 +1,4 @@
-// import { Solidity } from '../../../examples/native-plugins/solidity'
-// import { FileManager } from '../../../examples/native-plugins/file-manager'
-import { listenEvent, compilerProfile, filSystemProfile } from '../../utils'
+import { listenEvent, compilerProfile, filSystemProfile, pluginManagerProfile } from '../../utils'
 import { Engine } from '../src/engine/next-gen-engine'
 import { Plugin } from '../src/plugin/abstract'
 import { PluginManager } from '../src/plugin/manager'
@@ -10,14 +8,19 @@ export class MockEngine extends Engine {
 }
 
 export class MockManager extends PluginManager {
+  activatePlugin = jest.fn(super.activatePlugin)
+  deactivatePlugin = jest.fn(super.deactivatePlugin)
   onRegistration = jest.fn()
   onActivation = jest.fn()
   onDeactivation = jest.fn()
   onPluginActivated = jest.fn()
   onPluginDeactivated = jest.fn()
   onProfileAdded = jest.fn()
+  canActivate = jest.fn(async () => true)
+  canDeactivate = jest.fn(async (from) => from.name === 'manager' ? true : false)
+  canCall = jest.fn(async () => true)
   constructor() {
-    super({ name: 'manager', methods: [] })
+    super(pluginManagerProfile)
   }
 }
 
@@ -155,18 +158,18 @@ describe('Remix Engine', () => {
     expect(engine['listeners'][event][0]).toEqual('solidity')
   })
 
-  test.only('Listeners with "on" are registered', async (done) => {
+  test('Listeners with "on" are registered', async (done) => {
     await manager.activatePlugin(['solidity', 'fileManager'])
     const event = listenEvent('fileManager', 'currentFileChanged')
-    solidity.on('fileManager', 'currentFileChanged', file => {
+    solidity.on('fileManager', 'currentFileChanged', (file: any) => {
       expect(file).toEqual('newFile')
       done()
     })
     engine['events']['solidity'][event]('newFile')
   })
 
-  test('Engine catch event emitted by activated plugins', done => {
-    manager.activatePlugin(['solidity', 'fileManager'])
+  test('Engine catch event emitted by activated plugins', async (done) => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
     const event = listenEvent('fileManager', 'currentFileChanged')
     engine['listeners'][event] = ['solidity'] // Need to register a listener else nothing is broadcasted
     engine['events']['solidity'][event] = (file) => {
@@ -176,24 +179,100 @@ describe('Remix Engine', () => {
     fileManager.emit('currentFileChanged', 'newFile')
   })
 
-  // test('Can change settings of engine', () => {
-  //   expect(engine['settings'].autoActivate).toBeFalsy()
-  //   engine.setSettings('autoActivate', true)
-  //   expect(engine['settings'].autoActivate).toBeTruthy()
-  // })
+})
 
-  // test('Engine do not autoactivate plugin by default', () => {
-  //   manager.activatePlugin('solidity')
-  //   solidity.call('fileManager', 'setFile', 'browser/file.sol', 'content')
-  //   const spy = spyOn(engine, 'onActivated')
-  //   expect(spy).not.toHaveBeenCalled()
-  // })
+describe('Plugin interaction', () => {
+  let manager: MockManager
+  let solidity: MockSolidity
+  let fileManager: MockFileManager
+  let engine: Engine
 
-  // test('Engine autoactivate plugin with settings', () => {
-  //   engine.setSettings('autoActivate', true)
-  //   manager.activatePlugin('solidity')
-  //   const spy = spyOn(fileManager, 'activate')
-  //   solidity.call('fileManager', 'setFile', 'browser/file.sol', 'content')
-  //   expect(spy).toHaveBeenCalledTimes(1)
-  // })
+  beforeEach(async () => {
+    solidity = new MockSolidity()
+    fileManager = new MockFileManager()
+    manager = new MockManager()
+    engine = new MockEngine(manager)
+    await engine.onload()
+    engine.register([solidity, fileManager])
+  })
+
+  // Call
+
+  test('Plugin can call another plugin method', async () => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    await fileManager.call('solidity', 'compile', 'ballot.sol')
+    expect(manager.canCall).toHaveBeenCalledTimes(1)
+    expect(solidity.compile).toHaveBeenCalledWith('ballot.sol')
+  })
+
+  test('Plugin can activate another', async () => {
+    await manager.activatePlugin('solidity')
+    await solidity.call('manager', 'activatePlugin', 'fileManager')
+    const isActive = await manager.isActive('fileManager')
+    expect(manager.activatePlugin).toHaveBeenCalledWith('fileManager')
+    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+    expect(isActive).toBeTruthy()
+  })
+
+  test('Plugin cannot deactivate another by default', async () => {
+    try {
+      await manager.activatePlugin(['solidity', 'fileManager'])
+      await solidity.call('manager', 'deactivatePlugin', 'fileManager')
+    } catch (err) {
+      expect(err.message).toEqual('Plugin solidity has no right to deactivate plugin fileManager')
+      const isActive = await manager.isActive('fileManager')
+      expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+      expect(isActive).toBeTruthy()
+    }
+  })
+
+  test('Plugin can deactivate another if permitted', async () => {
+    manager.canDeactivate = jest.fn(async (from) => true)
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    await solidity.call('manager', 'deactivatePlugin', 'fileManager')
+    const isActive = await manager.isActive('fileManager')
+    expect(manager.deactivatePlugin).toHaveBeenCalledWith('fileManager')
+    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+    expect(isActive).toBeFalsy()
+  })
+
+  // On
+
+  test('Plugin can listen on another plugin method', async (done) => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    const caller = jest.fn()
+    solidity.on('fileManager', 'currentFileChanged', caller)
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    expect(caller).toHaveBeenCalledTimes(2)
+    expect(caller).toHaveBeenLastCalledWith('ballot.sol')
+    done()
+  })
+
+  // Once
+
+  test('Plugin can listen once on another plugin method', async (done) => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    const caller = jest.fn()
+    solidity.once('fileManager', 'currentFileChanged', caller)
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    expect(caller).toHaveBeenCalledTimes(1)
+    expect(caller).toHaveBeenLastCalledWith('ballot.sol')
+    done()
+  })
+
+  // Off
+  test('Plugin can listen once on another plugin method', async (done) => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    const caller = jest.fn()
+    solidity.on('fileManager', 'currentFileChanged', caller)
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    solidity.off('fileManager', 'currentFileChanged')
+    fileManager.emit('currentFileChanged', 'ballot.sol')
+    expect(caller).toHaveBeenCalledTimes(1)
+    expect(caller).toHaveBeenLastCalledWith('ballot.sol')
+    done()
+  })
+
 })
