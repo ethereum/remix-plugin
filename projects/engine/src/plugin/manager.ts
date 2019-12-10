@@ -112,7 +112,7 @@ export class PluginManager extends Plugin implements IPluginManager {
         throw new Error(`Plugin ${this.requestFrom} has no right to activate plugin ${name}`)
       }
     }
-    return Array.isArray(names) ? names.map(activate) : activate(names)
+    return Array.isArray(names) ? Promise.all(names.map(activate)) : activate(names)
   }
 
   /**
@@ -134,7 +134,7 @@ export class PluginManager extends Plugin implements IPluginManager {
         throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
       }
     }
-    return Array.isArray(names) ? names.map(deactivate) : deactivate(names)
+    return Array.isArray(names) ? Promise.all(names.map(deactivate)) : deactivate(names)
   }
 
   /**
@@ -164,7 +164,7 @@ export class PluginManager extends Plugin implements IPluginManager {
         }
       }
     }
-    return Array.isArray(names) ? names.map(toggle) : toggle(names)
+    return Array.isArray(names) ? Promise.all(names.map(toggle)) : toggle(names)
   }
 
   /**
