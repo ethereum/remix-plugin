@@ -28,11 +28,11 @@ export class Engine {
     return new Promise((res, rej) => {
       if (this.isLoaded) { // If already loaded resolve
         res()
-        cb()
+        if (cb) cb()
       } else { // Else store the callback
         this.managerLoaded = () => {
           res()
-          cb()
+          if (cb) cb()
           delete this.managerLoaded // Cleanup once it's loaded
         }
       }
@@ -122,8 +122,8 @@ export class Engine {
 
     // Get latest version of the profiles
     const [ to, from ] = await Promise.all([
+      this.manager.getProfile(target),
       this.manager.getProfile(caller),
-      this.manager.getProfile(target)
     ])
 
     // Check if plugin FROM can call METHOD of plugin TO
