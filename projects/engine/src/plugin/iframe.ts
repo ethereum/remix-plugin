@@ -2,11 +2,6 @@ import { ViewPlugin } from './view'
 import { Message, ExternalProfile } from '../../../utils'
 import { transformUrl } from './util'
 
-
-interface PluginPendingRequest {
-  [id: number]: (result: any, error: Error) => void
-}
-
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 
 export class IframePlugin extends ViewPlugin {
@@ -16,7 +11,7 @@ export class IframePlugin extends ViewPlugin {
   private iframe = document.createElement('iframe')
   private origin: string
   private source: Window
-  private pendingRequest: PluginPendingRequest = {}
+  private pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
 
   constructor(public profile: ExternalProfile) {
     super(profile)
@@ -35,7 +30,7 @@ export class IframePlugin extends ViewPlugin {
     const requestInfo = this.currentRequest
     const name = this.name
     const promise = new Promise((res, rej) => {
-      this.pendingRequest[id] = (result: any[], error: Error) => error ? rej (error) : res(result)
+      this.pendingRequest[id] = (result: any[], error: Error | string) => error ? rej (error) : res(result)
     })
     this.postMessage({ id, action, key, payload, requestInfo, name })
     return promise
