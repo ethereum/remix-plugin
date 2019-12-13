@@ -17,7 +17,7 @@ export interface ExternalProfile<T extends Api = any> extends ViewProfile<T> {
 }
 
 export interface HostProfile extends Profile {
-  methods: ('addView' | 'removeView' | 'focus')[]
+  methods: ('addView' | 'removeView' | 'focus' | string)[]
 }
 
 export interface LibraryProfile<T extends Api = any> extends Profile<T> {

@@ -14,12 +14,11 @@ class MockPlugin extends Plugin {
   }
 
   mockMethod = jest.fn(() => true)
-  infinityMethod = jest.fn(() => new Promise((res, rej) => {
-    setTimeout(() => res(), 150000)
-  }))
   onActivation = jest.fn()
   onDeactivation = jest.fn()
 }
+
+
 
 describe.only('Abstract Plugin', () => {
   let plugin: MockPlugin
