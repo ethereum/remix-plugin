@@ -32,7 +32,7 @@ class MockView extends ViewPlugin {
   }
 }
 
-describe.only('View Plugin', () => {
+describe('View Plugin', () => {
   let manager: MockManager
   let host: MockHost
   let view: MockView

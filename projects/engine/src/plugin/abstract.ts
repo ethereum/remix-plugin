@@ -51,9 +51,10 @@ export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
   /** Add a request to the list of current requests */
   protected addRequest(request: PluginRequest, method: Profile<T>['methods'][number], args: any[]) {
     return new Promise((resolve, reject) => {
-      if (!this.profile.methods || !this.profile.methods.includes(method)) {
-        reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
-      }
+      // @todo() profiles should be manage by the plugin manager
+      // if (!this.profile.methods || !this.profile.methods.includes(method)) {
+      //   reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
+      // }
       // Add a new request to the queue
       this.requestQueue.push(async () => {
         this.currentRequest = request

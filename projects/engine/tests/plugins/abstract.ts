@@ -20,7 +20,7 @@ class MockPlugin extends Plugin {
 
 
 
-describe.only('Abstract Plugin', () => {
+describe('Abstract Plugin', () => {
   let plugin: MockPlugin
   beforeEach(() => {
     plugin = new MockPlugin(profile)
@@ -58,7 +58,7 @@ describe.only('Abstract Plugin', () => {
     try {
       await plugin['addRequest']({ from: 'fake' }, 'fakeMethod', [])
     } catch (err) {
-      expect(err.message).toBe('Method fakeMethod is not exposed by mock')
+      expect(err.message).toBe('Method fakeMethod is not implemented by mock')
     }
   })
 
