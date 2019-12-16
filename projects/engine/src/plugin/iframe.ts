@@ -52,19 +52,33 @@ export class IframePlugin extends ViewPlugin {
 
     switch (message.action) {
       // Start listening on an event
+      case 'on':
       case 'listen': {
         const { name, key } = message
         const action = 'notification'
         this.on(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
         break
       }
+      case 'off': {
+        const { name, key } = message
+        this.off(name, key)
+        break
+      }
+      case 'once': {
+        const { name, key } = message
+        const action = 'notification'
+        this.once(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
+        break
+      }
       // Emit an event
+      case 'emit':
       case 'notification': {
         if (!message.payload) break
         this.emit(message.key, ...message.payload)
         break
       }
       // Call a method
+      case 'call':
       case 'request': {
         const action = 'response'
         try {
@@ -124,6 +138,7 @@ export class IframePlugin extends ViewPlugin {
       const methods: string[] = await this.callPluginMethod('handshake')
       if (methods) {
         this.profile.methods = methods
+        this.call('manager', 'updateProfile', this.profile)
       }
     }
     return this.iframe
