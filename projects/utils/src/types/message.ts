@@ -7,9 +7,14 @@ export interface PluginRequest {
   path?: string
 }
 
+type MessageActions = 'on' | 'off' | 'once' | 'call' | 'response' | 'emit'
+
+/** @deprecated Use `MessageAcitons` instead */
+type OldMessageActions = 'notification' | 'request' | 'response' | 'listen'
+
 export interface Message {
   id: number
-  action: 'notification' | 'request' | 'response' | 'listen'
+  action: MessageActions | OldMessageActions
   name: string
   key: string
   payload: any
