@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { HostProfile, Profile } from '../../../utils'
+import { Profile } from '../../../utils'
 
 
 interface ProfileMap {
@@ -20,5 +20,5 @@ export abstract class HostPlugin extends Plugin {
   abstract addView(profile: Profile, view: Element): void
 
   /** Remove the plugin from the view from the DOM */
-  abstract removeView(profile: Profile,): void
+  abstract removeView(profile: Profile): void
 }
