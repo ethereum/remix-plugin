@@ -6,6 +6,8 @@ export type LibraryApi<T extends Api, P extends Profile> = {
 } & {
   events: {
     on: (name: string, cb: (...args: any[]) => void) => void
+    once?: (name: string, cb: (...args: any[]) => void) => void
+    off?: (name: string) => void
     emit: (name: string, ...args: any[]) => void
   }
 } & {
@@ -21,8 +23,8 @@ export function isViewLibrary(profile): profile is LibraryViewProfile {
 }
 
 export class LibraryPlugin<
-  T extends Api,
-  P extends LibraryViewProfile
+  T extends Api = any,
+  P extends LibraryViewProfile = any
 > extends Plugin {
 
   private isView: boolean
@@ -48,19 +50,18 @@ export class LibraryPlugin<
     // Forward event to the library
     if (this.profile.notifications) {
       if (!this.library.events || !this.library.events.emit) {
-        throw new Error(`Library of plugin ${this.name} should listen on notifications.
-        But doesn't expose the right interface (library.events.emit)`)
+        throw new Error(`"events" object from Library of plugin ${this.name} should implement "emit"`)
       }
       Object.keys(this.profile.notifications).forEach(name => {
         this.profile.notifications[name].forEach(key => {
-          this.on(name, key, (payload) => this.library.events.emit(`[${name}] ${key}`, ...payload))
+          this.on(name, key, (payload: any[]) => this.library.events.emit(`[${name}] ${key}`, ...payload))
         })
       })
     }
     // Start listening on events from the library
     if (this.profile.events) {
       if (!this.library.events || !this.library.events.emit) {
-        throw new Error(`Library of plugin ${this.name} should emit events but doesn't expose the right interface (library.events.emit)`)
+        throw new Error(`"events" object from Library of plugin ${this.name} should implement "emit"`)
       }
       this.profile.events.forEach(event => {
         this.library.events.on(event, (...payload) => this.emit(event, ...payload))
@@ -71,6 +72,16 @@ export class LibraryPlugin<
   deactivate() {
     if (this.isView) {
       this.call(this.profile.location, 'removeView', this.profile)
+    }
+    // Stop listening on events
+    if (this.profile.notifications) {
+      Object.keys(this.profile.notifications).forEach(name => {
+        this.profile.notifications[name].forEach(key => this.off(name, key))
+      })
+    }
+    // Stop listening on events from the library
+    if (this.profile.events && this.library.events.off) {
+      this.profile.events.forEach(event => this.library.events.off(event))
     }
     super.deactivate()
   }
