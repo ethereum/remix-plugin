@@ -49,6 +49,8 @@ describe('Iframe Plugin', () => {
     expect(iframe['iframe'].src).toEqual('https://url/')
   })
 
+  // Didn't manage to test whatever happen after onload
+
   // test.only('Activation call handshake', async (done) => {
   //   const spy = spyOn(iframe, 'callPluginMethod' as any)
   //   iframe['iframe'].addEventListener('load', () => {
