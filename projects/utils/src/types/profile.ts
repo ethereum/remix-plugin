@@ -8,13 +8,17 @@ export interface Profile<T extends Api = any> {
   hash?: string
 }
 
-export interface ViewProfile<T extends Api = any> extends Profile<T> {
+export interface LocationProfile {
   location: string
 }
 
-export interface ExternalProfile<T extends Api = any> extends ViewProfile<T> {
+export interface ExternalProfile {
   url: string
 }
+
+// export interface ExternalProfile<T extends Api = any> extends ViewProfile<T> {
+//   url: string
+// }
 
 export interface HostProfile extends Profile {
   methods: ('addView' | 'removeView' | 'focus' | string)[]
