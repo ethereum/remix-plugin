@@ -1,8 +1,10 @@
 import { ViewPlugin } from './view'
-import { Message, ExternalProfile } from '../../../utils'
+import { Message, ExternalProfile, Profile, LocationProfile } from '../../../utils'
 import { transformUrl } from './util'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
+
+export type IframeProfile = Profile & LocationProfile & ExternalProfile
 
 export class IframePlugin extends ViewPlugin {
   // Listener is needed to remove the listener
@@ -13,7 +15,7 @@ export class IframePlugin extends ViewPlugin {
   private source: Window
   private pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
 
-  constructor(public profile: ExternalProfile) {
+  constructor(public profile: IframeProfile) {
     super(profile)
   }
 

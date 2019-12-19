@@ -1,10 +1,12 @@
 import { Plugin } from './abstract'
-import { Profile, ViewProfile } from '../../../utils'
+import { Profile, LocationProfile } from '../../../utils'
 
 
 export function isView<P extends Profile>(profile: Profile): profile is (ViewProfile & P) {
   return !!profile['location']
 }
+
+export type ViewProfile = Profile & LocationProfile
 
 export abstract class ViewPlugin extends Plugin {
   abstract render(): Element

@@ -1,5 +1,5 @@
 import { Plugin } from './abstract'
-import { Api, Profile, LibraryProfile, ViewProfile } from '../../../utils'
+import { Api, Profile, LibraryProfile, LocationProfile } from '../../../utils'
 
 export type LibraryApi<T extends Api, P extends Profile> = {
   [method in P['methods'][number]]: T['methods'][method]
@@ -14,9 +14,7 @@ export type LibraryApi<T extends Api, P extends Profile> = {
   render?(): Element
 }
 
-interface LibraryViewProfile extends Profile, LibraryProfile {
-  location?: string
-}
+type LibraryViewProfile = Profile & LocationProfile & LibraryProfile
 
 export function isViewLibrary(profile): profile is LibraryViewProfile {
   return !!profile.location
