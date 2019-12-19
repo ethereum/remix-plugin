@@ -1,12 +1,6 @@
 import { Plugin } from './abstract'
 import { Profile } from '../../../utils'
 
-
-interface ProfileMap {
-  [name: string]: Profile
-}
-
-
 export abstract class HostPlugin extends Plugin {
 
   constructor(profile: Profile) {
