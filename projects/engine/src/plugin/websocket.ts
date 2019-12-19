@@ -1,12 +1,13 @@
 import { Plugin } from './abstract'
-import { Message, ExternalProfile } from '../../../utils'
+import { Message, ExternalProfile, Profile } from '../../../utils'
 
 interface PluginPendingRequest {
-  [id: number]: (result: any, error: Error) => void
+  [id: number]: (result: any, error: Error | string) => void
 }
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 type ReconnectListener = ['close', () => void, false]
+export type WebsocketProfile = Profile & ExternalProfile
 
 export class WebsocketPlugin extends Plugin {
   // Listener is needed to remove the listener
@@ -16,7 +17,7 @@ export class WebsocketPlugin extends Plugin {
   private pendingRequest: PluginPendingRequest = {}
   private socket: WebSocket
 
-  constructor(public profile: ExternalProfile) {
+  constructor(public profile: WebsocketProfile) {
     super(profile)
   }
 
@@ -40,7 +41,6 @@ export class WebsocketPlugin extends Plugin {
   /** Connect to the websocket */
   private async connect() {
     this.socket = new WebSocket(this.profile.url)
-    console.log('[IDE] Connect')
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listener)
       const methods: string[] = await this.callPluginMethod('handshake')
