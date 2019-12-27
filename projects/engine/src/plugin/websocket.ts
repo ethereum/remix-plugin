@@ -15,7 +15,7 @@ export class WebsocketPlugin extends Plugin {
   private readonly reconnectOnclose: ReconnectListener = ['close', () => this.reconnect(), false]
   private id = 0
   private pendingRequest: PluginPendingRequest = {}
-  private socket: WebSocket
+  protected socket: WebSocket
 
   constructor(public profile: WebsocketProfile) {
     super(profile)
@@ -24,6 +24,7 @@ export class WebsocketPlugin extends Plugin {
   async activate() {
     this.connect()
     this.socket.addEventListener(...this.reconnectOnclose)
+    super.activate()
   }
 
   deactivate() {
@@ -34,18 +35,19 @@ export class WebsocketPlugin extends Plugin {
   }
 
   /** Try to reconnect to net websocket if closes */
-  private reconnect() {
+  protected reconnect() {
     setTimeout(() => this.connect(), 1000) // Try to reconnect if connection failed
   }
 
   /** Connect to the websocket */
-  private async connect() {
+  protected connect() {
     this.socket = new WebSocket(this.profile.url)
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listener)
       const methods: string[] = await this.callPluginMethod('handshake')
       if (methods) {
         this.profile.methods = methods
+        this.call('manager', 'updateProfile', this.profile)
       }
     })
   }
