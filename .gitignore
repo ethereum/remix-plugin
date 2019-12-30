@@ -3,4 +3,5 @@ dist
 .vscode
 
 examples/plugins/*/dist
+projects/*/dist
 coverage
