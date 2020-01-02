@@ -41,6 +41,7 @@ export function connectIframe(client: PluginClient) {
       if (!isLoaded) throw new Error('Handshake before communicating')
 
       switch (action) {
+        case 'emit':
         case 'notification': {
           client.events.emit(listenEvent(name, key), ...payload)
           break
@@ -49,6 +50,7 @@ export function connectIframe(client: PluginClient) {
           client.events.emit(callEvent(name, key, id), payload, error)
           break
         }
+        case 'call':
         case 'request': {
           const path = requestInfo && requestInfo.path
           const method = getMethodPath(key, path)
@@ -100,7 +102,7 @@ export function buildIframeClient<T extends Api, App extends ApiMap = RemixApi>(
   Object.keys(apis).forEach(name => client[name] = apis[name])
   // Listen on changes
   connectIframe(client as any)
-  listenOnThemeChanged(client, client.options)
+  listenOnThemeChanged(client as any, client.options)
   return client as any
 }
 

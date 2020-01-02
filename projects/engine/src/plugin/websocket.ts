@@ -80,19 +80,33 @@ export class WebsocketPlugin extends Plugin {
 
     switch (message.action) {
       // Start listening on an event
+      case 'on':
       case 'listen': {
         const { name, key } = message
-        const action = 'notification'
+        const action = 'emit'
         this.on(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
         break
       }
+      case 'once': {
+        const { name, key } = message
+        const action = 'emit'
+        this.once(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
+        break
+      }
+      case 'off': {
+        const { name, key } = message
+        this.off(name, key)
+        break
+      }
       // Emit an event
+      case 'emit':
       case 'notification': {
         if (!message.payload) break
         this.emit(message.key, ...message.payload)
         break
       }
       // Call a method
+      case 'call':
       case 'request': {
         const action = 'response'
         try {

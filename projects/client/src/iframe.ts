@@ -91,6 +91,7 @@ export function connectIframe(client: PluginClient<any, any>) {
       if (!isLoaded) throw new Error('Handshake before communicating')
 
       switch (action) {
+        case 'emit':
         case 'notification': {
           client.events.emit(listenEvent(name, key), ...payload)
           break
@@ -99,6 +100,7 @@ export function connectIframe(client: PluginClient<any, any>) {
           client.events.emit(callEvent(name, key, id), payload, error)
           break
         }
+        case 'call':
         case 'request': {
           const path = requestInfo && requestInfo.path
           const method = getMethodPath(key, path)
