@@ -127,7 +127,7 @@ describe('Client is loaded', () => {
   test('"Emit" should trigger an "send" event', (done) => {
     const key = 'key', payload = 'payload'
     client.events.on('send', (result) => {
-      expect(result).toEqual({ action: 'notification', key, payload: [payload] })
+      expect(result).toEqual({ action: 'emit', key, payload: [payload] })
       done()
     })
     client.emit(key, payload)
