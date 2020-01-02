@@ -18,6 +18,6 @@ export interface Message {
   name: string
   key: string
   payload: any
-  requestInfo: Partial<PluginRequest>
+  requestInfo: PluginRequest
   error?: Error | string
 }

@@ -35,6 +35,7 @@ export function connectWS(socket: WS, client: PluginClient) {
       if (!isLoaded) throw new Error('Handshake before communicating')
 
       switch (action) {
+        case 'emit':
         case 'notification': {
           client.events.emit(listenEvent(name, key), ...payload)
           break
@@ -43,6 +44,7 @@ export function connectWS(socket: WS, client: PluginClient) {
           client.events.emit(callEvent(name, key, id), payload, error)
           break
         }
+        case 'call':
         case 'request': {
           const path = requestInfo && requestInfo.path
           const method = getMethodPath(key, path)
@@ -82,7 +84,7 @@ export function buildWebsocketClient<T extends Api, App extends ApiMap = RemixAp
   const apis = getApiMap<ProfileMap<App>, App>(client, client.options.customApi)
   Object.keys(apis).forEach(name => client[name] = apis[name])
   // Listen on changes
-  connectWS(socket, client)
+  connectWS(socket, client as any)
   return client as any
 }
 
