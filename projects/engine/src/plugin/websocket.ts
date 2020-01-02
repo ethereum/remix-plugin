@@ -5,6 +5,11 @@ interface PluginPendingRequest {
   [id: number]: (result: any, error: Error | string) => void
 }
 
+interface WebsocketOptions {
+  /** Time (in ms) to wait before reconnection after connection closed */
+  reconnectDelay: number
+}
+
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 type ReconnectListener = ['close', () => void, false]
 export type WebsocketProfile = Profile & ExternalProfile
@@ -16,9 +21,13 @@ export class WebsocketPlugin extends Plugin {
   private id = 0
   private pendingRequest: PluginPendingRequest = {}
   protected socket: WebSocket
+  protected options: WebsocketOptions = {
+    reconnectDelay: 1000
+  }
 
-  constructor(public profile: WebsocketProfile) {
+  constructor(public profile: WebsocketProfile, options: Partial<WebsocketOptions> = {}) {
     super(profile)
+    this.options = { ...this.options, ...options };
   }
 
   async activate() {
@@ -36,7 +45,7 @@ export class WebsocketPlugin extends Plugin {
 
   /** Try to reconnect to net websocket if closes */
   protected reconnect() {
-    setTimeout(() => this.connect(), 1000) // Try to reconnect if connection failed
+    setTimeout(() => this.connect(), this.options.reconnectDelay) // Try to reconnect if connection failed
   }
 
   /** Connect to the websocket */
