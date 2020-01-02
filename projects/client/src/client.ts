@@ -105,13 +105,36 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
   ): void {
     const eventName = listenEvent(name, key)
     this.events.on(eventName, cb)
-    this.events.emit('send', { action: 'listen', name, key, id: this.id })
+    this.events.emit('send', { action: 'on', name, key, id: this.id })
   }
+
+  
+  /** Listen once on event from another plugin */
+  public once<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
+    name: Name,
+    key: Key,
+    cb: EventCallback<App[Name], Key>,
+  ): void {
+    const eventName = listenEvent(name, key)
+    this.events.once(eventName, cb)
+    this.events.emit('send', { action: 'once', name, key, id: this.id })
+  }
+
+  /** Remove all listeners on an event from an external plugin */
+  public off<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
+    name: Name,
+    key: Key,
+  ): void {
+    const eventName = listenEvent(name, key)
+    this.events.removeAllListeners(eventName)
+    this.events.emit('send', { action: 'off', name, key, id: this.id })
+  }
+
 
   /** Expose an event for the IDE */
   public emit<Key extends EventKey<T>>(key: Key, ...payload: EventParams<T, Key>): void {
     if (!this.isLoaded) handleConnectionError(this.options.devMode)
-    this.events.emit('send', { action: 'notification', key, payload })
+    this.events.emit('send', { action: 'emit', key, payload })
   }
 
 
