@@ -39,7 +39,6 @@ describe.only('Websocket plugin', () => {
     await engine.onload()
     plugin = new MockSocket()
     engine.register(plugin)
-    manager.activatePlugin('sidePanel')
   })
 
   test('Activation', async () => {
@@ -54,7 +53,7 @@ describe.only('Websocket plugin', () => {
     setTimeout(() => {
       expect(plugin.connect).toHaveBeenCalled()
       done()
-    })
+    }, 100)
   })
 
   test('Deactivation', async () => {
