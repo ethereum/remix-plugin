@@ -88,13 +88,38 @@ describe('Client is loaded', () => {
 
   // ON
 
-  test('"On" should listen for event', (done) => {
+  test('"On" should listen for event', () => {
+    const spy = jest.fn()
     const name = 'fileManager', key = 'currentFileChanged', payload = 'browser/ballot.sol'
-    client.on(name, key, (result) => {
-      expect(result).toEqual(payload)
-      done()
-    })
+    client.on(name, key, spy)
     client.events.emit(listenEvent(name, key), payload)
+    client.events.emit(listenEvent(name, key), payload)
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledWith(payload)
+  })
+
+  // ONCE
+
+  test('"Once" should listen for event only once', () => {
+    const spy = jest.fn()
+    const name = 'fileManager', key = 'currentFileChanged', payload = 'browser/ballot.sol'
+    client.once(name, key, spy)
+    client.events.emit(listenEvent(name, key), payload)
+    client.events.emit(listenEvent(name, key), payload)
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  // OFF
+
+  test('"Off" should remove all listeners for an event', () => {
+    const spy = jest.fn()
+    const name = 'fileManager', key = 'currentFileChanged', payload = 'browser/ballot.sol'
+    client.on(name, key, spy)
+    client.events.emit(listenEvent(name, key), payload)
+    client.events.emit(listenEvent(name, key), payload)
+    client.off(name, key)
+    client.events.emit(listenEvent(name, key), payload)
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   // EMIT
