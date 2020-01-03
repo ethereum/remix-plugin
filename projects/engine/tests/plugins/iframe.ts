@@ -153,7 +153,6 @@ describe('Iframe Plugin', () => {
 
   // Get Message: off
   test('getMessage with once should run listen only one', () => {
-    const spy = spyOn(iframe, 'postMessage' as any)
     iframe['origin'] = 'url'
     const event = {
       origin: 'url',
