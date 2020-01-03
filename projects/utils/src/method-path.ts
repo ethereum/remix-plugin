@@ -9,3 +9,8 @@ export function getMethodPath(method: string, path?: string) {
   part.push(method)
   return part.join('.')
 }
+
+/** Get the root name of a path */
+export function getRootPath(path: string) {
+  return path.split('.').shift();
+}
