@@ -51,7 +51,6 @@ describe('Iframe Plugin', () => {
     await engine.onload()
     library = new MockLibrary(lib)
     engine.register([ library ])
-    manager.activatePlugin('sidePanel')
   })
 
   test('Activation', async () => {
