@@ -22,7 +22,7 @@
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
-    "test": "jest",
+    "test": "jest -w 1",
     "test:engine": "jest ./projects/engine",
     "test:client": "jest ./projects/client",
     "publish": "npm run build && npm run publish:engine && npm run publish:plugin",
