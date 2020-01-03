@@ -1,5 +1,5 @@
 import { PluginClient, createApi, getApiMap, createIframeClient, listenOnThemeChanged } from '@remixproject/plugin'
-import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents } from '@utils'
+import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents, Profile, LocationProfile } from '@utils'
 
 interface TestApi extends Api {
   events: {
@@ -10,7 +10,7 @@ interface TestApi extends Api {
   }
 }
 
-const profile: ExternalProfile<TestApi> = {
+const profile: Profile<TestApi> & ExternalProfile & LocationProfile = {
   name: 'test',
   methods: ['method'],
   location: 'sidePanel',
