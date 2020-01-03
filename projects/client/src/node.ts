@@ -1,4 +1,5 @@
 import { PluginClient } from "./client"
+import { getRootPath } from '../../utils/src/method-path'
 
 /**
  * Access a service of an external plugin
@@ -11,7 +12,7 @@ export class PluginNode {
    */
   constructor(private path: string, private client: PluginClient) {}
 
-  async get(name: string) {
+  get(name: string) {
     return new PluginNode(`${this.path}.${name}`, this.client)
   }
 
@@ -26,6 +27,6 @@ export class PluginNode {
    */
   on(method: string, cb: Function) {
     // Events are triggered at the root level for now
-    this.client.on(this.path.split('.').shift() as any, method, cb)
+    this.client.on(getRootPath(this.path) as any, method, cb)
   }
 }
