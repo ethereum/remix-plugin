@@ -1,5 +1,6 @@
 import { PluginClient } from './client'
 import { IPluginService } from './types'
+import { getRootPath } from '../../utils/src/method-path'
 
 /**
  * A node that forward the call to the right path
@@ -86,7 +87,7 @@ export function getMethods(service: IPluginService) {
  * @note If the service doesn't provide a property "methods" then all methods are going to be exposed by default
  */
 export function createService<T extends Record<string, any>>(path: string, service: T): IPluginService<T> {
-  if (service.path && (service.path as string).split('.').pop() !== path) {
+  if (service.path && getRootPath(service.path) !== path) {
     throw new Error(`Service path ${service.path} is different from the one provided: ${path}`)
   }
 
