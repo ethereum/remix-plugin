@@ -101,7 +101,6 @@ describe('Websocket plugin', () => {
     // Action 'on'
     const on = { id: 0, action: 'on', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
     plugin['getMessage']({ data: JSON.stringify(on) } as any)
-    console.log(plugin.on.mock.calls)
     expect(plugin.on.mock.calls[0][0]).toEqual('name')
     expect(plugin.on.mock.calls[0][1]).toEqual('key')
     // Action 'once'
