@@ -1,4 +1,4 @@
-import { PluginManager, Engine, LibraryPlugin, Plugin } from '@remixproject/engine';
+import { PluginManager, Engine, Plugin } from '@remixproject/engine';
 
 test('[Example] Plugin Communication', async () => {
 
