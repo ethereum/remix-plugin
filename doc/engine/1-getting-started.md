@@ -1,8 +1,3 @@
-## Install
-```bash
-npm install @remixproject/engine
-```
-
 ## Create the Engine
 
 1. Create the Plugin Manager
