@@ -1,4 +1,4 @@
-import { Profile } from "../../../utils"
+import { Profile, pluginManagerProfile } from "../../../utils"
 import { Plugin } from "./abstract"
 
 export type IPluginManager = {
@@ -15,6 +15,13 @@ export type IPluginManager = {
   canActivate(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
+export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin']
+
+interface ManagerProfile extends Profile {
+  name: 'manager',
+}
+
+
 export class PluginManager extends Plugin implements IPluginManager {
   /** Run engine activation. Implemented by Engine */
   private engineActivatePlugin: (name: string) => Promise<any>
@@ -28,7 +35,7 @@ export class PluginManager extends Plugin implements IPluginManager {
   protected onPluginDeactivated?(profile: Profile): any
   protected onProfileAdded?(profile: Profile): any
 
-  constructor(profile: Profile) {
+  constructor(profile: ManagerProfile = pluginManagerProfile) {
     super(profile)
     this.profiles[profile.name] = profile // Initialise with own profile (cannot use addProfile because manager is not activated yet)
   }

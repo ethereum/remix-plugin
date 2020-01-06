@@ -4,7 +4,7 @@ import { Api, Profile, LibraryProfile, LocationProfile } from '../../../utils'
 export type LibraryApi<T extends Api, P extends Profile> = {
   [method in P['methods'][number]]: T['methods'][method]
 } & {
-  events: {
+  events?: {
     on: (name: string, cb: (...args: any[]) => void) => void
     once?: (name: string, cb: (...args: any[]) => void) => void
     off?: (name: string) => void
@@ -14,7 +14,7 @@ export type LibraryApi<T extends Api, P extends Profile> = {
   render?(): Element
 }
 
-type LibraryViewProfile = Profile & LocationProfile & LibraryProfile
+type LibraryViewProfile = LocationProfile & LibraryProfile
 
 export function isViewLibrary(profile): profile is LibraryViewProfile {
   return !!profile.location
@@ -22,7 +22,7 @@ export function isViewLibrary(profile): profile is LibraryViewProfile {
 
 export class LibraryPlugin<
   T extends Api = any,
-  P extends LibraryViewProfile = any
+  P extends LibraryProfile | LibraryViewProfile = any
 > extends Plugin {
 
   private isView: boolean
@@ -36,13 +36,13 @@ export class LibraryPlugin<
     })
     this.isView = isViewLibrary(profile)
     if (this.isView && !this['render']) {
-      throw new Error(`Profile ${profile.name} define the location ${profile.location}, but method "render" is not implemented`)
+      throw new Error(`Profile ${profile.name} define the location ${(profile as LibraryViewProfile).location}, but method "render" is not implemented`)
     }
   }
 
   async activate() {
     if (this.isView) {
-      await this.call(this.profile.location, 'addView', this.profile, this['render']())
+      await this.call((this.profile as LibraryViewProfile).location, 'addView', this.profile, this['render']())
     }
     super.activate()
     // Forward event to the library
@@ -69,7 +69,7 @@ export class LibraryPlugin<
 
   deactivate() {
     if (this.isView) {
-      this.call(this.profile.location, 'removeView', this.profile)
+      this.call((this.profile as LibraryViewProfile).location, 'removeView', this.profile)
     }
     // Stop listening on events
     if (this.profile.notifications) {

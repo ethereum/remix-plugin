@@ -122,7 +122,7 @@ describe('Websocket Client', () => {
 
   // Request Info with one level path -> no change
   test('Request method from parent with requestInfo', async () => {
-    const requestInfo = { path: 'remixd' }
+    const requestInfo = { path: 'remixd', from: 'external' }
     const msg: Partial<Message> = { ...baseMsg, action: 'request', payload: [true], requestInfo }
     client[msg.key] = (isTrue: boolean) => !isTrue
     await getMsgFromIDE(msg)
@@ -131,7 +131,7 @@ describe('Websocket Client', () => {
 
   // Request Info with two level path -> call service
   test('Request method from parent with service requestInfo', async () => {
-    const requestInfo = { path: 'remixd.cmd' }
+    const requestInfo = { path: 'remixd.cmd', from: 'external' }
     const msg: Partial<Message> = { ...baseMsg, action: 'request', id: 1, payload: [true], requestInfo }
     client['cmd.key'] = (isTrue: boolean) => !isTrue
     await getMsgFromIDE(msg)
@@ -140,7 +140,7 @@ describe('Websocket Client', () => {
 
   // Request Info with two level path -> call service
   test('Request method from parent with subservice requestInfo', async () => {
-    const requestInfo = { path: 'remixd.cmd.git' }
+    const requestInfo = { path: 'remixd.cmd.git', from: 'external' }
     const msg: Partial<Message> = {  ...baseMsg, action: 'request', payload: [true], requestInfo }
     client['cmd.git.key'] = (isTrue: boolean) => !isTrue
     await getMsgFromIDE(msg)
