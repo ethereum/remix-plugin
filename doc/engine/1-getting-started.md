@@ -2,7 +2,7 @@
 
 1. Create the Plugin Manager
 
-The plugin manager can activat/deactivate plugins, and manage permissions between plugins.
+The plugin manager can activate/deactivate plugins, and manage permissions between plugins.
 ```typescript
 import { PluginManager } from '@remixproject/engine';
 
@@ -11,7 +11,7 @@ const manager = new PluginManager()
 
 2. Create the Engine
 
-The engine manage the communication between plugins. It requires a `PluginManager`.
+The engine manages the communication between plugins. It requires a `PluginManager`.
 ```typescript
 import { PluginManager, Engine } from '@remixproject/engine';
 
