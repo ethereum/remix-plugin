@@ -1,7 +1,7 @@
 import { Profile, pluginManagerProfile } from "../../../utils"
 import { Plugin } from "./abstract"
 
-export type IPluginManager = {
+export type BasePluginManager = {
   // Exposed methods
   getProfile(name: string): Promise<Profile>
   updateProfile(profile: Partial<Profile>): any
@@ -22,7 +22,7 @@ interface ManagerProfile extends Profile {
 }
 
 
-export class PluginManager extends Plugin implements IPluginManager {
+export class PluginManager extends Plugin implements BasePluginManager {
   /** Run engine activation. Implemented by Engine */
   private engineActivatePlugin: (name: string) => Promise<any>
   /** Run engine deactivation. Implemented by Engine */
