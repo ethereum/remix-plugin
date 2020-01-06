@@ -1,4 +1,4 @@
-import { IPluginManager } from "../plugin/manager"
+import { BasePluginManager } from "../plugin/manager"
 import { Plugin } from '../plugin/abstract'
 import { listenEvent } from "../../../utils"
 
@@ -11,7 +11,7 @@ export class Engine {
   private managerLoaded: () => void
   onRegistration?(plugin: Plugin): void
 
-  constructor(private manager: IPluginManager) {
+  constructor(private manager: BasePluginManager) {
     this.plugins['manager'] = manager
     // Activate the Engine & start listening on activation and deactivation
     this.activatePlugin('manager').then(() => {
