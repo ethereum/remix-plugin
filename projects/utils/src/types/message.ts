@@ -3,7 +3,10 @@ export interface PluginRequest {
   from: string,
   /** @deprecated Will be remove in the next version */
   isFromNative?: boolean,
-  /** The path to access the request inside the plugin */
+  /**
+   * The path to access the request inside the plugin
+   * @example 'remixd.cmd.git'
+   */
   path?: string
 }
 

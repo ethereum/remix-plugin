@@ -3,7 +3,7 @@ import { MethodKey, Api, ApiMap, EventKey } from './api'
 /** Describe a plugin */
 export interface Profile<T extends Api = any> {
   name: string
-  methods: MethodKey<T>[]
+  methods?: MethodKey<T>[]
   permission?: boolean
   hash?: string
 }
