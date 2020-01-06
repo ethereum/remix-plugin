@@ -163,7 +163,7 @@ export class Engine {
     const getProfiles = Object.keys(this.plugins).map(key => this.manager.getProfile(key))
     const profiles = await Promise.all(getProfiles)
     return profiles.reduce((app, target) => {
-      app[target.name] = target.methods.reduce((methods, method) => {
+      app[target.name] = (target.methods || []).reduce((methods, method) => {
         methods[method] = (...payload: any[]) => this.callMethod(name, target.name, method, ...payload)
         return methods
       }, {
