@@ -17,7 +17,7 @@ export interface RequestParams {
   payload: any[]
 }
 
-export abstract class Plugin<T extends Api = any, App extends ApiMap = any> {
+export class Plugin<T extends Api = any, App extends ApiMap = any> {
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   /** Give access to all the plugins registered by the engine */
