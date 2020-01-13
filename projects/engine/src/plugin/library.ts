@@ -36,7 +36,9 @@ export class LibraryPlugin<
     })
     this.isView = isViewLibrary(profile)
     if (this.isView && !this['render']) {
-      throw new Error(`Profile ${profile.name} define the location ${(profile as LibraryViewProfile).location}, but method "render" is not implemented`)
+      throw new Error(
+        `Profile ${profile.name} define the location ${(profile as LibraryViewProfile).location}, but method "render" is not implemented`
+      )
     }
   }
 

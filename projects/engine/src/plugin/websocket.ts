@@ -27,7 +27,7 @@ export class WebsocketPlugin extends Plugin {
 
   constructor(public profile: WebsocketProfile, options: Partial<WebsocketOptions> = {}) {
     super(profile)
-    this.options = { ...this.options, ...options };
+    this.options = { ...this.options, ...options }
   }
 
   async activate() {
