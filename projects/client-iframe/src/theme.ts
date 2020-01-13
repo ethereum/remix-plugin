@@ -1,4 +1,4 @@
-import { PluginClient, PluginOptions } from "@remixproject/plugin"
+import { PluginClient, PluginOptions } from "@remixproject/plugin/client"
 import { Theme } from "@utils"
 
 /** Start listening on theme changed */
