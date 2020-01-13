@@ -1,5 +1,7 @@
 ## Plugins Communication
 
+### Methods
+
 Each plugin can call methods exposed by other plugin. Let's see how to expose a method from one plugin and call it from another.
 
 1. Create Plugin that exposes a method
@@ -56,6 +58,26 @@ await manager.activatePlugin(['first', 'second'])
 const firstVersion = await second.getFirstPluginVersion()
 ```
 
+### Events
+
+Ever plugin can emit and listen events with : 
+- `emit`: Broadcast an event to all plugins listening.
+- `on`: Listen to one event of another plugin.
+- `once`: Listen once to one event of another plugin.
+- `off`: Stop listening on an event the plugin was listening to.
+
+```typescript
+// Listen and broadcast "count" event
+let value = 0
+second.on('first', 'count', (count: number) => value = count)
+first.emit('count', 1)
+first.emit('count', 2)
+
+// Stop listening on event
+second.off('first', 'count')
+```
+
+
 ## Full Example
 
 ```typescript
@@ -98,6 +120,15 @@ await manager.activatePlugin(['first', 'second'])
 
 // Call method "getVersion" of first plugin from second plugin 
 const firstVersion = await second.getFirstPluginVersion()
+
+// Listen and broadcast "count" event
+let value = 0
+second.on('first', 'count', (count: number) => value = count)
+first.emit('count', 1)
+first.emit('count', 2)
+
+// Stop listening on event
+second.off('first', 'count')
 ```
 
 🧪 [Tested code available here](../../examples/engine/tests/2-plugin-communication.ts)
