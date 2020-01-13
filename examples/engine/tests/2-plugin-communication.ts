@@ -48,4 +48,19 @@ test('[Example] Plugin Communication', async () => {
   ///////////////////////////////////
 
   expect(firstVersion).toBe(0)
+
+  ///////////////////////////////////
+
+  let value = 0
+  second.on('first', 'count', (count: number) => value = count)
+  first.emit('count', 1)
+  first.emit('count', 2)
+
+  second.off('first', 'count')
+
+  first.emit('count', 3)
+
+  ///////////////////////////////////
+
+  expect(value).toBe(2)
 })
