@@ -1,24 +1,22 @@
 ## Hosted Plugin
 
-If your plugin has a UI you can specify where to host it. 
-
-For that you need : 
+If your plugin has a UI you can specify where to host it. For that you need : 
 - A `HostPlugin` that manages the view.
 - A `ViewPlugin` that displays the UI of your plugin.
 
 ### Host Plugin
-The Host plugin defines a zone on your IDE where a plugin can be display. It must exposes 3 methods : 
+The Host plugin defines a zone on your IDE where a plugin can be displayed. It must exposes 3 methods : 
 - `addView`: Add a new view plugin in the zone.
-- `removeView`: Remove an existed view plugin on that zone.
+- `removeView`: Remove an existed view plugin from that zone.
 - `focus`: Draw the UI of the view on the zone.
 
 > Adding a view doesn't draw the UI automatically, you need to trigger the `focus` method for that.
 
-_The way to add/draw element on the screen is different depending one your framework (Litelement, Vue, React, Angular, Svelte, ...). In this example we are going to use directly the standard Web API. Note that there is no support for WebGL yet, consider opening an issue if you're in this situation._
+_The way to add/draw element on the screen is different depending on your framework (LitElement, Vue, React, Angular, Svelte, ...). In this example we are going to use directly the standard Web API. Note that there is no support for WebGL yet, consider opening an issue if you're in this situation._
 
 1. Create a `HostPlugin`
 
-Let's extends the `HostPlugin` to create a zone on the side part of the screen:
+Let's extend the `HostPlugin` to create a zone on the side part of the screen:
 
 ```typescript
 // Host plugin display
@@ -81,7 +79,7 @@ focus(name: string) {
 
 5. Implements `removeView`
 
-We remove the view from the list, and remove focus if it had it
+We remove the view from the list, and remove focus if it had it.
 
 ```typescript
 removeView(profile: Profile) {
@@ -98,7 +96,7 @@ removeView(profile: Profile) {
 Ok, now that we have our `HostPlugin` we can write a simple `ViewPlugin` to inject into.
 
 A `ViewPlugin` must : 
-- have a `location` key in it's profile, with the name of the `HostPlugin`.
+- have a `location` key in its profile, with the name of the `HostPlugin`.
 - implement the `render` method that return its root element.
 
 ```typescript
@@ -120,7 +118,7 @@ class HostedPlugin extends ViewPlugin {
 
 ### Instanciate them in the Engine
 
-The `ViewPlugin` will take care of adding itself into its `HostPlugin` once it's activated.
+The `ViewPlugin` will add itself into its `HostPlugin` once activated.
 
 ```typescript
 const manager = new PluginManager()
@@ -144,4 +142,6 @@ sidePanel.focus('hosted')
 await manager.deactivatePlugin(['hosted'])
 ```
 
-⚠️ Do not deactive a `HostPlugin` that has still manage activated `ViewPlugin`.
+⚠️ Do not deactive a `HostPlugin` that still manage activated `ViewPlugin`.
+
+🧪 [Tested code available here](../../examples/engine/tests/3-hosted-plugin.ts)
