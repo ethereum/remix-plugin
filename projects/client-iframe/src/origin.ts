@@ -1,4 +1,4 @@
-import { PluginDevMode } from "@remixproject/plugin"
+import { PluginDevMode } from "@remixproject/plugin/client"
 
 /** Fetch the default origins for remix */
 export async function getDefaultOrigins() {
