@@ -1,11 +1,11 @@
 ## Hosted Plugin
 
-If your plugin has a UI you can specify where to host it. For that you need : 
+If your plugin has a UI you can specify where to host it. For that you need: 
 - A `HostPlugin` that manages the view.
 - A `ViewPlugin` that displays the UI of your plugin.
 
 ### Host Plugin
-The Host plugin defines a zone on your IDE where a plugin can be displayed. It must exposes 3 methods : 
+The Host plugin defines a zone on your IDE where a plugin can be displayed. It must exposes 3 methods: 
 - `addView`: Add a new view plugin in the zone.
 - `removeView`: Remove an existed view plugin from that zone.
 - `focus`: Draw the UI of the view on the zone.
@@ -28,11 +28,8 @@ class SidePanel extends HostPlugin {
     // Expose the 3 absract methods 'focus', 'addView', 'removeView'
     super({ name: 'sidePanel', methods: ['focus', 'addView', 'removeView']})
   }
-  // Add a View plugin into the DOM once it's activated
   addView(profile: Profile, view: HTMLElement) {}
-  // Remove a View plugin from the DOM once it's deactivated
   removeView(profile: Profile) {}
-  // Set focus on one plugin
   focus(name: string) {}
 }
 ```
@@ -52,7 +49,7 @@ constructor(root = document.body) {
 
 3. Implements `addView`
 
-When a view plugin is added, the referene of the view plugin's HTMLElement is pass to the method.
+When a view plugin is added, the reference of the view plugin's HTMLElement is pass to the method.
 
 ```typescript
 addView(profile: Profile, view: HTMLElement) {
@@ -95,7 +92,7 @@ removeView(profile: Profile) {
 
 Ok, now that we have our `HostPlugin` we can write a simple `ViewPlugin` to inject into.
 
-A `ViewPlugin` must : 
+A `ViewPlugin` must: 
 - have a `location` key in its profile, with the name of the `HostPlugin`.
 - implement the `render` method that return its root element.
 
