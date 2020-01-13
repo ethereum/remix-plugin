@@ -1,4 +1,4 @@
-import { PluginManager, Engine, Plugin } from '@remixproject/engine';
+import { PluginManager, Engine, Plugin } from '@remixproject/engine'
 
 test('[Example] Plugin Communication', async () => {
 
@@ -20,7 +20,7 @@ test('[Example] Plugin Communication', async () => {
     constructor() {
       super({ name: 'second' })
     }
-  
+
     getFirstPluginVersion(): Promise<number> {
       // Call the methode "getVersion" of plugin "first"
       return this.call('first', 'getVersion')
@@ -36,13 +36,13 @@ test('[Example] Plugin Communication', async () => {
   // wait for the manager to be loaded
   await engine.onload()
 
-  // Register both plugins 
+  // Register both plugins
   engine.register([first, second])
 
   // Activate both plugins
   await manager.activatePlugin(['first', 'second'])
 
-  // Call method "getVersion" of first plugin from second plugin 
+  // Call method "getVersion" of first plugin from second plugin
   const firstVersion = await second.getFirstPluginVersion()
 
   ///////////////////////////////////
