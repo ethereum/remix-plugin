@@ -12,7 +12,7 @@ export abstract class PluginService implements IPluginService {
 
   constructor() {}
 
-  emit(key: string, ...payload) {
+  emit(key: string, ...payload: any[]) {
     this.client.emit(key, ...payload)
   }
 

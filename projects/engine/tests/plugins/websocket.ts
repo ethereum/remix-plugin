@@ -70,8 +70,8 @@ describe('Websocket plugin', () => {
 
   test('Post Message fails if socket not open', () => {
     try {
-      plugin.socket.readyState = true;
-      plugin.socket.OPEN = false;
+      plugin.socket.readyState = true
+      plugin.socket.OPEN = false
       plugin['postMessage']({ name: 'socket' })
     } catch (err) {
       expect(err.message).toBe('Websocket connection is not open yet')
@@ -79,7 +79,7 @@ describe('Websocket plugin', () => {
   })
 
   test('Post Message', () => {
-    plugin.socket.readyState = true;
+    plugin.socket.readyState = true
     plugin.socket.OPEN = true
     plugin['postMessage']({ name: 'socket' })
     expect(plugin.socket.send).toHaveBeenCalledWith(JSON.stringify({ name: 'socket' }))
@@ -117,5 +117,5 @@ describe('Websocket plugin', () => {
     plugin['getMessage']({ data: JSON.stringify(emit) } as any)
     expect(plugin.emit).toHaveBeenCalledWith('key', 'payload')
 
-  }) 
+  })
 })
