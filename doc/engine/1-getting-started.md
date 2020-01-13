@@ -55,3 +55,6 @@ engine.register(plugin)
 // Activate plugins
 manager.activatePlugin('plugin-name')
 ```
+
+
+🧪 [Tested code available here](../../examples/engine/tests/1-getting-started.ts)
