@@ -2,7 +2,7 @@
 
 1. Create the Plugin Manager
 
-The plugin manager can activate/deactivate plugins, and manage permissions between plugins.
+The plugin manager can activate/deactivate plugins, and manages permissions between plugins.
 ```typescript
 import { PluginManager } from '@remixproject/engine';
 
