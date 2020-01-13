@@ -100,3 +100,4 @@ await manager.activatePlugin(['first', 'second'])
 const firstVersion = await second.getFirstPluginVersion()
 ```
 
+🧪 [Tested code available here](../../examples/engine/tests/2-plugin-communication.ts)
