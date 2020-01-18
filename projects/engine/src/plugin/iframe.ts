@@ -116,6 +116,7 @@ export class IframePlugin extends ViewPlugin {
     }
     this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
+    this.iframe.setAttribute('id', `frame-${this.name}`)
     this.iframe.src = transformUrl(this.profile.url)
     // Wait for the iframe to load and handshake
     this.iframe.onload = async () => {
