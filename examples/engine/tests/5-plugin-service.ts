@@ -1,24 +1,5 @@
 import { PluginManager, Engine, Plugin, PluginService, IPluginService} from '@remixproject/engine'
 
-class GitPluginService {
-  methods = ['fetch']
-  fetch() {
-    return true
-  }
-}
-
-class CmdPlugin extends Plugin {
-
-  git: IPluginService<GitPluginService>
-
-  constructor() {
-    super({ name: 'cmd' })
-  }
-
-  async onActivation() {
-    this.git = await this.createService('git', new GitPluginService())
-  }
-}
 
 test('[Example] Hosted Plugin', async () => {
 
@@ -26,7 +7,7 @@ test('[Example] Hosted Plugin', async () => {
 
   const manager = new PluginManager()
   const engine = new Engine(manager)
-  const cmd = new CmdPlugin()
+  const cmd = new Plugin({ name: 'cmd' })
   const plugin = new Plugin({ name: 'caller' })
 
   // wait for the manager to be loaded
@@ -34,11 +15,18 @@ test('[Example] Hosted Plugin', async () => {
   engine.register([cmd, plugin])
   await manager.activatePlugin(['cmd', 'caller'])
 
+  // Create a service inside cmd
+  // IMPORTANT: Your plugin needs to be activated before creating a service
+  await cmd.createService('git', {
+    methods: ['fetch'],
+    fetch: () => true,    // exposed
+    commit: () => false   // not exposed
+  })
+
   // Call a service
   const fetched = await plugin.call('cmd.git', 'fetch')
 
   ////////////////////////////////////
 
-  // Note: By default remix engine reroute ipfs call to it's gateway
   expect(fetched).toBeTruthy()
 })

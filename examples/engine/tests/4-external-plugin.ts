@@ -30,6 +30,6 @@ test('[Example] Hosted Plugin', async () => {
   ////////////////////////////////////
 
   // Note: By default remix engine reroute ipfs call to it's gateway
-  expect(ethdoc.iframe.src).toBe('https://ipfsgw.komputing.org/ipfs/QmQmK435v4io3cp6N9aWQHYmgLxpUejjC1RmZCbqL7MJaM')
-  expect(remixd.socket).toBeDefined()
+  expect(ethdoc['iframe'].src).toBe('https://ipfsgw.komputing.org/ipfs/QmQmK435v4io3cp6N9aWQHYmgLxpUejjC1RmZCbqL7MJaM')
+  expect(remixd['socket']).toBeDefined()
 })
