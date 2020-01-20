@@ -1,6 +1,6 @@
-import { PluginClient } from '@remixproject/plugin/client'
+import { PluginClient } from '../../client'
 import { connectWS, WS, WSData, buildWebsocketClient } from '../index'
-import { listenEvent, callEvent, Message } from '@utils'
+import { listenEvent, callEvent, Message } from '../../utils'
 
 // import WS from "jest-websocket-mock"
 
