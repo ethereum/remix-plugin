@@ -1,6 +1,6 @@
 import {  PluginClient, } from '../src/client'
 import { checkOrigin, connectIframe, buildIframeClient } from '../src/iframe'
-import { listenEvent, callEvent } from '@utils'
+import { listenEvent, callEvent } from '../../utils'
 
 declare const global  // Needed to mock fetch
 

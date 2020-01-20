@@ -1,5 +1,5 @@
-import { createIframeClient } from '@remixproject/plugin'
-import { remixProfiles } from '@utils'
+import { createIframeClient } from '../index'
+import { remixProfiles } from '../../utils'
 
 describe('Remix Api', () => {
   const client = createIframeClient({ customApi: remixProfiles })
