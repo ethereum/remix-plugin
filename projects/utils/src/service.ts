@@ -102,7 +102,7 @@ export function createService<T extends Record<string, any>>(path: string, servi
 
   for (const method of methods) {
     if (!(method in service)) {
-      throw new Error(`Method ${method} is not part of serivce ${path}`)
+      throw new Error(`Method ${method} is not part of service ${path}`)
     }
   }
 
@@ -129,8 +129,14 @@ export function activateService<T extends Api = any, App extends ApiMap = any>(
     ...(client.methods || []),
     ...service.methods
   ]
-  service.methods.forEach(method => {
+  const methods: string[] = getMethods(service)
+
+  for (const method of methods) {
     client[`${service.path}.${method}`] = service[method].bind(service)
-  })
+  }
+
+  // service.methods.forEach(method => {
+  //   client[`${service.path}.${method}`] = service[method].bind(service)
+  // })
   return (client.call as any)('manager', 'updateProfile', { methods: client.methods })
 }

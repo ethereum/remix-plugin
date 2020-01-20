@@ -13,6 +13,7 @@ import {
   createService,
   activateService,
   PluginBase,
+  getMethodPath,
 } from '../../../utils'
 
 export interface RequestParams {
@@ -42,6 +43,10 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     return this.profile.methods
   }
 
+  set methods(methods: Extract<keyof T['methods'], string>[]) {
+    this.profile.methods = methods
+  }
+
   activate() {
     if (this.onActivation) this.onActivation()
   }
@@ -50,7 +55,9 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   }
 
   /** Call a method from this plugin */
-  protected callPluginMethod(method: string, args: any[]) {
+  protected callPluginMethod(key: string, args: any[]) {
+    const path = this.currentRequest && this.currentRequest.path
+    const method = getMethodPath(key, path)
     if (!(method in this)) {
       throw new Error(`Method ${method} is not implemented by ${this.profile.name}`)
     }
@@ -92,6 +99,10 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
       }
     })
   }
+
+  /////////////
+  // SERVICE //
+  /////////////
 
   /**
    * Create a service under the client node
