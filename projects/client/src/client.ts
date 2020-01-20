@@ -12,10 +12,13 @@ import {
   callEvent,
   listenEvent,
   RemixApi,
-  remixProfiles
+  remixProfiles,
+  createService,
+  activateService,
+  IPluginService
 } from '../../utils'
-import { IPluginService } from './types'
-import { createService, activateService } from './service'
+// import { IPluginService } from './types'
+// import { createService, activateService } from './service'
 
 export interface PluginDevMode {
   /** Port for localhost */
@@ -108,7 +111,6 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     this.events.emit('send', { action: 'on', name, key, id: this.id })
   }
 
-  
   /** Listen once on event from another plugin */
   public once<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
     name: Name,
@@ -156,7 +158,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
     return _service
   }
 
-    /**
+  /**
    * Prepare a service to be lazy loaded
    * @param name The name of the subservice inside this service
    * @param factory A function to create the service on demand

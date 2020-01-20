@@ -1,10 +1,10 @@
 import { PluginClient } from "../src/client"
-import { PluginService, createService, activateService, getMethods } from "../src/service"
+import { PluginService, createService, activateService, getMethods } from "../../utils/src/service"
 
 class CmdServiceWithMethods extends PluginService {
   readonly path = 'cmd'
   public methods = ['addCommand']
-  constructor(protected client: PluginClient) {
+  constructor(protected client: PluginClient<any, any>) {
     super()
   }
   // Public Method
@@ -19,7 +19,7 @@ class CmdServiceWithMethods extends PluginService {
 
 class CmdServiceWithoutMethods extends PluginService {
   readonly path = 'cmd'
-  constructor(protected client: PluginClient) {
+  constructor(protected client: PluginClient<any, any>) {
     super()
   }
   // Public Method
@@ -95,7 +95,7 @@ describe('Create service', () => {
 describe('Activate service', () => {
 
   test('Eager activation', () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     const spy = spyOn(client, 'call')
     const service = createService('cmd', new CmdServiceWithMethods(client))
     activateService(client, service)
@@ -105,7 +105,7 @@ describe('Activate service', () => {
   })
 
   test('Client activation', async () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     const spy = spyOn(client, 'call')
     await client.createService('cmd', new CmdServiceWithMethods(client))
     expect(client.methods).toEqual(['addCommand'])
@@ -114,7 +114,7 @@ describe('Activate service', () => {
   })
 
   test('Lazy activation', async () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     const spy = spyOn(client, 'call')
     client.prepareService('cmd', () => new CmdServiceWithMethods(client))
     // Not activated
@@ -129,7 +129,7 @@ describe('Activate service', () => {
   })
 
   test('Activate sub-service', async () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     const spy = spyOn(client, 'call')
     const service = await client.createService('cmd', new CmdServiceWithMethods(client))
     await service.createService('git', {
@@ -142,7 +142,7 @@ describe('Activate service', () => {
   })
 
   test('Lazy activate sub-service', async () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     const spy = spyOn(client, 'call')
     const service = await client.createService('cmd', new CmdServiceWithMethods(client))
     service.prepareService('git', () => ({
@@ -166,7 +166,7 @@ describe('Activate service', () => {
 
 describe('Emit event from service', () => {
   test('Service should emit through the client', async () => {
-    const client = new PluginClient()
+    const client = new PluginClient<any, any>()
     spyOn(client, 'call')
     const spy = spyOn(client, 'emit')
     const service = await client.createService('cmd', new CmdServiceWithMethods(client))

@@ -24,7 +24,7 @@ export type MethodParams<T extends Api, K extends MethodKey<T>> = T extends Api
   ? Parameters<T['methods'][K]>
   : any[]
 
-/////////
+  /////////
 // API //
 /////////
 
