@@ -1,7 +1,7 @@
 import { Engine } from '../../src/engine/next-gen-engine'
 import { PluginManager } from '../../src/plugin/manager'
 import { LibraryPlugin, LibraryApi } from '../../src/plugin/library'
-import { pluginManagerProfile } from '@utils'
+import { pluginManagerProfile } from '../../../utils'
 
 const createLib = () => ({
   events: {
