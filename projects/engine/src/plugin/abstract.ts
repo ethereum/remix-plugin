@@ -9,6 +9,10 @@ import {
   Profile,
   PluginRequest,
   PluginApi,
+  IPluginService,
+  createService,
+  activateService,
+  PluginBase,
 } from '../../../utils'
 
 export interface RequestParams {
@@ -17,7 +21,8 @@ export interface RequestParams {
   payload: any[]
 }
 
-export class Plugin<T extends Api = any, App extends ApiMap = any> {
+export class Plugin<T extends Api = any, App extends ApiMap = any> implements PluginBase<T, App> {
+  activateService: Record<string, () => Promise<any>> = {}
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   /** Give access to all the plugins registered by the engine */
@@ -31,6 +36,10 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> {
 
   get name() {
     return this.profile.name
+  }
+
+  get methods() {
+    return this.profile.methods
   }
 
   activate() {
@@ -82,6 +91,38 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> {
         this.requestQueue[0]()
       }
     })
+  }
+
+  /**
+   * Create a service under the client node
+   * @param name The name of the service
+   * @param service The service
+   */
+  async createService<S extends Record<string, any>>(name: string, service: S): Promise<IPluginService<S>> {
+    if (this.methods && this.methods.includes(name as any)) {
+      throw new Error('A service cannot have the same name as an exposed method')
+    }
+    const _service = createService(name, service)
+    await activateService(this, _service)
+    return _service
+  }
+
+  /**
+   * Prepare a service to be lazy loaded
+   * @param name The name of the subservice inside this service
+   * @param factory A function to create the service on demand
+   */
+  prepareService<S extends Record<string, any>>(name: string, factory: () => S): () => Promise<IPluginService<S>> {
+    return this.activateService[name] = async () => {
+      if (this.methods && this.methods.includes(name as any)) {
+        throw new Error('A service cannot have the same name as an exposed method')
+      }
+      const service = await factory()
+      const _service = createService(name, service)
+      await activateService(this as any, _service)
+      delete this.activateService[name]
+      return _service
+    }
   }
 
   /** Listen on an event from another plugin */
