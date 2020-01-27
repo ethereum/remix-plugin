@@ -1,13 +1,13 @@
 import { PluginBase } from './types/plugin'
 import { getRootPath } from './method-path'
 import { Api, ApiMap } from './types'
-import { IRemixApi } from './api/remix-profile'
 
 export type IPluginService<T extends Record<string, any> = any> = {
   methods: string[]
   readonly path: string
 } & T
 
+type GetPluginService<S extends Record<string, any>> = S extends IPluginService<infer I> ? S : IPluginService<S>
 
 /**
  * A node that forward the call to the right path
@@ -15,12 +15,12 @@ export type IPluginService<T extends Record<string, any> = any> = {
 export abstract class PluginService implements IPluginService {
   public methods: string[]
   readonly abstract path: string
-  protected abstract client: PluginBase
+  protected abstract plugin: PluginBase
 
   constructor() {}
 
   emit(key: string, ...payload: any[]) {
-    this.client.emit(key, ...payload)
+    this.plugin.emit(key, ...payload)
   }
 
   /**
@@ -28,13 +28,13 @@ export abstract class PluginService implements IPluginService {
    * @param name The name of the subservice inside this service
    * @param service The subservice to add
    */
-  async createService<S extends Record<string, any>>(name: string, service: S): Promise<IPluginService<S>> {
+  async createService<S extends Record<string, any>>(name: string, service: S): Promise<GetPluginService<S>> {
     if (this.methods.includes(name)) {
       throw new Error('A service cannot have the same name as an exposed method')
     }
     const path = `${this.path}.${name}`
     const _service = createService(path, service)
-    await activateService(this.client, _service)
+    await activateService(this.plugin, _service)
     return _service
   }
 
@@ -49,11 +49,11 @@ export abstract class PluginService implements IPluginService {
       throw new Error('A service cannot have the same name as an exposed method')
     }
     const path = `${this.path}.${name}`
-    this.client.activateService[path] = async () => {
+    this.plugin.activateService[path] = async () => {
       const service = factory()
       const _service = createService(path, service)
-      await activateService(this.client, _service)
-      delete this.client.activateService[path]
+      await activateService(this.plugin, _service)
+      delete this.plugin.activateService[path]
       return _service
     }
   }
@@ -93,7 +93,7 @@ export function getMethods(service: IPluginService) {
  * @param service The service template
  * @note If the service doesn't provide a property "methods" then all methods are going to be exposed by default
  */
-export function createService<T extends Record<string, any>>(path: string, service: T): IPluginService<T> {
+export function createService<T extends Record<string, any>>(path: string, service: T): GetPluginService<T> {
   if (service.path && getRootPath(service.path) !== path) {
     throw new Error(`Service path ${service.path} is different from the one provided: ${path}`)
   }
@@ -112,7 +112,7 @@ export function createService<T extends Record<string, any>>(path: string, servi
     }
     return service as IPluginService
   } else {
-    return { ...service, methods, path }
+    return { ...service, methods, path } as IPluginService
   }
 }
 
@@ -135,8 +135,5 @@ export function activateService<T extends Api = any, App extends ApiMap = any>(
     client[`${service.path}.${method}`] = service[method].bind(service)
   }
 
-  // service.methods.forEach(method => {
-  //   client[`${service.path}.${method}`] = service[method].bind(service)
-  // })
   return (client.call as any)('manager', 'updateProfile', { methods: client.methods })
 }

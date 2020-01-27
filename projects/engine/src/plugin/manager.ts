@@ -60,20 +60,22 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @note Only the caller plugin should be able to update its profile
    */
   updateProfile(profile: Partial<Profile>) {
-    if (profile.name !== this.requestFrom) {
-      throw new Error('A plugin cannot update the profile of another one.')
+    if (!profile) return
+    if (profile.name && profile.name !== this.requestFrom) {
+      throw new Error('A plugin cannot change its name.')
     }
-    if (!this.profiles[profile.name]) {
-      throw new Error(`Plugin ${profile.name} is not register, you cannot update it's profile.`)
+    const name = this.requestFrom
+    if (!this.profiles[name]) {
+      throw new Error(`Plugin ${name} is not register, you cannot update it's profile.`)
     }
-    if (profile['url'] && profile['url'] !== this.profiles[profile.name]['url']) {
+    if (profile['url'] && profile['url'] !== this.profiles[name]['url']) {
       throw new Error('Url from Profile cannot be updated.')
     }
-    this.profiles[profile.name] = {
-      ... this.profiles[profile.name],
+    this.profiles[name] = {
+      ... this.profiles[name],
       ...profile
     }
-    this.emit('profileUpdated', this.profiles[profile.name])
+    this.emit('profileUpdated', this.profiles[name])
   }
 
   /**
