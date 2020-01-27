@@ -1,10 +1,10 @@
-import { PluginClient } from "../src/client"
-import { PluginService, createService, activateService, getMethods } from "../../utils/src/service"
+import { PluginClient } from "../../client/src/client"
+import { PluginService, createService, activateService, getMethods } from "../src/service"
 
 class CmdServiceWithMethods extends PluginService {
   readonly path = 'cmd'
   public methods = ['addCommand']
-  constructor(protected client: PluginClient<any, any>) {
+  constructor(protected plugin: PluginClient<any, any>) {
     super()
   }
   // Public Method
@@ -19,7 +19,7 @@ class CmdServiceWithMethods extends PluginService {
 
 class CmdServiceWithoutMethods extends PluginService {
   readonly path = 'cmd'
-  constructor(protected client: PluginClient<any, any>) {
+  constructor(protected plugin: PluginClient<any, any>) {
     super()
   }
   // Public Method

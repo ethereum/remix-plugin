@@ -15,10 +15,9 @@ import {
   remixProfiles,
   createService,
   activateService,
-  IPluginService
+  IPluginService,
+  PluginBase
 } from '../../utils'
-// import { IPluginService } from './types'
-// import { createService, activateService } from './service'
 
 export interface PluginDevMode {
   /** Port for localhost */
@@ -49,7 +48,7 @@ export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
 }
 
 
-export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> {
+export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> implements PluginBase<T, App> {
   private id = 0
   public isLoaded = false
   public events = new EventEmitter()

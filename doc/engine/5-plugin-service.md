@@ -1,0 +1,77 @@
+## Plugin Service
+
+Each plugin can be broken down into small lazy-loaded services. This is a great way to provide a modular API to your plugin.
+
+Let's look at a "Command Line Interface" plugin that would expose a "git" service.
+
+```typescript
+const manager = new PluginManager()
+const engine = new Engine(manager)
+const cmd = new Plugin({ name: 'cmd' })
+const plugin = new Plugin({ name: 'caller' })
+
+// wait for the manager to be loaded
+await engine.onload()
+engine.register([cmd, plugin])
+await manager.activatePlugin(['cmd', 'caller'])
+
+// Create a service inside cmd
+// IMPORTANT: Your plugin needs to be activated before creating a service
+await cmd.createService('git', {
+  methods: ['fetch'],
+  fetch: () => true,    // exposed
+  commit: () => false   // not exposed
+})
+
+// Call a service
+const fetched = await plugin.call('cmd.git', 'fetch')
+```
+
+**IMPORTANT**: Services are lazy-loaded. They can be created only _after activation_. 
+
+1. `createService`
+
+Every plugin can use `createService` to extends it's API.
+
+```typescript
+const git = await cmd.createService('git', {
+  methods: ['fetch'],
+  fetch: () => true,    // exposed
+  commit: () => false   // not exposed
+})
+```
+
+A service can also use `createService` to create a deeper service.
+
+```typescript
+await git.createService('deepGit', {
+  methods: ['deepMethod'],
+  deepMethod: () => console.log('Message from cmd.git.deepGit')
+})
+```
+
+2. `call('name.service', 'method')`
+
+To access a method from a plugin's service you should use the name of the plugin and the name of the service separated by ".": `pluginName.serviceName`.
+
+```typescript
+// Call a service
+await plugin.call('cmd.git', 'fetch')
+// Call a deep nested service
+await plugin.call('cmd.git.deepGit', 'deepMethod')
+```
+
+Only the methods defined inside the `methods` key of the services are exposed. **If not defined, all methods are exposed**.
+
+3. `on('name', 'event')`
+
+The event listener does **not** requires the name of the service as the event is actually emitted at the plugin level.
+
+
+```typescript
+// Start lisening on event emitted by cmd plugin
+plugin.on('cmd', 'committed', () => console.log('Committed!'))
+const git = await cmd.createService('git', {})
+// Service "git" from "cmd" emit event "committed"
+git.emit('committed')
+```
