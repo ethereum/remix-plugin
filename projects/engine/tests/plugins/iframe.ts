@@ -5,6 +5,7 @@ import { Engine } from '../../src/engine/next-gen-engine'
 import { pluginManagerProfile } from '../../../utils'
 
 class MockHost extends HostPlugin {
+  isFocus = jest.fn() // (name: string) =>
   focus = jest.fn() // (name: string) =>
   addView = jest.fn() // (profile: Profile) =>
   removeView = jest.fn() // (name: string) =>

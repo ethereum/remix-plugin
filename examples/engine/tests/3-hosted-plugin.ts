@@ -1,5 +1,4 @@
-import { PluginManager, Engine, HostPlugin, ViewPlugin } from '@remixproject/engine'
-import { Profile } from '@utils'
+import { PluginManager, Engine, HostPlugin, ViewPlugin, Profile } from '@remixproject/engine'
 
 // Host plugin display
 export class SidePanel extends HostPlugin {
@@ -7,8 +6,8 @@ export class SidePanel extends HostPlugin {
   focused: string
   root: Element // The root html element of the HostPlugin
   constructor(root = document.body) {
-    // Expose the 3 absract methods 'focus', 'addView', 'removeView'
-    super({ name: 'sidePanel', methods: ['focus', 'addView', 'removeView']})
+    // The 4 abstract methods are exposed by default by the HostPlugin
+    super({ name: 'sidePanel' })
     this.root = root
   }
   // Add a View plugin into the DOM once it's activated
@@ -29,7 +28,13 @@ export class SidePanel extends HostPlugin {
       if (this.plugins[this.focused]) this.plugins[this.focused].style.display = 'none'
       this.plugins[name].style.display = 'block'
       this.focused = name
+      this.emit('focused', name)
     }
+  }
+
+  // Check if a plugin is focus
+  isFocus(name: string) {
+    return name === this.focused
   }
 }
 
