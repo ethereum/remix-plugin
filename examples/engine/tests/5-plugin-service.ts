@@ -1,6 +1,5 @@
 import { PluginManager, Engine, Plugin, PluginService } from '@remixproject/engine'
 
-
 test('[Example] Plugin Service with object', async () => {
 
   ///////////////////////////////////
@@ -36,58 +35,58 @@ test('[Example] Plugin Service with object', async () => {
 // TODO IN NEXT PR
 /////////////////////////////////////////////
 
-// class GitService extends PluginService {
-//   path = 'git' // Name of the service
-//   methods = ['fetch']
+class GitService extends PluginService {
+  path = 'git' // Name of the service
+  methods = ['fetch']
 
-//   // Requires a reference to the plugin
-//   constructor(protected plugin: any) {
-//     super()
-//   }
+  // Requires a reference to the plugin
+  constructor(protected plugin: Plugin) {
+    super()
+  }
 
-//   fetch() {
-//     return true
-//   }
+  fetch() {
+    return true
+  }
 
-//   commit() {
-//     return false
-//   }
-// }
+  commit() {
+    return false
+  }
+}
 
-// class CmdPlugin extends Plugin {
-//   git: GitService
+class CmdPlugin extends Plugin {
+  git: GitService
 
-//   constructor() {
-//     super({ name: 'cmd' })
-//   }
+  constructor() {
+    super({ name: 'cmd' })
+  }
 
-//   // On Activation if git service is not defined, creates it
-//   async onActivation() {
-//     if (!this.git) {
-//       this.git = await this.createService('git', new GitService(this))
-//     }
-//   }
-// }
+  // On Activation if git service is not defined, creates it
+  async onActivation() {
+    if (!this.git) {
+      this.git = await this.createService('git', new GitService(this))
+    }
+  }
+}
 
 
-// test('[Example] Plugin Service with class', async () => {
+test('[Example] Plugin Service with class', async () => {
 
-//   ///////////////////////////////////
+  ///////////////////////////////////
 
-//   const manager = new PluginManager()
-//   const engine = new Engine(manager)
-//   const plugin = new Plugin({ name: 'caller' })
-//   const cmd = new CmdPlugin()
+  const manager = new PluginManager()
+  const engine = new Engine(manager)
+  const plugin = new Plugin({ name: 'caller' })
+  const cmd = new CmdPlugin()
 
-//   // wait for the manager to be loaded
-//   await engine.onload()
-//   engine.register([cmd, plugin])
-//   await manager.activatePlugin(['cmd', 'caller'])
+  // wait for the manager to be loaded
+  await engine.onload()
+  engine.register([cmd, plugin])
+  await manager.activatePlugin(['cmd', 'caller'])
 
-//   // Call a service
-//   const fetched = await plugin.call('cmd.git', 'fetch')
+  // Call a service
+  const fetched = await plugin.call('cmd.git', 'fetch')
 
-//   ////////////////////////////////////
+  ////////////////////////////////////
 
-//   expect(fetched).toBeTruthy()
-// })
+  expect(fetched).toBeTruthy()
+})
