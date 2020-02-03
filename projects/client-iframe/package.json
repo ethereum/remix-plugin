@@ -1,13 +1,13 @@
 {
   "name": "@remixproject/plugin-iframe",
-  "version": "0.0.1",
+  "version": "0.2.0-alpha.1",
   "description": "Library to build Plugin over an Iframe. Used by Remix IDE",
   "contributors": [{
     "name": "GrandSchtroumpf",
     "email": "grandschtroumpf@ethereum.org"
   }],
   "dependencies": {
-    "@remixproject/plugin": "^0.1.18"
+    "@remixproject/plugin": "0.2.0-alpha.1"
   },
   "keywords": [
     "Ethereum",
