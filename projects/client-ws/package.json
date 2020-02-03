@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "@remixproject/plugin": "^0.1.18"
+    "@remixproject/plugin": "0.2.0-alpha.1"
   },
   "keywords": [
     "Ethereum",
