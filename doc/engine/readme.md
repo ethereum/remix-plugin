@@ -13,6 +13,7 @@ npm install @remixproject/engine
 2. [Plugin Communication](2-plugin-communication.md)
 3. [Host a Plugin with UI](3-hosted-plugin.md)
 4. [External Plugins](4-external-plugins.md)
+5. [Plugin Service](5-plugin-service.md)
 
 
 ## Plugins to implement for an IDE
