@@ -1,23 +1,21 @@
 import { PluginBase } from './types/plugin'
 import { getRootPath } from './method-path'
-import { Api, ApiMap } from './types'
+import { Api, ApiMap } from './types/api'
 
 export type IPluginService<T extends Record<string, any> = any> = {
   methods: string[]
   readonly path: string
 } & T
 
-type GetPluginService<S extends Record<string, any>> = S extends IPluginService<infer I> ? S : IPluginService<S>
+export type GetPluginService<S extends Record<string, any>> = S extends IPluginService<infer I> ? S : IPluginService<S>
 
 /**
  * A node that forward the call to the right path
  */
 export abstract class PluginService implements IPluginService {
   public methods: string[]
-  readonly abstract path: string
+  abstract readonly path: string
   protected abstract plugin: PluginBase
-
-  constructor() {}
 
   emit(key: string, ...payload: any[]) {
     this.plugin.emit(key, ...payload)
@@ -60,6 +58,11 @@ export abstract class PluginService implements IPluginService {
 
 }
 
+/** Check if the plugin is an instance of PluginService */
+export const isPluginService = (service): service is PluginService => {
+  return service instanceof PluginService
+}
+
 /**
  * Return the methods of a service, except "constructor" and methods starting with "_"
  * @param instance The instance of a class to get the method from
@@ -75,7 +78,7 @@ export function getMethods(service: IPluginService) {
     return service.methods
   }
   // Else get the public methods (without "_")
-  if (service instanceof PluginService) {
+  if (isPluginService(service)) {
     const methods = Object.getPrototypeOf(service)
     return Object.getOwnPropertyNames(methods).filter(m => {
       return m !== 'constructor' && !m.startsWith('_')
@@ -106,7 +109,7 @@ export function createService<T extends Record<string, any>>(path: string, servi
     }
   }
 
-  if (service instanceof PluginService) {
+  if (isPluginService(service)) {
     if (!service.methods) {
       service.methods = methods
     }
