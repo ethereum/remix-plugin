@@ -126,12 +126,6 @@ export class Engine {
       this.manager.getProfile(caller),
     ])
 
-    // Check if plugin FROM can call METHOD of plugin TO
-    const canCall = await this.manager.canCall(from, to, method)
-    if (!canCall) {
-      throw new Error(`Plugin "${caller}" don't have permission to call method "${method}" of plugin "${target}"`)
-    }
-
     // Check if plugin FROM can activate plugin TO
     const isActive = await this.manager.isActive(target)
     if (!isActive) {
