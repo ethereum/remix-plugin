@@ -9,11 +9,14 @@ npm install @remixproject/engine@next
 
 ## Tutorial
 
-1. [Getting Started](1-getting-started.md)
-2. [Plugin Communication](2-plugin-communication.md)
-3. [Host a Plugin with UI](3-hosted-plugin.md)
-4. [External Plugins](4-external-plugins.md)
-5. [Plugin Service](5-plugin-service.md)
+1. [Getting Started](tutorial/1-getting-started.md)
+2. [Plugin Communication](tutorial/2-plugin-communication.md)
+3. [Host a Plugin with UI](tutorial/3-hosted-plugin.md)
+4. [External Plugins](tutorial/4-external-plugins.md)
+5. [Plugin Service](tutorial/5-plugin-service.md)
+
+## APIs
+- [Plugin Manager](api/manager.md)
 
 
 ## Plugins to implement for an IDE
