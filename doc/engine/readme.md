@@ -4,7 +4,7 @@ The Engine is implemented by IDE or applications that want to take advantage of 
 
 ## Install
 ```bash
-npm install @remixproject/engine
+npm install @remixproject/engine@next
 ```
 
 ## Tutorial
