@@ -81,7 +81,7 @@ git.emit('committed')
 
 ### PluginService
 
-For larger service you might want to use a class based interface. For that your most extends the abstract `PluginService` class.
+For larger service you might want to use a class based interface. For that your must extends the abstract `PluginService` class.
 
 You need to specify at least the :
 - `path`: name of the service.
