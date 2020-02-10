@@ -71,7 +71,8 @@ test('[Example] Hosted Plugin', async () => {
   engine.register([sidePanel, hosted])
 
   // Activate both plugins
-  await manager.activatePlugin(['hosted', 'sidePanel'])
+  // Note that order is important here !
+  await manager.activatePlugin(['sidePanel', 'hosted'])
   sidePanel.focus('hosted')
 
   ///////////////////////////////////
