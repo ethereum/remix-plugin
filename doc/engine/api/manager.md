@@ -72,7 +72,7 @@ Or from another plugin (for dependancy for example) :
 ```typescript
 class EthDoc extends Plugin {
   onActivation() {
-    this.call('manager', 'activatePlugin', ['solidity', 'remix-tests'])
+    return this.call('manager', 'activatePlugin', ['solidity', 'remix-tests'])
   }
 }
 ```
@@ -91,7 +91,7 @@ Or from another plugin :
 ```typescript
 class EthDoc extends Plugin {
   onDeactivation() {
-    this.call('manager', 'deactivatePlugin', ['solidity', 'remix-tests'])
+    return this.call('manager', 'deactivatePlugin', ['solidity', 'remix-tests'])
   }
 }
 ```
