@@ -117,6 +117,8 @@ class HostedPlugin extends ViewPlugin {
 
 The `ViewPlugin` will add itself into its `HostPlugin` once activated.
 
+**Important**: When activating a `HostPlugin` and a `ViewPlugin` with one call, the order is important (see comment in the code below).
+
 ```typescript
 const manager = new PluginManager()
 const engine = new Engine(manager)
@@ -130,7 +132,8 @@ await engine.onload()
 engine.register([sidePanel, hosted])
 
 // Activate both plugins: ViewPlugin will automatically be added to the view
-await manager.activatePlugin(['hosted', 'sidePanel'])
+// The order here is important
+await manager.activatePlugin(['sidePanel', 'hosted'])
 
 // Focus on 
 sidePanel.focus('hosted')
