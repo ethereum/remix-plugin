@@ -15,7 +15,7 @@ export type BasePluginManager = {
   canActivate(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
-export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin']
+export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin', 'canCall']
 
 interface ManagerProfile extends Profile {
   name: 'manager',
@@ -46,7 +46,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
   }
 
   /**
-   * Get the profile if it exists
+   * Get the profile if it's registered.
    * @param name The name of the plugin
    * @note This method can be overrided
    */
