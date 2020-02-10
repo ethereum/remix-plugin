@@ -32,6 +32,8 @@ Return the name of the caller. If no request provided, this mean that the method
 
 _Use this method when you expose custom methods from the Plugin Manager._
 
+## Methods
+
 ### getProfile
 Get the profile if it's registered.
 
