@@ -201,7 +201,6 @@ describe('Plugin interaction', () => {
   test('Plugin can call another plugin method', async () => {
     await manager.activatePlugin(['solidity', 'fileManager'])
     await fileManager.call('solidity', 'compile', 'ballot.sol')
-    expect(manager.canCall).toHaveBeenCalledTimes(1)
     expect(solidity.compile).toHaveBeenCalledWith('ballot.sol')
   })
 
