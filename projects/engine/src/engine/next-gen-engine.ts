@@ -224,25 +224,7 @@ export class Engine {
     // Call hooks
     await plugin.deactivate()
 
-    // REMOVE CALL / LISTEN / EMIT
-    const deactivatedWarning = (message: string) => {
-      return `Plugin ${name} is currently deactivated. ${message}. Activate ${name} first`
-    }
-    plugin['call'] = (target: string, key: string, ...payload: any[]) => {
-      throw new Error(deactivatedWarning(`It cannot call method ${key} of plugin ${target}.`))
-    }
-    plugin['on'] = (target: string, event: string) => {
-      throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${target}.`))
-    }
-    plugin['once'] = (target: string, event: string) => {
-      throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${target}.`))
-    }
-    plugin['off'] = (target: string, event: string) => {
-      throw new Error(deactivatedWarning('All event listeners are already removed.'))
-    }
-    plugin['emit'] = (event: string, ...payload: any[]) => {
-      throw new Error(deactivatedWarning(`It cannot emit the event ${event}`))
-    }
+    this.updateErrorHandler(plugin)
 
     // REMOVE PLUGIN APP
     delete plugin['app']
@@ -263,6 +245,32 @@ export class Engine {
   }
 
   /**
+   * Update error message when trying to call a method when not activated
+   * @param plugin The deactivated plugin to update the methods from
+   */
+  private updateErrorHandler(plugin: Plugin) {
+    // SET ERROR MESSAGE FOR call, on, once, off, emit
+    const deactivatedWarning = (message: string) => {
+      return `Plugin ${name} is currently deactivated. ${message}. Activate ${name} first.`
+    }
+    plugin['call'] = (target: string, key: string, ...payload: any[]) => {
+      throw new Error(deactivatedWarning(`It cannot call method ${key} of plugin ${target}.`))
+    }
+    plugin['on'] = (target: string, event: string) => {
+      throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${target}.`))
+    }
+    plugin['once'] = (target: string, event: string) => {
+      throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${target}.`))
+    }
+    plugin['off'] = (target: string, event: string) => {
+      throw new Error(deactivatedWarning('All event listeners are already removed.'))
+    }
+    plugin['emit'] = (event: string, ...payload: any[]) => {
+      throw new Error(deactivatedWarning(`It cannot emit the event ${event}`))
+    }
+  }
+
+  /**
    * Register a plugin to the engine and update the manager
    * @param plugin The plugin
    */
@@ -273,6 +281,7 @@ export class Engine {
       }
       this.plugins[plugin.name] = plugin
       this.manager.addProfile(plugin.profile)
+      this.updateErrorHandler(plugin)
       if (plugin.onRegistration) plugin.onRegistration()
       if (this.onRegistration) this.onRegistration(plugin)
     }
