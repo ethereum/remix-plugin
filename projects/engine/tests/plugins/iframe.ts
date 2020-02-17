@@ -1,3 +1,4 @@
+import { Plugin } from '../../src/plugin/abstract'
 import { PluginManager } from '../../src/plugin/manager'
 import { HostPlugin } from '../../src/plugin/host'
 import { IframePlugin } from '../../src/plugin/iframe'
@@ -5,7 +6,7 @@ import { Engine } from '../../src/engine/next-gen-engine'
 import { pluginManagerProfile } from '../../../utils'
 
 class MockHost extends HostPlugin {
-  isFocus = jest.fn() // (name: string) =>
+  currentFocus = jest.fn() // () => string
   focus = jest.fn() // (name: string) =>
   addView = jest.fn() // (profile: Profile) =>
   removeView = jest.fn() // (name: string) =>
@@ -15,14 +16,23 @@ class MockHost extends HostPlugin {
 }
 class MockIframe extends IframePlugin {
   callMockEvent: (...payload: any[]) => any
-  call = jest.fn(async () => true)
-  on = jest.fn((name, method, cb) => this.callMockEvent = (...payload) => cb(...payload))
-  off = jest.fn()
-  once = jest.fn()
+  call: jest.Mock
+  on: jest.Mock
+  off: jest.Mock
+  once: jest.Mock
   constructor() {
     super({ name: 'iframe', location: 'sidePanel', methods: [], url: 'https://url' })
   }
+
+  // Mock methods after activation
+  onActivation() {
+    this.call = jest.fn(async () => true)
+    this.on = jest.fn((name, method, cb) => this.callMockEvent = (...payload) => cb(...payload))
+    this.off = jest.fn()
+    this.once = jest.fn()
+  }
 }
+
 
 describe('Iframe Plugin', () => {
   let manager: PluginManager
@@ -36,7 +46,7 @@ describe('Iframe Plugin', () => {
     iframe = new MockIframe()
     host = new MockHost()
     engine.register([iframe, host])
-    manager.activatePlugin('sidePanel')
+    await manager.activatePlugin(['sidePanel', 'iframe'])
   })
 
   test('iframe is created', () => {

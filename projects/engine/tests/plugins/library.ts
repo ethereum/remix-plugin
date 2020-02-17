@@ -26,20 +26,28 @@ const profile = {
 }
 
 class MockLibrary extends LibraryPlugin {
-  onActivation = jest.fn()
+  call: jest.Mock
+  on: jest.Mock
+  off: jest.Mock
+  emit: jest.Mock
   onDeactivation = jest.fn()
   onRegistration = jest.fn()
-  call = jest.fn()
-  on = jest.fn()
-  off = jest.fn()
-  emit = jest.fn()
+  onActivation = jest.fn().mockImplementation(() => this.createMock())
   constructor(library: LibraryApi<any, any>) {
     super(library, profile)
   }
+  createMock() {
+    this.call = jest.fn()
+    this.on = jest.fn()
+    this.once = jest.fn()
+    this.off = jest.fn()
+    this.emit = jest.fn()
+  }
+
 }
 
 // Library without UI
-describe('Iframe Plugin', () => {
+describe('Library Plugin', () => {
   let manager: PluginManager
   let library: MockLibrary
   let lib: Lib
@@ -95,6 +103,7 @@ describe('Iframe Plugin', () => {
   })
 
   test('Deactivation', async () => {
+    library.createMock() // Make sure methods are mocked
     library.deactivate()
     expect(library.onDeactivation).toHaveBeenCalled()
     // Stop listening on manager profileUpdated
