@@ -281,7 +281,7 @@ export class Engine {
       }
       this.plugins[plugin.name] = plugin
       this.manager.addProfile(plugin.profile)
-      this.updateErrorHandler(plugin)
+      this.updateErrorHandler(plugin) // Update Error Handling for better debug
       if (plugin.onRegistration) plugin.onRegistration()
       if (this.onRegistration) this.onRegistration(plugin)
     }

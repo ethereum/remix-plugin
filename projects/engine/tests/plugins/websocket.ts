@@ -10,14 +10,14 @@ const profile = {
 }
 
 class MockSocket extends WebsocketPlugin {
-  onActivation = jest.fn()
+  call: jest.Mock
+  on: jest.Mock
+  once: jest.Mock
+  off: jest.Mock
+  emit: jest.Mock
   onDeactivation = jest.fn()
   onRegistration = jest.fn()
-  call = jest.fn()
-  on = jest.fn()
-  once = jest.fn()
-  off = jest.fn()
-  emit = jest.fn()
+  onActivation = jest.fn()
   socket = {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
@@ -27,6 +27,13 @@ class MockSocket extends WebsocketPlugin {
   connect = jest.fn()
   constructor() {
     super(profile)
+  }
+  createMock() {
+    this.call = jest.fn()
+    this.on = jest.fn()
+    this.once = jest.fn()
+    this.off = jest.fn()
+    this.emit = jest.fn()
   }
 }
 
@@ -98,6 +105,7 @@ describe('Websocket plugin', () => {
   })
 
   test('Get Message', () => {
+    plugin.createMock()
     // Action 'on'
     const on = { id: 0, action: 'on', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
     plugin['getMessage']({ data: JSON.stringify(on) } as any)
