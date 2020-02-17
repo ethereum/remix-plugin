@@ -1,7 +1,7 @@
 import { ViewPlugin } from '../../src/plugin/view'
 import { PluginManager } from '../../src/plugin/manager'
 import { HostPlugin } from '../../src/plugin/host'
-import { Engine } from '../../src/engine/next-gen-engine'
+import { Engine } from '../../src/engine/engine'
 import { pluginManagerProfile } from '../../../utils'
 
 export class MockEngine extends Engine {
