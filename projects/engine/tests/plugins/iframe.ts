@@ -2,7 +2,7 @@ import { Plugin } from '../../src/plugin/abstract'
 import { PluginManager } from '../../src/plugin/manager'
 import { HostPlugin } from '../../src/plugin/host'
 import { IframePlugin } from '../../src/plugin/iframe'
-import { Engine } from '../../src/engine/next-gen-engine'
+import { Engine } from '../../src/engine/engine'
 import { pluginManagerProfile } from '../../../utils'
 
 class MockHost extends HostPlugin {

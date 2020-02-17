@@ -1,6 +1,6 @@
 import { WebsocketPlugin } from "../../src/plugin/websocket"
 import { PluginManager } from "../../src/plugin/manager"
-import { Engine } from "../../src/engine/next-gen-engine"
+import { Engine } from "../../src/engine/engine"
 import { pluginManagerProfile } from "../../../utils"
 
 const profile = {
