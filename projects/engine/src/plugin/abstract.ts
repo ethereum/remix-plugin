@@ -142,7 +142,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     key: Key,
     cb: EventCallback<App[Name], Key>,
   ): void {
-    throw new Error(`Method "on" from ${this.name} should be hooked by PluginEngine`)
+    throw new Error(`Cannot use method "on" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
   /** Listen once an event from another plugin then remove event listener */
@@ -151,7 +151,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     key: Key,
     cb: EventCallback<App[Name], Key>,
   ): void {
-    throw new Error(`Method "once" from ${this.name} should be hooked by PluginEngine`)
+    throw new Error(`Cannot use method "once" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
   /** Stop listening on an event from another plugin */
@@ -159,7 +159,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     name: Name,
     key: Key,
   ): void {
-    throw new Error(`Method "off" from ${this.name} should be hooked by PluginEngine`)
+    throw new Error(`Cannot use method "off" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
   /** Call a method of another plugin */
@@ -168,11 +168,11 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     key: Key,
     ...payload: MethodParams<App[Name], Key>
   ): Promise<ReturnType<App[Name]['methods'][Key]>> {
-    throw new Error(`Method "call" from ${this.name} should be hooked by PluginEngine`)
+    throw new Error(`Cannot use method "call" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
   /** Emit an event */
   emit<Key extends EventKey<T>>(key: Key, ...payload: EventParams<T, Key>): void {
-    throw new Error(`Method "emit" from ${this.name} should be hooked by PluginEngine`)
+    throw new Error(`Cannot use method "emit" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 }
