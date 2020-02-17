@@ -25,8 +25,8 @@ class SidePanel extends HostPlugin {
   focused: string
   root: Element
   constructor() {
-    // Expose the 3 absract methods 'focus', 'addView', 'removeView'
-    super({ name: 'sidePanel', methods: ['focus', 'addView', 'removeView']})
+    // HostPlugin automatically expose the 4 abstract methods 'focus', 'isFocus', 'addView', 'removeView'
+    super({ name: 'sidePanel' })
   }
   addView(profile: Profile, view: HTMLElement) {}
   removeView(profile: Profile) {}
@@ -42,7 +42,7 @@ The `root` element of a `HostPlugin` is the container node. Let's default it to 
 
 ```typescript
 constructor(root = document.body) {
-  super({ name: 'sidePanel', methods: ['focus', 'addView', 'removeView']})
+  super({ name: 'sidePanel' })
   this.root = root
 }
 ```
@@ -74,7 +74,17 @@ focus(name: string) {
 }
 ```
 
-5. Implements `removeView`
+5. Implements `currentFocus`
+
+Return the name of the current focus plugin in the Host Plugin.
+
+```typescript
+currentFocus() {
+  return this.focused
+}
+```
+
+6. Implements `removeView`
 
 We remove the view from the list, and remove focus if it had it.
 
