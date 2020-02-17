@@ -1,5 +1,5 @@
 import { listenEvent, compilerProfile, filSystemProfile, pluginManagerProfile } from '../../utils'
-import { Engine } from '../src/engine/next-gen-engine'
+import { Engine } from '../src/engine/engine'
 import { Plugin } from '../src/plugin/abstract'
 import { PluginManager } from '../src/plugin/manager'
 
