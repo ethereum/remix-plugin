@@ -16,6 +16,7 @@ npm install @remixproject/engine@next
 5. [Plugin Service](tutorial/5-plugin-service.md)
 
 ## APIs
+- [Engine](api/engine.md)
 - [Plugin Manager](api/manager.md)
 
 
