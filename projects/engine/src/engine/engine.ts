@@ -284,6 +284,7 @@ export class Engine {
       this.updateErrorHandler(plugin) // Update Error Handling for better debug
       if (plugin.onRegistration) plugin.onRegistration()
       if (this.onRegistration) this.onRegistration(plugin)
+      return plugin.name
     }
     return Array.isArray(plugins) ? plugins.map(plugin => register(plugin)) : register(plugins)
   }

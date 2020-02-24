@@ -12,8 +12,43 @@ class RemixManager extends PluginManager {
   isFromRemix(name: string) {
     return this.remixPlugins.includes(name)
   }
+
+  canActivate(from: Profile, to: Profile) {
+    return this.isFromRemix(from.name)
+  }
 }
 ```
+
+## Events
+
+### profileAdded
+```typescript
+this.on('manager', 'profileAdded', (profile: Profile) => { ... })
+```
+Emitted when a plugin have been registered by the `Engine`. 
+
+### profileUpdated
+```typescript
+this.on('manager', 'profileUpdated', (profile: Profile) => { ... })
+```
+Emitted when a plugin update it's profile through the `updateProfile` method.
+
+### pluginActivated
+```typescript
+this.on('manager', 'pluginActivated', (profile: Profile) => { ... })
+```
+Emitted when a plugin have been activated, either with `activatePlugin` or `toggleActive`.
+
+> If the plugin was already active, the event won't be triggered.
+
+### pluginDeactivated
+```typescript
+this.on('manager', 'pluginDeactivated', (profile: Profile) => { ... })
+```
+Emitted when a plugin have been deactivated, either with `deactivatePlugin` or `toggleActive`.
+
+> If the plugin was already deactivated, the event won't be triggered.
+
 
 ## Constructor
 Create a new instance of `PluginManager`. You can specify the profile of the manager to extend the default one.
