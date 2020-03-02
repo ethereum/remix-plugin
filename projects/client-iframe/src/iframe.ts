@@ -49,6 +49,7 @@ export function connectIframe(client: PluginClient) {
         }
         case 'response': {
           client.events.emit(callEvent(name, key, id), payload, error)
+          delete client.currentRequest
           break
         }
         case 'call':
