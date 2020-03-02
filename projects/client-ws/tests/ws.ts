@@ -56,7 +56,7 @@ describe('Websocket Client', () => {
   }
 
   async function getMsgFromIDE(msg: Partial<Message>) {
-    ws.onMessage(toMsgEvent({ action: 'request', key: 'handshake' }))
+    ws.onMessage(toMsgEvent({ action: 'request', key: 'handshake', payload: ['pluginName'] }))
     await client.onload()
     ws.onMessage(toMsgEvent(msg))
   }
@@ -68,10 +68,11 @@ describe('Websocket Client', () => {
   })
 
   test('Load on handshake', () => {
-    const msg: Partial<Message> = { action: 'request', key: 'handshake' }
+    const msg: Partial<Message> = { action: 'request', key: 'handshake', payload: ['pluginName'] }
     ws.sentFromIde(msg)
     expect(sendResponse(1)).toEqual({ ...msg, action: 'response', payload: client.methods })
     expect(client.isLoaded).toBeTruthy()
+    expect(client.name).toBe('pluginName')
   })
 
   test('Get notification', async (done) => {
