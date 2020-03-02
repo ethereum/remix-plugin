@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-ws",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0-alpha.5",
   "description": "Library to build Plugin over Websocket. Used by Remix IDE",
   "contributors": [
     {
@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "@remixproject/plugin": "0.2.0-alpha.1"
+    "@remixproject/plugin": "0.2.0-alpha.5"
   },
   "keywords": [
     "Ethereum",
