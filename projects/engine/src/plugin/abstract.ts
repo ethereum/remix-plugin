@@ -107,9 +107,14 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
    * @param message An optional message to show to the user
    */
   canCallMethod(method: MethodKey<T>, message?: string): Promise<boolean> {
-    if (this.currentRequest?.from && this.methods.includes(method)) {
+    // Internal call
+    if (!this.currentRequest) {
+      return Promise.resolve(true)
+    }
+    // External call
+    if (this.methods.includes(method)) {
       const from = this.currentRequest.from
-      const to = this.profile.name
+      const to = this.name
       return (this as any).call('manager', 'canCall', from, to, method, message)
     } else {
       return Promise.resolve(false)
