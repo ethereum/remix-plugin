@@ -54,6 +54,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> im
   public events = new EventEmitter()
   public currentRequest: PluginRequest
   public options: PluginOptions<App>
+  public name: string // name is set on handshake
   public methods: string[]
   public activateService: Record<string, () => Promise<any>> = {}
 
@@ -74,6 +75,21 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> im
       }
       this.isLoaded ? loadFn() : this.events.once('loaded', () => loadFn())
     })
+  }
+
+  /**
+   * Ask the plugin manager if current request can call a specific method
+   * @param method The method to call
+   * @param message An optional message to show to the user
+   */
+  canCallMethod(method: MethodKey<T>, message?: string): Promise<boolean> {
+    if (this.currentRequest?.from && this.methods.includes(method)) {
+      const from = this.currentRequest.from
+      const to = this.name
+      return (this as any).call('manager', 'canCall', from, to, method, message)
+    } else {
+      return Promise.resolve(false)
+    }
   }
 
   //////////////////////

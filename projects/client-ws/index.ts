@@ -25,6 +25,7 @@ export function connectWS(socket: WS, client: PluginClient) {
         isLoaded = true
         client.events.on('send', (msg: Message) => socket.send(JSON.stringify(msg)))
         client.events.emit('loaded')
+        client.name = payload[0]
         // Send back the list of methods exposed by the plugin
         const message = {action: 'response', name, key, id, payload: client.methods}
         socket.send(JSON.stringify(message))

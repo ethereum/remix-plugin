@@ -204,8 +204,9 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param from Profile of the caller plugin
    * @param to Profile of the target plugin
    * @param method Method targetted by the caller
+   * @param message Method provided by the targetted method plugin
    */
-  async canCall(from: Profile, to: Profile, method: string) {
+  async canCall(from: Profile, to: Profile, method: string, message?: string) {
     return true
   }
 
