@@ -12,8 +12,8 @@ import {
   IPluginService,
   createService,
   activateService,
-  PluginBase,
   getMethodPath,
+  PluginBase,
 } from '../../../utils'
 
 export interface RequestParams {
@@ -98,6 +98,22 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
         this.requestQueue[0]()
       }
     })
+  }
+
+
+  /**
+   * Ask the plugin manager if current request can call a specific method
+   * @param method The method to call
+   * @param message An optional message to show to the user
+   */
+  canCallMethod(method: MethodKey<T>, message?: string): Promise<boolean> {
+    if (this.currentRequest?.from && this.methods.includes(method)) {
+      const from = this.currentRequest.from
+      const to = this.profile.name
+      return (this as any).call('manager', 'canCall', from, to, method, message)
+    } else {
+      return Promise.resolve(false)
+    }
   }
 
   /////////////
