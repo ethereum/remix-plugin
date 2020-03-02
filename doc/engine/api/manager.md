@@ -195,18 +195,18 @@ class RemixManager extends PluginManager {
 Check if a plugin can call a method of another.
 
 **Params**
-- `from`: Profile of the caller plugin
-- `to`: Profile of the target plugin
+- `from`: Name of the caller plugin
+- `to`: Name of the target plugin
 - `method`: Method targetted by the caller
+- `message`: Optional Message to display to the user
 
 
-This method can be called from a plugin to protect the access to one of it's method :
+This method can be called from a plugin to protect the access to one of it's method.
+Every plugin implements a helper function that takes care of `from` & `to`
 ```typescript
 class SensitivePlugin extends Plugin {
   async sensitiveMethod() {
-    const name = this.currentRequest.from
-    const to = this.profile
-    const canCall = this.call('manager', 'canCall', { name }, to, 'sensitiveMethod')
+    const canCall = await this.canCallMethod('sensitiveMethod', 'This method give access to sensitvie information')
     if (canCall) {
       // continue sensitive method
     }
