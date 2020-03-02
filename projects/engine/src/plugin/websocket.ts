@@ -53,7 +53,7 @@ export class WebsocketPlugin extends Plugin {
     this.socket = new WebSocket(this.profile.url)
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listener)
-      const methods: string[] = await this.callPluginMethod('handshake')
+      const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
       if (methods) {
         this.profile.methods = methods
         this.call('manager', 'updateProfile', this.profile)

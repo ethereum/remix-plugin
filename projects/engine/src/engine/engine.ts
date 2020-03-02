@@ -1,6 +1,6 @@
 import { BasePluginManager } from "../plugin/manager"
 import { Plugin } from '../plugin/abstract'
-import { listenEvent } from "../../../utils"
+import { listenEvent, PluginApi } from "../../../utils"
 
 export class Engine {
   private plugins: Record<string, Plugin> = {}
@@ -153,7 +153,7 @@ export class Engine {
    * @param name Name of the caller plugin
    * @note This method creates a snapshot at the time of the time of activation
    */
-  private async createApp(name: string) {
+  private async createApp(name: string): Promise<PluginApi<any>> {
     const getProfiles = Object.keys(this.plugins).map(key => this.manager.getProfile(key))
     const profiles = await Promise.all(getProfiles)
     return profiles.reduce((app, target) => {
@@ -196,7 +196,7 @@ export class Engine {
     plugin['emit'] = (event: string, ...payload: any[]) => {
       this.broadcast(name, event, ...payload)
     }
-    plugin['call'] = (target: string, method: string, ...payload: any[]) => {
+    plugin['call'] = (target: string, method: string, ...payload: any[]): Promise<any> => {
       return this.callMethod(name, target, method, ...payload)
     }
 
