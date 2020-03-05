@@ -82,7 +82,7 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> im
    * @param method The method to call
    * @param message An optional message to show to the user
    */
-  canCallMethod(method: MethodKey<T>, message?: string): Promise<boolean> {
+  askUserPermission(method: MethodKey<T>, message?: string): Promise<boolean> {
     // Internal call
     if (!this.currentRequest) {
       return Promise.resolve(true)
