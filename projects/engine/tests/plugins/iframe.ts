@@ -1,4 +1,3 @@
-import { Plugin } from '../../src/plugin/abstract'
 import { PluginManager } from '../../src/plugin/manager'
 import { HostPlugin } from '../../src/plugin/host'
 import { IframePlugin } from '../../src/plugin/iframe'
