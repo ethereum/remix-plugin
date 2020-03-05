@@ -29,7 +29,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
   private engineDeactivatePlugin: (name: string) => Promise<any>
   protected profiles: Record<string, Profile> = {}
   protected actives: string[] = []
-  public methods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin']
+  public methods = managerMethods
 
   protected onPluginActivated?(profile: Profile): any
   protected onPluginDeactivated?(profile: Profile): any

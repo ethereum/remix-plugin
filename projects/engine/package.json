@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine",
-  "version": "0.2.0-alpha.5",
+  "version": "0.2.0-alpha.6",
   "description": "Plugin Engine that power Remix IDE",
   "contributors": [
     {

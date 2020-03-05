@@ -83,14 +83,16 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
 
+        const ref = setTimeout(() => { timedout = true, letcontinue() }, 10000)
         try {
-          setTimeout(() => { timedout = true, letcontinue() }, 10000)
           const result = await this.callPluginMethod(method, args)
           if (timedout) return
+          delete this.currentRequest
           resolve(result)
         } catch (err) {
           reject(err)
         }
+        clearTimeout(ref)
         letcontinue()
       })
       // If there is only one request waiting, call it

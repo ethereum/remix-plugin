@@ -108,7 +108,7 @@ describe('Manager', () => {
   test('Activation', async () => {
     const spyEmit = spyOn(manager, 'emit')
     await manager.activatePlugin('solidity')
-    expect(manager.onPluginActivated).toHaveBeenCalledTimes(1)
+    expect(manager.onPluginActivated).toHaveBeenCalledTimes(2)  // manager + solidity
     expect(solidity.onActivation).toBeCalledTimes(1)
     expect(await manager.isActive('solidity')).toBeTruthy()
     expect(spyEmit).toHaveBeenCalledWith('pluginActivated', solidity.profile)
@@ -202,6 +202,30 @@ describe('Plugin interaction', () => {
     await manager.activatePlugin(['solidity', 'fileManager'])
     await fileManager.call('solidity', 'compile', 'ballot.sol')
     expect(solidity.compile).toHaveBeenCalledWith('ballot.sol')
+    expect(solidity.compile).toHaveBeenCalledTimes(1)
+    expect(solidity['currentRequest']).toBeUndefined()
+  })
+
+  test('Current Request has been updated during call', async () => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    let _currentRequest: Plugin['currentRequest']
+    const updateReq = jest.fn((req) => _currentRequest = req)
+    const setCurrentRequest = () => Object.defineProperty(solidity, 'currentRequest', {
+      configurable: true, // getter/setter can be deleted with "delete"
+      get: () => _currentRequest,
+      set: updateReq
+    })
+    // Call with manager
+    setCurrentRequest()
+    await manager.call('solidity', 'compile', 'ballot.sol')
+    expect(solidity['currentRequest']).toBeUndefined()
+    expect(_currentRequest).toEqual({ from: 'manager', path: 'solidity' })
+    // Call with fileManager
+    setCurrentRequest()
+    await fileManager.call('solidity', 'compile', 'ballot.sol')
+    expect(solidity['currentRequest']).toBeUndefined()
+    expect(_currentRequest).toEqual({ from: 'fileManager', path: 'solidity' })
+    expect(updateReq).toHaveBeenCalledTimes(2)
   })
 
   test('Plugin can activate another', async () => {
@@ -209,7 +233,7 @@ describe('Plugin interaction', () => {
     await solidity.call('manager', 'activatePlugin', 'fileManager')
     const isActive = await manager.isActive('fileManager')
     expect(manager.activatePlugin).toHaveBeenCalledWith('fileManager')
-    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
     expect(isActive).toBeTruthy()
   })
 
@@ -220,7 +244,7 @@ describe('Plugin interaction', () => {
     } catch (err) {
       expect(err.message).toEqual('Plugin solidity has no right to deactivate plugin fileManager')
       const isActive = await manager.isActive('fileManager')
-      expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+      expect(manager.canDeactivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
       expect(isActive).toBeTruthy()
     }
   })
@@ -231,7 +255,7 @@ describe('Plugin interaction', () => {
     await solidity.call('manager', 'deactivatePlugin', 'fileManager')
     const isActive = await manager.isActive('fileManager')
     expect(manager.deactivatePlugin).toHaveBeenCalledWith('fileManager')
-    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, manager.profile)
+    expect(manager.canDeactivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
     expect(isActive).toBeFalsy()
   })
 
