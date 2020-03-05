@@ -206,7 +206,7 @@ Every plugin implements a helper function that takes care of `from` & `to`
 ```typescript
 class SensitivePlugin extends Plugin {
   async sensitiveMethod() {
-    const canCall = await this.canCallMethod('sensitiveMethod', 'This method give access to sensitvie information')
+    const canCall = await this.askUserPermission('sensitiveMethod', 'This method give access to sensitvie information')
     if (canCall) {
       // continue sensitive method
     }
