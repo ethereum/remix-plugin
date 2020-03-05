@@ -14,9 +14,9 @@ export class Engine {
   constructor(private manager: BasePluginManager) {
     this.plugins['manager'] = manager
     // Activate the Engine & start listening on activation and deactivation
-    this.activatePlugin('manager').then(() => {
-      this.manager['engineActivatePlugin'] = (name: string) => this.activatePlugin(name)
-      this.manager['engineDeactivatePlugin'] = (name: string) => this.deactivatePlugin(name)
+    this.manager['engineActivatePlugin'] = (name: string) => this.activatePlugin(name)
+    this.manager['engineDeactivatePlugin'] = (name: string) => this.deactivatePlugin(name)
+    manager.activatePlugin('manager').then(() => {
       this.isLoaded = true
       // Run callback on `onload` if any
       if (this.managerLoaded) this.managerLoaded()
@@ -133,7 +133,7 @@ export class Engine {
       if (canActivate) {
         await this.manager.toggleActive(target)
       } else {
-        throw new Error(`Cannot call ${method} from ${target}, because ${target} is not activated yet`)
+        throw new Error(`${from.name} cannot call ${method} of ${target}, because ${target} is not activated yet`)
       }
     }
 

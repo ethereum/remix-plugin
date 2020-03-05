@@ -12,5 +12,6 @@ export interface IPluginManager {
     updateProfile(profile: Partial<Profile>): any
     activatePlugin(name: string): any
     deactivatePlugin(name: string): any
+    canCall(from: string, to: string, method: string, message?: string): any
   }
 }
