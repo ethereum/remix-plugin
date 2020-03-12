@@ -31,14 +31,14 @@ describe('Abstract Plugin', () => {
     await manager.activatePlugin(['from', 'to', 'anotherFrom'])
   })
 
-  test('Can Call is exposed', async () => {
+  test('askUserPermission run canCall', async () => {
     await from.call('to', 'mockMethod')
     expect(to.mockMethod).toHaveBeenCalledTimes(1)
     expect(to.askUserPermission).toHaveBeenCalledWith('mockMethod')
     expect(manager.canCall).toHaveBeenCalledWith('from', 'to', 'mockMethod', undefined)
   })
 
-  test('', async () => {
+  test('Works with Promise.all', async () => {
     const [ shouldBeTrue, shouldBeFalse ] = await Promise.all([
       from.call('to', 'mockMethod'),
       anotherFrom.call('to', 'mockMethod')

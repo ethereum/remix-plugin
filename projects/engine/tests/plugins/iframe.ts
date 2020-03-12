@@ -129,7 +129,7 @@ describe('Iframe Plugin', () => {
     setTimeout(() => expect(spy).toHaveBeenCalledWith(response), 10)  // Wait for next tick
   })
 
-  // Get Message: listen
+  // Get Message: on
   test('getMessage with listen should run "on"', () => {
     const spy = spyOn(iframe, 'postMessage' as any)
     iframe['origin'] = 'url'
