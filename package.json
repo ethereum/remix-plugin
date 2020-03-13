@@ -38,7 +38,8 @@
     "deploy:etherscan": "surge ./examples/plugins/etherscan remix-etherscan-plugin.surge.sh"
   },
   "dependencies": {
-    "events": "^3.0.0"
+    "events": "^3.0.0",
+    "ses": "^0.7.1"
   },
   "devDependencies": {
     "@types/events": "^1.2.0",

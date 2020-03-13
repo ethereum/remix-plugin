@@ -1,21 +1,21 @@
 {
-  "name": "@remixproject/engine",
-  "version": "0.2.0-alpha.7",
-  "description": "Plugin Engine that power Remix IDE",
+  "name": "@remixproject/plugin-ses",
+  "version": "0.2.0-alpha.5",
+  "description": "Library to build Plugin over Secure EcmaScript. Used by Remix IDE",
   "contributors": [
-    {
-      "name": "Yann Levreau",
-      "email": "yann@ethdev.com"
-    },
     {
       "name": "GrandSchtroumpf",
       "email": "grandschtroumpf@ethereum.org"
     }
   ],
+  "dependencies": {
+    "@remixproject/plugin": "0.2.0-alpha.5"
+  },
   "keywords": [
     "Ethereum",
     "RemixIDE",
-    "Plugin"
+    "Plugin",
+    "Websocket"
   ],
   "license": "MIT",
   "files": [
@@ -28,9 +28,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ethereum/remix-plugin.git"
-  },
-  "peerDependencies": {
-    "ses": ">0.7.1"
   },
   "bugs": {
     "url": "https://github.com/ethereum/remix-plugin/issues"
