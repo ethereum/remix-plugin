@@ -101,7 +101,7 @@ describe('Iframe Plugin', () => {
   })
 
   // Get Message: response
-  test('getMessage with response should trigger pendingRequest', (done) => {
+  test('getEvent with response should trigger pendingRequest', (done) => {
     spyOn(iframe, 'postMessage' as any) // Mock postMessage cause iframe is not set yet
     iframe['origin'] = 'url'
     const event = {
@@ -112,32 +112,32 @@ describe('Iframe Plugin', () => {
       expect(result).toEqual(['params'])
       done()
     })
-    iframe['getMessage'](event as any)
+    iframe['getEvent'](event as any)
   })
 
   // Get Message: request
-  test('getMessage with request should call', () => {
+  test('getEvent with request should call', () => {
     const spy = spyOn(iframe, 'postMessage' as any)
     iframe['origin'] = 'url'
     const event = {
       origin: 'url',
       data: { id: 0, action: 'request', key: 'method', payload: ['params'], name: 'manager' }
     }
-    iframe['getMessage'](event as any)
+    iframe['getEvent'](event as any)
     expect(iframe.call).toHaveBeenCalledWith('manager', 'method', 'params')
     const response = { id: 0, action: 'response', key: 'method', payload: [true], name: 'manager', error: undefined }
     setTimeout(() => expect(spy).toHaveBeenCalledWith(response), 10)  // Wait for next tick
   })
 
   // Get Message: listen
-  test('getMessage with listen should run "on"', () => {
+  test('getEvent with listen should run "on"', () => {
     const spy = spyOn(iframe, 'postMessage' as any)
     iframe['origin'] = 'url'
     const event = {
       origin: 'url',
       data: { id: 0, action: 'listen', key: 'method', payload: ['params'], name: 'manager' }
     }
-    iframe['getMessage'](event as any)
+    iframe['getEvent'](event as any)
     expect(iframe.on.mock.calls[0][0]).toEqual('manager')
     expect(iframe.on.mock.calls[0][1]).toEqual('method')
     iframe.callMockEvent(true)
@@ -149,26 +149,26 @@ describe('Iframe Plugin', () => {
   })
 
   // Get Message: once
-  test('getMessage with once should run listen only one', () => {
+  test('getEvent with once should run listen only one', () => {
     const spy = spyOn(iframe, 'postMessage' as any)
     iframe['origin'] = 'url'
     const event = {
       origin: 'url',
       data: { id: 0, action: 'once', key: 'method', payload: ['params'], name: 'manager' }
     }
-    iframe['getMessage'](event as any)
+    iframe['getEvent'](event as any)
     expect(iframe.once.mock.calls[0][0]).toEqual('manager')
     expect(iframe.once.mock.calls[0][1]).toEqual('method')
   })
 
   // Get Message: off
-  test('getMessage with once should run listen only one', () => {
+  test('getEvent with once should run listen only one', () => {
     iframe['origin'] = 'url'
     const event = {
       origin: 'url',
       data: { id: 0, action: 'off', key: 'method', payload: ['params'], name: 'manager' }
     }
-    iframe['getMessage'](event as any)
+    iframe['getEvent'](event as any)
     expect(iframe.off.mock.calls[0][0]).toEqual('manager')
   })
 })
