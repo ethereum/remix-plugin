@@ -108,21 +108,21 @@ describe('Websocket plugin', () => {
     plugin.createMock()
     // Action 'on'
     const on = { id: 0, action: 'on', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
-    plugin['getMessage']({ data: JSON.stringify(on) } as any)
+    plugin['getEvent']({ data: JSON.stringify(on) } as any)
     expect(plugin.on.mock.calls[0][0]).toEqual('name')
     expect(plugin.on.mock.calls[0][1]).toEqual('key')
     // Action 'once'
     const once = { id: 0, action: 'once', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
-    plugin['getMessage']({ data: JSON.stringify(once) } as any)
+    plugin['getEvent']({ data: JSON.stringify(once) } as any)
     expect(plugin.once.mock.calls[0][0]).toEqual('name')
     expect(plugin.once.mock.calls[0][1]).toEqual('key')
     // Action 'off'
     const off = { id: 0, action: 'off', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
-    plugin['getMessage']({ data: JSON.stringify(off) } as any)
+    plugin['getEvent']({ data: JSON.stringify(off) } as any)
     expect(plugin.off).toHaveBeenCalledWith('name', 'key')
     // Action 'emit'
     const emit = { id: 0, action: 'emit', key: 'key', payload: ['payload'], name: 'name', requestInfo: undefined }
-    plugin['getMessage']({ data: JSON.stringify(emit) } as any)
+    plugin['getEvent']({ data: JSON.stringify(emit) } as any)
     expect(plugin.emit).toHaveBeenCalledWith('key', 'payload')
 
   })
