@@ -14,6 +14,7 @@ export class IframePlugin extends ViewPlugin {
   private origin: string
   private source: Window
   private pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
+  private handshaked: Boolean = false // only one handshake call should be allowed
 
   constructor(public profile: IframeProfile) {
     super(profile)
@@ -44,15 +45,9 @@ export class IframePlugin extends ViewPlugin {
     const message: Message = event.data
 
     // Check for handshake request from the client
-    if (message.action === 'request' && message.key === 'handshake') {
-      const methods: string[] = await this.callPluginMethod('handshake')
-      if (methods) {
-        this.profile.methods = methods
-      }
-      return
-    }
-
-    switch (message.action) {
+    if (message.action === 'request' && message.key === 'handshake') return await this.ensureHandshake()
+    
+     switch (message.action) {
       // Start listening on an event
       case 'on':
       case 'listen': {
@@ -118,6 +113,13 @@ export class IframePlugin extends ViewPlugin {
     this.source.postMessage(message, this.origin)
   }
 
+  private async ensureHandshake () {
+    if (this.handshaked) return this.profile.methods
+    this.handshaked = true
+    const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
+    if (methods) this.profile.methods = methods
+  }
+
   /**
    * Create and return the iframe
    */
@@ -136,11 +138,8 @@ export class IframePlugin extends ViewPlugin {
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
       window.addEventListener(...this.listener)
-      const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
-      if (methods) {
-        this.profile.methods = methods
-        this.call('manager', 'updateProfile', this.profile)
-      }
+      await this.ensureHandshake()
+      this.call('manager', 'updateProfile', this.profile)
     }
     return this.iframe
   }
