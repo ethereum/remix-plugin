@@ -30,10 +30,10 @@ export class SesPlugin extends Plugin {
 
   async activate() {
     this.compartment =  new Compartment({
-      host: harden({
+      host: {
         send: (message: Partial<Message>) => this.getMessage(message),
         on: (cb: (msg: Partial<Message>) => void) => this.postMessage = cb
-      })
+      }
     })
     const code = await this.code$
     this.compartment.evaluate(code)
@@ -49,7 +49,7 @@ export class SesPlugin extends Plugin {
     this.postMessage = () => {
       throw new Error(`Plugin ${this.name} is deactivated`)
     }
-    delete this.compartment
+    // delete this.compartment
     super.deactivate()
   }
 
@@ -106,7 +106,7 @@ export class SesPlugin extends Plugin {
           this.postMessage({ ...message, action, payload, error })
         } catch (err) {
           const payload = undefined
-          const error = err.message
+          const error = err.message || `request to method ${message.key} of plugin ${message.name} throw without any message`
           this.postMessage({ ...message, action, payload, error })
         }
         break
@@ -129,7 +129,7 @@ export class SesPlugin extends Plugin {
    * @param message The message to post
    */
   private postMessage(message: Partial<Message>) {
-    throw new Error(`Plugin ${this.name} has not been activated yet`)
+    throw new Error(`Plugin "${this.name}" has not been activated yet`)
   }
 
 }

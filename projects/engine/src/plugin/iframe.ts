@@ -84,7 +84,7 @@ export class IframePlugin extends ViewPlugin {
           this.postMessage({ ...message, action, payload, error })
         } catch (err) {
           const payload = undefined
-          const error = err.message
+          const error = err.message || `request to method ${message.key} of plugin ${message.name} throw without any message`
           this.postMessage({ ...message, action, payload, error })
         }
         break
