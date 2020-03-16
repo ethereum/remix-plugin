@@ -62,6 +62,12 @@ export function connectSes(client: PluginClient) {
     }
   }
   host.on(getMessage)
+
+  // Request handshake if not loaded (when client start listening after engine send its handshake)
+  if (!isLoaded) {
+    const handshake = { action: 'request', key: 'handshake', id: -1 } as const
+    host.send(handshake)
+  }
 }
 
 /**
