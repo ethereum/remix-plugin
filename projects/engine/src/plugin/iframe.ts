@@ -1,128 +1,60 @@
 import { ViewPlugin } from './view'
 import { Message, ExternalProfile, Profile, LocationProfile } from '../../../utils'
-import { transformUrl } from './util'
+import { ExternalPlugin, transformUrl } from './external'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 
 export type IframeProfile = Profile & LocationProfile & ExternalProfile
 
-export class IframePlugin extends ViewPlugin {
+/**
+ * Connect an Iframe client to the engine.
+ * @dev This implements the ViewPlugin as it cannot extends two class. Maybe use a mixin at some point
+ */
+export class IframePlugin extends ExternalPlugin implements ViewPlugin {
   // Listener is needed to remove the listener
-  private readonly listener: MessageListener = ['message', e => this.getMessage(e), false]
-  private id = 0
+  private readonly listener: MessageListener = ['message', e => this.getEvent(e), false]
   private iframe = document.createElement('iframe')
   private origin: string
   private source: Window
-  private pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
-  private handshaked: Boolean = false // only one handshake call should be allowed
 
   constructor(public profile: IframeProfile) {
     super(profile)
   }
 
+  /** Implement "activate" of the ViewPlugin */
+  async activate() {
+    await this.call(this.profile.location, 'addView', this.profile, this.render())
+    super.activate()
+  }
+
+  /** Implement "deactivate" of the ViewPlugin */
   deactivate() {
     this.iframe.remove()
     window.removeEventListener(...this.listener)
+    this.call(this.profile.location, 'removeView', this.profile)
     super.deactivate()
   }
 
-  /** Call a method from this plugin */
-  protected callPluginMethod(key: string, payload: any[] = []): Promise<any> {
-    const action = 'request'
-    const id = this.id++
-    const requestInfo = this.currentRequest
-    const name = this.name
-    const promise = new Promise((res, rej) => {
-      this.pendingRequest[id] = (result: any[], error: Error | string) => error ? rej (error) : res(result)
-    })
-    this.postMessage({ id, action, key, payload, requestInfo, name })
-    return promise
-  }
-
   /** Get message from the iframe */
-  private async getMessage(event: MessageEvent) {
+  private async getEvent(event: MessageEvent) {
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     const message: Message = event.data
-
-    // Check for handshake request from the client
-    if (message.action === 'request' && message.key === 'handshake') return await this.ensureHandshake()
-    
-     switch (message.action) {
-      // Start listening on an event
-      case 'on':
-      case 'listen': {
-        const { name, key } = message
-        const action = 'notification'
-        this.on(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
-        break
-      }
-      case 'off': {
-        const { name, key } = message
-        this.off(name, key)
-        break
-      }
-      case 'once': {
-        const { name, key } = message
-        const action = 'notification'
-        this.once(name, key, (...payload) => this.postMessage({ action, name, key, payload }))
-        break
-      }
-      // Emit an event
-      case 'emit':
-      case 'notification': {
-        if (!message.payload) break
-        this.emit(message.key, ...message.payload)
-        break
-      }
-      // Call a method
-      case 'call':
-      case 'request': {
-        const action = 'response'
-        try {
-          const payload = await this.call(message.name, message.key, ...message.payload)
-          const error = undefined
-          this.postMessage({ ...message, action, payload, error })
-        } catch (err) {
-          const payload = undefined
-          const error = err.message
-          this.postMessage({ ...message, action, payload, error })
-        }
-        break
-      }
-      // Return result from exposed method
-      case 'response': {
-        const { id, payload, error } = message
-        this.pendingRequest[id](payload, error)
-        delete this.pendingRequest[id]
-        break
-      }
-      default: {
-        throw new Error('Message should be a notification, request or response')
-      }
-    }
+    this.getMessage(message)
   }
 
   /**
    * Post a message to the iframe of this plugin
    * @param message The message to post
    */
-  private postMessage(message: Partial<Message>) {
+  protected postMessage(message: Partial<Message>) {
     if (!this.source) {
       throw new Error('No window attached to Iframe yet')
     }
     this.source.postMessage(message, this.origin)
   }
 
-  private async ensureHandshake () {
-    if (this.handshaked) return this.profile.methods
-    this.handshaked = true
-    const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
-    if (methods) this.profile.methods = methods
-  }
 
-  /**
-   * Create and return the iframe
-   */
+  /** Create and return the iframe */
   render() {
     if (this.iframe.contentWindow) {
       throw new Error(`${this.name} plugin is already rendered`)
@@ -138,8 +70,7 @@ export class IframePlugin extends ViewPlugin {
       this.origin = new URL(this.iframe.src).origin
       this.source = this.iframe.contentWindow
       window.addEventListener(...this.listener)
-      await this.ensureHandshake()
-      this.call('manager', 'updateProfile', this.profile)
+      this.handshake()
     }
     return this.iframe
   }
