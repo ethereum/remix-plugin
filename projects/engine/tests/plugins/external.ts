@@ -1,4 +1,4 @@
-import { transformUrl } from '../../src/plugin/util'
+import { transformUrl } from '../../src/plugin/external'
 
 describe('transform Url', () => {
   test('use gateway for swarm', () => {
