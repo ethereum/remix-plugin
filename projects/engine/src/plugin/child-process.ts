@@ -15,12 +15,14 @@ export class ChildProcessPlugin extends ExternalPlugin {
 
   deactivate() {
     this.process.off(...this.listener)
+    this.process.disconnect()
+    this.process.kill()
     super.deactivate()
   }
 
   protected postMessage(message: Partial<Message>): void {
-    if (!this.process.connected) {
-      throw new Error(`Child process form plugin ${this.name} is not yet connected`)
+    if (!this.process?.connected) {
+      throw new Error(`Child process from plugin "${this.name}" is not yet connected`)
     }
     this.process.send(message)
   }
