@@ -19,7 +19,7 @@ export abstract class ExternalPlugin extends Plugin {
   protected loaded: boolean
   protected id = 0
   protected pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
-
+  profile: Profile & ExternalProfile
   constructor(profile: Profile & ExternalProfile) {
     super(profile)
   }
