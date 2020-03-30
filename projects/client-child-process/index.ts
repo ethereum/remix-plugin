@@ -12,12 +12,12 @@ export function connectChildProcess(client: PluginClient) {
       // If handshake set isLoaded
       if (action === 'request' && key === 'handshake') {
         isLoaded = true
-        client.events.on('send', (msg: Message) => process.send(JSON.stringify(msg)))
+        client.events.on('send', (msg: Message) => process.send(msg))
         client.events.emit('loaded')
         client.name = payload[0]
         // Send back the list of methods exposed by the plugin
         const message = {action: 'response', name, key, id, payload: client.methods}
-        process.send(JSON.stringify(message))
+        process.send(message)
         return
       }
 
@@ -45,13 +45,13 @@ export function connectChildProcess(client: PluginClient) {
           client.currentRequest = requestInfo
           const result = await client[method](...payload)
           const message = {action: 'response', name, key, id, payload: result}
-          process.send(JSON.stringify(message))
+          process.send(message)
           break
         }
       }
     } catch (err) {
       const message = { action, name, key, id, error: err.message }
-      process.send(JSON.stringify(message))
+      process.send(message)
     }
   }
   process.on('message', getMessage)
@@ -59,7 +59,7 @@ export function connectChildProcess(client: PluginClient) {
   // Request handshake if not loaded
   if (!isLoaded) {
     const handshake = { action: 'request', key: 'handshake', id: -1 }
-    process.send(JSON.stringify(handshake))
+    process.send(handshake)
   }
 }
 
