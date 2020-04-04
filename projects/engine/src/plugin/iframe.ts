@@ -43,6 +43,7 @@ export class IframePlugin extends ViewPlugin {
 
   /** Get message from the iframe */
   private async getMessage(event: MessageEvent) {
+    if (event.source !== this.source) return // Filter only messages that comes from this iframe
     if (event.origin !== this.origin) return // Filter only messages that comes from this origin
     const message: Message = event.data
 
