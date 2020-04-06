@@ -26,4 +26,4 @@ function config(project) {
   }
 }
 
-module.exports = ['engine', 'client', 'client-ws', 'client-iframe'].map(project => config(project))
+module.exports = ['engine', 'client', 'client-ws', 'client-iframe', 'client-child-process'].map(project => config(project))

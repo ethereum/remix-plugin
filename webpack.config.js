@@ -32,6 +32,8 @@ const engine = {
     library: 'pluginEngine',
     libraryTarget: 'umd',
   },
+  // @todo(#183) remove when engine is agnositic of platform
+  target: 'node'
 }
 
 // CLIENT
@@ -56,7 +58,7 @@ const wsClient = {
   target: 'node'
 }
 
-// Websocket client
+// Iframe client
 const iframeClient = {
   ...config('client-iframe'),
   output: {
@@ -67,4 +69,15 @@ const iframeClient = {
   }
 }
 
-module.exports = [engine, client, wsClient, iframeClient]
+// Child Process client
+const childProcessClient = {
+  ...config('client-child-process'),
+  output: {
+    path: path.resolve(__dirname, 'projects/client-child-process/dist'),
+    filename: 'index.js',
+    libraryTarget: 'umd',
+  },
+  target: 'node'
+}
+
+module.exports = [engine, client, wsClient, iframeClient, childProcessClient]
