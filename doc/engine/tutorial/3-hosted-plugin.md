@@ -28,6 +28,7 @@ class SidePanel extends HostPlugin {
     // HostPlugin automatically expose the 4 abstract methods 'focus', 'isFocus', 'addView', 'removeView'
     super({ name: 'sidePanel' })
   }
+  currentFocus(): string {}
   addView(profile: Profile, view: HTMLElement) {}
   removeView(profile: Profile) {}
   focus(name: string) {}

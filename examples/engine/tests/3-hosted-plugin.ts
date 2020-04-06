@@ -10,6 +10,10 @@ export class SidePanel extends HostPlugin {
     super({ name: 'sidePanel' })
     this.root = root
   }
+  // Gives the name of the plugin currently focused
+  currentFocus(): string {
+    return this.focused
+  }
   // Add a View plugin into the DOM once it's activated
   addView(profile: Profile, view: HTMLElement) {
     this.plugins[profile.name] = view
