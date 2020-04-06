@@ -18,6 +18,7 @@
       "@remixproject/plugin/*": ["./projects/client/src/*"],
       "@remixproject/plugin-ws": ["./projects/client-ws"],
       "@remixproject/plugin-iframe": ["./projects/client-iframe"],
+      "@remixproject/plugin-child-process": ["./projects/client-child-process"],
       "@utils": ["./projects/utils/src"],
       "@utils/*": ["./projects/utils/src/*"],
       "@examples/*": ["./examples/*"]
