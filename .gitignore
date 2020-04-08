@@ -1,7 +1,6 @@
 node_modules
-dist
 .vscode
 
-examples/plugins/*/dist
+examples/plugins/ethdoc/dist/index.js
 projects/*/dist
 coverage

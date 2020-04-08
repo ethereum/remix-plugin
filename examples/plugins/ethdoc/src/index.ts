@@ -1,6 +1,6 @@
 import { LitElement, html, customElement } from 'lit-element'
-import { createIframeClient } from '@remixproject/plugin'
 import { remixApi, CompilationFileSources, CompilationResult, Status } from '@utils'
+import { createIframeClient } from '@remixproject/plugin-iframe'
 import { createDoc } from './ethdoc'
 
 interface ContractMap {
