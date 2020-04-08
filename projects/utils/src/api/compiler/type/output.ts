@@ -262,6 +262,9 @@ export interface DevMethodDoc {
   author: string
   details: string
   return: string
+  returns: {
+    [param: string]: string
+  }
   params: {
     [param: string]: string
   }
