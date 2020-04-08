@@ -1,6 +1,6 @@
 {
   "extends": "../../../tsconfig.json",
-  "include": ["src", "profile"],
+  "include": ["src", "profile", "../../../webpack.common.js"],
   "compilerOptions": {
     "outDir": ".plugins/ethdoc/dist",
     "module": "es6",

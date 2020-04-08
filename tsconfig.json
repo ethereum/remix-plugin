@@ -14,7 +14,7 @@
       "remix-plugin": ["src/index.ts"],
       "@remixproject/engine": ["./projects/engine/dist"],
       "@remixproject/engine/*": ["./projects/engine/src/*"],
-      "@remixproject/plugin": ["./projects/client/dist"],
+      "@remixproject/plugin": ["./projects/client"],
       "@remixproject/plugin/*": ["./projects/client/src/*"],
       "@remixproject/plugin-ws": ["./projects/client-ws"],
       "@remixproject/plugin-iframe": ["./projects/client-iframe"],

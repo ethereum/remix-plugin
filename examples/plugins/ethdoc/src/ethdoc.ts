@@ -6,6 +6,7 @@ import {
   DevMethodDoc,
   FunctionDescription,
   UserMethodDoc,
+  ABIParameter
 } from '@utils'
 
 type TemplateDoc<T> = { [key in keyof T]: (...params: any[]) => string }
@@ -80,6 +81,7 @@ const devMethodDocTemplate: TemplateDoc<MethodDoc> = {
   details: (details: string) => details,
   return: (value: string) => `Return : ${value}`,
   notice: (notice: string) => notice,
+  returns: () => '', // Implemented by getParams()
   params: () => '', // Implemented by getParams()
 }
 
@@ -98,18 +100,23 @@ const getMethodDetails = (devMethod: Partial<MethodDoc>) => !devMethod
     .map(key => devMethodDocTemplate[key](devMethod[key]))
     .join('\n')
 
+function extractParams(params: ABIParameter[], devparams: any) {
+  return params.map(input => {
+    const description = devparams[input.name] || ''
+    return `|${input.name}|${input.type}|${description}`
+  })
+}
 /** Get the doc for a method */
 function getMethodDoc(def: FunctionDescription, devdoc?: Partial<MethodDoc>) {
   const doc = devdoc || {}
   const devparams = doc.params || {}
-  const params = def.inputs.map(input => {
-    const description = devparams[input.name] || ''
-    return `|${input.name}|${input.type}|${description}`
-  })
+  const params = extractParams(def.inputs, devparams)
+  const returns = extractParams(def.outputs, devparams)
   return `
 ## ${def.name} - ${def.constant ? 'view' : 'read'}
 ${getParams(params)}
-${getMethodDetails(devdoc)}`
+${getMethodDetails(devdoc)}
+${`Returns:\n${getParams(returns)}`}`
 }
 
 
