@@ -33,9 +33,9 @@ export interface LibraryProfile<T extends Api = any> extends Profile<T> {
 
 
 /** A map of profile */
-export type ProfileMap<T extends ApiMap> = {
+export type ProfileMap<T extends ApiMap> = Partial<{
   [name in keyof T]: Profile<T[name]>
-}
+}>
 
 // PROFILE TO API
 

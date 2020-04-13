@@ -28,6 +28,7 @@ export interface PluginDevMode {
 /** Options of the plugin client */
 export interface PluginOptions<T extends ApiMap> {
   customTheme: boolean
+  /** define a set of custom apis to implements on the client  */
   customApi: ProfileMap<T>
   /** options only available for dev mode */
   devMode: Partial<PluginDevMode>
