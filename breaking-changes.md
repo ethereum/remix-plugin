@@ -1,6 +1,8 @@
 # Breaking changes 
 (please reach out to our gitter channel - https://gitter.im/ethereum/remix-dev - for any questions)
 
+## 0.2.0 -> 0.3.0
+- function `buildIframeClient` is now merged with `createIframeClient`.
 
 ## remix-plugin -> @remixproject
 - `remix-plugin` is now divided into two packages to lower the amount of code need per package.
