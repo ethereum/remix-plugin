@@ -49,7 +49,7 @@ export class WebsocketPlugin extends ExternalPlugin {
 
   /** Connect to the websocket */
   protected connect() {
-    const url = transformUrl(this.profile.url)
+    const url = transformUrl(this.profile.url, this.profile.name)
     this.socket = new WebSocket(url)
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listener)
