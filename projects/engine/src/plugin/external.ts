@@ -4,14 +4,14 @@ import { Plugin } from './abstract'
 
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
-  'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
-  'swarm://': 'https://swarm-gateways.net/bzz-raw://'
+  'ipfs://': (url, name) => `https://${name}.dyn.plugin.remixproject.org/ipfs/${url.replace('ipfs://','')}`,
+  'swarm://': (url, name) => `https://swarm-gateways.net/bzz-raw://${url.replace('swarm://','')}`
 }
 
 /** Transform the URL to use a gateway if decentralised storage is specified */
-export function transformUrl(url: string) {
+export function transformUrl(url: string, name: string) {
   const network = Object.keys(defaultGateways).find(key => url.startsWith(key))
-  return network ? url.replace(network, defaultGateways[network]) : url
+  return network ? defaultGateways[network](url, name) : url
 }
 
 

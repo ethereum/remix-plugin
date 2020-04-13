@@ -63,7 +63,7 @@ export class IframePlugin extends ExternalPlugin implements ViewPlugin {
     this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.setAttribute('id', `plugin-${this.name}`)
-    this.iframe.src = transformUrl(this.profile.url)
+    this.iframe.src = transformUrl(this.profile.url, this.name)
     // Wait for the iframe to load and handshake
     this.iframe.onload = async () => {
       if (!this.iframe.contentWindow) {
