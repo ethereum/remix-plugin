@@ -21,7 +21,10 @@ export function createApi<T extends Api>(client: PluginClient<any, any>, profile
 }
 
 
-/** Transform a list of profile into a map of API */
+/**
+ * Transform a list of profile into a map of API
+ * @deprecated Use `applyApi` from connector instead
+ */
 export function getApiMap<T extends ProfileMap<App>, App extends ApiMap>(
   client: PluginClient<any, App>,
   profiles: T
