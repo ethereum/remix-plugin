@@ -8,6 +8,9 @@
       "email": "grandschtroumpf@ethereum.org"
     }
   ],
+  "peerDependencies": {
+    "ws": "latest"
+  },
   "dependencies": {
     "@remixproject/plugin": "0.2.0-alpha.5"
   },
