@@ -5,26 +5,17 @@ import { RemixApi } from '../utils/src/api/remix-profile'
 import { Api, ApiMap } from '../utils/src/types/api'
 
 
-export interface WS {
-  send(data: string): void
-  on(type: 'message', cb: (event: string) => any): this
-}
-
-/**
- * This Websocket connector works with the library `ws`
- */
-export class WebsocketConnector implements ClientConnector {
-
-  constructor(private websocket: WS) {}
+export const childProcessConnector: ClientConnector = {
 
   /** Send a message to the engine */
   send(message: Partial<Message>) {
+    process.send(message)
     this.websocket.send(JSON.stringify(message))
-  }
+  },
 
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
-    this.websocket.on('message', (event) => cb(JSON.parse(event)))
+    process.on('message', (event) => cb(event))
   }
 }
 
@@ -35,10 +26,7 @@ export class WebsocketConnector implements ClientConnector {
  * ---------
  * @example
  * ```typescript
- * const wss = new WebSocket.Server({ port: 8080 });
- * wss.on('connection', (ws) => {
- *  const client = createWebsocketClient(ws)
- * })
+ * const client = createChildProcessClient()
  * ```
  * ---------
  * @example
@@ -49,18 +37,15 @@ export class WebsocketConnector implements ClientConnector {
  *   console.log('Hello World')
  *  }
  * }
- * const wss = new WebSocket.Server({ port: 8080 });
- * wss.on('connection', (ws) => {
- *  const client = createWebsocketClient(ws, new MyPlugin())
- * })
+ * const client = createChildProcessClient(new MyPlugin())
  * ```
  */
-export const createWebsocketClient = <
+export const createChildProcessClient = <
   P extends Api,
   App extends ApiMap = RemixApi
->(websocket: WS, client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
+>(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
   const c = client as any
-  connectClient(new WebsocketConnector(websocket), c)
+  connectClient(childProcessConnector, c)
   applyApi(c)
   return c
 }
