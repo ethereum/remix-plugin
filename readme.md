@@ -1,24 +1,32 @@
 # Remix Plugin
 
-Remix plugin helps you extends the Remix IDE. The goal is to give access of all the features inside Remix and make them available for Ethereum Developers.
+The repository host the code required for remix-plugin. It's divided into two type of projects: 
+- Engine: The code needed to host remix plugins in your project (used in remix-ide).
+- Plugin: The code that runs in a plugin.
 
-Remix Plugin can be use (but not only) for :
-- Educational Purpose.
-- Smart-Contract library managment.
-- Language Service.
-- Smart-Contract language compiler.
-- Static Analysis.
-- Other services...
 
-**ALPHA**
+## Engine
 
-Use Remix alpha version to test your plugin : http://remix-alpha.ethereum.org/.
+Currently the engine can only run inside the web. A node version is coming for v0.3.0
+
+If you want to implement the remix engine in your project checkout [full documentation here](./doc/engine)
+
+## Plugin
+
+Currently there are 3 types of plugin communication supported : 
+- iframe (web)
+- websocket (web)
+- child_process (node)
+
+If you want to create a plugin for remix-ide, checkout the documentation below.
 
 ## Getting Started
 
+> This getting started is for building iframe based plugin (only supported by remix-ide for now).
+
 Installation :
 ```bash
-npm install @remixproject/plugin
+npm install @remixproject/plugin-iframe
 ```
 
 or with a unpkg :
