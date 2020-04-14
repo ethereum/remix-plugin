@@ -47,9 +47,9 @@ export abstract class ExternalPlugin extends Plugin {
   /** Perform handshake with the client if not loaded yet */
   protected async handshake() {
     if (!this.loaded) {
+      this.loaded = true
       const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
       this.call('manager', 'updateProfile', this.profile)
-      this.loaded = true
       if (methods) {
         this.profile.methods = methods
       }
