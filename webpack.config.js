@@ -37,19 +37,25 @@ const engine = {
 }
 
 // Web Engine
-const engine = {
+const engineWeb = {
   ...config('engine-web'),
+  externals: {
+    '@remixproject/engine': 'commonjs2 @remixproject/engines',
+  },
   output: {
     path: path.resolve(__dirname, 'projects/engine-web/dist'),
     filename: 'index.js',
-    library: 'pluginEngine',
+    library: 'pluginEngineWeb',
     libraryTarget: 'umd',
   },
 }
 
 // Server Engine
-const engine = {
+const engineNode = {
   ...config('engine-node'),
+  externals: {
+    '@remixproject/engine': 'commonjs2 @remixproject/engines',
+  },
   output: {
     path: path.resolve(__dirname, 'projects/engine-node/dist'),
     filename: 'index.js',
@@ -57,6 +63,9 @@ const engine = {
   },
   target: 'node'
 }
+
+const engines = [engine, engineWeb, engineNode]
+
 
 // CLIENT
 const client = {
@@ -102,4 +111,6 @@ const childProcessClient = {
   target: 'node'
 }
 
-module.exports = [engine, client, wsClient, iframeClient, childProcessClient]
+const clients = [client, wsClient, iframeClient, childProcessClient]
+
+module.exports = [...engines, ...clients]
