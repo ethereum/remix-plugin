@@ -1,8 +1,6 @@
 import { Message } from '../../utils/src/types/message'
 import { listenEvent, callEvent } from '../../utils/src/event-name'
 import { Api, ApiMap, PluginApi } from '../../utils/src/types/api'
-import { ProfileMap } from '../../utils/src/types/profile'
-import { remixProfiles } from '../../utils/src/api/remix-profile'
 import { getMethodPath } from '../../utils/src/method-path'
 import { PluginClient } from './client'
 import { createApi } from './api'
@@ -38,7 +36,7 @@ export function connectClient(connector: ClientConnector, client: PluginClient =
     try {
 
       // If handshake set isLoaded
-      if (isHandshake({ action, key })) {
+      if (!isLoaded && isHandshake({ action, key })) {
         isLoaded = true
         client.events.on('send', (msg: Message) => connector.send(msg))
         client.events.emit('loaded')

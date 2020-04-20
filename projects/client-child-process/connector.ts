@@ -10,7 +10,6 @@ export const childProcessConnector: ClientConnector = {
   /** Send a message to the engine */
   send(message: Partial<Message>) {
     process.send(message)
-    this.websocket.send(JSON.stringify(message))
   },
 
   /** Get messae from the engine */
@@ -20,8 +19,8 @@ export const childProcessConnector: ClientConnector = {
 }
 
 /**
- * Connect an Iframe client to a web engine
- * @param client An optional iframe client to connect to the engine.
+ * Connect an Child Process client to a web engine
+ * @param client An optional child process plugin client to connect to the engine.
  *
  * ---------
  * @example

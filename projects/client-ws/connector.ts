@@ -29,8 +29,8 @@ export class WebsocketConnector implements ClientConnector {
 }
 
 /**
- * Connect an Iframe client to a web engine
- * @param client An optional iframe client to connect to the engine.
+ * Connect a Websocket plugin client to a web engine
+ * @param client An optional websocket plugin client to connect to the engine.
  *
  * ---------
  * @example
