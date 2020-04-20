@@ -1,5 +1,5 @@
 import { ClientConnector, isHandshake, connectClient, applyApi, Client } from '@remixproject/plugin/connector'
-import { PluginClient } from '@remixproject/plugin/client'
+import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
 import { Message } from '../../utils/src/types/message'
 import { RemixApi } from '../../utils/src/api/remix-profile'
 import { Api, ApiMap } from '../../utils/src/types/api'
@@ -11,7 +11,7 @@ export class IframeConnector implements ClientConnector {
   source: Window
   origin: string
 
-  constructor(private client: PluginClient) {}
+  constructor(private options: PluginOptions<any>) {}
 
   /** Send a message to the engine */
   send(message: Partial<Message>) {
@@ -27,7 +27,7 @@ export class IframeConnector implements ClientConnector {
     window.addEventListener('message', async (event: MessageEvent) => {
       if (!event.source) throw new Error('No source')
       // Check that the origin is the right one
-      const devMode = this.client.options.devMode
+      const devMode = this.options.devMode
       const isGoodOrigin = await checkOrigin(event.origin, devMode)
       if (!isGoodOrigin) return
       if (!event.data) throw new Error('No data')
@@ -64,8 +64,12 @@ export const createIframeClient = <
   App extends ApiMap = RemixApi
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
   const c = client as any
-  connectClient(new IframeConnector(c), c)
+  const options = client.options
+  const connector = new IframeConnector(options)
+  connectClient(connector, c)
   applyApi(c)
-  listenOnThemeChanged(c)
+  if (!options.customTheme) {
+    listenOnThemeChanged(c)
+  }
   return c
 }
