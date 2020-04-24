@@ -83,7 +83,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
 
-        const ref = setTimeout(() => { timedout = true, letcontinue() }, 10000)
+        const ref = setTimeout(() => { timedout = true, letcontinue() }, 60000)
         try {
           const result = await this.callPluginMethod(method, args)
           if (timedout) return
