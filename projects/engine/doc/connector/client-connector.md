@@ -72,7 +72,7 @@ npm install client-connector-socket.io socket.io
 ## Create a client
 This example is an implementation of the [Server documentation from socket.io](https://socket.io/docs/server-api/).
 ```typescript
-import { createSocketIOClient } from 'client-connector-socket.io'
+const { createSocketIOClient } = require('client-connector-socket.io')
 const http = require('http').createServer();
 const io = require('socket.io')(http);
 
