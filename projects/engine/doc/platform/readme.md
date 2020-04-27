@@ -37,24 +37,33 @@ export interface ClientConnector {
 ```
 
 ```typescript
-class SocketIOConnector implements ClientConnector {
+import { ClientConnector, createClient, PluginClient, Message } from '@remixproject/plugin'
+
+export class SocketIOConnector implements ClientConnector {
 
   constructor(private socket) {}
   send(message: Partial<Message>) {
     this.socket.emit('message', message)
   }
-  on(cb: (message: Partial<Message>) => void)) {
-    this.socket.on('message', (msg) => cb(message))
+  on(cb: (message: Partial<Message>) => void) {
+    this.socket.on('message', (msg) => cb(msg))
   }
 }
+
+// A simple wrapper function for the plugin developer
+export function createSocketIOClient(socket, client?: PluginClient) {
+  const connector = new SocketIOConnector(socket)
+  return createClient(connector, client)
+}
 ```
+
+Checkout how to [publish your client connector on npm](client-connector.md). 
 
 ### PluginConnector
 The `PluginConnector` is an abstract class to be extended: 
 
 ```typescript
 class SocketIOPlugin extends PluginConnector {
-  private readonly listener = ['message', (msg: Message) => this.getMessage(msg)] as const
   socket: SocketIOClient
 
   constructor(profile: Profile & ExternalProfile) {
@@ -87,3 +96,5 @@ Let's take a look :
 - `disconnect` will be called when the plugin is deactivated.
 - `send` will be callde when another plugin when to call the plugin's methods (on the server).
 - `getMessage` should be called whenever a message arrives.
+
+Checkout how to [publish your plugin connector on npm](plugin-connector.md).
