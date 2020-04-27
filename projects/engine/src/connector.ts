@@ -4,16 +4,15 @@ import { Plugin } from './plugin/abstract'
 
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
-  'ipfs://': (url, name) => `https://${name}.dyn.plugin.remixproject.org/ipfs/${url.replace('ipfs://', '')}`,
-  'swarm://': (url, _) => `https://swarm-gateways.net/bzz-raw://${url.replace('swarm://', '')}`
+  'ipfs://': 'https://ipfsgw.komputing.org/ipfs/',
+  'swarm://': 'https://swarm-gateways.net/bzz-raw://'
 }
 
 /** Transform the URL to use a gateway if decentralised storage is specified */
-export function transformUrl(url: string, name: string) {
+export function transformUrl(url: string) {
   const network = Object.keys(defaultGateways).find(key => url.startsWith(key))
-  return network ? defaultGateways[network](url, name) : url
+  return network ? url.replace(network, defaultGateways[network]) : url
 }
-
 
 
 export abstract class PluginConnector extends Plugin {
@@ -39,8 +38,7 @@ export abstract class PluginConnector extends Plugin {
   protected abstract disconnect(): void
 
   activate() {
-    const { url, name } = this.profile
-    this.connect(transformUrl(url, name))
+    this.connect(transformUrl(this.profile.url))
   }
 
   deactivate() {
