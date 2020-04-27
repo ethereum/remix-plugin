@@ -1,5 +1,6 @@
 import { ChildProcessPlugin } from "../src/child-process"
-import { PluginManager, Engine } from '../../engine'
+import { PluginManager } from '@remixproject/engine/plugin/manager'
+import { Engine } from "@remixproject/engine/engine/engine"
 import { pluginManagerProfile } from '../../utils'
 import { fork } from 'child_process'
 
@@ -29,7 +30,12 @@ class MockChildProcess extends ChildProcessPlugin {
   onDeactivation = jest.fn()
   onRegistration = jest.fn()
   onActivation = jest.fn()
-
+  // process: {
+  //   on: jest.fn(),
+  //   off: jest.fn(),
+  //   send: jest.fn(),
+  //   disconnect: jest.fn()
+  // }
   constructor() {
     super(profile)
   }
