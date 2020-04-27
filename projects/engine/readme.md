@@ -17,6 +17,15 @@ The engine manages
 - [Engine](doc/api/engine.md)
 - [Plugin Manager](doc/api/manager.md)
 
+## Connectors
+Connectors wrap a connection between the engine & an external plugin.
+
+Examples of connectors: 
+- Iframe
+- ChildProcess
+- Websocket
+
+See [how to create your own connector](doc/connector/readme).
 
 ## Getting started
 ```

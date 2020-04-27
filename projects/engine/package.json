@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine",
-  "version": "0.3.0-alpha.1",
+  "version": "0.3.0-alpha.2",
   "description": "Plugin Engine that power Remix IDE",
   "contributors": [
     {
@@ -22,7 +22,7 @@
     "dist"
   ],
   "types": "dist/index.ts",
-  "main": "dist/index.js",
+  "main": "dist/index.node.js",
   "browser": "dist/index.js",
   "module": "dist/index.js",
   "repository": {
