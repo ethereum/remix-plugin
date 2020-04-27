@@ -1,8 +1,11 @@
-import { createIframeClient } from '../index'
+import { createClient } from '../src/connector'
 import { remixProfiles } from '../../utils'
 
 describe('Remix Api', () => {
-  const client = createIframeClient({ customApi: remixProfiles })
+  const client = createClient({
+    send() {},
+    on() {}
+  })
 
   test('Solidity', () => {
     expect(client.solidity).toBeDefined()
