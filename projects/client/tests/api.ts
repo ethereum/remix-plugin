@@ -1,4 +1,4 @@
-import { PluginClient, createApi, getApiMap, createIframeClient, listenOnThemeChanged } from '../index'
+import { PluginClient, createApi, getApiMap } from '../index'
 import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents, Profile, LocationProfile } from '../../utils'
 
 interface TestApi extends Api {
@@ -70,36 +70,4 @@ describe('Client Api', () => {
     expect(test.method).toBeDefined()
   })
 
-  test('createIframeClient has api', () => {
-    const iframeClient = createIframeClient({customApi: { test: profile }})
-    expect(iframeClient.test).toBeDefined()
-    expect(iframeClient.test.on).toBeDefined()
-    expect(iframeClient.test.method).toBeDefined()
-  })
-})
-
-/////////////////
-// COMMON APIS //
-/////////////////
-describe('Common Apis', () => {
-  let client: PluginClient
-  beforeEach(() => {
-    client = new PluginClient()
-  })
-  test('Should listen on theme changed', async () => {
-    const link = await listenOnThemeChanged(client) as HTMLLinkElement
-    expect(link.getAttribute('rel')).toBe('stylesheet')
-    client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
-    setTimeout(() => {
-      expect(link.getAttribute('href')).toBe('url')
-    }, 100)
-  })
-  test('If theme is custom, do not change the url', async () => {
-    const options = { customTheme: true, customApi: { test: profile } }
-    const link = await listenOnThemeChanged(client, options) as HTMLLinkElement
-    client.events.emit('themeChanged', { url: 'url', quality: 'dark' })
-    setTimeout(() => {
-      expect(link.getAttribute('href')).toBeUndefined()
-    }, 100)
-  })
 })
