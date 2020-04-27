@@ -1,4 +1,4 @@
-# Engine Platform
+# Connector
 The engine exposes connector to manage communications with plugins that are not running in the engine main process.
 
 Those connectors depends on the platform on which the engine is operating.
