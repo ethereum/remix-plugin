@@ -24,7 +24,19 @@ function config(project) {
 }
 
 // ENGINE
-const engine = {
+// node target for engine
+const nodeEngine = {
+  ...config('engine'),
+  output: {
+    path: path.resolve(__dirname, 'projects/engine/dist'),
+    filename: 'index.node.js',
+    libraryTarget: 'umd',
+  },
+  target: 'node'
+}
+
+// web target for engine
+const webEngine = {
   ...config('engine'),
   output: {
     path: path.resolve(__dirname, 'projects/engine/dist'),
@@ -32,12 +44,11 @@ const engine = {
     library: 'pluginEngine',
     libraryTarget: 'umd',
   },
-  // @todo(#183) remove when engine is agnositic of platform
-  target: 'node'
+  target: 'web'
 }
 
 // Web Engine
-const engineWeb = {
+const engineWebConnectors = {
   ...config('engine-web'),
   externals: {
     '@remixproject/engine': 'commonjs2 @remixproject/engine',
@@ -51,7 +62,7 @@ const engineWeb = {
 }
 
 // Server Engine
-const engineNode = {
+const engineNodeConnectors = {
   ...config('engine-node'),
   externals: {
     '@remixproject/engine': 'commonjs2 @remixproject/engine',
@@ -64,18 +75,28 @@ const engineNode = {
   target: 'node'
 }
 
-const engines = [engine, engineWeb, engineNode]
+const engines = [nodeEngine, webEngine, engineWebConnectors, engineNodeConnectors]
 
 
 // CLIENT
-const client = {
+const webClient = {
   ...config('client'),
   output: {
     path: path.resolve(__dirname, 'projects/client/dist'),
     filename: 'index.js',
     library: 'remixPlugin',
     libraryTarget: 'umd',
-  }
+  },
+  target: 'web'
+}
+const nodeClient = {
+  ...config('client'),
+  output: {
+    path: path.resolve(__dirname, 'projects/client/dist'),
+    filename: 'index.node.js',
+    libraryTarget: 'umd',
+  },
+  target: 'node'
 }
 
 // Websocket client
@@ -111,6 +132,6 @@ const childProcessClient = {
   target: 'node'
 }
 
-const clients = [client, wsClient, iframeClient, childProcessClient]
+const clients = [webClient, nodeClient, wsClient, iframeClient, childProcessClient]
 
 module.exports = [...engines, ...clients]
