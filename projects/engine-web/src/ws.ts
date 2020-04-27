@@ -7,7 +7,7 @@ export interface WebsocketOptions {
   reconnectDelay: number
 }
 
-export class WebsocktPlugin extends PluginConnector {
+export class WebsocketPlugin extends PluginConnector {
   // Listener is needed to remove the listener
   private readonly listeners = {
     message: ['message', (e: MessageEvent) => this.getEvent(e), false] as const,

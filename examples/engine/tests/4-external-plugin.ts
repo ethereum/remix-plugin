@@ -1,4 +1,5 @@
-import { PluginManager, Engine, IframePlugin, WebsocketPlugin } from '@remixproject/engine'
+import { PluginManager, Engine } from '@remixproject/engine'
+import { IframePlugin, WebsocketPlugin } from '@remixproject/engine-web'
 import { SidePanel } from './3-hosted-plugin'
 
 test('[Example] Hosted Plugin', async () => {
