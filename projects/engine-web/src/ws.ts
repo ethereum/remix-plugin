@@ -1,6 +1,4 @@
-import { PluginConnector } from '@remixproject/engine'
-import { Message } from '../../utils/src/types/message'
-import { Profile, ExternalProfile } from '../../utils/src/types/profile'
+import { PluginConnector, Profile, ExternalProfile, Message } from '@remixproject/engine'
 
 export interface WebsocketOptions {
   /** Time (in ms) to wait before reconnection after connection closed */
