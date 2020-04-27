@@ -18,6 +18,10 @@
     "Plugin"
   ],
   "license": "MIT",
+  "dependencies": {
+    "events": "^3.0.0",
+    "@types/node": "^13.13.4"
+  },
   "files": [
     "dist"
   ],
