@@ -36,28 +36,6 @@ const engine = {
   target: 'node'
 }
 
-// Web Engine
-const engine = {
-  ...config('engine-web'),
-  output: {
-    path: path.resolve(__dirname, 'projects/engine-web/dist'),
-    filename: 'index.js',
-    library: 'pluginEngine',
-    libraryTarget: 'umd',
-  },
-}
-
-// Server Engine
-const engine = {
-  ...config('engine-node'),
-  output: {
-    path: path.resolve(__dirname, 'projects/engine-node/dist'),
-    filename: 'index.js',
-    libraryTarget: 'umd',
-  },
-  target: 'node'
-}
-
 // CLIENT
 const client = {
   ...config('client'),
