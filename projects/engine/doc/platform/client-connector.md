@@ -38,7 +38,7 @@ npx tsc index --declaration
 ## Package.json
 ```json
 {
-  "name": "socket.io-client-connector",
+  "name": "client-connector-socket.io",
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
@@ -66,13 +66,13 @@ Here is how to use your client connector in a plugin :
 
 ## Install
 ```
-npm install socket.io-client-connector socket.io
+npm install client-connector-socket.io socket.io
 ```
 
 ## Create a client
 This example is an implementation of the [Server documentation from socket.io](https://socket.io/docs/server-api/).
 ```typescript
-import { createSocketIOClient } from 'socket.io-client-connector'
+import { createSocketIOClient } from 'client-connector-socket.io'
 const http = require('http').createServer();
 const io = require('socket.io')(http);
 
@@ -83,5 +83,4 @@ io.on('connection', async (socket) => {
 });
 
 http.listen(3000);
-
 ```
