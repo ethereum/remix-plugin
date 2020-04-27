@@ -63,15 +63,18 @@ Checkout how to [publish your client connector on npm](client-connector.md).
 The `PluginConnector` is an abstract class to be extended: 
 
 ```typescript
-class SocketIOPlugin extends PluginConnector {
-  socket: SocketIOClient
+import { PluginConnector, Profile, ExternalProfile, Message } from '@remixproject/engine'
+import io from 'socket.io-client';
+
+export class SocketIOPlugin extends PluginConnector {
+  socket: SocketIOClient.Socket
 
   constructor(profile: Profile & ExternalProfile) {
     super(profile)
   }
 
   protected connect(url: string): void {
-    this.socket = io(this.profile.url)
+    this.socket = io(url)
     this.socket.on('connect', () => {
       this.socket.on('message', (msg: Message) => this.getMessage(msg))
     })
@@ -82,9 +85,6 @@ class SocketIOPlugin extends PluginConnector {
   }
 
   protected send(message: Partial<Message>): void {
-    if (!this.process?.connected) {
-      throw new Error(`Child process from plugin "${this.name}" is not yet connected`)
-    }
     this.socket.send(message)
   }
 
