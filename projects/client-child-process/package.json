@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-child-process",
-  "version": "0.2.0",
+  "version": "0.3.0-alpha.1",
   "description": "Library to build Plugin over Child process.",
   "contributors": [
     {
@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "@remixproject/plugin": "0.2.0"
+    "@remixproject/plugin": "0.3.0-alpha.1"
   },
   "keywords": [
     "Ethereum",

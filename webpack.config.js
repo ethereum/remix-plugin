@@ -40,7 +40,7 @@ const engine = {
 const engineWeb = {
   ...config('engine-web'),
   externals: {
-    '@remixproject/engine': 'commonjs2 @remixproject/engines',
+    '@remixproject/engine': 'commonjs2 @remixproject/engine',
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-web/dist'),
@@ -54,7 +54,7 @@ const engineWeb = {
 const engineNode = {
   ...config('engine-node'),
   externals: {
-    '@remixproject/engine': 'commonjs2 @remixproject/engines',
+    '@remixproject/engine': 'commonjs2 @remixproject/engine',
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-node/dist'),
