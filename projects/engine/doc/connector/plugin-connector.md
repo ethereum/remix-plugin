@@ -50,7 +50,7 @@ npx tsc index --declaration
   "main": "index.js",
   "types": "index.d.ts",
   "peerDependencies": {
-    "@remixproject/engine": "^0.3.0",
+    "@remixproject/engine": "next",
     "socket.io-client": "^2.3.0"
   }
 }
@@ -69,7 +69,7 @@ Here is how to use your plugin connector in an engine :
 
 ## Install
 ```
-npm install @remixproject/engine plugin-connector-socket.io socket.io-client
+npm install @remixproject/engine@next plugin-connector-socket.io socket.io-client
 ```
 
 ## Create a client

@@ -42,7 +42,7 @@ npx tsc index --declaration
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
-    "@remixproject/plugin": "^0.3.0"
+    "@remixproject/plugin": "next"
   },
   "peerDependencies": {
     "socket.io": "^2.3.0"
