@@ -12,10 +12,7 @@
     "lib": ["es2016", "dom", "es5"],
     "paths": {
       "remix-plugin": ["src/index.ts"],
-      "@remixproject/engine": [
-        "./projects/engine/dist",
-        "./projects/engine/src"
-      ],
+      "@remixproject/engine": ["./projects/engine/dist"],
       "@remixproject/engine/*": ["./projects/engine/src/*"],
       "@remixproject/engine-web": ["./projects/engine-web/dist"],
       "@remixproject/engine-web/*": ["./projects/engine-web/src/*"],

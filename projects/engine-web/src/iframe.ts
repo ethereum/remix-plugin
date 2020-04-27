@@ -1,6 +1,4 @@
-import { PluginConnector } from '@remixproject/engine'
-import { Message } from '../../utils/src/types/message'
-import { Profile, ExternalProfile, LocationProfile } from '../../utils/src/types/profile'
+import { Message, ExternalProfile, Profile, LocationProfile, PluginConnector } from '@remixproject/engine'
 
 export type IframeProfile = Profile & LocationProfile & ExternalProfile
 

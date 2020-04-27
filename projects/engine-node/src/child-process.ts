@@ -1,7 +1,4 @@
-import { PluginConnector } from '@remixproject/engine'
-import { Message } from '../../utils/src/types/message'
-import { Profile, ExternalProfile } from '../../utils/src/types/profile'
-
+import { PluginConnector, Message, Profile, ExternalProfile } from '@remixproject/engine'
 import { fork, ChildProcess } from 'child_process'
 
 export class ChildProcessPlugin extends PluginConnector {
