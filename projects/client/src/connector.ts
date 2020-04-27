@@ -2,6 +2,7 @@ import { Message } from '../../utils/src/types/message'
 import { listenEvent, callEvent } from '../../utils/src/event-name'
 import { Api, ApiMap, PluginApi } from '../../utils/src/types/api'
 import { getMethodPath } from '../../utils/src/method-path'
+import { RemixApi } from '../../utils/src/api/remix-profile'
 import { PluginClient } from './client'
 import { createApi } from './api'
 
@@ -110,4 +111,23 @@ export function applyApi(client: PluginClient) {
     }
     client[name] = createApi(client, profiles[name])
   }
+}
+
+
+/**
+ * Create & conncect a client with a connector.
+ * @param connector A communication layer connector
+ * @param client The plugin client
+ */
+export const createClient = <
+  P extends Api,
+  App extends ApiMap = RemixApi
+>(
+  connector: ClientConnector,
+  client: PluginClient<P, App> = new PluginClient()
+): Client<P, App> => {
+  const c = client as any
+  connectClient(connector, c)
+  applyApi(c)
+  return c
 }
