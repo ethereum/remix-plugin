@@ -5,6 +5,7 @@ import { PluginManager } from '../src/plugin/manager'
 
 export class MockEngine extends Engine {
   onRegistration = jest.fn()
+  setPluginOption = jest.fn(() => ({ queueTimeout: 10000 }))
 }
 
 export class MockManager extends PluginManager {
@@ -87,6 +88,16 @@ describe('Registration with Engine', () => {
     expect(engine.onRegistration).toHaveBeenCalledTimes(2)
     expect(manager.onProfileAdded).toHaveBeenCalledTimes(2)
     expect(solidity.onRegistration).toHaveBeenCalledTimes(1)
+  })
+
+  test('Call setPluginOption on registration', async () => {
+    const manager = new MockManager()
+    const engine = new MockEngine(manager)
+    const solidity = new MockSolidity()
+    await engine.onload()
+    engine.register([solidity, new MockFileManager()])
+    expect(engine.setPluginOption).toHaveBeenCalledWith(solidity.profile)
+    expect(solidity['options'].queueTimeout).toBe(10000)
   })
 })
 
