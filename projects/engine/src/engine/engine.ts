@@ -283,7 +283,9 @@ export class Engine {
       }
       this.plugins[plugin.name] = plugin
       this.manager.addProfile(plugin.profile)
-      this.updateErrorHandler(plugin) // Update Error Handling for better debug
+       // Update Error Handling for better debug
+      this.updateErrorHandler(plugin)
+      // SetPluginOption is before onRegistration to let plugin update it's option inside onRegistration
       if (this.setPluginOption) {
         const options = this.setPluginOption(plugin.profile)
         plugin.setOptions(options)
