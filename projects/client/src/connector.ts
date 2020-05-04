@@ -115,7 +115,7 @@ export function applyApi(client: PluginClient) {
 
 
 /**
- * Create & conncect a client with a connector.
+ * Create & connect a client with a connector.
  * @param connector A communication layer connector
  * @param client The plugin client
  */
