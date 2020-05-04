@@ -1,6 +1,6 @@
 import { ViewPlugin } from './view'
 import { Message, ExternalProfile, Profile, LocationProfile } from '../../../utils'
-import { ExternalPlugin, transformUrl } from './external'
+import { ExternalPlugin } from './external'
 
 type MessageListener = ['message', (e: MessageEvent) => void, false]
 
@@ -63,7 +63,7 @@ export class IframePlugin extends ExternalPlugin implements ViewPlugin {
     this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.setAttribute('id', `plugin-${this.name}`)
-    this.iframe.src = transformUrl(this.profile.url, this.name)
+    this.iframe.src = this.options.transformUrl ? this.options.transformUrl(this.profile) : this.profile.url
     // Wait for the iframe to load and handshake
     this.iframe.onload = async () => {
       if (!this.iframe.contentWindow) {

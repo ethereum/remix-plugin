@@ -22,12 +22,18 @@ export interface RequestParams {
   payload: any[]
 }
 
+export interface PluginOptions {
+  /** The time to wait for a call to be executed before going to next call in the queue */
+  queueTimeout?: number
+}
+
 export class Plugin<T extends Api = any, App extends ApiMap = any> implements PluginBase<T, App> {
   activateService: Record<string, () => Promise<any>> = {}
   protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   /** Give access to all the plugins registered by the engine */
   protected app: PluginApi<App>
+  protected options: PluginOptions = {}
   // Lifecycle hooks
   onRegistration?(): void
   onActivation?(): void
@@ -52,6 +58,10 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   }
   deactivate() {
     if (this.onDeactivation) this.onDeactivation()
+  }
+
+  setOptions(options: Partial<PluginOptions> = {}) {
+    this.options = { ...this.options, ...options }
   }
 
   /** Call a method from this plugin */
@@ -83,7 +93,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
 
-        const ref = setTimeout(() => { timedout = true, letcontinue() }, 10000)
+        const ref = setTimeout(() => { timedout = true, letcontinue() }, this.options.queueTimeout || 10000)
         try {
           const result = await this.callPluginMethod(method, args)
           if (timedout) return
