@@ -7,15 +7,15 @@ export type BasePluginManager = {
   updateProfile(profile: Partial<Profile>): any
   activatePlugin(name: string): any
   deactivatePlugin(name: string): any
-  // Internal
   isActive(name: string): Promise<boolean>
+  canCall(from: Profile, to: Profile, method: string): Promise<boolean>
+  // Internal
   toggleActive(name: string): any
   addProfile(profile: Partial<Profile>): any
-  canCall(from: Profile, to: Profile, method: string): Promise<boolean>
   canActivate(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
-export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin', 'canCall']
+export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin', 'isActive', 'canCall']
 
 interface ManagerProfile extends Profile {
   name: 'manager',
