@@ -1,4 +1,4 @@
-# Publish a Client Connector
+# Develop & Publish a Client Connector
 
 ## Install
 ```bash
