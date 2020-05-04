@@ -1,4 +1,4 @@
-# Publish a Plugin Connector
+# Develop & Publish a Plugin Connector
 
 ## Install
 ```bash
