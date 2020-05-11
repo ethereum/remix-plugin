@@ -14,7 +14,7 @@ export function transformUrl({ url, name }: Profile & ExternalProfile) {
   return network ? defaultGateways[network](url, name) : url
 }
 
-export interface ExternalPluginOptions extends PluginOptions {
+export interface PluginConnectorOptions extends PluginOptions {
   transformUrl: (profile: Profile & ExternalProfile) => string
 }
 
@@ -53,7 +53,7 @@ export abstract class PluginConnector extends Plugin {
   }
 
   /** Set options for an external plugin */
-  setOptions(options: Partial<ExternalPluginOptions> = {}) {
+  setOptions(options: Partial<PluginConnectorOptions> = {}) {
     super.setOptions(options)
   }
 
