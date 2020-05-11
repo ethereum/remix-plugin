@@ -15,7 +15,7 @@ export function transformUrl({ url, name }: Profile & ExternalProfile) {
 }
 
 export interface PluginConnectorOptions extends PluginOptions {
-  transformUrl: (profile: Profile & ExternalProfile) => string
+  transformUrl?: (profile: Profile & ExternalProfile) => string
 }
 
 
@@ -23,6 +23,7 @@ export abstract class PluginConnector extends Plugin {
   protected loaded: boolean
   protected id = 0
   protected pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
+  protected options: PluginConnectorOptions
   profile: Profile & ExternalProfile
   constructor(profile: Profile & ExternalProfile) {
     super(profile)
@@ -42,7 +43,9 @@ export abstract class PluginConnector extends Plugin {
   protected abstract disconnect(): void
 
   activate() {
-    const url = transformUrl(this.profile)
+    const url = this.options.transformUrl
+      ? this.options.transformUrl(this.profile)
+      : transformUrl(this.profile)
     this.connect(url)
   }
 
