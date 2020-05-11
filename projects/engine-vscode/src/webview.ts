@@ -1,12 +1,14 @@
 import { PluginConnector, Profile, Message, PluginConnectorOptions, ExternalProfile } from "@remixproject/engine"
-import { ExtensionContext, ViewColumn, WebviewPanel, window, Uri } from 'vscode'
-import { join } from 'path'
-import { promises as fs, watch } from 'fs'
+import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
+import { join, parse as parsePath } from 'path'
+import { promises as fs } from 'fs'
+import { get } from 'https'
+import { parse as parseUrl } from 'url'
 
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
-  column: ViewColumn
+  column?: ViewColumn
 }
 
 export class WebviewPlugin extends PluginConnector {
@@ -18,6 +20,10 @@ export class WebviewPlugin extends PluginConnector {
     this.options = options
   }
 
+  setOptions(options: WebviewOptions) {
+    super.setOptions(options)
+  }
+
   protected send(message: Partial<Message>): void {
     if (this.panel) {
       this.panel.webview.postMessage(message)
@@ -25,10 +31,14 @@ export class WebviewPlugin extends PluginConnector {
   }
 
   protected connect(url: string): void {
-    const { extensionPath } = this.options.context
-    this.panel = createWebview(extensionPath, this.name, this.options.column)
-    this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg))
-    this.options.context.subscriptions.push(this.panel)
+    if (this.options.context) {
+      const { extensionPath } = this.options.context
+      this.panel = createWebview(this.profile, url, extensionPath, this.options.column)
+      this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg))
+      this.options.context.subscriptions.push(this.panel)
+    } else {
+      throw new Error(`WebviewPlugin "${this.name}" `)
+    }
   }
 
   protected disconnect(): void {
@@ -40,18 +50,75 @@ export class WebviewPlugin extends PluginConnector {
 }
 
 
+/** Create a webview */
+export function createWebview(profile: Profile, url: string, extensionPath: string, column: ViewColumn) {
+  const { protocol, path } = parseUrl(url)
+  const { ext } = parsePath(path)
+  const isRemote = protocol === 'https:' || protocol === 'http:'
+  const baseUrl = isRemote
+    ? ext === '.html' ? parsePath(url).dir  : url
+    : ext === '.html' ? parsePath(path).dir : url
 
-export function createWebview(extensionPath: string, name: string, column: ViewColumn) {
   const panel = window.createWebviewPanel(
-    name,
-    name,
-    column,
+    profile.name,
+    profile.displayName || profile.name,
+    column || window.activeTextEditor?.viewColumn || ViewColumn.One,
     {
       enableScripts: true,
-      localResourceRoots: [Uri.file(join(extensionPath, name))]
+      localResourceRoots: isRemote ? [] : [Uri.file(join(extensionPath, baseUrl))]
     })
 
-  const index = join(extensionPath, name, 'index.html')
+
+  isRemote
+    ? setRemoteHtml(panel.webview, baseUrl)
+    : setLocalHtml(panel.webview, join(extensionPath, baseUrl))
+
+  // TODO: If dev mode update on change
+  // if (devMode) {
+  //   watch(index).on('change', updateWebview)
+  // }
+
+  return panel
+}
+
+/** Fetch remote ressource with http */
+function fetch(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    get(url, res => {
+      let text = ''
+      res.on('data', data => text += data)
+      res.on('end', _ => resolve(text))
+      res.on('error', err => reject(err))
+    })
+  })
+}
+
+
+/** Get code from remote source */
+async function setRemoteHtml(webview: Webview, baseUrl: string) {
+  const matchLinks = /(href|src)="([^"]*)"/g
+  const index = `${baseUrl}/index.html`
+
+
+  // Vscode requires URI format from the extension root to work
+  const toRemoteUrl = (_: any, prefix: 'href' | 'src', link: string) => {
+    // For <base href="#" />
+    if (link === '#') {
+      return `${prefix}="${link}"`
+    }
+    // For scripts & links
+    const path = join(baseUrl, link)
+    return `${prefix}="${path}"`
+  }
+
+  const html = await fetch(index)
+  webview.html = html.replace(matchLinks, toRemoteUrl)
+}
+
+
+/** Get code from local source */
+async function setLocalHtml(webview: Webview, baseUrl: string) {
+  const index = `${baseUrl}/index.html`
 
   // Get all links from "src" & "href"
   const matchLinks = /(href|src)="([^"]*)"/g
@@ -63,21 +130,11 @@ export function createWebview(extensionPath: string, name: string, column: ViewC
       return `${prefix}="${link}"`
     }
     // For scripts & links
-    const path = join(extensionPath, name, link)
+    const path = join(baseUrl, link)
     const uri = Uri.file(path)
-    return `${prefix}="${panel.webview['asWebviewUri'](uri)}"`
+    return `${prefix}="${webview['asWebviewUri'](uri)}"`
   }
 
-  // Refresh the webview on update from the code
-  const updateWebview = async () => {
-    const html = await fs.readFile(index, 'utf-8')
-    panel.webview.html = html.replace(matchLinks, toUri)
-  }
-
-  // TODO: If dev mode update on change
-  // if (devMode) {
-  //   watch(index).on('change', updateWebview)
-  // }
-  updateWebview()
-  return panel
+  const html = await fs.readFile(index, 'utf-8')
+  webview.html = html.replace(matchLinks, toUri)
 }
