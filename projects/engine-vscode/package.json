@@ -1,0 +1,38 @@
+{
+  "name": "@remixproject/engine-vscode",
+  "version": "0.2.0",
+  "description": "Library to build a plugin engine for the web",
+  "contributors": [
+    {
+      "name": "GrandSchtroumpf",
+      "email": "grandschtroumpf@ethereum.org"
+    }
+  ],
+  "dependencies": {
+    "@remixproject/engine": "^0.2.0"
+  },
+  "peerDependencies": {
+    "vscode": "1.1.37"
+  },
+  "keywords": [
+    "Ethereum",
+    "RemixIDE",
+    "Plugin"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.ts",
+  "main": "dist/index.js",
+  "browser": "dist/index.js",
+  "module": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "homepage": "https://github.com/ethereum/remix-plugin#readme"
+}
