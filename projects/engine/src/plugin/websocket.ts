@@ -1,11 +1,11 @@
 import { Message, ExternalProfile, Profile } from '../../../utils'
-import { ExternalPlugin, transformUrl } from './external'
+import { ExternalPlugin, transformUrl, ExternalPluginOptions } from './external'
 
 interface PluginPendingRequest {
   [id: number]: (result: any, error: Error | string) => void
 }
 
-interface WebsocketOptions {
+interface WebsocketOptions extends ExternalPluginOptions {
   /** Time (in ms) to wait before reconnection after connection closed */
   reconnectDelay: number
 }
@@ -20,12 +20,13 @@ export class WebsocketPlugin extends ExternalPlugin {
   private readonly reconnectOnclose: ReconnectListener = ['close', () => this.reconnect(), false]
   protected socket: WebSocket
   protected options: WebsocketOptions = {
+    transformUrl,
     reconnectDelay: 1000
   }
 
   constructor(public profile: WebsocketProfile, options: Partial<WebsocketOptions> = {}) {
     super(profile)
-    this.options = { ...this.options, ...options }
+    this.setOptions(options)
   }
 
   async activate() {
@@ -41,6 +42,10 @@ export class WebsocketPlugin extends ExternalPlugin {
     super.deactivate()
   }
 
+  setOptions(options: Partial<WebsocketOptions> = {}) {
+    super.setOptions(options)
+  }
+
   /** Try to reconnect to net websocket if closes */
   protected reconnect() {
     this.loaded = false
@@ -49,7 +54,7 @@ export class WebsocketPlugin extends ExternalPlugin {
 
   /** Connect to the websocket */
   protected connect() {
-    const url = transformUrl(this.profile.url, this.profile.name)
+    const url = this.options.transformUrl ? this.options.transformUrl(this.profile) : this.profile.url
     this.socket = new WebSocket(url)
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listener)

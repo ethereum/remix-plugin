@@ -1,6 +1,6 @@
 import { ExternalProfile, Profile } from '../../../utils/src/types/profile'
 import { Message } from '../../../utils/src/types/message'
-import { Plugin } from './abstract'
+import { Plugin, PluginOptions } from './abstract'
 
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
@@ -14,11 +14,15 @@ export function transformUrl(url: string, name: string) {
   return network ? defaultGateways[network](url, name) : url
 }
 
+export interface ExternalPluginOptions extends PluginOptions {
+  transformUrl: (profile: Profile & ExternalProfile) => string
+}
 
 export abstract class ExternalPlugin extends Plugin {
   protected loaded: boolean
   protected id = 0
   protected pendingRequest: Record<number, (result: any, error: Error | string) => void> = {}
+  protected options: Partial<ExternalPluginOptions> = { transformUrl }
   profile: Profile & ExternalProfile
   constructor(profile: Profile & ExternalProfile) {
     super(profile)
@@ -29,6 +33,11 @@ export abstract class ExternalPlugin extends Plugin {
   deactivate() {
     this.loaded = false
     super.deactivate()
+  }
+
+  /** Set options for an external plugin */
+  setOptions(options: Partial<ExternalPluginOptions> = {}) {
+    super.setOptions(options)
   }
 
   /** Call a method from this plugin */

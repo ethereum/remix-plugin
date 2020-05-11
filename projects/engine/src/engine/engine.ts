@@ -1,6 +1,6 @@
 import { BasePluginManager } from "../plugin/manager"
-import { Plugin } from '../plugin/abstract'
-import { listenEvent, PluginApi } from "../../../utils"
+import { Plugin, PluginOptions } from '../plugin/abstract'
+import { listenEvent, PluginApi, Profile } from "../../../utils"
 
 export class Engine {
   private plugins: Record<string, Plugin> = {}
@@ -10,6 +10,8 @@ export class Engine {
 
   private managerLoaded: () => void
   onRegistration?(plugin: Plugin): void
+  /** Update the options of the plugin when beeing registered */
+  setPluginOption?(profile: Profile): PluginOptions
 
   constructor(private manager: BasePluginManager) {
     this.plugins['manager'] = manager
@@ -281,7 +283,13 @@ export class Engine {
       }
       this.plugins[plugin.name] = plugin
       this.manager.addProfile(plugin.profile)
-      this.updateErrorHandler(plugin) // Update Error Handling for better debug
+       // Update Error Handling for better debug
+      this.updateErrorHandler(plugin)
+      // SetPluginOption is before onRegistration to let plugin update it's option inside onRegistration
+      if (this.setPluginOption) {
+        const options = this.setPluginOption(plugin.profile)
+        plugin.setOptions(options)
+      }
       if (plugin.onRegistration) plugin.onRegistration()
       if (this.onRegistration) this.onRegistration(plugin)
       return plugin.name
