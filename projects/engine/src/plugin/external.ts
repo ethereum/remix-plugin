@@ -5,7 +5,7 @@ import { Plugin, PluginOptions } from './abstract'
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
   'ipfs://': (url, name) => `https://${name}.dyn.plugin.remixproject.org/ipfs/${url.replace('ipfs://', '')}`,
-  'swarm://': (url, _) => `https://swarm-gateways.net/bzz-raw://${url.replace('swarm://', '')}`
+  'swarm://': (url, name) => `https://swarm-gateways.net/bzz-raw://${url.replace('swarm://', '')}`
 }
 
 /** Transform the URL to use a gateway if decentralised storage is specified */
