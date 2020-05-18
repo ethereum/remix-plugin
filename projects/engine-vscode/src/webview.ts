@@ -1,7 +1,7 @@
 import { PluginConnector, Profile, Message, PluginConnectorOptions, ExternalProfile } from "@remixproject/engine"
 import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
 import { join, parse as parsePath } from 'path'
-import { promises as fs } from 'fs'
+import { promises as fs, watch } from 'fs'
 import { get } from 'https'
 import { parse as parseUrl } from 'url'
 
@@ -9,6 +9,7 @@ interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
   column?: ViewColumn
+  devMode?: boolean
 }
 
 export class WebviewPlugin extends PluginConnector {
@@ -33,7 +34,7 @@ export class WebviewPlugin extends PluginConnector {
   protected connect(url: string): void {
     if (this.options.context) {
       const { extensionPath } = this.options.context
-      this.panel = createWebview(this.profile, url, extensionPath, this.options.column)
+      this.panel = createWebview(this.profile, url, extensionPath, this.options)
       this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg))
       this.options.context.subscriptions.push(this.panel)
     } else {
@@ -51,7 +52,7 @@ export class WebviewPlugin extends PluginConnector {
 
 
 /** Create a webview */
-export function createWebview(profile: Profile, url: string, extensionPath: string, column: ViewColumn) {
+export function createWebview(profile: Profile, url: string, extensionPath: string, options: WebviewOptions) {
   const { protocol, path } = parseUrl(url)
   const { ext } = parsePath(path)
   const isRemote = protocol === 'https:' || protocol === 'http:'
@@ -62,7 +63,7 @@ export function createWebview(profile: Profile, url: string, extensionPath: stri
   const panel = window.createWebviewPanel(
     profile.name,
     profile.displayName || profile.name,
-    column || window.activeTextEditor?.viewColumn || ViewColumn.One,
+    options.column || window.activeTextEditor?.viewColumn || ViewColumn.One,
     {
       enableScripts: true,
       localResourceRoots: isRemote ? [] : [Uri.file(join(extensionPath, baseUrl))]
@@ -73,10 +74,11 @@ export function createWebview(profile: Profile, url: string, extensionPath: stri
     ? setRemoteHtml(panel.webview, baseUrl)
     : setLocalHtml(panel.webview, join(extensionPath, baseUrl))
 
-  // TODO: If dev mode update on change
-  // if (devMode) {
-  //   watch(index).on('change', updateWebview)
-  // }
+  // Devmode
+  if (options.devMode && !isRemote) {
+    const index = join(extensionPath, baseUrl, 'index.html');
+    watch(index).on('change', _ => setLocalHtml(panel.webview, join(extensionPath, baseUrl)))
+  }
 
   return panel
 }
