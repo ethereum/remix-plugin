@@ -1,4 +1,7 @@
-import { PluginConnector, Profile, Message, PluginConnectorOptions, ExternalProfile } from "@remixproject/engine"
+import { PluginConnector, PluginConnectorOptions } from "@remixproject/engine"
+import { Message } from '../../utils/src/types/message'
+import { Profile, ExternalProfile } from '../../utils/src/types/profile'
+
 import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
 import { join, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
@@ -51,7 +54,7 @@ export class WebviewPlugin extends PluginConnector {
 }
 
 function isHttpSource(protocol: string) {
-  return protocol === 'https:' || protocol === 'http:';
+  return protocol === 'https:' || protocol === 'http:'
 }
 
 
@@ -80,7 +83,7 @@ export function createWebview(profile: Profile, url: string, extensionPath: stri
 
   // Devmode
   if (options.devMode && !isRemote) {
-    const index = join(extensionPath, baseUrl, 'index.html');
+    const index = join(extensionPath, baseUrl, 'index.html')
     watch(index).on('change', _ => setLocalHtml(panel.webview, join(extensionPath, baseUrl)))
   }
 
