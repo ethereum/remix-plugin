@@ -32,14 +32,6 @@ export class WebsocketPlugin extends PluginConnector {
     this.getMessage(message)
   }
 
-  /** Open a connection with the server (also used for reconnection) */
-  private open() {
-    this.socket = new WebSocket(this.url)
-    this.socket.addEventListener('open', async () => {
-      this.socket.addEventListener(...this.listeners.message)
-      this.handshake()
-    })
-  }
 
   /** Try to reconnect to net websocket if closes */
   private onclose(e: CloseEvent) {
@@ -48,6 +40,15 @@ export class WebsocketPlugin extends PluginConnector {
     if (e.code !== 1000) {
       setTimeout(() => this.open(), this.options.reconnectDelay)
     }
+  }
+
+  /** Open a connection with the server (also used for reconnection) */
+  protected open() {
+    this.socket = new WebSocket(this.url)
+    this.socket.addEventListener('open', async () => {
+      this.socket.addEventListener(...this.listeners.message)
+      this.handshake()
+    })
   }
 
   protected send(message: Partial<Message>) {

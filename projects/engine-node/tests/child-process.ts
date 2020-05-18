@@ -1,7 +1,6 @@
-import { ChildProcessPlugin } from "../../src/plugin/child-process"
-import { PluginManager } from "../../src/plugin/manager"
-import { Engine } from "../../src/engine/engine"
-import { pluginManagerProfile } from "../../../utils"
+import { ChildProcessPlugin } from "../src/child-process"
+import { PluginManager, Engine } from "../../engine"
+import { pluginManagerProfile } from "../../utils"
 import { fork } from 'child_process'
 
 
@@ -81,7 +80,7 @@ describe('ChildProcess plugin', () => {
     try {
       await plugin.activate();
       (plugin.process as any).connected = false
-      plugin['postMessage']({ name: 'child-process' })
+      plugin['send']({ name: 'child-process' })
     } catch (err) {
       expect(err.message).toBe('Child process from plugin "child-process" is not yet connected')
     }
@@ -90,12 +89,12 @@ describe('ChildProcess plugin', () => {
   test('Post Message', async () => {
     await plugin.activate();
     (plugin.process as any).connected = true
-    plugin['postMessage']({ name: 'child-process' })
+    plugin['send']({ name: 'child-process' })
     expect(plugin.process.send).toHaveBeenCalledWith({ name: 'child-process' })
   })
 
   test('Call Plugin Method', (done) => {
-    const spy = spyOn(plugin, 'postMessage' as any)
+    const spy = spyOn(plugin, 'send' as any)
     const call = plugin['callPluginMethod']('key', ['payload'])
     const msg = { id: 0, action: 'request', key: 'key', payload: ['payload'], name: 'child-process', requestInfo: undefined }
     expect(spy).toHaveBeenCalledWith(msg)
