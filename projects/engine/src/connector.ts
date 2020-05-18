@@ -47,6 +47,7 @@ export abstract class PluginConnector extends Plugin {
       ? this.options.transformUrl(this.profile)
       : transformUrl(this.profile)
     this.connect(url)
+    super.activate()
   }
 
   deactivate() {

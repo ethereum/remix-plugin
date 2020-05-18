@@ -15,6 +15,7 @@ class MockManager extends PluginManager {
 }
 
 class MockHost extends HostPlugin {
+  currentFocus = jest.fn()
   isFocus = jest.fn() // (name: string) =>
   focus = jest.fn() // (name: string) =>
   addView = jest.fn() // (profile: Profile) =>

@@ -1,7 +1,6 @@
-import { WebsocketPlugin } from "../../src/plugin/websocket"
-import { PluginManager } from "../../src/plugin/manager"
-import { Engine } from "../../src/engine/engine"
-import { pluginManagerProfile } from "../../../utils"
+import { WebsocketPlugin } from '../src/ws'
+import { PluginManager, Engine } from '../../engine'
+import { pluginManagerProfile } from "../../utils"
 
 const profile = {
   name: 'websocket',
@@ -24,7 +23,7 @@ class MockSocket extends WebsocketPlugin {
     close: jest.fn(),
     send: jest.fn()
   } as any
-  connect = jest.fn()
+  open = jest.fn()
   constructor() {
     super(profile)
   }
@@ -52,14 +51,14 @@ describe('Websocket plugin', () => {
   test('Activation', async () => {
     await plugin.activate()
     expect(plugin.onActivation).toHaveBeenCalled()
-    expect(plugin.connect).toHaveBeenCalled()
+    expect(plugin.open).toHaveBeenCalled()
     expect(plugin.socket.addEventListener).toHaveBeenCalled() // reconnectOnclose
   })
 
-  test('Reconnect', (done) => {
-    plugin['reconnect']()
+  test('Reconnect on abnormal closing', (done) => {
+    plugin['onclose']({ code: 0 } as any)
     setTimeout(() => {
-      expect(plugin.connect).toHaveBeenCalled()
+      expect(plugin.open).toHaveBeenCalled()
       done()
     }, 1500)
   })
@@ -70,7 +69,7 @@ describe('Websocket plugin', () => {
     expect(plugin.socket.removeEventListener).toHaveBeenCalledTimes(2) // reconnectOnclose & listener
     expect(plugin.socket.close).toHaveBeenCalled()
     setTimeout(() => {
-      expect(plugin.connect).not.toHaveBeenCalled() // Remove listener should block reconnection attempt
+      expect(plugin.open).not.toHaveBeenCalled() // Remove listener should block reconnection attempt
       done()
     }, 1500)
   })
@@ -79,7 +78,7 @@ describe('Websocket plugin', () => {
     try {
       plugin.socket.readyState = true
       plugin.socket.OPEN = false
-      plugin['postMessage']({ name: 'socket' })
+      plugin['send']({ name: 'socket' })
     } catch (err) {
       expect(err.message).toBe('Websocket connection is not open yet')
     }
@@ -88,12 +87,12 @@ describe('Websocket plugin', () => {
   test('Post Message', () => {
     plugin.socket.readyState = true
     plugin.socket.OPEN = true
-    plugin['postMessage']({ name: 'socket' })
+    plugin['send']({ name: 'socket' })
     expect(plugin.socket.send).toHaveBeenCalledWith(JSON.stringify({ name: 'socket' }))
   })
 
   test('Call Plugin Method', (done) => {
-    const spy = spyOn(plugin, 'postMessage' as any)
+    const spy = spyOn(plugin, 'send' as any)
     const call = plugin['callPluginMethod']('key', ['payload'])
     const msg = { id: 0, action: 'request', key: 'key', payload: ['payload'], name: 'websocket', requestInfo: undefined }
     expect(spy).toHaveBeenCalledWith(msg)
