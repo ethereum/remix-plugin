@@ -80,6 +80,7 @@ const engineVscodeConnectors = {
   ...config('engine-vscode'),
   externals: {
     '@remixproject/engine': 'commonjs2 @remixproject/engine',
+    'vscode': 'commonjs2 vscode'
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-vscode/dist'),

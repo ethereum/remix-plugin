@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'engine-web',
+  name: 'engine-vscode',
   preset: '../../jest.config.js',
-  coverageDirectory: '../../coverage/engine-web'
+  coverageDirectory: '../../coverage/engine-vscode'
 };
