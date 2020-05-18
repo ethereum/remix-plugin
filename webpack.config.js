@@ -75,7 +75,21 @@ const engineNodeConnectors = {
   target: 'node'
 }
 
-const engines = [nodeEngine, webEngine, engineWebConnectors, engineNodeConnectors]
+// Server Engine
+const engineVscodeConnectors = {
+  ...config('engine-vscode'),
+  externals: {
+    '@remixproject/engine': 'commonjs2 @remixproject/engine',
+  },
+  output: {
+    path: path.resolve(__dirname, 'projects/engine-vscode/dist'),
+    filename: 'index.js',
+    libraryTarget: 'umd',
+  },
+  target: 'node'
+}
+
+const engines = [nodeEngine, webEngine, engineWebConnectors, engineNodeConnectors, engineVscodeConnectors]
 
 
 // CLIENT
