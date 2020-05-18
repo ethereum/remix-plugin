@@ -77,11 +77,14 @@ export abstract class PluginConnector extends Plugin {
   protected async handshake() {
     if (!this.loaded) {
       const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
-      this.call('manager', 'updateProfile', this.profile)
-      this.loaded = true
       if (methods) {
         this.profile.methods = methods
       }
+      this.call('manager', 'updateProfile', this.profile)
+      this.loaded = true
+    } else {
+      // If there is a broken connection we want send back the handshake to the plugin client
+      return this.callPluginMethod('handshake', [this.profile.name])
     }
   }
 
@@ -92,7 +95,6 @@ export abstract class PluginConnector extends Plugin {
   protected async getMessage(message: Message) {
     // Check for handshake request from the client
     if (message.action === 'request' && message.key === 'handshake') {
-      // Handshake if not loaded yet. We don't need to return message to client
       return this.handshake()
     }
 
