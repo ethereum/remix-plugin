@@ -50,12 +50,16 @@ export class WebviewPlugin extends PluginConnector {
 
 }
 
+function isHttpSource(protocol: string) {
+  return protocol === 'https:' || protocol === 'http:';
+}
+
 
 /** Create a webview */
 export function createWebview(profile: Profile, url: string, extensionPath: string, options: WebviewOptions) {
   const { protocol, path } = parseUrl(url)
   const { ext } = parsePath(path)
-  const isRemote = protocol === 'https:' || protocol === 'http:'
+  const isRemote = isHttpSource(protocol)
   const baseUrl = isRemote
     ? ext === '.html' ? parsePath(url).dir  : url
     : ext === '.html' ? parsePath(path).dir : url
@@ -104,8 +108,9 @@ async function setRemoteHtml(webview: Webview, baseUrl: string) {
 
   // Vscode requires URI format from the extension root to work
   const toRemoteUrl = (_: any, prefix: 'href' | 'src', link: string) => {
-    // For <base href="#" />
-    if (link === '#') {
+    // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
+    const isRemote = isHttpSource(parseUrl(link).protocol)
+    if (link === '#' || isRemote) {
       return `${prefix}="${link}"`
     }
     // For scripts & links
@@ -127,8 +132,9 @@ async function setLocalHtml(webview: Webview, baseUrl: string) {
 
   // Vscode requires URI format from the extension root to work
   const toUri = (_: any, prefix: 'href' | 'src', link: string) => {
-    // For <base href="#" />
-    if (link === '#') {
+    // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
+    const isRemote = isHttpSource(parseUrl(link).protocol)
+    if (link === '#' || isRemote) {
       return `${prefix}="${link}"`
     }
     // For scripts & links
