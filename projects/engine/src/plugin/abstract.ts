@@ -68,7 +68,11 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   protected callPluginMethod(key: string, args: any[]) {
     const path = this.currentRequest && this.currentRequest.path
     const method = getMethodPath(key, path)
-    if (!(method in this)) {
+    const redirect = this.profile.redirect
+
+    if (redirect && (method in redirect) && (redirect[method] in this)) {
+      return this[redirect[method]](...args)
+    } else if (!(method in this)) {
       throw new Error(`Method ${method} is not implemented by ${this.profile.name}`)
     }
     return this[method](...args)
