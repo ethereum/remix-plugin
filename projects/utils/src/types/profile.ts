@@ -6,6 +6,9 @@ export interface Profile<T extends Api = any> {
   methods?: MethodKey<T>[]
   permission?: boolean
   hash?: string
+  redirect?: {
+    [key: string]: string
+  }
 }
 
 export interface LocationProfile {

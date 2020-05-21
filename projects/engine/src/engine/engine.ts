@@ -140,13 +140,18 @@ export class Engine {
     }
 
     // Check if method is exposed
-    if (!to.methods.includes(method)) {
+    const request = { from: caller, path }
+
+    if (to.redirect) {
+      const redirectMethods = Object.keys(to.redirect)
+
+      if (redirectMethods.includes(method)) return this.plugins[target]['addRequest'](request, to.redirect[method], payload)
+    } else if (!to.methods.includes(method)) {
       const notExposedMsg = `Cannot call method "${method}" of "${target}" from "${caller}", because "${method}" is not exposed.`
       const exposedMethodsMsg = `Here is the list of exposed methods: ${to.methods.map(m => `"${m}"`).join(',')}`
       throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
     }
 
-    const request = { from: caller, path }
     return this.plugins[target]['addRequest'](request, method, payload)
   }
 
