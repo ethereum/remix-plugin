@@ -9,6 +9,9 @@ interface CommandOptions extends PluginOptions {
 }
 
 // WIP
+/**
+ * Connect methods of the plugins with a command depending on the transformCmd function pass as option
+ */
 export class CommandPlugin extends Plugin {
   subscriptions: Disposable[] = []
   options: CommandOptions
