@@ -15,6 +15,8 @@ export function transformUrl({ url, name }: Profile & ExternalProfile) {
 }
 
 export interface PluginConnectorOptions extends PluginOptions {
+  /** Usally used to reload the plugin on changes */
+  devMode?: boolean
   transformUrl?: (profile: Profile & ExternalProfile) => string
 }
 
