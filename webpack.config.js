@@ -23,7 +23,10 @@ function config(project) {
   }
 }
 
-// ENGINE
+////////////
+// ENGINE //
+////////////
+
 // node target for engine
 const nodeEngine = {
   ...config('engine'),
@@ -92,8 +95,10 @@ const engineVscodeConnectors = {
 
 const engines = [nodeEngine, webEngine, engineWebConnectors, engineNodeConnectors, engineVscodeConnectors]
 
+////////////
+// CLIENT //
+////////////
 
-// CLIENT
 const webClient = {
   ...config('client'),
   output: {
@@ -136,6 +141,17 @@ const iframeClient = {
   }
 }
 
+// VSCODE
+const vscodeClient = {
+  ...config('client-vscode'),
+  output: {
+    path: path.resolve(__dirname, 'projects/client-vscode/dist'),
+    filename: 'index.js',
+    library: 'vscodePlugin',
+    libraryTarget: 'umd',
+  }
+}
+
 // Child Process client
 const childProcessClient = {
   ...config('client-child-process'),
@@ -147,6 +163,6 @@ const childProcessClient = {
   target: 'node'
 }
 
-const clients = [webClient, nodeClient, wsClient, iframeClient, childProcessClient]
+const clients = [webClient, nodeClient, wsClient, iframeClient, vscodeClient, childProcessClient]
 
 module.exports = [...engines, ...clients]
