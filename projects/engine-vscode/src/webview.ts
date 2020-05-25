@@ -1,9 +1,6 @@
-import { PluginConnector, PluginConnectorOptions } from "@remixproject/engine"
-import { Message } from '../../utils/src/types/message'
-import { Profile, ExternalProfile } from '../../utils/src/types/profile'
-
+import { Profile, ExternalProfile, Message, PluginConnector, PluginConnectorOptions} from '@remixproject/engine'
 import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
-import { join, parse as parsePath } from 'path'
+import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
 import { get } from 'https'
 import { parse as parseUrl } from 'url'
@@ -11,8 +8,8 @@ import { parse as parseUrl } from 'url'
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
-  /** The location of the plugin in the vscode window */
   column?: ViewColumn
+  devMode?: boolean
 }
 
 export class WebviewPlugin extends PluginConnector {
@@ -24,7 +21,7 @@ export class WebviewPlugin extends PluginConnector {
     this.options = options
   }
 
-  setOptions(options: WebviewOptions) {
+  setOptions(options: Partial<WebviewOptions>) {
     super.setOptions(options)
   }
 
@@ -61,11 +58,24 @@ function isHttpSource(protocol: string) {
 /** Create a webview */
 export function createWebview(profile: Profile, url: string, extensionPath: string, options: WebviewOptions) {
   const { protocol, path } = parseUrl(url)
-  const { ext } = parsePath(path)
   const isRemote = isHttpSource(protocol)
-  const baseUrl = isRemote
-    ? ext === '.html' ? parsePath(url).dir  : url
-    : ext === '.html' ? parsePath(path).dir : url
+
+  if (isRemote) {
+    return remoteHtml(url, profile, options)
+  } else {
+    // If url is relative, make it asbolute based on the extension path
+    const fullPath = isAbsolute(path) ? path : join(extensionPath, path)
+    return localHtml(fullPath, profile, options)
+  }
+}
+
+///////////////
+// LOCAL URL //
+///////////////
+/** Create panel webview based on local HTML source */
+function localHtml(url: string, profile: Profile, options: WebviewOptions) {
+  const { ext } = parsePath(url)
+  const baseUrl = ext === '.html' ? parsePath(url).dir : url
 
   const panel = window.createWebviewPanel(
     profile.name,
@@ -73,22 +83,64 @@ export function createWebview(profile: Profile, url: string, extensionPath: stri
     options.column || window.activeTextEditor?.viewColumn || ViewColumn.One,
     {
       enableScripts: true,
-      localResourceRoots: isRemote ? [] : [Uri.file(join(extensionPath, baseUrl))]
-    })
-
-
-  isRemote
-    ? setRemoteHtml(panel.webview, baseUrl)
-    : setLocalHtml(panel.webview, join(extensionPath, baseUrl))
+      localResourceRoots: [Uri.file(baseUrl)]
+    }
+  )
+  setLocalHtml(panel.webview, baseUrl)
 
   // Devmode
-  if (options.devMode && !isRemote) {
-    const index = join(extensionPath, baseUrl, 'index.html')
-    watch(index).on('change', _ => setLocalHtml(panel.webview, join(extensionPath, baseUrl)))
+  if (options.devMode) {
+    const index = join(baseUrl, 'index.html')
+    watch(index).on('change', _ => setLocalHtml(panel.webview, baseUrl))
   }
-
   return panel
 }
+
+/** Get code from local source */
+async function setLocalHtml(webview: Webview, baseUrl: string) {
+  const index = `${baseUrl}/index.html`
+
+  // Get all links from "src" & "href"
+  const matchLinks = /(href|src)="([^"]*)"/g
+
+  // Vscode requires URI format from the extension root to work
+  const toUri = (original: any, prefix: 'href' | 'src', link: string) => {
+    // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
+    const isRemote = isHttpSource(parseUrl(link).protocol)
+    if (link === '#' || isRemote) {
+      return original
+    }
+    // For scripts & links
+    const path = join(baseUrl, link)
+    const uri = Uri.file(path)
+    return `${prefix}="${webview['asWebviewUri'](uri)}"`
+  }
+
+  const html = await fs.readFile(index, 'utf-8')
+  webview.html = html.replace(matchLinks, toUri)
+}
+
+
+
+
+////////////////
+// REMOTE URL //
+////////////////
+/** Create panel webview based on remote HTML source */
+function remoteHtml(url: string, profile: Profile, options: WebviewOptions) {
+  const { ext } = parsePath(url)
+  const baseUrl = ext === '.html' ? parsePath(url).dir : url
+  const panel = window.createWebviewPanel(
+    profile.name,
+    profile.displayName || profile.name,
+    options.column || window.activeTextEditor?.viewColumn || ViewColumn.One,
+    { enableScripts: true }
+  )
+  setRemoteHtml(panel.webview, baseUrl)
+  return panel
+}
+
+
 
 /** Fetch remote ressource with http */
 function fetch(url: string): Promise<string> {
@@ -110,11 +162,11 @@ async function setRemoteHtml(webview: Webview, baseUrl: string) {
 
 
   // Vscode requires URI format from the extension root to work
-  const toRemoteUrl = (_: any, prefix: 'href' | 'src', link: string) => {
+  const toRemoteUrl = (original: any, prefix: 'href' | 'src', link: string) => {
     // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
     const isRemote = isHttpSource(parseUrl(link).protocol)
     if (link === '#' || isRemote) {
-      return `${prefix}="${link}"`
+      return original
     }
     // For scripts & links
     const path = join(baseUrl, link)
@@ -123,29 +175,4 @@ async function setRemoteHtml(webview: Webview, baseUrl: string) {
 
   const html = await fetch(index)
   webview.html = html.replace(matchLinks, toRemoteUrl)
-}
-
-
-/** Get code from local source */
-async function setLocalHtml(webview: Webview, baseUrl: string) {
-  const index = `${baseUrl}/index.html`
-
-  // Get all links from "src" & "href"
-  const matchLinks = /(href|src)="([^"]*)"/g
-
-  // Vscode requires URI format from the extension root to work
-  const toUri = (_: any, prefix: 'href' | 'src', link: string) => {
-    // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
-    const isRemote = isHttpSource(parseUrl(link).protocol)
-    if (link === '#' || isRemote) {
-      return `${prefix}="${link}"`
-    }
-    // For scripts & links
-    const path = join(baseUrl, link)
-    const uri = Uri.file(path)
-    return `${prefix}="${webview['asWebviewUri'](uri)}"`
-  }
-
-  const html = await fs.readFile(index, 'utf-8')
-  webview.html = html.replace(matchLinks, toUri)
 }
