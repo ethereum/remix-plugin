@@ -11,8 +11,8 @@ import { parse as parseUrl } from 'url'
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
+  /** The location of the plugin in the vscode window */
   column?: ViewColumn
-  devMode?: boolean
 }
 
 export class WebviewPlugin extends PluginConnector {
