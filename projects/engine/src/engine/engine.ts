@@ -58,7 +58,7 @@ export class Engine {
       }
       this.events[listener][eventName](...payload)
     })
-    // Add even memory
+    // Add event memory
     this.eventMemory[emitter]
       ? this.eventMemory[emitter][event] = payload
       : this.eventMemory[emitter] = { [event]: payload }
