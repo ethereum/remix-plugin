@@ -6,6 +6,7 @@ export class Engine {
   private plugins: Record<string, Plugin> = {}
   private events: Record<string, any> = {}
   private listeners: Record<string, any> = {}
+  private eventMemory: Record<string, any> = {}
   private isLoaded = false
 
   private managerLoaded: () => void
@@ -57,6 +58,10 @@ export class Engine {
       }
       this.events[listener][eventName](...payload)
     })
+    // Add even memory
+    this.eventMemory[emitter]
+      ? this.eventMemory[emitter][event] = payload
+      : this.eventMemory[emitter] = { [event]: payload }
   }
 
   /**
@@ -77,6 +82,10 @@ export class Engine {
     // If not already recorded
     if (!this.listeners[eventName].includes(listener)) {
       this.listeners[eventName].push(listener)
+    }
+    // If engine has memory of this event emit previous value
+    if (emitter in this.eventMemory && event in this.eventMemory[emitter]) {
+      cb(...this.eventMemory[emitter][event])
     }
   }
 
@@ -236,6 +245,9 @@ export class Engine {
     // Note : We don't remove the listeners of this plugin.
     // Because we would keep track of them to reactivate them on reactivation. Which doesn't make sense
     delete this.events[name]
+
+    // Remove event memory from this plugin
+    delete this.eventMemory[name]
 
     // REMOVE EVENT RECORD
     Object.keys(this.listeners).forEach(eventName => {
