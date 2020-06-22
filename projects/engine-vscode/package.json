@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-vscode",
-  "version": "0.3.0-alpha.1",
+  "version": "0.3.0-alpha.3",
   "description": "Library to build a plugin engine for the web",
   "contributors": [
     {
@@ -8,10 +8,8 @@
       "email": "grandschtroumpf@ethereum.org"
     }
   ],
-  "dependencies": {
-    "@remixproject/engine": "^0.2.0"
-  },
   "peerDependencies": {
+    "@remixproject/engine": "^0.3.0-alpha.7",
     "vscode": "1.1.37"
   },
   "keywords": [
