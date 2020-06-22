@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "baseUrl": ".",
-    "sourceMap": false,
+    "sourceMap": true,
     "declaration": true,
     "noImplicitAny": false,
     "target": "es5",
@@ -21,7 +21,7 @@
       "@remixproject/engine-web/*": ["./projects/engine-web/src/*"],
       "@remixproject/engine-node": ["./projects/engine-node/dist"],
       "@remixproject/engine-node/*": ["./projects/engine-node/src/*"],
-      "@remixproject/plugin": ["./projects/client/dist"],
+      "@remixproject/plugin": ["./projects/client/dist", "./projects/client"],
       "@remixproject/plugin/*": ["./projects/client/src/*"],
       "@remixproject/plugin-ws": ["./projects/client-ws"],
       "@remixproject/plugin-iframe": ["./projects/client-iframe"],
@@ -31,5 +31,5 @@
       "@examples/*": ["./examples/*"]
     }
   },
-  "exclude": ["node_modules", "old"]
+  "exclude": ["node_modules"]
 }
