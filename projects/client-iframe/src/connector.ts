@@ -1,9 +1,17 @@
-import { ClientConnector, isHandshake, connectClient, applyApi, Client } from '@remixproject/plugin/connector'
-import { PluginClient, PluginOptions } from '@remixproject/plugin/client'
-import { Message } from '../../utils/src/types/message'
-import { RemixApi } from '../../utils/src/api/remix-profile'
-import { Api, ApiMap } from '../../utils/src/types/api'
-import { checkOrigin } from './origin'
+import {
+  RemixApi,
+  ClientConnector,
+  connectClient,
+  applyApi,
+  Client,
+  PluginClient,
+  Message,
+  Api,
+  ApiMap,
+  isHandshake,
+  PluginOptions,
+  checkOrigin
+} from '@remixproject/plugin'
 import { listenOnThemeChanged } from './theme'
 
 

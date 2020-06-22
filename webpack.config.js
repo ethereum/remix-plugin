@@ -133,6 +133,9 @@ const wsClient = {
 // Iframe client
 const iframeClient = {
   ...config('client-iframe'),
+  externals: {
+    '@remixproject/plugin': 'commonjs2 @remixproject/plugin',
+  },
   output: {
     path: path.resolve(__dirname, 'projects/client-iframe/dist'),
     filename: 'index.js',
@@ -144,6 +147,9 @@ const iframeClient = {
 // VSCODE
 const vscodeClient = {
   ...config('client-vscode'),
+  externals: {
+    '@remixproject/plugin': 'commonjs2 @remixproject/plugin',
+  },
   output: {
     path: path.resolve(__dirname, 'projects/client-vscode/dist'),
     filename: 'index.js',
