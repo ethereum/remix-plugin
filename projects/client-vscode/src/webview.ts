@@ -1,51 +1,76 @@
-import { ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin/connector'
-import { PluginClient } from '@remixproject/plugin/client'
-import { Message } from '../../utils/src/types/message'
-import { Api, ApiMap } from '../../utils/src/types/api'
-
+import {
+  ClientConnector,
+  connectClient,
+  applyApi,
+  Client,
+  PluginClient,
+  Message,
+  Api,
+  ApiMap,
+  isHandshake,
+  PluginOptions,
+  checkOrigin
+} from '@remixproject/plugin'
 
 declare const acquireVsCodeApi: any
-
 /**
  * This Webview connector
  */
 export class WebviewConnector implements ClientConnector {
-  postMessage: (message: any) => void
-  constructor() {
-    // Get the acquireVsCodeApi injected by vscode
-    if (acquireVsCodeApi) {
-      this.postMessage = acquireVsCodeApi().postMessage
-    }
+  source: { postMessage: (message: any, origin?: string) => void }
+  origin: string
+  isVscode: boolean
+
+  constructor(private options: PluginOptions<any>) {
+    this.isVscode = !!acquireVsCodeApi
+    this.source = this.isVscode ? acquireVsCodeApi() : window.parent
   }
+
 
   /** Send a message to the engine */
   send(message: Partial<Message>) {
-    this.postMessage(message)
+    if (this.isVscode) {
+      this.source.postMessage(message)
+    } else if (this.origin || isHandshake(message)) {
+      const origin = this.origin || '*'
+      this.source.postMessage(message, origin)
+    }
   }
 
-  /** Get message from the engine */
+  /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
-    if (!window) {
-      return
-    }
-    window.addEventListener('message', (event: MessageEvent) => {
+    window.addEventListener('message', async (event: MessageEvent) => {
       if (!event.source) throw new Error('No source')
       if (!event.data) throw new Error('No data')
+      // Support for iframe
+      if (!this.isVscode) {
+        // Check that the origin is the right one
+        const devMode = this.options.devMode
+        const isGoodOrigin = await checkOrigin(event.origin, devMode)
+        if (!isGoodOrigin) return
+        if (isHandshake(event.data)) {
+          this.origin = event.origin
+          this.source = event.source as Window
+        }
+      }
       cb(event.data)
+
     }, false)
   }
 }
 
 /**
- * Connect a Webview plugin client to a vscode engine
- * @param client An optional Webview plugin client to connect to the engine.
+ * Connect a Webview plugin client to a web engine
+ * @param client An optional websocket plugin client to connect to the engine.
  */
 export const createWebviewClient = <
   P extends Api,
   App extends ApiMap
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
-  connectClient(new WebviewConnector(), client)
-  applyApi(client)
+  const c = client as any
+  const options = client.options
+  const connector = new WebviewConnector(options)
+  connectClient(connector, c)
+  applyApi(c)
   return client as any
 }
-

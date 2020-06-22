@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-vscode",
-  "version": "0.3.0-alpha.1",
+  "version": "0.3.0-alpha.3",
   "description": "Library to build Plugin over vscode's webview.",
   "contributors": [
     {
@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "@remixproject/plugin": "0.3.0-alpha.1"
+    "@remixproject/plugin": "0.3.0-alpha.4"
   },
   "keywords": [
     "Ethereum",
