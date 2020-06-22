@@ -3,4 +3,5 @@ export * from './src/client'
 export * from './src/node'
 export * from './src/connector'
 export * from './src/origin'
-export * from './../utils/src/external-api'
+
+export * from './../utils'

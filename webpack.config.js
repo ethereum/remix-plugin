@@ -54,7 +54,7 @@ const webEngine = {
 const engineWebConnectors = {
   ...config('engine-web'),
   externals: {
-    '@remixproject/engine': 'commonjs2 @remixproject/engine',
+    '@remixproject/engine': 'commonjs @remixproject/engine',
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-web/dist'),
@@ -68,7 +68,7 @@ const engineWebConnectors = {
 const engineNodeConnectors = {
   ...config('engine-node'),
   externals: {
-    '@remixproject/engine': 'commonjs2 @remixproject/engine',
+    '@remixproject/engine': 'commonjs @remixproject/engine',
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-node/dist'),
@@ -82,8 +82,8 @@ const engineNodeConnectors = {
 const engineVscodeConnectors = {
   ...config('engine-vscode'),
   externals: {
-    '@remixproject/engine': 'commonjs2 @remixproject/engine',
-    'vscode': 'commonjs2 vscode'
+    '@remixproject/engine': 'commonjs @remixproject/engine',
+    'vscode': 'commonjs vscode'
   },
   output: {
     path: path.resolve(__dirname, 'projects/engine-vscode/dist'),
@@ -134,7 +134,7 @@ const wsClient = {
 const iframeClient = {
   ...config('client-iframe'),
   externals: {
-    '@remixproject/plugin': 'commonjs2 @remixproject/plugin',
+    '@remixproject/plugin': 'commonjs @remixproject/plugin',
   },
   output: {
     path: path.resolve(__dirname, 'projects/client-iframe/dist'),
@@ -148,7 +148,7 @@ const iframeClient = {
 const vscodeClient = {
   ...config('client-vscode'),
   externals: {
-    '@remixproject/plugin': 'commonjs2 @remixproject/plugin',
+    '@remixproject/plugin': 'commonjs @remixproject/plugin',
   },
   output: {
     path: path.resolve(__dirname, 'projects/client-vscode/dist'),
