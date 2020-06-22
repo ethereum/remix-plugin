@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist"
   },
-  "includes": ["./index.ts"],
+  "files": ["./index.ts"],
   "exclude": ["dist", "tests"]
 }

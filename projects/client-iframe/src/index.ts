@@ -1,3 +1,2 @@
-export * from './iframe'
+export * from './connector'
 export * from './theme'
-export * from './origin'
