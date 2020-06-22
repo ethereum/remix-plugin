@@ -79,5 +79,5 @@ export const createIframeClient = <
   if (!options.customTheme) {
     listenOnThemeChanged(c)
   }
-  return c
+  return c as Client<P, App>
 }
