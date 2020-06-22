@@ -1,5 +1,5 @@
 import { PluginClient } from '../../client'
-import { connectIframe, buildIframeClient } from '../src/iframe'
+import { createIframeClient } from '../src/connector'
 import { listenEvent, callEvent } from '../../utils'
 
 declare const global  // Needed to mock fetch
@@ -16,7 +16,8 @@ function createEvent(data, postMessage?) {
 
 const baseMsg = { name: 'name', key: 'key', id: 1 }
 
-describe('Iframe', () => {
+// This test is deprecated but is kept as an inspiration model for future tests
+describe.skip('Iframe', () => {
   let sendMessage: (event) => void
   let client: PluginClient
 
@@ -34,7 +35,7 @@ describe('Iframe', () => {
     global.fetch = jest.fn().mockImplementation(() => mockFetchPromise)
     window.addEventListener = (event, cb) => sendMessage = cb
     client = new PluginClient()
-    connectIframe(client)
+    createIframeClient(client)
   })
 
   test('Return error to parent if not loaded', (done) => {
@@ -153,7 +154,7 @@ describe('Iframe', () => {
   // Create Iframe
   test('Build an Iframe Plugin from extended PluginClient', () => {
     class Client extends PluginClient {}
-    const iframeClient = buildIframeClient(new Client())
+    const iframeClient = createIframeClient(new Client())
     expect(iframeClient['fileManager']).toBeDefined()
     expect(iframeClient['network']).toBeDefined()
     expect(iframeClient['solidity']).toBeDefined()
