@@ -61,7 +61,7 @@ export function connectWS(socket: WS, client: PluginClient) {
         }
       }
     } catch (err) {
-      const message = { action, name, key, id, error: err.message }
+      const message = { action: action === 'request' ? 'response' : action, name, key, id, error: err.message || err }
       socket.send(JSON.stringify(message))
     }
   }
