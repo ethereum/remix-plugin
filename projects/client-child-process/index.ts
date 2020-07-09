@@ -50,7 +50,7 @@ export function connectChildProcess(client: PluginClient) {
         }
       }
     } catch (err) {
-      const message = { action, name, key, id, error: err.message }
+      const message = { action: action === 'request' ? 'response' : action, name, key, id, error: err.message || err }
       process.send(message)
     }
   }

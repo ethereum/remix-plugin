@@ -103,7 +103,7 @@ describe('Iframe', () => {
     const msg = { ...baseMsg, action: 'request' }
     const event = createEvent(msg, (result) => {
       expect(result).toEqual({
-        ...msg,
+        ...msg, action: 'response',
         error: `Method ${msg.key} doesn't exist on plugin ${msg.name}`
       })
       done()

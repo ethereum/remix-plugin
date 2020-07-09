@@ -67,7 +67,7 @@ export function connectIframe(client: PluginClient) {
         }
       }
     } catch (err) {
-      const message = { action, name, key, id, error: err.message };
+      const message = { action: action === 'request' ? 'response' : action, name, key, id, error: err.message || err };
       (event.source as Window).postMessage(message, event.origin)
     }
   }
