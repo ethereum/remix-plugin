@@ -100,7 +100,7 @@ export abstract class ExternalPlugin extends Plugin {
       case 'emit':
       case 'notification': {
         if (!message.payload) break
-        this.emit(message.key, ...message.payload)
+        this.emit(message.key, ...(message.payload || []))
         break
       }
       // Call a method
@@ -108,12 +108,12 @@ export abstract class ExternalPlugin extends Plugin {
       case 'request': {
         const action = 'response'
         try {
-          const payload = await this.call(message.name, message.key, ...message.payload)
+          const payload = await this.call(message.name, message.key, ...(message.payload || []))
           const error = undefined
           this.postMessage({ ...message, action, payload, error })
         } catch (err) {
           const payload = undefined
-          const error = err.message
+          const error = err.message || err
           this.postMessage({ ...message, action, payload, error })
         }
         break

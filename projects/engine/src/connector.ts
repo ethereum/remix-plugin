@@ -138,7 +138,7 @@ export abstract class PluginConnector extends Plugin {
           this.send({ ...message, action, payload, error })
         } catch (err) {
           const payload = undefined
-          const error = err.message
+          const error = err.message || err
           this.send({ ...message, action, payload, error })
         }
         break
