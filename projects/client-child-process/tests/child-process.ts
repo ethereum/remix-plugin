@@ -102,7 +102,7 @@ describe('Child Process Client', () => {
   test('Request method from parent failed', async () => {
     const msg: Partial<Message> = { ...baseMsg, action: 'request' }
     await getMsgFromIDE(msg)
-    expect(sendResponse(2)).toEqual({ ...msg, error: `Method ${msg.key} doesn't exist on plugin ${msg.name}` })
+    expect(sendResponse(2)).toEqual({ ...msg, action: 'response', error: `Method ${msg.key} doesn't exist on plugin ${msg.name}` })
   })
 
   // Request Info with one level path -> no change
