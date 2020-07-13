@@ -1,5 +1,5 @@
 {
-  "npmScope": "remix-plugin",
+  "npmScope": "remixproject",
   "affected": {
     "defaultBase": "master"
   },
@@ -21,7 +21,26 @@
       }
     }
   },
-  "projects": {},
+  "projects": {
+    "utils-types": {
+      "tags": ["utils"]
+    },
+    "utils-api": {
+      "tags": ["utils"]
+    },
+    "utils-tools": {
+      "tags": ["utils"]
+    },
+    "engine-core": {
+      "tags": ["engine"]
+    },
+    "engine-node": {
+      "tags": ["engine"]
+    },
+    "engine-web": {
+      "tags": ["engine"]
+    }
+  },
   "workspaceLayout": {
     "appsDir": "packages",
     "libsDir": "packages"
