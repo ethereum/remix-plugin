@@ -161,7 +161,9 @@ Here you can add :
 > Note: No need to do anything if you localhost auto-reload, a new `handshake` will be send by the IDE.
 
 ### Publish your plugin on Remix IDE
-To publish on Remix IDE, uou need to create a `Profile` for you plugin with the following field : 
+To publish on Remix IDE, you need to create a `Profile` with the following field.
+And create a Pull Request in https://github.com/ethereum/remix-plugins-directory for adding the plugin to the directory.
+
 ```typescript
 interface Profile {
   name: string, // The name of your plugin in camelCase (used inside client.call(name, method, payload)).
