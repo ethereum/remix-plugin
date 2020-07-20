@@ -1,16 +1,14 @@
+import type { Message, Api, ApiMap } from '@remixproject/utils'
 import {
   ClientConnector,
   connectClient,
   applyApi,
   Client,
   PluginClient,
-  Message,
-  Api,
-  ApiMap,
   isHandshake,
   PluginOptions,
   checkOrigin
-} from '@remixproject/plugin'
+} from '@remixproject/plugin/core'
 
 declare const acquireVsCodeApi: any
 /**

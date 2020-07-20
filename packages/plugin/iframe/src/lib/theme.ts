@@ -1,5 +1,5 @@
-import { PluginClient, PluginOptions } from "@remixproject/plugin/client"
-import { Theme } from "@utils"
+import { PluginClient, PluginOptions } from "@remixproject/plugin/core"
+import { Theme } from "@remixproject/api"
 
 /** Start listening on theme changed */
 export async function listenOnThemeChanged(client: PluginClient, options?: Partial<PluginOptions<any>>) {

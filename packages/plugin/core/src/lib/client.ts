@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events'
-import {
+import { RemixApi, remixProfiles, } from '@remixproject/api'
+import { callEvent, listenEvent, createService, activateService } from '@remixproject/utils'
+import type {
   Api,
   PluginRequest,
   ApiMap,
@@ -9,15 +11,9 @@ import {
   MethodKey,
   EventParams,
   ProfileMap,
-  callEvent,
-  listenEvent,
-  RemixApi,
-  remixProfiles,
-  createService,
-  activateService,
   IPluginService,
   PluginBase
-} from '../../utils'
+} from '@remixproject/utils'
 
 export interface PluginDevMode {
   /** Port for localhost */

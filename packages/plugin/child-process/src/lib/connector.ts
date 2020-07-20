@@ -1,8 +1,6 @@
-import { ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin/connector'
-import { PluginClient } from '@remixproject/plugin/client'
-import { Message } from '../utils/src/types/message'
-import { RemixApi } from '../utils/src/api/remix-profile'
-import { Api, ApiMap } from '../utils/src/types/api'
+import { ClientConnector, connectClient, applyApi, Client, PluginClient } from '@remixproject/plugin/core'
+import type { Message, Api, ApiMap } from '@remixproject/utils'
+import { RemixApi } from '@remixproject/api'
 
 
 export interface WS {

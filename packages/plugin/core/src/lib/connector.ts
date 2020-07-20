@@ -1,8 +1,6 @@
-import { Message } from '../../utils/src/types/message'
-import { listenEvent, callEvent } from '../../utils/src/event-name'
-import { Api, ApiMap, PluginApi } from '../../utils/src/types/api'
-import { getMethodPath } from '../../utils/src/method-path'
-import { RemixApi } from '../../utils/src/api/remix-profile'
+import type { Message, Api, ApiMap, PluginApi } from '@remixproject/utils'
+import { listenEvent, callEvent, getMethodPath } from '@remixproject/utils'
+import { RemixApi } from '@remixproject/api';
 import { PluginClient } from './client'
 import { createApi } from './api'
 
