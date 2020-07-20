@@ -37,11 +37,11 @@
     },
     "engine-node": {
       "tags": [],
-      "onlyDependOnLibsWithTags": ["engine", "utils"]
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
     },
     "engine-web": {
       "tags": [],
-      "onlyDependOnLibsWithTags": ["engine", "utils"]
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
     },
     "plugin-core": {
       "tags": ["plugin"],

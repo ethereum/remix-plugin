@@ -3,7 +3,7 @@
   "projects": {
     "engine-core": {
       "root": "packages/engine/core",
-      "sourceRoot": "packages/engine/core",
+      "sourceRoot": "packages/engine/core/src",
       "projectType": "library",
       "schematics": {},
       "architect": {
