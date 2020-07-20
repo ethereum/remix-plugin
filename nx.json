@@ -40,6 +40,15 @@
     },
     "api": {
       "tags": ["utils"]
+    },
+    "plugin-core": {
+      "tags": ["plugin"]
+    },
+    "plugin-iframe": {
+      "tags": ["plugin"]
+    },
+    "plugin-vscode": {
+      "tags": ["plugin"]
     }
   },
   "workspaceLayout": {

@@ -185,6 +185,117 @@
           }
         }
       }
+    },
+    "plugin-core": {
+      "root": "packages/plugin/core",
+      "sourceRoot": "packages/plugin/core/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/plugin/core/tsconfig.lib.json",
+              "packages/plugin/core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/plugin/core/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/core/jest.config.js",
+            "tsConfig": "packages/plugin/core/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/core",
+            "tsConfig": "packages/plugin/core/tsconfig.lib.json",
+            "packageJson": "packages/plugin/core/package.json",
+            "main": "packages/plugin/core/src/index.ts",
+            "assets": ["packages/plugin/core/*.md"]
+          }
+        }
+      }
+    },
+    "plugin-iframe": {
+      "root": "packages/plugin/iframe",
+      "sourceRoot": "packages/plugin/iframe/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/plugin/iframe/tsconfig.lib.json",
+              "packages/plugin/iframe/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/plugin/iframe/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/iframe/jest.config.js",
+            "tsConfig": "packages/plugin/iframe/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/iframe",
+            "tsConfig": "packages/plugin/iframe/tsconfig.lib.json",
+            "packageJson": "packages/plugin/iframe/package.json",
+            "main": "packages/plugin/iframe/src/index.ts",
+            "assets": ["packages/plugin/iframe/*.md"]
+          }
+        }
+      }
+    },
+    "plugin-vscode": {
+      "root": "packages/plugin/vscode",
+      "sourceRoot": "packages/plugin/vscode/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/plugin/vscode/tsconfig.lib.json",
+              "packages/plugin/vscode/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/plugin/vscode/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/vscode/jest.config.js",
+            "tsConfig": "packages/plugin/vscode/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/vscode",
+            "tsConfig": "packages/plugin/vscode/tsconfig.lib.json",
+            "packageJson": "packages/plugin/vscode/package.json",
+            "main": "packages/plugin/vscode/src/index.ts",
+            "assets": ["packages/plugin/vscode/*.md"]
+          }
+        }
+      }
     }
   },
   "cli": {
