@@ -23,7 +23,7 @@ export class ChildProcessPlugin extends PluginConnector {
   }
 
   protected disconnect(): void {
-    this.process.removeListener(...this.listener)
+    this.process.off(...this.listener)
     this.process.disconnect()
     this.process.kill()
   }

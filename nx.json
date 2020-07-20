@@ -44,6 +44,10 @@
       "tags": [],
       "onlyDependOnLibsWithTags": ["utils", "engine"]
     },
+    "engine-vscode": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
+    },
     "plugin-core": {
       "tags": ["plugin"],
       "onlyDependOnLibsWithTags": ["utils"]
