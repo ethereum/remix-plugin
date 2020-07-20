@@ -35,12 +35,12 @@ export class List<I> implements TreeDataProvider<I> {
 
   setOptions(options: Partial<ListOptions>) {
     this.options = { ...this.options, ...options }
-    this.render.fire()
+    this.render.fire(undefined)
   }
 
   reset(list: I[]) {
     this.list = list
-    this.render.fire()
+    this.render.fire(undefined)
   }
 
   getParent() {

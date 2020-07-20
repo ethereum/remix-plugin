@@ -22,7 +22,7 @@
       ],
       "@remixproject/api": ["dist/packages/api", "packages/api/src/index.ts"],
       "@remixproject/engine": ["packages/engine/core/src/index.ts"],
-      "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
+      "@remixproject/plugin": ["packages/plugin/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

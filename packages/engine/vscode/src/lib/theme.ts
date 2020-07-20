@@ -1,6 +1,6 @@
 import { Plugin } from '@remixproject/engine'
-import { ITheme, Theme, themeProfile } from '../../utils/src/api/theme'
-import { API } from '../../utils/src/types/api'
+import { API } from '@remixproject/utils'
+import { ITheme, Theme, themeProfile } from '@remixproject/api'
 import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
 
 function getTheme(color: ColorTheme): Theme {

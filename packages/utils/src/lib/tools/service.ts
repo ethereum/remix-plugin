@@ -1,4 +1,7 @@
-import type { PluginBase, Api, ApiMap, IPluginService, GetPluginService } from '@remixproject/utils'
+import type { IPluginService, GetPluginService } from '../types/service'
+import type { Api, ApiMap } from '../types/api'
+import type { PluginBase } from '../types/plugin'
+
 import { getRootPath } from './method-path'
 
 

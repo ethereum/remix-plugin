@@ -112,6 +112,43 @@
         }
       }
     },
+    "engine-vscode": {
+      "root": "packages/engine/vscode",
+      "sourceRoot": "packages/engine/vscode/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/engine/vscode/tsconfig.lib.json",
+              "packages/engine/vscode/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/engine/vscode/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/engine/vscode/jest.config.js",
+            "tsConfig": "packages/engine/vscode/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/engine/vscode",
+            "tsConfig": "packages/engine/vscode/tsconfig.lib.json",
+            "packageJson": "packages/engine/vscode/package.json",
+            "main": "packages/engine/vscode/src/index.ts",
+            "assets": ["packages/engine/vscode/*.md"]
+          }
+        }
+      }
+    },
     "utils": {
       "root": "packages/utils",
       "sourceRoot": "packages/utils/src",
@@ -333,43 +370,6 @@
             "packageJson": "packages/plugin/child-process/package.json",
             "main": "packages/plugin/child-process/src/index.ts",
             "assets": ["packages/plugin/child-process/*.md"]
-          }
-        }
-      }
-    },
-    "engine-vscode": {
-      "root": "packages/engine/vscode",
-      "sourceRoot": "packages/engine/vscode/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/engine/vscode/tsconfig.lib.json",
-              "packages/engine/vscode/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/vscode/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "packages/engine/vscode/jest.config.js",
-            "tsConfig": "packages/engine/vscode/tsconfig.spec.json",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/engine/vscode",
-            "tsConfig": "packages/engine/vscode/tsconfig.lib.json",
-            "packageJson": "packages/engine/vscode/package.json",
-            "main": "packages/engine/vscode/src/index.ts",
-            "assets": ["packages/engine/vscode/*.md"]
           }
         }
       }

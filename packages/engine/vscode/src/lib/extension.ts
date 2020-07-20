@@ -1,20 +1,13 @@
 // Check here : https://code.visualstudio.com/api/references/vscode-api#extensions
-import { ClientConnector } from "@remixproject/plugin"
 import { PluginConnector } from "@remixproject/engine"
+import { Profile, ExternalProfile, Message } from '@remixproject/utils'
 import { extensions, Extension } from 'vscode'
-import { Profile, Message } from '../../utils'
-
-class ExtensionConnector implements ClientConnector {
-  onMessage(message: Partial<Message>) {
-    throw new Error('not implemented')
-  }
-}
 
 export class ExtensionPlugin extends PluginConnector {
-  private extension: Extension<ExtensionConnector>
-  private connector: ExtensionConnector
+  private extension: Extension<any>
+  private connector: any
 
-  constructor(profile: Profile) {
+  constructor(profile: Profile & ExternalProfile) {
     super(profile)
   }
 

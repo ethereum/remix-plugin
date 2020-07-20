@@ -1,6 +1,5 @@
 import { PluginConnector, PluginConnectorOptions} from '@remixproject/engine'
-import { Message, } from '../../utils/src/types/message'
-import { Profile, ExternalProfile, } from '../../utils/src/types/profile'
+import { Message, Profile, ExternalProfile } from '@remixproject/utils'
 import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
 import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
