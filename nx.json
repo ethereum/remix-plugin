@@ -49,6 +49,9 @@
     },
     "plugin-vscode": {
       "tags": ["plugin"]
+    },
+    "plugin-child-process": {
+      "tags": ["plugin"]
     }
   },
   "workspaceLayout": {

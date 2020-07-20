@@ -32,7 +32,10 @@
         "packages/plugin/core/src/index.ts"
       ],
       "@remixproject/plugin/iframe": ["packages/plugin/iframe/src/index.ts"],
-      "@remixproject/plugin/vscode": ["packages/plugin/vscode/src/index.ts"]
+      "@remixproject/plugin/vscode": ["packages/plugin/vscode/src/index.ts"],
+      "@remixproject/plugin/child-process": [
+        "packages/plugin/child-process/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
