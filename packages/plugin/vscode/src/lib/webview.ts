@@ -8,7 +8,7 @@ import {
   isHandshake,
   PluginOptions,
   checkOrigin
-} from '@remixproject/plugin/core'
+} from '@remixproject/plugin'
 
 declare const acquireVsCodeApi: any
 /**

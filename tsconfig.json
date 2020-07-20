@@ -21,13 +21,13 @@
         "packages/utils/src/index.ts"
       ],
       "@remixproject/api": ["dist/packages/api", "packages/api/src/index.ts"],
-      "@remixproject/engine-core": [
+      "@remixproject/engine": [
         "dist/packages/engine/core",
         "packages/engine/core/src/index.ts"
       ],
       "@remixproject/engine/node": ["packages/engine/node/src/index.ts"],
       "@remixproject/engine/web": ["packages/engine/web/src/index.ts"],
-      "@remixproject/plugin/core": [
+      "@remixproject/plugin": [
         "dist/packages/plugin/core",
         "packages/plugin/core/src/index.ts"
       ],

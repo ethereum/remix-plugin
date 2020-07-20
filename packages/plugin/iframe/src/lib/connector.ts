@@ -9,7 +9,7 @@ import {
   isHandshake,
   PluginOptions,
   checkOrigin
-} from '@remixproject/plugin/core'
+} from '@remixproject/plugin'
 
 import { listenOnThemeChanged } from './theme'
 
