@@ -20,17 +20,14 @@
         "dist/packages/utils",
         "packages/utils/src/index.ts"
       ],
-      "@remixproject/api": ["dist/packages/api", "packages/api/src/index.ts"],
-      "@remixproject/engine": [
-        "dist/packages/engine/core",
-        "packages/engine/core/src/index.ts"
+      "@remixproject/api": [
+        "dist/packages/api", 
+        "packages/api/src/index.ts"
       ],
+      "@remixproject/engine": ["packages/engine/core/src/index.ts"],
       "@remixproject/engine/node": ["packages/engine/node/src/index.ts"],
       "@remixproject/engine/web": ["packages/engine/web/src/index.ts"],
-      "@remixproject/plugin": [
-        "dist/packages/plugin/core",
-        "packages/plugin/core/src/index.ts"
-      ],
+      "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
       "@remixproject/plugin/iframe": ["packages/plugin/iframe/src/index.ts"],
       "@remixproject/plugin/vscode": ["packages/plugin/vscode/src/index.ts"],
       "@remixproject/plugin/child-process": [
