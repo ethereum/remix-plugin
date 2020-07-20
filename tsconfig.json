@@ -16,12 +16,20 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@remixproject/utils/types": ["packages/utils/types/src/index.ts"],
-      "@remixproject/utils/api": ["packages/utils/api/src/index.ts"],
-      "@remixproject/utils/tools": ["packages/utils/tools/src/index.ts"],
-      "@remixproject/engine/core": ["packages/engine/core/src/index.ts"],
-      "@remixproject/engine/node": ["packages/engine/node/src/index.ts"],
-      "@remixproject/engine/web": ["packages/engine/web/src/index.ts"]
+      "@remixproject/utils": [
+        "dist/packages/utils",
+        "packages/utils/src/index.ts"
+      ],
+      "@remixproject/api": [
+        "dist/packages/api",
+        "packages/api/src/index.ts"
+      ],
+      "@remixproject/engine-core": [
+        "dist/packages/engine/core",
+        "packages/engine/core/src/index.ts"
+      ],
+      "@remixproject/engine-node": ["packages/engine/node/src/index.ts"],
+      "@remixproject/engine-web": ["packages/engine/web/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

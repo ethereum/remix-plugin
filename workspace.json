@@ -1,95 +1,9 @@
 {
   "version": 1,
   "projects": {
-    "utils-types": {
-      "root": "packages/utils/types",
-      "sourceRoot": "packages/utils/types/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "tsConfig": ["packages/utils/types/tsconfig.lib.json"],
-            "exclude": ["**/node_modules/**", "!packages/utils/types/**/*"]
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:build",
-          "options": {
-            "outputPath": "dist/packages/utils/types",
-            "tsConfig": "packages/utils/types/tsconfig.lib.json",
-            "main": "packages/utils/types/src/index.ts",
-            "assets": ["packages/utils/types/*.md"]
-          }
-        }
-      }
-    },
-    "utils-api": {
-      "root": "packages/utils/api",
-      "sourceRoot": "packages/utils/api/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "tsConfig": ["packages/utils/api/tsconfig.lib.json"],
-            "exclude": ["**/node_modules/**", "!packages/utils/api/**/*"]
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/utils/api",
-            "tsConfig": "packages/utils/api/tsconfig.lib.json",
-            "main": "packages/utils/api/src/index.ts",
-            "assets": ["packages/utils/api/*.md"]
-          }
-        }
-      }
-    },
-    "utils-tools": {
-      "root": "packages/utils/tools",
-      "sourceRoot": "packages/utils/tools/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/utils/tools/tsconfig.lib.json",
-              "packages/utils/tools/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/utils/tools/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "packages/utils/tools/jest.config.js",
-            "tsConfig": "packages/utils/tools/tsconfig.spec.json",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/utils/tools",
-            "tsConfig": "packages/utils/tools/tsconfig.lib.json",
-            "main": "packages/utils/tools/src/index.ts",
-            "assets": ["packages/utils/tools/*.md"]
-          }
-        }
-      }
-    },
     "engine-core": {
       "root": "packages/engine/core",
-      "sourceRoot": "packages/engine/core/src",
+      "sourceRoot": "packages/engine/core",
       "projectType": "library",
       "schematics": {},
       "architect": {
@@ -194,6 +108,80 @@
             "packageJson": "packages/engine/web/package.json",
             "main": "packages/engine/web/src/index.ts",
             "assets": ["packages/engine/web/*.md"]
+          }
+        }
+      }
+    },
+    "utils": {
+      "root": "packages/utils",
+      "sourceRoot": "packages/utils/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/utils/tsconfig.lib.json",
+              "packages/utils/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/utils/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/utils/jest.config.js",
+            "tsConfig": "packages/utils/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/utils",
+            "tsConfig": "packages/utils/tsconfig.lib.json",
+            "packageJson": "packages/utils/package.json",
+            "main": "packages/utils/src/index.ts",
+            "assets": ["packages/utils/*.md"]
+          }
+        }
+      }
+    },
+    "api": {
+      "root": "packages/api",
+      "sourceRoot": "packages/api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/api/tsconfig.lib.json",
+              "packages/api/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/api/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/api/jest.config.js",
+            "tsConfig": "packages/api/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/api",
+            "tsConfig": "packages/api/tsconfig.lib.json",
+            "packageJson": "packages/api/package.json",
+            "main": "packages/api/src/index.ts",
+            "assets": ["packages/api/*.md"]
           }
         }
       }

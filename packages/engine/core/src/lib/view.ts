@@ -1,4 +1,4 @@
-import type { Profile, LocationProfile } from '@remixproject/utils/types'
+import type { Profile, LocationProfile } from '@remixproject/utils'
 import { Plugin } from './abstract'
 
 

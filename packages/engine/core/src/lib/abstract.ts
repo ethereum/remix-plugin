@@ -10,14 +10,14 @@ import type {
   PluginRequest,
   PluginApi,
   PluginBase,
-} from '@remixproject/utils/types'
+  IPluginService,
+} from '@remixproject/utils'
 
 import { 
-  IPluginService,
   createService,
   activateService,
   getMethodPath,
-} from '@remixproject/utils/tools'
+} from '@remixproject/utils'
 
 export interface RequestParams {
   name: string

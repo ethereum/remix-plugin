@@ -1,5 +1,5 @@
-import type { PluginApi, Profile } from '@remixproject/utils/types'
-import { listenEvent } from '@remixproject/utils/tools'
+import type { PluginApi, Profile } from '@remixproject/utils'
+import { listenEvent } from '@remixproject/utils'
 import { BasePluginManager } from "./manager"
 import { Plugin, PluginOptions } from './abstract'
 

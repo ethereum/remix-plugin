@@ -17,28 +17,29 @@
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "cacheDirectory": ".cache/nx"
       }
     }
   },
   "projects": {
-    "utils-types": {
-      "tags": ["utils"]
-    },
-    "utils-api": {
-      "tags": ["utils"]
-    },
-    "utils-tools": {
-      "tags": ["utils"]
-    },
     "engine-core": {
-      "tags": ["engine"]
+      "tags": ["engine"],
+      "onlyDependOnLibsWithTags": ["utils"]
     },
     "engine-node": {
-      "tags": ["engine"]
+      "tags": ["engine"],
+      "onlyDependOnLibsWithTags": ["engine", "utils"]
     },
     "engine-web": {
-      "tags": ["engine"]
+      "tags": ["engine"],
+      "onlyDependOnLibsWithTags": ["engine", "utils"]
+    },
+    "utils": {
+      "tags": ["utils"]
+    },
+    "api": {
+      "tags": ["utils"]
     }
   },
   "workspaceLayout": {

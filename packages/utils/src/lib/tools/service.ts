@@ -1,12 +1,7 @@
-import type { PluginBase, Api, ApiMap } from '@remixproject/utils/types'
+import type { PluginBase, Api, ApiMap, IPluginService, GetPluginService } from '@remixproject/utils'
 import { getRootPath } from './method-path'
 
-export type IPluginService<T extends Record<string, any> = any> = {
-  methods: string[]
-  readonly path: string
-} & T
 
-export type GetPluginService<S extends Record<string, any>> = S extends IPluginService<infer I> ? S : IPluginService<S>
 
 /** Check if the plugin is an instance of PluginService */
 export const isPluginService = (service): service is PluginService => {

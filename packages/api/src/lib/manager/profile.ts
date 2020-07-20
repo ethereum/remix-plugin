@@ -1,4 +1,4 @@
-import type { LibraryProfile } from '@remixproject/utils/types'
+import type { LibraryProfile } from '@remixproject/utils'
 import { IPluginManager } from './api'
 
 export const pluginManagerProfile: LibraryProfile<IPluginManager> & { name: 'manager' } = {

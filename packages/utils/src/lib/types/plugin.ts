@@ -1,4 +1,4 @@
-import type { IPluginService } from '@remixproject/utils/tools'
+import type { IPluginService } from './service'
 import { EventCallback, MethodParams, MethodKey, EventKey, Api, ApiMap, EventParams } from './api'
 
 export interface PluginBase<T extends Api = any, App extends ApiMap = any> {

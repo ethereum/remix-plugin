@@ -1,4 +1,4 @@
-import type { ExternalProfile, Profile, Message } from '@remixproject/utils/types'
+import type { ExternalProfile, Profile, Message } from '@remixproject/utils'
 import { Plugin, PluginOptions } from './abstract'
 
 /** List of available gateways for decentralised storage */
