@@ -1,90 +1,50 @@
-# RemixPlugin
+# Remix Plugin
 
-This project was generated using [Nx](https://nx.dev).
+Remix plugin is a universal plugin system written in Typescript.
 
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+It provides an extendable engine that simplify communication between multiple internal or external source.
 
-🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
 
-## Adding capabilities to your workspace
+The repository manage multiple projects related to remix plugins. It's devided into two main caterogies : 
+- Engine: A library to manage communication between plugins. 
+- Plugin: A library to create an external plugin.
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+## Engine
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+The core component of the engine is the `@remixproject/engine` library. It can be extended to run in different environments.
 
-Below are our core plugins:
+| Name                                                                     | Latest Version       |
+| ------------------------------------------------------------------------ | :------------------: |
+| [@remixproject/engine](/packages/engine/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/engine.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine) |
+| [@remixproject/engine-vscode](/packages/engine/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/engine-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-vscode) |
+| [@remixproject/engine-web](/packages/engine/web)                         | [![badge](https://img.shields.io/npm/v/@remixproject/engine-web.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-web) |
+| [@remixproject/engine-node](/packages/engine/node)                       | [![badge](https://img.shields.io/npm/v/@remixproject/engine-node.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-node) |
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+> To create a new environment connector check out [@remixproject/engine](/packages/engine/core). 
 
-There are also many [community plugins](https://nx.dev/nx-community) you could add.
 
-## Generate an application
+## Plugin
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+The core component of the plugin is the `@remixproject/plugin` library. It can be extended to run in different environments.
 
-> You can use any of the plugins above to generate applications as well.
+| Name                                                                     | Latest Version       |
+| ------------------------------------------------------------------------ | :------------------: |
+| [@remixproject/plugin](/packages/plugin/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/plugin.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin) |
+| [@remixproject/plugin-vscode](/packages/plugin/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-vscode) |
+| [@remixproject/plugin-iframe](/packages/plugin/iframe)                         | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-iframe.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-iframe) |
+| [@remixproject/plugin-child-process](/packages/plugin/child-process)                       | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-child-process.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-child-process) |
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+> To create a new environment connector check out [@remixproject/plugin](/packages/plugin/core). 
 
-## Generate a library
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+## API
 
-> You can also use any of the plugins above to generate libraries as well.
+Remix plugin offers a set of common API for plugin to be implemented. This set of API is used in [remix-ide](https://remix.ethereum.org), therefore every plugin running inside remix-ide should be able to run in an engine that implements theses APIs.
 
-Libraries are sharable across libraries and applications. They can be imported from `@remix-plugin/mylib`.
+| Name                               | Latest Version       |
+| ---------------------------------- | :------------------: |
+| [@remixproject/api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/api)
 
-## Development server
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-## ☁ Nx Cloud
-
-### Computation Memoization in the Cloud
-
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+> The firt goal of remix plugin was to enable a plugin to work in multiple engine's envrionments. If the plugin has dependancies on other plugins, each engine must implements these dependancies.
