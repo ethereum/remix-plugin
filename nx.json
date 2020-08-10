@@ -63,6 +63,10 @@
     "plugin-child-process": {
       "tags": [],
       "onlyDependOnLibsWithTags": ["utils", "plugin"]
+    },
+    "plugin-ws": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
     }
   },
   "workspaceLayout": {
