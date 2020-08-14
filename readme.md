@@ -172,7 +172,7 @@ interface Profile {
   events: [], // Name of the events
   methods: ['sayHello'], // Name of the methods exposed by the plugin
   url: string, // URL where your plugin is hosted
-  icon: string, // Url of the icon to display on tab
+  icon: string, // Url of the image file in your repo to display as an icon on Vertical menu, tab, etc
   location: 'mainPanel' | 'sidePanel' | 'none' // Where your plugin should be displayed in the IDE
 }
 ```
