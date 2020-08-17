@@ -1,5 +1,5 @@
 import { Engine, ViewPlugin, PluginManager, HostPlugin } from '../src'
-import { pluginManagerProfile } from '@remixproject/api'
+import { pluginManagerProfile } from '@remixproject/plugin-api'
 
 export class MockEngine extends Engine {
   onRegistration = jest.fn()

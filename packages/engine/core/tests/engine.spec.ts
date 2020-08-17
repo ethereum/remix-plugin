@@ -1,6 +1,6 @@
 import { Engine, Plugin, PluginManager } from '../src'
-import { listenEvent } from '@remixproject/utils'
-import { compilerProfile, filSystemProfile, pluginManagerProfile } from '@remixproject/api'
+import { listenEvent } from '@remixproject/plugin-utils'
+import { compilerProfile, filSystemProfile, pluginManagerProfile } from '@remixproject/plugin-api'
 
 export class MockEngine extends Engine {
   onRegistration = jest.fn()

@@ -1,5 +1,5 @@
 import { Plugin, PluginOptions } from "@remixproject/engine"
-import { Profile } from '@remixproject/utils'
+import { Profile } from '@remixproject/plugin-utils'
 import { Disposable, commands } from "vscode"
 
 export const transformCmd = (name: string, method: string) => `${name}.${method}`

@@ -1,6 +1,6 @@
-import type { Message, Api, ApiMap } from '@remixproject/utils'
+import type { Message, Api, ApiMap } from '@remixproject/plugin-utils'
 import { PluginClient, ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin'
-import { RemixApi } from '@remixproject/api'
+import { RemixApi } from '@remixproject/plugin-api'
 
 
 export interface WS {

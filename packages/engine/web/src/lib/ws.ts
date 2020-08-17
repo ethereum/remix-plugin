@@ -1,4 +1,4 @@
-import type { Message, Profile, ExternalProfile } from '@remixproject/utils'
+import type { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
 import { PluginConnector, PluginConnectorOptions } from '@remixproject/engine'
 
 export interface WebsocketOptions extends PluginConnectorOptions {

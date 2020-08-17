@@ -1,4 +1,4 @@
-import type { Api, Profile, LibraryProfile, LocationProfile } from '@remixproject/utils'
+import type { Api, Profile, LibraryProfile, LocationProfile } from '@remixproject/plugin-utils'
 import { Plugin } from './abstract'
 
 export type LibraryApi<T extends Api, P extends Profile> = {

@@ -16,11 +16,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@remixproject/utils": [
+      "@remixproject/plugin-utils": [
         "dist/packages/utils",
         "packages/utils/src/index.ts"
       ],
-      "@remixproject/api": ["dist/packages/api", "packages/api/src/index.ts"],
+      "@remixproject/plugin-api": ["dist/packages/api", "packages/api/src/index.ts"],
       "@remixproject/engine": ["packages/engine/core/src/index.ts"],
       "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
       "@remixproject/plugin/ws": ["packages/plugin/ws/src/index.ts"]

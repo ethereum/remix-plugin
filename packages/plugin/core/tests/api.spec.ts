@@ -1,5 +1,5 @@
 import { PluginClient, createApi, getApiMap } from '../src'
-import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents, Profile, LocationProfile } from '@remixproject/utils'
+import { Api, ExternalProfile, CustomApi, callEvent, listenEvent, StatusEvents, Profile, LocationProfile } from '@remixproject/plugin-utils'
 
 interface TestApi extends Api {
   events: {

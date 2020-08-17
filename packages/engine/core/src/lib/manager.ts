@@ -1,5 +1,5 @@
-import type { Profile } from '@remixproject/utils'
-import { pluginManagerProfile } from '@remixproject/api'
+import type { Profile } from '@remixproject/plugin-utils'
+import { pluginManagerProfile } from '@remixproject/plugin-api'
 import { Plugin } from "./abstract"
 
 export type BasePluginManager = {

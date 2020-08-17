@@ -1,4 +1,4 @@
-import { StatusEvents, Profile } from '@remixproject/utils'
+import { StatusEvents, Profile } from '@remixproject/plugin-utils'
 
 export interface IPluginManager {
   events: {

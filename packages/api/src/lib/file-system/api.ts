@@ -1,5 +1,5 @@
 import { Folder } from './type'
-import { StatusEvents } from '@remixproject/utils'
+import { StatusEvents } from '@remixproject/plugin-utils'
 
 export interface IFileSystem {
   events: {

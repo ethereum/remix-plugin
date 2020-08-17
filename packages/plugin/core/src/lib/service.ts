@@ -1,6 +1,6 @@
 // import { PluginClient } from './client'
 // import { IPluginService } from './types'
-// import { getRootPath } from '@remixproject/utils'
+// import { getRootPath } from '@remixproject/plugin-utils'
 
 // /**
 //  * A node that forward the call to the right path
