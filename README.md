@@ -48,3 +48,43 @@ Remix plugin offers a set of common API for plugin to be implemented. This set o
 
 
 > The firt goal of remix plugin was to enable a plugin to work in multiple engine's envrionments. If the plugin has dependancies on other plugins, each engine must implements these dependancies.
+
+
+# Contribute
+
+## Setup
+```
+git clone https://github.com/ethereum/remix-plugin.git
+cd remix-plugin
+npm install
+```
+
+## See dependancy graph
+To better understand the project structure you can display a dependancy graph with:
+```
+npm run dep-graph
+```
+Open your browser on `http://localhost:4211/`.
+
+
+## Build
+This uses nx's affected:build to only update what has been changes since last build.
+```
+npm run build
+```
+
+## Test
+This uses nx's affected:test to only update what has been changes since last test.
+```
+npm test
+```
+
+## Publish
+This uses lerna to deploy all the packages with all a new version:
+```
+npm run deploy:latest
+```
+OR
+```
+npm run deploy:next
+```
