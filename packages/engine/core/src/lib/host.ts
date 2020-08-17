@@ -1,4 +1,4 @@
-import type { Profile } from '@remixproject/utils'
+import type { Profile } from '@remixproject/plugin-utils'
 import { Plugin } from './abstract'
 
 export abstract class HostPlugin extends Plugin {

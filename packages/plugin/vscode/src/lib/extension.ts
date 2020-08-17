@@ -1,5 +1,5 @@
 import { ClientConnector } from "@remixproject/plugin"
-import { Message } from '@remixproject/utils'
+import { Message } from '@remixproject/plugin-utils'
 
 class ExtensionConnector implements ClientConnector {
   on(cb: (message: Partial<Message>) => void): void {

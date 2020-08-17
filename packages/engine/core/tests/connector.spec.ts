@@ -1,5 +1,5 @@
 import { Engine, PluginConnector, PluginManager } from '../src'
-import { pluginManagerProfile } from '@remixproject/api'
+import { pluginManagerProfile } from '@remixproject/plugin-api'
 import { transformUrl } from '../src'
 
 class MockPlugin extends PluginConnector {

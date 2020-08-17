@@ -1,5 +1,5 @@
 import { Engine, PluginManager, LibraryPlugin, LibraryApi } from '../src'
-import { pluginManagerProfile } from '@remixproject/api'
+import { pluginManagerProfile } from '@remixproject/plugin-api'
 
 const createLib = () => ({
   events: {

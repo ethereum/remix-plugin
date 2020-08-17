@@ -1,5 +1,5 @@
 import { IUdapp } from './api'
-import { LibraryProfile } from '@remixproject/utils'
+import { LibraryProfile } from '@remixproject/plugin-utils'
 
 export const udappProfile: LibraryProfile<IUdapp> = {
   name: 'udapp',

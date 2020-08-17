@@ -1,4 +1,4 @@
-import { ProfileMap, Profile, ApiMap } from '@remixproject/utils'
+import { ProfileMap, Profile, ApiMap } from '@remixproject/plugin-utils'
 import { compilerProfile, ICompiler } from './compiler'
 import { filSystemProfile, IFileSystem } from './file-system'
 import { editorProfile, IEditor } from './editor'

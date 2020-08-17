@@ -1,5 +1,5 @@
 import { IPluginManager } from './api'
-import { LibraryProfile } from '@remixproject/utils'
+import { LibraryProfile } from '@remixproject/plugin-utils'
 
 export const pluginManagerProfile: LibraryProfile<IPluginManager> & { name: 'manager' } = {
   name: 'manager' as 'manager',

@@ -1,5 +1,5 @@
 import { IGitSystem } from './api'
-import { LibraryProfile } from '@remixproject/utils'
+import { LibraryProfile } from '@remixproject/plugin-utils'
 
 export const gitProfile: LibraryProfile<IGitSystem> = {
   name: 'remixd.git',

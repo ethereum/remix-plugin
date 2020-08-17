@@ -1,5 +1,5 @@
-import type { Message, Api, ApiMap } from '@remixproject/utils';
-import { RemixApi } from '@remixproject/api';
+import type { Message, Api, ApiMap } from '@remixproject/plugin-utils';
+import { RemixApi } from '@remixproject/plugin-api';
 import {
   ClientConnector,
   connectClient,

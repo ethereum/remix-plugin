@@ -1,4 +1,4 @@
-import { StatusEvents } from '@remixproject/utils'
+import { StatusEvents } from '@remixproject/plugin-utils'
 import { Theme } from './types'
 
 export interface ITheme {

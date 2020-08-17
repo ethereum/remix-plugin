@@ -1,6 +1,6 @@
 // This test must be here to avoid circular dependancy between plugin-core & utils
 import { PluginClient } from "../src"
-import { PluginService, createService, activateService, getMethods } from "@remixproject/utils"
+import { PluginService, createService, activateService, getMethods } from "@remixproject/plugin-utils"
 
 class CmdServiceWithMethods extends PluginService {
   readonly path = 'cmd'
