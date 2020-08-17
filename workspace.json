@@ -22,7 +22,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/engine/core/jest.config.js",
-            "tsConfig": "packages/engine/core/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -59,7 +58,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/engine/node/jest.config.js",
-            "tsConfig": "packages/engine/node/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -96,7 +94,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/engine/web/jest.config.js",
-            "tsConfig": "packages/engine/web/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -133,7 +130,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/engine/vscode/jest.config.js",
-            "tsConfig": "packages/engine/vscode/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -170,7 +166,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/utils/jest.config.js",
-            "tsConfig": "packages/utils/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -207,7 +202,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/api/jest.config.js",
-            "tsConfig": "packages/api/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -244,7 +238,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/core/jest.config.js",
-            "tsConfig": "packages/plugin/core/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -281,7 +274,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/iframe/jest.config.js",
-            "tsConfig": "packages/plugin/iframe/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -318,7 +310,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/vscode/jest.config.js",
-            "tsConfig": "packages/plugin/vscode/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -358,7 +349,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/child-process/jest.config.js",
-            "tsConfig": "packages/plugin/child-process/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -395,7 +385,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/ws/jest.config.js",
-            "tsConfig": "packages/plugin/ws/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
