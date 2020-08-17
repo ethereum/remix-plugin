@@ -4,3 +4,9 @@ node_modules
 examples/plugins/ethdoc/dist/index.js
 projects/*/dist
 coverage
+
+
+old
+.cache
+dist
+tmp
