@@ -43,7 +43,7 @@ Remix plugin offers a set of common API for plugin to be implemented. This set o
 
 | Name                               | Latest Version       |
 | ---------------------------------- | :------------------: |
-| [@remixproject/api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/api)
+| [@remixproject/plugin-api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api)
 
 
 
