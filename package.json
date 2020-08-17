@@ -1,80 +1,54 @@
 {
   "name": "remix-plugin",
-  "version": "0.0.2-alpha.10",
-  "description": "Ethereum IDE and tools for the web",
-  "contributors": [
-    {
-      "name": "Yann Levreau",
-      "email": "yann@ethdev.com"
-    },
-    {
-      "name": "François Guezengar",
-      "email": "francois.guezengar@hotmail.fr"
-    }
-  ],
-  "files": [
-    "dist"
-  ],
-  "types": "dist/index.d.ts",
-  "browser": "dist/index.js",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
-  "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack",
-    "test": "jest -w 1",
-    "test:engine": "jest ./projects/engine",
-    "test:client": "jest ./projects/client",
-    "publish": "npm run build && npm run publish:engine && npm run publish:plugin",
-    "publish:engine": "cd projects/engine && npm publish --access public",
-    "publish:plugin": "cd projects/client && npm publish --access public",
-    "publish:plugin-ws": "cd projects/client-ws && npm publish --access public",
-    "publish:plugin-iframe": "cd projects/client-iframe && npm publish --access public",
-    "e2e:serve": "run-p serve:ide serve:ethdoc",
-    "serve:ide": "cd ./examples/ide && webpack-dev-server",
-    "serve:ethdoc": "cd ./examples/plugins/ethdoc && webpack-dev-server --config webpack.dev.js",
-    "build:ethdoc": "cd ./examples/plugins/ethdoc && webpack --config webpack.prod.js",
-    "deploy:ethdoc": "surge ./examples/plugins/ethdoc/dist remix-ethdoc-plugin.surge.sh",
-    "deploy:etherscan": "surge ./examples/plugins/etherscan remix-etherscan-plugin.surge.sh"
-  },
-  "dependencies": {
-    "events": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/events": "^1.2.0",
-    "@types/jest": "^24.0.9",
-    "@types/node": "^12.12.34",
-    "@types/ws": "^6.0.3",
-    "cypress": "^3.2.0",
-    "jest": "^24.1.0",
-    "lit-element": "^2.1.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^1.15.2",
-    "solc": "^0.5.7",
-    "surge": "^0.20.5",
-    "ts-jest": "^24.0.1",
-    "ts-loader": "^5.4.5",
-    "tsconfig-paths-webpack-plugin": "^3.2.0",
-    "tslint": "^5.11.0",
-    "typescript": "^3.8.3",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1",
-    "webpack-merge": "^4.2.1"
-  },
-  "standard": {
-    "ignore": [
-      "node_modules/*"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ethereum/remix-plugin.git"
-  },
-  "author": "cpp-ethereum team",
+  "version": "0.0.0",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ethereum/remix-plugin/issues"
+  "scripts": {
+    "nx": "nx",
+    "start": "nx serve",
+    "build": "nx affected:build  --parallel --maxParallel=3",
+    "test": "nx affected:test  --parallel --maxParallel=3",
+    "lint": "nx workspace-lint && nx lint",
+    "e2e": "nx e2e",
+    "publish:latest": "lerna publish",
+    "publish:canary": "lerna publish --canary",
+    "publish:next": "lerna publish --dist-tag next",
+    "affected:apps": "nx affected:apps",
+    "affected:libs": "nx affected:libs",
+    "affected:build": "nx affected:build",
+    "affected:e2e": "nx affected:e2e",
+    "affected:test": "nx affected:test",
+    "affected:lint": "nx affected:lint",
+    "affected:dep-graph": "nx affected:dep-graph",
+    "affected": "nx affected",
+    "format": "nx format:write",
+    "format:write": "nx format:write",
+    "format:check": "nx format:check",
+    "update": "nx migrate latest",
+    "workspace-schematic": "nx workspace-schematic",
+    "dep-graph": "nx dep-graph",
+    "help": "nx help"
   },
-  "homepage": "https://github.com/ethereum/remix-plugin#readme"
+  "private": true,
+  "devDependencies": {
+    "@nrwl/eslint-plugin-nx": "10.0.12",
+    "@nrwl/jest": "10.0.12",
+    "@nrwl/node": "10.0.12",
+    "@nrwl/web": "10.0.12",
+    "@nrwl/workspace": "10.0.12",
+    "@types/jest": "25.1.4",
+    "@types/node": "^14.0.23",
+    "@types/vscode": "^1.47.0",
+    "@typescript-eslint/eslint-plugin": "2.19.2",
+    "@typescript-eslint/parser": "2.19.2",
+    "dotenv": "6.2.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.0.0",
+    "jest": "25.2.3",
+    "lerna": "^3.22.1",
+    "prettier": "2.0.4",
+    "ts-jest": "25.2.1",
+    "ts-node": "~7.0.0",
+    "tslint": "~6.0.0",
+    "typescript": "3.9.7"
+  }
 }

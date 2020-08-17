@@ -1,0 +1,90 @@
+# Remix Plugin
+
+Remix plugin is a universal plugin system written in Typescript.
+
+It provides an extendable engine that simplify communication between multiple internal or external source.
+
+
+The repository manage multiple projects related to remix plugins. It's devided into two main caterogies : 
+- Engine: A library to manage communication between plugins. 
+- Plugin: A library to create an external plugin.
+
+## Engine
+
+The core component of the engine is the `@remixproject/engine` library. It can be extended to run in different environments.
+
+| Name                                                                     | Latest Version       |
+| ------------------------------------------------------------------------ | :------------------: |
+| [@remixproject/engine](/packages/engine/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/engine.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine) |
+| [@remixproject/engine-vscode](/packages/engine/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/engine-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-vscode) |
+| [@remixproject/engine-web](/packages/engine/web)                         | [![badge](https://img.shields.io/npm/v/@remixproject/engine-web.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-web) |
+| [@remixproject/engine-node](/packages/engine/node)                       | [![badge](https://img.shields.io/npm/v/@remixproject/engine-node.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-node) |
+
+> To create a new environment connector check out [@remixproject/engine](/packages/engine/core). 
+
+
+## Plugin
+
+The core component of the plugin is the `@remixproject/plugin` library. It can be extended to run in different environments.
+
+| Name                                                                     | Latest Version       |
+| ------------------------------------------------------------------------ | :------------------: |
+| [@remixproject/plugin](/packages/plugin/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/plugin.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin) |
+| [@remixproject/plugin-vscode](/packages/plugin/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-vscode) |
+| [@remixproject/plugin-iframe](/packages/plugin/iframe)                         | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-iframe.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-iframe) |
+| [@remixproject/plugin-child-process](/packages/plugin/child-process)                       | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-child-process.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-child-process) |
+
+> To create a new environment connector check out [@remixproject/plugin](/packages/plugin/core). 
+
+
+## API
+
+Remix plugin offers a set of common API for plugin to be implemented. This set of API is used in [remix-ide](https://remix.ethereum.org), therefore every plugin running inside remix-ide should be able to run in an engine that implements theses APIs.
+
+| Name                               | Latest Version       |
+| ---------------------------------- | :------------------: |
+| [@remixproject/api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/api)
+
+
+
+> The firt goal of remix plugin was to enable a plugin to work in multiple engine's envrionments. If the plugin has dependancies on other plugins, each engine must implements these dependancies.
+
+
+# Contribute
+
+## Setup
+```
+git clone https://github.com/ethereum/remix-plugin.git
+cd remix-plugin
+npm install
+```
+
+## See dependancy graph
+To better understand the project structure you can display a dependancy graph with:
+```
+npm run dep-graph
+```
+Open your browser on `http://localhost:4211/`.
+
+
+## Build
+This uses nx's affected:build to only update what has been changes since last build.
+```
+npm run build
+```
+
+## Test
+This uses nx's affected:test to only update what has been changes since last test.
+```
+npm test
+```
+
+## Publish
+This uses lerna to deploy all the packages with all a new version:
+```
+npm run deploy:latest
+```
+OR
+```
+npm run deploy:next
+```

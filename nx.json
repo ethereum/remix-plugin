@@ -1,0 +1,76 @@
+{
+  "npmScope": "remixproject",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.spec.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*",
+    "tsconfig.base.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "cacheDirectory": ".cache/nx"
+      }
+    }
+  },
+  "projects": {
+    "utils": {
+      "tags": ["utils"],
+      "onlyDependOnLibsWithTags": []
+    },
+    "api": {
+      "tags": ["utils"],
+      "onlyDependOnLibsWithTags": ["utils"]
+    },
+    "engine-core": {
+      "tags": ["engine"],
+      "onlyDependOnLibsWithTags": ["utils"]
+    },
+    "engine-node": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
+    },
+    "engine-web": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
+    },
+    "engine-vscode": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "engine"]
+    },
+    "plugin-core": {
+      "tags": ["plugin"],
+      "onlyDependOnLibsWithTags": ["utils"]
+    },
+    "plugin-iframe": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+    },
+    "plugin-vscode": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+    },
+    "plugin-child-process": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+    },
+    "plugin-ws": {
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "packages",
+    "libsDir": "packages"
+  }
+}
