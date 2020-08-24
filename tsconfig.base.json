@@ -37,6 +37,8 @@
         "dist/packages/plugin/core",
         "packages/plugin/core/src/index.ts"
       ],
+      "@remixproject/plugin/ws": ["packages/plugin/ws/src/index.ts"],
+      "@remixproject/plugin-webview": ["packages/plugin/webview/src/index.ts"]
     }
   },
   "exclude": [
