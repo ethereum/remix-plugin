@@ -41,9 +41,9 @@ The core component of the plugin is the `@remixproject/plugin` library. It can b
 
 Remix plugin offers a set of common API for plugin to be implemented. This set of API is used in [remix-ide](https://remix.ethereum.org), therefore every plugin running inside remix-ide should be able to run in an engine that implements theses APIs.
 
-| Name                               | Latest Version       |
-| ---------------------------------- | :------------------: |
-| [@remixproject/plugin-api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api)
+| Name                               | Latest Version       | Next Version
+| ---------------------------------- | :------------------: | :------------------:
+| [@remixproject/plugin-api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api)
 
 
 
