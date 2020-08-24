@@ -19,7 +19,7 @@ export class WebviewConnector implements ClientConnector {
   origin: string
   isVscode: boolean
 
-  constructor(private options: PluginOptions<any>) {
+  constructor(private options: Partial<PluginOptions<any>> = {}) {
     this.isVscode = !!acquireVsCodeApi
     this.source = this.isVscode ? acquireVsCodeApi() : window.parent
   }
