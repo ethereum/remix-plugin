@@ -11,7 +11,8 @@
     "version": {
       "message": "chore(version): bump version to %s",
       "yes": true,
-      "noPush": true
+      "noPush": true,
+      "noGitTagVersion": true
     },
     "publish": {
       "contents": "dist/packages",
