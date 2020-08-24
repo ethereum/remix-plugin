@@ -1,21 +1,14 @@
 {
   "packages": [
-    "dist/packages/**/*",
     "packages/**/*"
   ],
   "version": "0.3.0-beta.1",
   "command": {
     "version": {
-      "ignoreChanges": [
-        "dist/"
-      ],
-      "message": "chore(version): pump version %s"
+      "message": "chore(version): bump version to %s"
     },
     "publish": {
-      "ignoreChanges": [
-        "ignored-file",
-        "*.md"
-      ],
+      "contents": "dist/packages",
       "message": "chore(release): publish version %s"
     }
   }
