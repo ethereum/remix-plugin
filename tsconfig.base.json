@@ -10,8 +10,13 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -20,11 +25,22 @@
         "dist/packages/utils",
         "packages/utils/src/index.ts"
       ],
-      "@remixproject/plugin-api": ["dist/packages/api", "packages/api/src/index.ts"],
-      "@remixproject/engine": ["packages/engine/core/src/index.ts"],
-      "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
-      "@remixproject/plugin/ws": ["packages/plugin/ws/src/index.ts"]
+      "@remixproject/plugin-api": [
+        "dist/packages/api",
+        "packages/api/src/index.ts"
+      ],
+      "@remixproject/engine": [
+        "dist/packages/engine/core",
+        "packages/engine/core/src/index.ts"
+      ],
+      "@remixproject/plugin": [
+        "dist/packages/plugin/core",
+        "packages/plugin/core/src/index.ts"
+      ],
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
