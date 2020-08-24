@@ -104,7 +104,7 @@ export function applyApi(client: PluginClient) {
     if (client[name]) {
       const error = `Your plugin client should have a method/attribut named "${name}" as it is the name of another plugin. `
       const solution = `To prevent this set the option "customApi" to "null" in the client's options. `
-      const example = `For exemple: "const client = createIframeClient(new PluginClient<any, any>({ customApi: null }))".`
+      const example = `For exemple: "const client = createClient(new PluginClient<any, any>({ customApi: null }))".`
       throw new Error(error + solution + example)
     }
     client[name] = createApi(client, profiles[name])
@@ -117,7 +117,7 @@ export function applyApi(client: PluginClient) {
  * @param connector A communication layer connector
  * @param client The plugin client
  */
-export const createClient = <
+export const createConnectorClient = <
   P extends Api,
   App extends ApiMap = RemixApi
 >(

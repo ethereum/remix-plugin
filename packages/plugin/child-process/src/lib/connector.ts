@@ -35,7 +35,7 @@ export class WebsocketConnector implements ClientConnector {
  * ```typescript
  * const wss = new WebSocket.Server({ port: 8080 });
  * wss.on('connection', (ws) => {
- *  const client = createWebsocketClient(ws)
+ *  const client = createClient(ws)
  * })
  * ```
  * ---------
@@ -49,11 +49,11 @@ export class WebsocketConnector implements ClientConnector {
  * }
  * const wss = new WebSocket.Server({ port: 8080 });
  * wss.on('connection', (ws) => {
- *  const client = createWebsocketClient(ws, new MyPlugin())
+ *  const client = createClient(ws, new MyPlugin())
  * })
  * ```
  */
-export const createWebsocketClient = <
+export const createClient = <
   P extends Api,
   App extends ApiMap = RemixApi
 >(websocket: WS, client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {

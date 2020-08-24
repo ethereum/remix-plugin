@@ -1,6 +1,6 @@
 import { PluginClient } from '@remixproject/plugin'
 import { listenEvent, callEvent } from '@remixproject/plugin-utils'
-import { createIframeClient } from '../src'
+import { createClient } from '../src'
 
 declare const global  // Needed to mock fetch
 
@@ -35,7 +35,7 @@ describe.skip('Iframe', () => {
     global.fetch = jest.fn().mockImplementation(() => mockFetchPromise)
     window.addEventListener = (event, cb) => sendMessage = cb
     client = new PluginClient()
-    createIframeClient(client)
+    createClient(client)
   })
 
   test('Return error to parent if not loaded', (done) => {
@@ -154,7 +154,7 @@ describe.skip('Iframe', () => {
   // Create Iframe
   test('Build an Iframe Plugin from extended PluginClient', () => {
     class Client extends PluginClient {}
-    const iframeClient = createIframeClient(new Client())
+    const iframeClient = createClient(new Client())
     expect(iframeClient['fileManager']).toBeDefined()
     expect(iframeClient['network']).toBeDefined()
     expect(iframeClient['solidity']).toBeDefined()

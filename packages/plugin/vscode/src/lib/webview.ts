@@ -61,7 +61,7 @@ export class WebviewConnector implements ClientConnector {
  * Connect a Webview plugin client to a web engine
  * @param client An optional websocket plugin client to connect to the engine.
  */
-export const createWebviewClient = <
+export const createClient = <
   P extends Api,
   App extends ApiMap
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {

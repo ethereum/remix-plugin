@@ -41,13 +41,13 @@ The plugin client is how you connect your plugin to remix.
 
 To import ( the ES6 way) with NPM use:
 ```javascript
-import { createIframeClient } from '@remixproject/plugin'
-const client = createIframeClient()
+import { createClient } from '@remixproject/plugin'
+const client = createClient()
 ```
 Or if you are using unpkg use:
 ```javascript
-const { createIframeClient } = remixPlugin
-const client = createIframeClient()
+const { createClient } = remixPlugin
+const client = createClient()
 ```
 
 
@@ -113,7 +113,7 @@ Remix will automatically create a `<link/>` tag in the header of your plugin wit
 
 If you really want to use your own theme, you can use the `customTheme` flag in the option :
 ```typescript
-const client = createIframeClient({ customTheme: true })
+const client = createClient({ customTheme: true })
 ```
 
 #### Custom Api
@@ -136,7 +136,7 @@ const customApi: ProfileMap<RemixIDE> = Object.freeze({
   ...remixProfiles,
   box: boxProfile
 });
-const client = createIframeClient({ customApi })
+const client = createClient({ customApi })
 ```
 
 > You'll need Typescript > 3.4 to leverage the types.
@@ -147,5 +147,5 @@ Plugins communicate with the IDE through the `postMessage` API. It means that `P
 If you're developing a plugin with your IDE running on `localhost` you'll need to specify the port on which your IDE runs. By default the port used is *8080*. To change it you can do:
 ```typescript
 const devMode = { port: 3000 }
-const client = createIframeClient({ devMode })
+const client = createClient({ devMode })
 ```

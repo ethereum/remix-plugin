@@ -10,7 +10,7 @@ Similar to `@remixproject/plugin-iframe`, the webview connector will connect to 
 If you do not expose any API you can create an instance like this :
 ```html
 <script>
-  const client = createWebsocketClient(ws)
+  const client = createClient(ws)
   client.onload(async () => {
     const data = client.call('filemanager', 'readFile', 'ballot.sol')
   })
@@ -26,7 +26,7 @@ If you need to expose an API to other plugin you need to extends the class:
       console.log('Hello World')
     }
   }
-  const client = createWebsocketClient(ws)
+  const client = createClient(ws)
   client.onload(async () => {
     const data = client.call('filemanager', 'readFile', 'ballot.sol')
   })
