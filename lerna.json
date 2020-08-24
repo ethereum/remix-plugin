@@ -1,10 +1,22 @@
 {
-  "packages": ["dist/packages/**/*"],
-  "version": "3.0.0",
+  "packages": [
+    "dist/packages/**/*",
+    "packages/**/*"
+  ],
+  "version": "0.3.0-beta.1",
   "command": {
+    "version": {
+      "ignoreChanges": [
+        "dist/"
+      ],
+      "message": "chore(version): pump version %s"
+    },
     "publish": {
-      "ignoreChanges": ["ignored-file", "*.md"],
-      "message": "chore(release): publish version"
+      "ignoreChanges": [
+        "ignored-file",
+        "*.md"
+      ],
+      "message": "chore(release): publish version %s"
     }
   }
 }
