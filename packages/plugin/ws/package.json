@@ -3,5 +3,19 @@
   "version": "0.3.0-beta.2",
   "peerDependencies": {
     "ws": "^7.3.1"
-  }
+  },
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/ws#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "author": {
+    "name": "GrandSchtroumpf",
+    "email": "francois.guezengar@hotmail.fr"
+  },
+  "contributors": [{
+    "name": "Yann Levreau",
+    "email": "yann@ethdev.com"
+  }],
+  "license": "MIT"
 }
