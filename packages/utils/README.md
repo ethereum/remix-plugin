@@ -1,7 +1,3 @@
-# utils
+# plugin-utils
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `ng test utils` to execute the unit tests via [Jest](https://jestjs.io).
+A simple utils library used by `@remixproject/engine` & `@remixproject/plugin`.
