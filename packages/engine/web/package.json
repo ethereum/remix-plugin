@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-web",
-  "version": "0.3.0-beta.2",
+  "version": "0.3.0-beta.3",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/web#readme",
   "repository": {
     "type": "git",
@@ -10,10 +10,12 @@
     "name": "GrandSchtroumpf",
     "email": "francois.guezengar@hotmail.fr"
   },
-  "contributors": [{
-    "name": "Yann Levreau",
-    "email": "yann@ethdev.com"
-  }],
+  "contributors": [
+    {
+      "name": "Yann Levreau",
+      "email": "yann@ethdev.com"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/ethereum/remix-plugin/issues"
   },
