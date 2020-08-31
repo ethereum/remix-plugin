@@ -1,4 +1,8 @@
 export interface Theme {
+  /** @deprecated Use colors directly instead */
+  url?: string
+  /** @deprecated Use brightness instead */
+  quality?: 'dark' | 'light'
   brightness: 'dark' | 'light'
   colors: {
     surface: string
