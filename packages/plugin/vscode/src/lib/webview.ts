@@ -19,7 +19,7 @@ export class WebviewConnector implements ClientConnector {
   origin: string
   isVscode: boolean
 
-  constructor(private options: PluginOptions<any>) {
+  constructor(private options: Partial<PluginOptions<any>> = {}) {
     this.isVscode = !!acquireVsCodeApi
     this.source = this.isVscode ? acquireVsCodeApi() : window.parent
   }
@@ -42,10 +42,6 @@ export class WebviewConnector implements ClientConnector {
       if (!event.data) throw new Error('No data')
       // Support for iframe
       if (!this.isVscode) {
-        // Check that the origin is the right one
-        const devMode = this.options.devMode
-        const isGoodOrigin = await checkOrigin(event.origin, devMode)
-        if (!isGoodOrigin) return
         if (isHandshake(event.data)) {
           this.origin = event.origin
           this.source = event.source as Window
@@ -61,7 +57,7 @@ export class WebviewConnector implements ClientConnector {
  * Connect a Webview plugin client to a web engine
  * @param client An optional websocket plugin client to connect to the engine.
  */
-export const createWebviewClient = <
+export const createClient = <
   P extends Api,
   App extends ApiMap
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {

@@ -13,12 +13,12 @@ The repository manage multiple projects related to remix plugins. It's devided i
 
 The core component of the engine is the `@remixproject/engine` library. It can be extended to run in different environments.
 
-| Name                                                                     | Latest Version       |
-| ------------------------------------------------------------------------ | :------------------: |
-| [@remixproject/engine](/packages/engine/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/engine.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine) |
-| [@remixproject/engine-vscode](/packages/engine/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/engine-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-vscode) |
-| [@remixproject/engine-web](/packages/engine/web)                         | [![badge](https://img.shields.io/npm/v/@remixproject/engine-web.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-web) |
-| [@remixproject/engine-node](/packages/engine/node)                       | [![badge](https://img.shields.io/npm/v/@remixproject/engine-node.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-node) |
+| Name                                                                     | Latest Version       | Next Version
+| ------------------------------------------------------------------------ | :------------------: | :------------------:
+| [@remixproject/engine](/packages/engine/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/engine/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine) | [![badge](https://img.shields.io/npm/v/@remixproject/engine/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine)
+| [@remixproject/engine-vscode](/packages/engine/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/engine-vscode/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-vscode) | [![badge](https://img.shields.io/npm/v/@remixproject/engine-vscode/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-vscode)
+| [@remixproject/engine-web](/packages/engine/web)                         | [![badge](https://img.shields.io/npm/v/@remixproject/engine-web/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-web) | [![badge](https://img.shields.io/npm/v/@remixproject/engine-web/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-web)
+| [@remixproject/engine-node](/packages/engine/node)                       | [![badge](https://img.shields.io/npm/v/@remixproject/engine-node/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-node) | [![badge](https://img.shields.io/npm/v/@remixproject/engine-node/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine-node)
 
 > To create a new environment connector check out [@remixproject/engine](/packages/engine/core). 
 
@@ -27,12 +27,12 @@ The core component of the engine is the `@remixproject/engine` library. It can b
 
 The core component of the plugin is the `@remixproject/plugin` library. It can be extended to run in different environments.
 
-| Name                                                                     | Latest Version       |
-| ------------------------------------------------------------------------ | :------------------: |
-| [@remixproject/plugin](/packages/plugin/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/plugin.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin) |
-| [@remixproject/plugin-vscode](/packages/plugin/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-vscode.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-vscode) |
-| [@remixproject/plugin-iframe](/packages/plugin/iframe)                         | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-iframe.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-iframe) |
-| [@remixproject/plugin-child-process](/packages/plugin/child-process)                       | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-child-process.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-child-process) |
+| Name                                                                     | Latest Version       | Next Version
+| ------------------------------------------------------------------------ | :------------------: | :------------------:
+| [@remixproject/plugin](/packages/plugin/core)                            | [![badge](https://img.shields.io/npm/v/@remixproject/plugin/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin)
+| [@remixproject/plugin-vscode](/packages/plugin/vscode)                   | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-vscode/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-vscode) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-vscode/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-vscode)
+| [@remixproject/plugin-iframe](/packages/plugin/iframe)                         | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-iframe/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-iframe) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-iframe/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-iframe)
+| [@remixproject/plugin-child-process](/packages/plugin/child-process)                       | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-child-process/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-child-process) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-child-process/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-child-process)
 
 > To create a new environment connector check out [@remixproject/plugin](/packages/plugin/core). 
 
@@ -41,9 +41,9 @@ The core component of the plugin is the `@remixproject/plugin` library. It can b
 
 Remix plugin offers a set of common API for plugin to be implemented. This set of API is used in [remix-ide](https://remix.ethereum.org), therefore every plugin running inside remix-ide should be able to run in an engine that implements theses APIs.
 
-| Name                               | Latest Version       |
-| ---------------------------------- | :------------------: |
-| [@remixproject/plugin-api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api)
+| Name                               | Latest Version       | Next Version
+| ---------------------------------- | :------------------: | :------------------:
+| [@remixproject/plugin-api](/packages/api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api/latest.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api) | [![badge](https://img.shields.io/npm/v/@remixproject/plugin-api/next.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/plugin-api)
 
 
 
