@@ -50,9 +50,8 @@ export class WebviewConnector implements ClientConnector {
       if (!event.data) throw new Error('No data')
       // Support for iframe
       if (!this.isVscode) {
-        // Check that the origin is the right one
-        const devMode = this.options.devMode
-        const isGoodOrigin = await checkOrigin(event.origin, devMode)
+        // Check that the origin is the right one (if any defined in the options)
+        const isGoodOrigin = await checkOrigin(event.origin, this.options)
         if (!isGoodOrigin) return
         if (isHandshake(event.data)) {
           this.origin = event.origin

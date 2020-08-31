@@ -1,1 +1,1 @@
-export * from './lib/plugin-webview';
+export * from './lib/connector'
