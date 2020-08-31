@@ -9,6 +9,7 @@ import {
   PluginOptions,
   checkOrigin
 } from '@remixproject/plugin'
+import { Theme } from '@remixproject/plugin-api';
 
 declare const acquireVsCodeApi: any
 
@@ -64,19 +65,6 @@ export class WebviewConnector implements ClientConnector {
   }
 }
 
-
-function applyTheme(theme: Theme) {
-  for (const [key, value] of Object.entries(theme.colors)) {
-    document.documentElement.style.setProperty(`--${toKebabCase(key)}`, value);
-  }
-  for (const [key, value] of Object.entries(theme.breakpoints)) {
-    document.documentElement.style.setProperty(`--breakpoint-${key}`, `${value}px`);
-  }
-  document.documentElement.style.setProperty(`--font-family`, theme.fontFamily);
-  document.documentElement.style.setProperty(`--space`, `${theme.space}px`);
-
-}
-
 /**
  * Connect a Webview plugin client to a web engine
  * @param client An optional websocket plugin client to connect to the engine.
@@ -90,5 +78,57 @@ export const createClient = <
   const connector = new WebviewConnector(options)
   connectClient(connector, c)
   applyApi(c)
+  if (!options.customTheme) {
+    listenOnThemeChanged(c)
+  }
   return client as any
 }
+
+/** Set the theme variables in the :root */
+function applyTheme(theme: Theme) {
+  document.documentElement.style.setProperty(`--brightness`, theme.brightness);
+  for (const [key, value] of Object.entries(theme.colors)) {
+    document.documentElement.style.setProperty(`--${toKebabCase(key)}`, value);
+  }
+  for (const [key, value] of Object.entries(theme.breakpoints)) {
+    document.documentElement.style.setProperty(`--breakpoint-${key}`, `${value}px`);
+  }
+  document.documentElement.style.setProperty(`--font-family`, theme.fontFamily);
+  document.documentElement.style.setProperty(`--space`, `${theme.space}px`);
+}
+
+/** Start listening on theme changed */
+async function listenOnThemeChanged(client: PluginClient) {
+  let cssLink: HTMLLinkElement;
+  // Memorized the css link but only create it when needed
+  const getLink = () => {
+    if (!cssLink) {
+      const cssLink = document.createElement('link')
+      cssLink.setAttribute('rel', 'stylesheet')
+      document.head.prepend(cssLink)
+    }
+    return cssLink;
+  }
+
+  // If there is a url in the theme, use it
+  const setLink = (theme: Theme) => {
+    if (theme.url) {
+      getLink().setAttribute('href', theme.url)
+      document.documentElement.style.setProperty('--theme', theme.quality)
+    }
+  }
+
+  client.onload(async () => {
+    // On Change
+    client.on('theme', 'themeChanged', (theme: Theme) => {
+      setLink(theme);
+      applyTheme(theme);
+    })
+    // Initial load
+    const theme = await client.call('theme', 'currentTheme')
+    setLink(theme);
+    applyTheme(theme);
+  })
+  return cssLink
+}
+
