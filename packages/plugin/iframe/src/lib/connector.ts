@@ -53,7 +53,7 @@ export class IframeConnector implements ClientConnector {
  * @param client An optional iframe client to connect to the engine
  * @example Let the function create a client
  * ```typescript
- * const client = createIframeClient()
+ * const client = createClient()
  * ```
  * @example With a custom client
  * ```typescript
@@ -63,10 +63,10 @@ export class IframeConnector implements ClientConnector {
  *   console.log('Hello World')
  *  }
  * }
- * const client = createIframeClient(new MyPlugin())
+ * const client = createClient(new MyPlugin())
  * ```
  */
-export const createIframeClient = <
+export const createClient = <
   P extends Api,
   App extends ApiMap = RemixApi
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {

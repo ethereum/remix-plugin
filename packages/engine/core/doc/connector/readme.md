@@ -37,7 +37,7 @@ export interface ClientConnector {
 ```
 
 ```typescript
-import { ClientConnector, createClient, PluginClient, Message } from '@remixproject/plugin'
+import { ClientConnector, createConnectorClient, PluginClient, Message } from '@remixproject/plugin'
 
 export class SocketIOConnector implements ClientConnector {
 
@@ -53,7 +53,7 @@ export class SocketIOConnector implements ClientConnector {
 // A simple wrapper function for the plugin developer
 export function createSocketIOClient(socket, client?: PluginClient) {
   const connector = new SocketIOConnector(socket)
-  return createClient(connector, client)
+  return createConnectorClient(connector, client)
 }
 ```
 

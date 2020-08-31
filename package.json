@@ -9,6 +9,7 @@
     "test": "nx affected:test  --parallel --maxParallel=3",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
+    "prepublish": "npm run build",
     "publish:latest": "lerna publish",
     "publish:canary": "lerna publish --canary",
     "publish:next": "lerna publish --dist-tag next",

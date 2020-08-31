@@ -5,7 +5,7 @@ If you do not expose any API you can create an instance like this :
 ```typescript
 const wss = new WebSocket.Server({ port: 8080 });
 wss.on('connection', (ws) => {
-  const client = createWebsocketClient(ws)
+  const client = createClient(ws)
 })
 ```
 
@@ -19,6 +19,6 @@ class MyPlugin extends PluginClient {
 }
 const wss = new WebSocket.Server({ port: 8080 });
 wss.on('connection', (ws) => {
- const client = createWebsocketClient(ws, new MyPlugin())
+ const client = createClient(ws, new MyPlugin())
 })
 ```

@@ -1,8 +1,8 @@
 import { remixProfiles } from '@remixproject/plugin-api'
-import { createClient } from '../src'
+import { createConnectorClient } from '../src'
 
 describe('Remix Api', () => {
-  const client = createClient({
+  const client = createConnectorClient({
     send() {},
     on() {}
   })

@@ -1,10 +1,22 @@
 {
-  "packages": ["dist/packages/**/*"],
-  "version": "3.0.0",
+  "packages": [
+    "packages/**/*"
+  ],
+  "version": "0.3.0-beta.3",
+  "publishConfig": {
+    "access": "public",
+    "directory": "dist/packages"
+  },
   "command": {
+    "version": {
+      "message": "chore(version): bump version to %s",
+      "yes": true,
+      "noPush": true,
+      "noGitTagVersion": true
+    },
     "publish": {
-      "ignoreChanges": ["ignored-file", "*.md"],
-      "message": "chore(release): publish version"
+      "contents": "dist/packages",
+      "message": "chore(release): publish version %s"
     }
   }
 }
