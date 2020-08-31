@@ -5,9 +5,9 @@ import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
 
 function getTheme(color: ColorTheme): Theme {
   if (color.kind === ColorThemeKind.Dark) {
-    return { quality: 'dark', url: '' }
+    return { brightness: 'dark', url: '' }
   } else if (color.kind === ColorThemeKind.Light) {
-    return { quality: 'light', url: '' }
+    return { brightness: 'light', url: '' }
   }
 }
 

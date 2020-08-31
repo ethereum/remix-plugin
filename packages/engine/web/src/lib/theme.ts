@@ -1,32 +1,22 @@
 import { Plugin } from '@remixproject/engine'
 import { API } from '@remixproject/plugin-utils'
 import { ITheme, Theme, themeProfile } from '@remixproject/plugin-api'
-import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
-
-function getTheme(color: ColorTheme): Theme {
-  if (color.kind === ColorThemeKind.Dark) {
-    return { quality: 'dark', url: '' }
-  } else if (color.kind === ColorThemeKind.Light) {
-    return { quality: 'light', url: '' }
-  }
-}
 
 export class ThemePlugin extends Plugin implements API<ITheme> {
-  listener: Disposable
+  protected theme: Theme
   constructor() {
     super(themeProfile)
   }
 
-  onActivation() {
-    this.listener = window.onDidChangeActiveColorTheme(color => this.emit('themeChanged', getTheme(color)))
+  /** Internal API to set the current theme */
+  setTheme(theme: Theme) {
+    this.theme = theme
+    this.emit('themeChanged', theme)
   }
 
-  onDeactivation() {
-    this.listener.dispose()
-  }
-
+  /** External API to get the current theme */
   currentTheme(): Theme {
-    return getTheme(window.activeColorTheme)
+    return this.theme
   }
 
 }
