@@ -40,111 +40,53 @@ export default class FileManagerPlugin extends CommandPlugin {
     super(profile);
   }
   /** Open the content of the file in the context (eg: Editor) */
-  open(path: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      let uri = Uri.file(path);
-      commands.executeCommand('vscode.open', uri)
-        .then(() => {
-          resolve(true);
-        })
-    })
+  open(path: string): Thenable<boolean> {
+    const uri = Uri.parse(path);
+    return commands.executeCommand('vscode.open', uri).then(() => true);
   }
   /** Set the content of a specific file */
-  writeFile(path: string, data: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const turi = Uri.parse(path);
-      const encoder = new TextEncoder();
-      const uint8Array = encoder.encode(data);
-      workspace.fs.writeFile(turi, Uint8Array.from(uint8Array)).then(() => {
-        resolve();
-      });
-    });
+  writeFile(path: string, data: string): Thenable<void> {
+    const uri = Uri.parse(path);
+    const encoder = new TextEncoder();
+    const uint8Array = encoder.encode(data);
+    return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array)).then(() => { });
   }
   /** Return the content of a specific file */
-  readFile(path: string): Promise<String> {
-    return new Promise((resolve, reject) => {
-      const furi = Uri.parse(path);
-      workspace.fs.readFile(furi).then((content) => {
-        const b = Buffer.from(content);
-        const bs = b.toString("utf-8");
-        resolve(bs);
-      });
-    });
+  readFile(path: string): Thenable<String> {
+    const uri = Uri.parse(path);
+    return workspace.fs.readFile(uri).then(content => Buffer.from(content).toString("utf-8"));
   }
   /** Change the path of a file */
-  rename(oldPath: string, newPath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const source = Uri.parse(oldPath);
-      const target = Uri.parse(newPath);
-      workspace.fs.rename(source, target)
-        .then(() => {
-          resolve();
-        });
-    });
+  rename(oldPath: string, newPath: string): Thenable<void> {
+    const source = Uri.parse(oldPath);
+    const target = Uri.parse(newPath);
+    return workspace.fs.rename(source, target).then(() => { });
   }
   /** Upsert a file with the content of the source file */
-  copyFile(src: string, dest: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const source = Uri.parse(src);
-      const target = Uri.parse(dest);
-      workspace.fs.copy(source, target).then(() => {
-        resolve();
-      });
-    });
+  copyFile(src: string, dest: string): Thenable<void> {
+    const source = Uri.parse(src);
+    const target = Uri.parse(dest);
+    return workspace.fs.copy(source, target).then(() => { });
   }
   /** Create a directory */
-  mkdir(path: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const duri = Uri.parse(path);
-      workspace.fs.createDirectory(duri).then(() => {
-        resolve();
-      });
-    });
+  mkdir(path: string): Thenable<void> {
+    const uri = Uri.parse(path);
+    return workspace.fs.createDirectory(uri).then(() => { });
   }
   /** Get the list of files in the directory */
-  readdir(path: string): Promise<[string, FileType][]> {
-    return new Promise((resolve, reject) => {
-      const duri = Uri.parse(path);
-      workspace.fs.readDirectory(duri).then((data) => {
-        resolve(data);
-      });
-    });
+  readdir(path: string): Thenable<[string, FileType][]> {
+    const uri = Uri.parse(path);
+    return workspace.fs.readDirectory(uri).then(data => data);
   }
   // ------------------------------------------
   // Legacy API. To be removed.
   // ------------------------------------------
-  async getFolder(path: string): Promise<Folder> {
-    try {
-      const duri = Uri.parse(path);
-      const filestat: FileStat = await workspace.fs.stat(duri);
-      let folder: Folder;
-      folder[path] = {
-        isDirectory: filestat.type == FileType.Directory ? true : false,
-      }
-      return folder;
-    } catch (error) {
-      throw error;
-    }
-  }
+  getFolder = this.readdir;
+  getFile = this.readFile;
+  setFile = this.writeFile;
+  switchFile = this.open;
   getCurrentFile(): string {
     const fileName = window.activeTextEditor ? window.activeTextEditor.document.fileName : undefined;
     return fileName;
-  }
-  async getFile(path: string): Promise<string> {
-    try {
-      const furi = Uri.parse(path);
-      const content = await workspace.fs.readFile(furi);
-      const b = Buffer.from(content);
-      const bs = b.toString("utf-8");
-      return bs;
-    } catch (error) {
-      throw error;
-    }
-  }
-  setFile(path: string, content: string): void {
-    return;
-  }
-  switchFile(path: string): void {
-    return;
   }
 }
