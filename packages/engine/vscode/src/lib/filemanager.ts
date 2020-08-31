@@ -49,7 +49,7 @@ export default class FileManagerPlugin extends CommandPlugin {
     const uri = Uri.parse(path);
     const encoder = new TextEncoder();
     const uint8Array = encoder.encode(data);
-    return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array)).then(() => { });
+    return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array));
   }
   /** Return the content of a specific file */
   readFile(path: string): Thenable<String> {
@@ -60,18 +60,18 @@ export default class FileManagerPlugin extends CommandPlugin {
   rename(oldPath: string, newPath: string): Thenable<void> {
     const source = Uri.parse(oldPath);
     const target = Uri.parse(newPath);
-    return workspace.fs.rename(source, target).then(() => { });
+    return workspace.fs.rename(source, target);
   }
   /** Upsert a file with the content of the source file */
   copyFile(src: string, dest: string): Thenable<void> {
     const source = Uri.parse(src);
     const target = Uri.parse(dest);
-    return workspace.fs.copy(source, target).then(() => { });
+    return workspace.fs.copy(source, target);
   }
   /** Create a directory */
   mkdir(path: string): Thenable<void> {
     const uri = Uri.parse(path);
-    return workspace.fs.createDirectory(uri).then(() => { });
+    return workspace.fs.createDirectory(uri);
   }
   /** Get the list of files in the directory */
   readdir(path: string): Thenable<[string, FileType][]> {
