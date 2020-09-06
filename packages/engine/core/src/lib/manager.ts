@@ -60,21 +60,16 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param profile The Updated version of the plugin
    * @note Only the caller plugin should be able to update its profile
    */
-  updateProfile(profile: Partial<Profile>) {
-    if (!profile) return
-    if (profile.name && profile.name !== this.requestFrom) {
-      throw new Error('A plugin cannot change its name.')
+  async updateProfile(to: Partial<Profile>) {
+    if (!to) return
+    if (!this.profiles[to.name]) {
+      throw new Error(`Plugin ${to.name} is not register, you cannot update it's profile.`)
     }
-    const name = this.requestFrom
-    if (!this.profiles[name]) {
-      throw new Error(`Plugin ${name} is not register, you cannot update it's profile.`)
-    }
-    if (profile['url'] && profile['url'] !== this.profiles[name]['url']) {
-      throw new Error('Url from Profile cannot be updated.')
-    }
+    const from = await this.getProfile(this.requestFrom)
+    await this.canUpdateProfile(from, to)
     this.profiles[name] = {
-      ... this.profiles[name],
-      ...profile
+      ...this.profiles[name],
+      ...to
     }
     this.emit('profileUpdated', this.profiles[name])
   }
@@ -194,7 +189,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @note This method should be overrided
    */
   async canDeactivate(from: Profile, to: Profile) {
-    if (from.name === 'manager') {
+    if (from.name === 'manager' || from.name === to.name) {
       return true
     }
     return false
@@ -211,6 +206,22 @@ export class PluginManager extends Plugin implements BasePluginManager {
     return true
   }
 
+
+  /**
+   * Check if a plugin can update profile of another one
+   * @param from Profile of the caller plugin
+   * @param to Updates on the profile of the target plugin
+   * @note This method can be overrided
+   */
+  async canUpdateProfile(from: Profile, to: Partial<Profile>) {
+    if (to.name && from.name !== to.name) {
+      throw new Error('A plugin cannot change its name.')
+    }
+    if (to['url'] && to['url'] !== this.profiles[to.name]['url']) {
+      throw new Error('Url from Profile cannot be updated.')
+    }
+    return true;
+  }
 }
 
 
