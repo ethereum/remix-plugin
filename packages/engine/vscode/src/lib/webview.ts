@@ -1,6 +1,6 @@
 import { PluginConnector, PluginConnectorOptions} from '@remixproject/engine'
 import { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
-import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri } from 'vscode'
+import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable } from 'vscode'
 import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
 import { get } from 'https'
@@ -14,6 +14,7 @@ interface WebviewOptions extends PluginConnectorOptions {
 }
 
 export class WebviewPlugin extends PluginConnector {
+  private listeners: Disposable[] = [];
   panel?: WebviewPanel
   options: WebviewOptions
 
@@ -36,17 +37,18 @@ export class WebviewPlugin extends PluginConnector {
     if (this.options.context) {
       const { extensionPath } = this.options.context
       this.panel = createWebview(this.profile, url, extensionPath, this.options)
-      this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg))
-      this.options.context.subscriptions.push(this.panel)
+      this.listeners = [
+        this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg)),
+        this.panel.onDidDispose(_ => this.call('manager', 'deactivatePlugin', this.name)),
+        this.panel,
+      ]
     } else {
       throw new Error(`WebviewPlugin "${this.name}" `)
     }
   }
 
   protected disconnect(): void {
-    if (this.panel) {
-      this.panel.dispose()
-    }
+    this.listeners.forEach(disposable => disposable.dispose());
   }
 
 }
