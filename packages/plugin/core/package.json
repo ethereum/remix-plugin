@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.5",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/core#readme",
   "repository": {
     "type": "git",
