@@ -1,5 +1,5 @@
 import { CommandPlugin } from "@remixproject/engine-vscode";
-import { window, workspace, Uri, FileType, commands, FileStat } from "vscode";
+import { window, workspace, Uri, FileType, commands } from "vscode";
 
 const profile = {
   name: "fileManager",
