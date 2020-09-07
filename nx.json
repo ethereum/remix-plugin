@@ -69,7 +69,8 @@
       "onlyDependOnLibsWithTags": ["utils", "plugin"]
     },
     "plugin-webview": {
-      "tags": []
+      "tags": [],
+      "onlyDependOnLibsWithTags": ["utils", "plugin"]
     }
   },
   "workspaceLayout": {
