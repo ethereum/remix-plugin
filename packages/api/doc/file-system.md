@@ -41,16 +41,16 @@ const fileName = await client.call('fileManager', 'getCurrentFile')
 
 `open`:Open the content of the file in the context (eg: Editor).
 ```typescript
-const ballot = await client.fileManager.open('browser/ballot.sol')
+await client.fileManager.open('browser/ballot.sol')
 // OR
-const fileName = await client.call('fileManager', 'open', 'browser/ballot.sol')
+await client.call('fileManager', 'open', 'browser/ballot.sol')
 ```
 
 `readFile`: Get the content of a file.
 ```typescript
 const ballot = await client.fileManager.getFile('browser/ballot.sol')
 // OR
-const fileName = await client.call('fileManager', 'readFile', 'browser/ballot.sol')
+const ballot = await client.call('fileManager', 'readFile', 'browser/ballot.sol')
 ```
 
 `writeFile`: Set the content of a file.
