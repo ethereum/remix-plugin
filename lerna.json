@@ -16,7 +16,9 @@
     },
     "publish": {
       "contents": "dist/packages",
-      "message": "chore(release): publish version %s"
+      "message": "chore(release): publish version %s",
+      "noPush": true,
+      "noGitTagVersion": true
     }
   }
 }
