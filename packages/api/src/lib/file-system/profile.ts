@@ -1,8 +1,26 @@
 import { IFileSystem } from './api'
-import { LibraryProfile } from '@remixproject/plugin-utils'
+import { LocationProfile, Profile } from '@remixproject/plugin-utils'
 
-export const filSystemProfile: LibraryProfile<IFileSystem> = {
-  name: 'fs',
-  methods: ['getCurrentFile', 'getFile', 'getFolder', 'setFile', 'switchFile'],
-  events: ['currentFileChanged']
-}
+export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
+  name: "fileManager",
+  displayName: "Native Filemanager for Remix vscode plugin",
+  description: "Provides communication between vscode filemanager and remix-plugin",
+  location: "sidePanel",
+  documentation: "https://remix-ide.readthedocs.io/en/latest/solidity_editor.html",
+  version: "0.0.1",
+  methods: [
+    "getFolder",
+    "getCurrentFile",
+    "getFile",
+    "setFile",
+    "switchFile",
+    // NextFileSystemAPI
+    "open",
+    "writeFile",
+    "readFile",
+    "rename",
+    "copyFile",
+    "mkdir",
+    "readdir",
+  ],
+};
