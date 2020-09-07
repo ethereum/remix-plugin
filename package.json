@@ -5,10 +5,11 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx affected:build  --parallel --maxParallel=3",
+    "build": "nx run-many --target=build --with-deps --all",
     "test": "nx affected:test  --parallel --maxParallel=3",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
+    "build:affected": "nx affected:build  --parallel --maxParallel=3",
     "prepublish": "npm run build",
     "publish:latest": "lerna publish",
     "publish:canary": "lerna publish --canary",
