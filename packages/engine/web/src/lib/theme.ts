@@ -36,6 +36,8 @@ export function createTheme(params: DeepPartial<Theme> = {}): Theme {
       primaryContrast: 'white',
       secondary: '#e91e63',  // pink
       secondaryContrast: 'rgba(white, 0.7)',
+      success: '#4caf50',  // green
+      successContrast: 'rgba(black, 0.87)',
       warn: '#ff9800',  // orange
       warnContrast: 'white',
       error: '#f44336', // red

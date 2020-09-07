@@ -16,6 +16,8 @@ function getTheme(color: ColorTheme): Theme {
       primaryContrast: 'var(--vscode-button-foreground)',
       secondary: 'var(--vscode-button-secondaryBackground)',
       secondaryContrast: 'var(--vscode-button-secondaryForeground)',
+      success: 'var(--vscode-button-background)', // Same as primary: no success color in vscode
+      successContrast: 'var(--vscode-button-foreground)',
       warn: 'var(--vscode-inputValidation-warningBackground)',
       warnContrast: 'var(--vscode-inputValidation-warningForeground)',
       error: 'var(--vscode-inputValidation-errorBackground)',

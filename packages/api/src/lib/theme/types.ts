@@ -12,6 +12,8 @@ export interface Theme {
     primaryContrast: string
     secondary?: string
     secondaryContrast?: string
+    success?: string
+    successContrast?: string
     warn: string
     warnContrast: string
     error: string
@@ -23,6 +25,7 @@ export interface Theme {
     sm: number
     md: number
     lg: number
+    xl: number
   }
   fontFamily: string
   /** A unit to multiply for margin & padding */
