@@ -26,7 +26,15 @@ export interface PluginOptions<T extends ApiMap> {
   customTheme: boolean
   /** define a set of custom apis to implements on the client  */
   customApi: ProfileMap<T>
-  /** options only available for dev mode */
+  /** 
+   * Allow a set of origins
+   * You can either a list of origin or a url with a link of origins
+   */
+  allowOrigins: string | string[]
+  /** 
+   * options only available for dev mode
+   * @deprecated use allowOrigins instead if you want to limit the parent origin
+   */
   devMode: Partial<PluginDevMode>
 }
 

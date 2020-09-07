@@ -399,6 +399,43 @@
           }
         }
       }
+    },
+    "plugin-webview": {
+      "root": "packages/plugin/webview",
+      "sourceRoot": "packages/plugin/webview/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/plugin/webview/tsconfig.lib.json",
+              "packages/plugin/webview/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/plugin/webview/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/webview/jest.config.js",
+            "tsConfig": "packages/plugin/webview/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/webview",
+            "tsConfig": "packages/plugin/webview/tsconfig.lib.json",
+            "packageJson": "packages/plugin/webview/package.json",
+            "main": "packages/plugin/webview/src/index.ts",
+            "assets": ["packages/plugin/webview/*.md"]
+          }
+        }
+      }
     }
   },
   "cli": {

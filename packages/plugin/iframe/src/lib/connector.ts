@@ -34,8 +34,7 @@ export class IframeConnector implements ClientConnector {
     window.addEventListener('message', async (event: MessageEvent) => {
       if (!event.source) throw new Error('No source')
       // Check that the origin is the right one
-      const devMode = this.options.devMode
-      const isGoodOrigin = await checkOrigin(event.origin, devMode)
+      const isGoodOrigin = await checkOrigin(event.origin, this.options)
       if (!isGoodOrigin) return
       if (!event.data) throw new Error('No data')
       if (isHandshake(event.data)) {
