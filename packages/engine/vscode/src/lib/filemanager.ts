@@ -32,6 +32,7 @@ const profile = {
  * it should be possible to install https://github.com/ethereum/remix-plugins-directory and
  * import `NextFileSystemApi` interface and implement `FileManagerPlugin` following that interface
  * `export default class FileManagerPlugin extends CommandPlugin implements NextFileSystemApi`
+ * 
  */
 
 export default class FileManagerPlugin extends CommandPlugin {
