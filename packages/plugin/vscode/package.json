@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-vscode",
-  "version": "0.3.0-beta.7",
+  "version": "0.3.0-beta.9",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/vscode#readme",
   "repository": {
     "type": "git",
