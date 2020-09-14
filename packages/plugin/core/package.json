@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin",
-  "version": "0.3.0-beta.9",
+  "version": "0.3.0-beta.10",
   "dependencies": {
     "events": "3.2.0"
   },
