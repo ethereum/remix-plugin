@@ -3,8 +3,7 @@ import { MethodApi } from '@remixproject/plugin-utils';
 import { window, workspace, Uri, commands } from 'vscode';
 import { CommandPlugin } from './command';
 
-
-export default class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
+export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
   constructor() {
     super(filSystemProfile);
   }
