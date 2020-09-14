@@ -1,4 +1,4 @@
-import { CommandPlugin } from "@remixproject/engine-vscode";
+import { CommandPlugin, PluginOptions } from "@remixproject/engine-vscode";
 import { Annotation, HighlightPosition } from '@remixproject/plugin-api';
 import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor } from "vscode";
 
@@ -13,19 +13,27 @@ const profile = {
   version: "0.0.1",
   methods: ["highlight", "discardHighlight", "addAnnotation", "clearAnnotations"],
 };
-
+interface EditorOptions extends PluginOptions {
+  language: string;
+}
 export default class EditorPlugin extends CommandPlugin {
   private decoration: TextEditorDecorationType;
   private diagnosticCollection: DiagnosticCollection;
-  constructor() {
+  private editorOpts: EditorOptions;
+  constructor(options: EditorOptions) {
     super(profile);
+    this.setOptions(options);
+  }
+  setOptions(options: EditorOptions) {
+    this.editorOpts = options;
   }
   onActivation() {
     this.decoration = window.createTextEditorDecorationType({
       backgroundColor: 'editor.lineHighlightBackground',
       isWholeLine: true,
     });
-    this.diagnosticCollection = languages.createDiagnosticCollection('solidity');
+    const { language } = this.editorOpts;
+    this.diagnosticCollection = languages.createDiagnosticCollection(language);
   }
   onDeactivation() {
     this.decoration.dispose();
