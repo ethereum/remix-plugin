@@ -71,7 +71,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
       ...this.profiles[to.name],
       ...to
     }
-    this.emit('profileUpdated', this.profiles[name])
+    this.emit('profileUpdated', this.profiles[to.name])
   }
 
   /**
