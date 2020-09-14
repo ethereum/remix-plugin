@@ -74,7 +74,7 @@ export class TerminalPlugin extends Plugin {
   /** Write on the current terminal and execute command */
   exec(command: string, options?: Partial<TerminalOptions>) {
     const opts = getOptions(options);
-    const terminal = opts.name ? this.getTerminal(name) : this.active;
+    const terminal = opts.name ? this.getTerminal(opts.name) : this.active;
     if (opts.open) {
       terminal.show(true);
     }
