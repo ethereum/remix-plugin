@@ -1,4 +1,4 @@
-import { Plugin } from '@remixproject/engine'
+import { Plugin, PluginOptions } from '@remixproject/engine'
 import { Profile } from '@remixproject/plugin-utils'
 import { window, QuickPickOptions, InputBoxOptions } from 'vscode'
 
@@ -26,8 +26,10 @@ interface IWindowPlugin {
 
 export class WindowPlugin extends Plugin implements IWindowPlugin {
 
-  constructor() {
+  constructor(options: PluginOptions = {}) {
     super(windowProfile)
+    // Leave 1min to let the user interact with the window
+    super.setOptions({ queueTimeout: 60_000, ...options })
   }
 
   prompt(options?: InputBoxOptions) {

@@ -20,7 +20,7 @@ export class WebviewPlugin extends PluginConnector {
 
   constructor(profile: Profile & ExternalProfile, options: WebviewOptions) {
     super(profile)
-    this.options = options
+    this.setOptions(options)
   }
 
   setOptions(options: Partial<WebviewOptions>) {
