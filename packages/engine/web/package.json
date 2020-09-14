@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-web",
-  "version": "0.3.0-beta.8",
+  "version": "0.3.0-beta.9",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/web#readme",
   "repository": {
     "type": "git",
