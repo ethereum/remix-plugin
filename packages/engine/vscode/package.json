@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-vscode",
-  "version": "0.3.0-beta.3",
+  "version": "0.3.0-beta.7",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/vscode#readme",
   "repository": {
     "type": "git",
@@ -19,5 +19,6 @@
   "bugs": {
     "url": "https://github.com/ethereum/remix-plugin/issues"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "ca5c69be64ec4eaf7fe5d1d362726e75cb3b5726"
 }

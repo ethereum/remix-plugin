@@ -30,11 +30,13 @@
     },
     "api": {
       "tags": ["utils"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "onlyDependOnLibsWithTags": ["utils"],
+      "implicitDependency": ["utils"]
     },
     "engine-core": {
       "tags": ["engine"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "onlyDependOnLibsWithTags": ["utils"],
+      "implicitDependency": ["utils", "api"]
     },
     "engine-node": {
       "tags": [],
@@ -50,7 +52,8 @@
     },
     "plugin-core": {
       "tags": ["plugin"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "onlyDependOnLibsWithTags": ["utils"],
+      "implicitDependency": ["utils", "api"]
     },
     "plugin-iframe": {
       "tags": [],

@@ -6,8 +6,9 @@ Here is the list of native plugins exposed by Remix IDE
 
 _Click on the name of the api to get the full documentation._
 
+
 |API            |Name                                 |Description |
-|---------------|-------------------------------------|-----------|-------------
+|---------------|-------------------------------------|------------|
 |File System    |[fileManager](./doc/file-system.md)  |Manages the File System
 |Compiler       |[solidity](./doc/solidity.md)        |The solidity Compiler
 |Editor         |[editor](./doc/editor.md)            |Enables highlighting in the code Editor
@@ -16,3 +17,4 @@ _Click on the name of the api to get the full documentation._
 |Unit Testing   |[solidityUnitTesting](./doc/unit-testing.md) |Unit testing library in solidity
 |Settings       |[settings](./doc/settings.md)        |Global settings of the IDE
 |Content Import |[contentImport](./doc/content-import.md) |Import files from  github, swarm, ipfs, http or https.
+
