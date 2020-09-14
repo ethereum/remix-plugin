@@ -4,7 +4,7 @@ The vscode engine provide a list of connector & plugin to build an plugin engine
 npm install @remixproject/engine-vscode
 ```
 
-# Setup
+## Setup
 You can use remixproject engine to create a plugin system on top of vscode extension.
 For that you need to create an engine and start registering your plugins.
 
@@ -22,10 +22,10 @@ export async function activate(context: ExtensionContext) {
 }
 ```
 
-# Build-in plugins
+## Build-in plugins
 `@remixproject/engine-vscode` comes with build-in plugins for `vscode`.
 
-## webview
+### webview
 The webview plugin open a webview in the worspace and connect to it.
 The plugin must use [`@remixproject/plugin-webview`](../../plugin/webview/README.md) to be able to establish connection.
 
@@ -60,12 +60,12 @@ The url can be :
 
 > The url can also be local. In this case you must provide an **absolute path**.
 
-### Options
+#### Options
 - `context`: The context of the vscode extension.
 - `column`: The `ViewColumn` in which run the webview.
 - `relativeTo`: If url is relative, is it relative to 'workspace' or 'extension' (default to 'extension')
 
-## terminal
+### terminal
 The terminal plugin gives access to the current terminal in vscode.
 
 ```typescript
@@ -88,7 +88,7 @@ export async function activate(context: ExtensionContext) {
 ```
 
 
-## Window
+### Window
 Provides a access to the native window of vscode.
 
 ```typescript
@@ -110,7 +110,7 @@ export async function activate(context: ExtensionContext) {
 }
 ```
 
-## File Manager
+### File Manager
 Provides access to the file system through vscode api.
 ```typescript
 import { FileManagerPlugin } from '@remixproject/engine-vscode'
@@ -132,7 +132,7 @@ export async function activate(context: ExtensionContext) {
 }
 ```
 
-## Theme
+### Theme
 Remix's standard theme wrapper around vscode's one.
 Use this plugin if you load plugins that want to take advantage of the Remix's standard theme. Else consider using [vscode's color api](https://code.visualstudio.com/api/references/theme-color) in your webview directly.
 ```typescript
