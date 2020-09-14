@@ -67,8 +67,8 @@ export class PluginManager extends Plugin implements BasePluginManager {
     }
     const from = await this.getProfile(this.requestFrom)
     await this.canUpdateProfile(from, to)
-    this.profiles[name] = {
-      ...this.profiles[name],
+    this.profiles[to.name] = {
+      ...this.profiles[to.name],
       ...to
     }
     this.emit('profileUpdated', this.profiles[name])
