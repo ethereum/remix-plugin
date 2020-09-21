@@ -1,7 +1,8 @@
-import { CommandPlugin, PluginOptions } from "@remixproject/engine-vscode";
 import { editorProfile, IEditor, Annotation, HighlightPosition } from '@remixproject/plugin-api';
 import { MethodApi } from '@remixproject/plugin-utils';
 import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor } from "vscode";
+import { PluginOptions } from "@remixproject/engine";
+import { CommandPlugin } from "./command";
 
 interface EditorOptions extends PluginOptions {
   language: string;
