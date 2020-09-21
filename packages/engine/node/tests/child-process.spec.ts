@@ -69,7 +69,7 @@ describe('ChildProcess plugin', () => {
 
   test('Deactivation', async () => {
     await plugin.activate()
-    plugin.deactivate()
+    await plugin.deactivate()
     expect(plugin.onDeactivation).toHaveBeenCalled()
     expect(plugin.process.off).toHaveBeenCalledTimes(1)
     expect(plugin.process.disconnect).toHaveBeenCalledTimes(1)

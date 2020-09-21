@@ -39,22 +39,22 @@ export abstract class PluginConnector extends Plugin {
    * Open connection with the plugin
    * @param url The transformed url the plugin should connect to
    */
-  protected abstract connect(url: string): void
+  protected abstract connect(url: string): any | Promise<any>
   /** Close connection with the plugin */
-  protected abstract disconnect(): void
+  protected abstract disconnect(): any | Promise<any>
 
-  activate() {
+  async activate() {
     const url = this.options.transformUrl
       ? this.options.transformUrl(this.profile)
       : transformUrl(this.profile)
-    this.connect(url)
-    super.activate()
+    await this.connect(url)
+    return super.activate()
   }
 
-  deactivate() {
+  async deactivate() {
     this.loaded = false
-    this.disconnect()
-    super.deactivate()
+    await this.disconnect()
+    return super.deactivate()
   }
 
   /** Set options for an external plugin */
@@ -82,7 +82,7 @@ export abstract class PluginConnector extends Plugin {
       if (methods) {
         this.profile.methods = methods
       }
-      this.call('manager', 'updateProfile', this.profile)
+      await this.call('manager', 'updateProfile', this.profile)
       this.loaded = true
     } else {
       // If there is a broken connection we want send back the handshake to the plugin client
