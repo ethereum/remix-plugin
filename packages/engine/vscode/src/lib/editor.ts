@@ -10,21 +10,20 @@ export interface EditorOptions extends PluginOptions {
 export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   private decoration: TextEditorDecorationType;
   private diagnosticCollection: DiagnosticCollection;
-  private editorOpts: EditorOptions;
   constructor(options: EditorOptions) {
     super(editorProfile);
-    this.setOptions(options);
+    super.setOptions(options);
   }
   setOptions(options: EditorOptions) {
-    this.editorOpts = options;
+    super.setOptions(options);
   }
   onActivation() {
     this.decoration = window.createTextEditorDecorationType({
       backgroundColor: 'editor.lineHighlightBackground',
       isWholeLine: true,
     });
-    const { language } = this.editorOpts;
-    this.diagnosticCollection = languages.createDiagnosticCollection(language);
+    // @ts-ignore
+    this.diagnosticCollection = languages.createDiagnosticCollection(this.options.language);
   }
   onDeactivation() {
     this.decoration.dispose();
@@ -76,7 +75,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     diagnostics.push(new Diagnostic(range, annotation.text, severity));
     diagnosticMap.set(canonicalFile, diagnostics);
     diagnosticMap.forEach((diags, file) => {
-      this.diagnosticCollection.set(Uri.parse(file), diags);
+      this.diagnosticCollection.set(Uri.file(file), diags);
     });
   }
   async clearAnnotations(): Promise<void> {
