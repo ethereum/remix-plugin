@@ -1,11 +1,11 @@
 # Engine vscode
-The vscode engine provide a list of connector & plugin to build an plugin engine inside vscode.
+The **vscode engine** provides a list of connectors & plugins for a **plugin engine** that is built inside vscode.
 ```
 npm install @remixproject/engine-vscode
 ```
 
 ## Setup
-You can use remixproject engine to create a plugin system on top of vscode extension.
+You can use the remixproject engine to create a plugin system on top of a vscode extension.
 For that you need to create an engine and start registering your plugins.
 
 > checkout [@remixproject/engine documentation](../core/README.md) for more details.
@@ -26,7 +26,7 @@ export async function activate(context: ExtensionContext) {
 `@remixproject/engine-vscode` comes with build-in plugins for `vscode`.
 
 ### webview
-The webview plugin open a webview in the worspace and connect to it.
+The webview plugin opens a webview in the workspace and connects to it.
 The plugin must use [`@remixproject/plugin-webview`](../../plugin/webview/README.md) to be able to establish connection.
 
 ```typescript
@@ -89,7 +89,7 @@ export async function activate(context: ExtensionContext) {
 
 
 ### Window
-Provides a access to the native window of vscode.
+Provides access to the native window of vscode.
 
 ```typescript
 import { WindowPlugin } from '@remixproject/engine-vscode'
@@ -133,8 +133,9 @@ export async function activate(context: ExtensionContext) {
 ```
 
 ### Theme
-Remix's standard theme wrapper around vscode's one.
-Use this plugin if you load plugins that want to take advantage of the Remix's standard theme. Else consider using [vscode's color api](https://code.visualstudio.com/api/references/theme-color) in your webview directly.
+Remix's standard theme wrapper for vscode.
+Use this plugin to take advantage of the Remix's standard themes for your plugins.
+Otherwise, consider using [vscode's color api](https://code.visualstudio.com/api/references/theme-color) directly in your webview.
 ```typescript
 import { ThemePlugin } from '@remixproject/engine-vscode'
 import { Engine, Manager } from '@remixproject/engine';

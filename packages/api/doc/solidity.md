@@ -8,7 +8,7 @@
 |---------|-----------------------|------------|
 |_event_  |`compilationFinished`  |Triggered when a compilation finishes.
 |_method_ |`getCompilationResult` |Get the current result of the compilation.
-|_method_ |`compile`              |Run solidity compiler against a file.
+|_method_ |`compile`              |Run solidity compiler with a file.
 
 ## Examples
 

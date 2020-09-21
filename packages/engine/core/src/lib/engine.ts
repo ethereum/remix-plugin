@@ -12,7 +12,7 @@ export class Engine {
 
   private managerLoaded: () => void
   onRegistration?(plugin: Plugin): void
-  /** Update the options of the plugin when beeing registered */
+  /** Update the options of the plugin when being registered */
   setPluginOption?(profile: Profile): PluginOptions
 
   constructor(private manager: BasePluginManager) {
@@ -45,7 +45,7 @@ export class Engine {
 
   /**
    * Broadcast an event to the plugin listening
-   * @param emitter Plugin name that emit the event
+   * @param emitter Plugin name that emits the event
    * @param event The name of the event
    * @param payload The content of the event
    */
@@ -70,7 +70,7 @@ export class Engine {
    * @param listener The name of the plugin that listen on the event
    * @param emitter The name of the plugin that emit the event
    * @param event The name of the event
-   * @param cb Callback function to trigger when event is trigger
+   * @param cb Callback function to trigger when the event is trigger
    */
   private addListener(listener: string, emitter: string, event: string, cb: Function) {
     const eventName = listenEvent(emitter, event)
@@ -91,9 +91,9 @@ export class Engine {
   }
 
   /**
-   * Remove an event from the list of events of a listener
+   * Remove an event from the list of a listener's events
    * @param listener The name of the plugin that was listening on the event
-   * @param emitter The name of the plugin that emit the event
+   * @param emitter The name of the plugin that emitted the event
    * @param event The name of the event
    */
   private removeListener(listener: string, emitter: string, event: string) {
@@ -107,9 +107,9 @@ export class Engine {
   /**
    * Create a listener that listen only once on an event
    * @param listener The name of the plugin that listen on the event
-   * @param emitter The name of the plugin that emit the event
+   * @param emitter The name of the plugin that emitted the event
    * @param event The name of the event
-   * @param cb Callback function to trigger when event is trigger
+   * @param cb Callback function to trigger when event is triggered
    */
   private listenOnce(listener: string, emitter: string, event: string, cb: Function) {
     this.addListener(listener, emitter, event, (...args: any[]) => {
@@ -121,8 +121,8 @@ export class Engine {
 
   /**
    * Call a method of a plugin from another
-   * @param caller The name of the plugin that call the method
-   * @param path The path of the plugin that manage the method
+   * @param caller The name of the plugin that calls the method
+   * @param path The path of the plugin that manages the method
    * @param method The name of the method
    * @param payload The argument to pass to the method
    */
@@ -133,7 +133,7 @@ export class Engine {
     }
 
     // Get latest version of the profiles
-    const [ to, from ] = await Promise.all([
+    const [to, from] = await Promise.all([
       this.manager.getProfile(target),
       this.manager.getProfile(caller),
     ])
@@ -161,9 +161,9 @@ export class Engine {
   }
 
   /**
-   * Create an object to access easily any plugin registered
+   * Create an object to easily access any registered plugin
    * @param name Name of the caller plugin
-   * @note This method creates a snapshot at the time of the time of activation
+   * @note This method creates a snapshot at the time of activation
    */
   private async createApp(name: string): Promise<PluginApi<any>> {
     const getProfiles = Object.keys(this.plugins).map(key => this.manager.getProfile(key))
@@ -221,7 +221,7 @@ export class Engine {
   }
 
   /**
-   * Deactivate a plugin by removing all event listeners and making it inaccessible
+   * Deactivate a plugin by removing all its event listeners and making it inaccessible
    * @param name The name of the plugin
    * @note This method is trigger by the plugin manager when a plugin has been deactivated
    */
@@ -296,7 +296,7 @@ export class Engine {
       }
       this.plugins[plugin.name] = plugin
       this.manager.addProfile(plugin.profile)
-       // Update Error Handling for better debug
+      // Update Error Handling for better debug
       this.updateErrorHandler(plugin)
       // SetPluginOption is before onRegistration to let plugin update it's option inside onRegistration
       if (this.setPluginOption) {

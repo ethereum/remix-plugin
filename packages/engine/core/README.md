@@ -6,7 +6,7 @@ This is the core library used to create a new plugin engine.
 | -----------------------------------------------| :------------------: |
 | [@remixproject/engine](.)  | [![badge](https://img.shields.io/npm/v/@remixproject/engine.svg?style=flat-square)](https://www.npmjs.com/package/@remixproject/engine) |
 
-Use this library if you want to create a engine **for a new environment**.
+Use this library if you want to create an engine **for a new environment**.
 
 If you want to create an engine for an existing envrionment, use the specific library. For example : 
 - Engine on the web : [@remixproject/engine-web](../web)
@@ -62,7 +62,7 @@ manager.activatePlugin('plugin-name')
 ```
 
 ### Registration
-The registration make the plugin available for activation in the engine.
+The registration makes the plugin available for activation in the engine.
 
 To register a plugin you need: 
 - `Profile`: The ID card of your plugin.
@@ -88,12 +88,12 @@ const consolePlugin = new Console()
 engine.register(consolePlugin)
 ```
 
-> In the future this part will be manage by a `Marketplace` plugin.
+> In the future, this part will be manage by a `Marketplace` plugin.
 
 ### Activation
-The activation pocess is managed by the `PluginManager`.
+The activation process is managed by the `PluginManager`.
 
-Actvating a plugin makes it visible by other plugins. Now they can communicate.
+Activating a plugin makes it visible to other plugins. Now they can communicate.
 
 ```typescript
 manager.activatePlugin('console')
@@ -102,7 +102,7 @@ manager.activatePlugin('console')
 > The `PluginManager` is a plugin itself.
 
 ### Communication
-`Plugin` exposes a simple interface to communicate with each others : 
+`Plugin` exposes a simple interface for communicate between plugins : 
 
 - `call`: Call a method exposed by another plugin (This returns always a Promise).
 - `on`: Listen on event emitted by another plugin.

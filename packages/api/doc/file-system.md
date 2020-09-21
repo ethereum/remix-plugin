@@ -67,7 +67,7 @@ await client.fileManager.rename('browser/ballot.sol', 'browser/ERC20.sol')
 await client.call('fileManager', 'rename', 'browser/ballot.sol', 'browser/ERC20.sol')
 ```
 
-`copyFile`: Upsert a file with the content of the source file.
+`copyFile`: Insert a file with the content of the source file.
 ```typescript
 await client.fileManager.copyFile('browser/ballot.sol', 'browser/NewBallot.sol')
 // OR

@@ -5,13 +5,13 @@
 
 |Type     |Name                   |Description |
 |---------|-----------------------|------------|
-|_method_ |`testFromPath`         |Run a solidity test that is inside file system
+|_method_ |`testFromPath`         |Run a solidity test that is inside the file system
 |_method_ |`testFromSource`       |Run a solidity test file from the source
 
 ## Examples
 
 ### Methods
-`testFromPath`: Run a solidity test that is inside file system
+`testFromPath`: Run a solidity test that is inside the file system
 ```typescript
 const path = "browser/ballot_test.sol"
 
