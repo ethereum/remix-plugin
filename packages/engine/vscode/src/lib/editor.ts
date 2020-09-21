@@ -77,7 +77,6 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     diagnosticMap.forEach((diags, file) => {
       this.diagnosticCollection.set(Uri.parse(file), diags);
     });
-    return;
   }
   async clearAnnotations(): Promise<void> {
     return this.diagnosticCollection.clear();
