@@ -2,7 +2,7 @@
   "packages": [
     "packages/**/*"
   ],
-  "version": "0.3.0-beta.3",
+  "version": "0.3.0-beta.10",
   "publishConfig": {
     "access": "public",
     "directory": "dist/packages"
@@ -16,7 +16,9 @@
     },
     "publish": {
       "contents": "dist/packages",
-      "message": "chore(release): publish version %s"
+      "message": "chore(release): publish version %s",
+      "noPush": true,
+      "noGitTagVersion": true
     }
   }
 }

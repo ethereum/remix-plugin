@@ -32,7 +32,15 @@
             "tsConfig": "packages/engine/core/tsconfig.lib.json",
             "packageJson": "packages/engine/core/package.json",
             "main": "packages/engine/core/src/index.ts",
-            "assets": ["packages/engine/core/*.md"]
+            "assets": ["packages/engine/core/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/core"
           }
         }
       }
@@ -68,7 +76,15 @@
             "tsConfig": "packages/engine/node/tsconfig.lib.json",
             "packageJson": "packages/engine/node/package.json",
             "main": "packages/engine/node/src/index.ts",
-            "assets": ["packages/engine/node/*.md"]
+            "assets": ["packages/engine/node/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/node"
           }
         }
       }
@@ -104,7 +120,15 @@
             "tsConfig": "packages/engine/web/tsconfig.lib.json",
             "packageJson": "packages/engine/web/package.json",
             "main": "packages/engine/web/src/index.ts",
-            "assets": ["packages/engine/web/*.md"]
+            "assets": ["packages/engine/web/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/web"
           }
         }
       }
@@ -140,7 +164,15 @@
             "tsConfig": "packages/engine/vscode/tsconfig.lib.json",
             "packageJson": "packages/engine/vscode/package.json",
             "main": "packages/engine/vscode/src/index.ts",
-            "assets": ["packages/engine/vscode/*.md"]
+            "assets": ["packages/engine/vscode/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/vscode"
           }
         }
       }
@@ -176,7 +208,15 @@
             "tsConfig": "packages/utils/tsconfig.lib.json",
             "packageJson": "packages/utils/package.json",
             "main": "packages/utils/src/index.ts",
-            "assets": ["packages/utils/*.md"]
+            "assets": ["packages/utils/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/utils"
           }
         }
       }
@@ -212,7 +252,15 @@
             "tsConfig": "packages/api/tsconfig.lib.json",
             "packageJson": "packages/api/package.json",
             "main": "packages/api/src/index.ts",
-            "assets": ["packages/api/*.md"]
+            "assets": ["packages/api/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/api"
           }
         }
       }
@@ -248,7 +296,15 @@
             "tsConfig": "packages/plugin/core/tsconfig.lib.json",
             "packageJson": "packages/plugin/core/package.json",
             "main": "packages/plugin/core/src/index.ts",
-            "assets": ["packages/plugin/core/*.md"]
+            "assets": ["packages/plugin/core/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/core"
           }
         }
       }
@@ -284,7 +340,15 @@
             "tsConfig": "packages/plugin/iframe/tsconfig.lib.json",
             "packageJson": "packages/plugin/iframe/package.json",
             "main": "packages/plugin/iframe/src/index.ts",
-            "assets": ["packages/plugin/iframe/*.md"]
+            "assets": ["packages/plugin/iframe/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/iframe"
           }
         }
       }
@@ -320,7 +384,15 @@
             "tsConfig": "packages/plugin/vscode/tsconfig.lib.json",
             "packageJson": "packages/plugin/vscode/package.json",
             "main": "packages/plugin/vscode/src/index.ts",
-            "assets": ["packages/plugin/vscode/*.md"]
+            "assets": ["packages/plugin/vscode/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/vscode"
           }
         }
       }
@@ -359,7 +431,15 @@
             "tsConfig": "packages/plugin/child-process/tsconfig.lib.json",
             "packageJson": "packages/plugin/child-process/package.json",
             "main": "packages/plugin/child-process/src/index.ts",
-            "assets": ["packages/plugin/child-process/*.md"]
+            "assets": ["packages/plugin/child-process/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/child-process"
           }
         }
       }
@@ -395,7 +475,15 @@
             "tsConfig": "packages/plugin/ws/tsconfig.lib.json",
             "packageJson": "packages/plugin/ws/package.json",
             "main": "packages/plugin/ws/src/index.ts",
-            "assets": ["packages/plugin/ws/*.md"]
+            "assets": ["packages/plugin/ws/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/ws"
           }
         }
       }
@@ -432,7 +520,15 @@
             "tsConfig": "packages/plugin/webview/tsconfig.lib.json",
             "packageJson": "packages/plugin/webview/package.json",
             "main": "packages/plugin/webview/src/index.ts",
-            "assets": ["packages/plugin/webview/*.md"]
+            "assets": ["packages/plugin/webview/*.md"],
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/webview"
           }
         }
       }

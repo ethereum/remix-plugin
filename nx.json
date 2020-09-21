@@ -25,48 +25,40 @@
   },
   "projects": {
     "utils": {
-      "tags": ["utils"],
-      "onlyDependOnLibsWithTags": []
+      "tags": ["utils"]
     },
     "api": {
       "tags": ["utils"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "implicitDependency": ["utils"]
     },
     "engine-core": {
       "tags": ["engine"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "implicitDependency": ["utils", "api"]
     },
     "engine-node": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "engine"]
+      "tags": []
     },
     "engine-web": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "engine"]
+      "tags": []
     },
     "engine-vscode": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "engine"]
+      "tags": []
     },
     "plugin-core": {
       "tags": ["plugin"],
-      "onlyDependOnLibsWithTags": ["utils"]
+      "implicitDependency": ["utils", "api"]
     },
     "plugin-iframe": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+      "tags": []
     },
     "plugin-vscode": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+      "tags": []
     },
     "plugin-child-process": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+      "tags": []
     },
     "plugin-ws": {
-      "tags": [],
-      "onlyDependOnLibsWithTags": ["utils", "plugin"]
+      "tags": []
     },
     "plugin-webview": {
       "tags": []

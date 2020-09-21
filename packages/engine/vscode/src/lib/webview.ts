@@ -1,6 +1,6 @@
 import { PluginConnector, PluginConnectorOptions} from '@remixproject/engine'
 import { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
-import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable } from 'vscode'
+import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable, workspace } from 'vscode'
 import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
 import { get } from 'https'
@@ -9,6 +9,7 @@ import { parse as parseUrl } from 'url'
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
+  relativeTo?: 'workspace' | 'extension'
   column?: ViewColumn
   devMode?: boolean
 }
@@ -20,7 +21,7 @@ export class WebviewPlugin extends PluginConnector {
 
   constructor(profile: Profile & ExternalProfile, options: WebviewOptions) {
     super(profile)
-    this.options = options
+    this.setOptions(options)
   }
 
   setOptions(options: Partial<WebviewOptions>) {
@@ -35,8 +36,7 @@ export class WebviewPlugin extends PluginConnector {
 
   protected connect(url: string): void {
     if (this.options.context) {
-      const { extensionPath } = this.options.context
-      this.panel = createWebview(this.profile, url, extensionPath, this.options)
+      this.panel = createWebview(this.profile, url, this.options)
       this.listeners = [
         this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg)),
         this.panel.onDidDispose(_ => this.call('manager', 'deactivatePlugin', this.name)),
@@ -59,15 +59,27 @@ function isHttpSource(protocol: string) {
 
 
 /** Create a webview */
-export function createWebview(profile: Profile, url: string, extensionPath: string, options: WebviewOptions) {
+export function createWebview(profile: Profile, url: string, options: WebviewOptions) {
   const { protocol, path } = parseUrl(url)
   const isRemote = isHttpSource(protocol)
 
   if (isRemote) {
     return remoteHtml(url, profile, options)
   } else {
-    // If url is relative, make it asbolute based on the extension path
-    const fullPath = isAbsolute(path) ? path : join(extensionPath, path)
+    const relativeTo = options.relativeTo || 'extension';
+    let fullPath: string;
+    if (isAbsolute(path)) {
+      fullPath = path
+    } else if (relativeTo === 'extension') {
+      const { extensionPath } = options.context;
+      fullPath = join(extensionPath, path);
+    } else if (relativeTo === 'workspace') {
+      const root = workspace.workspaceFolders[0]?.uri.fsPath;
+      if (!root) {
+        throw new Error('No open workspace. Cannot find url of relative path: ' + path)
+      }
+      fullPath = join(root, path);
+    }
     return localHtml(fullPath, profile, options)
   }
 }
