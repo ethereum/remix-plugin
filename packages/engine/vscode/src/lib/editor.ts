@@ -1,27 +1,17 @@
 import { CommandPlugin, PluginOptions } from "@remixproject/engine-vscode";
-import { Annotation, HighlightPosition } from '@remixproject/plugin-api';
+import { editorProfile, IEditor, Annotation, HighlightPosition } from '@remixproject/plugin-api';
+import { MethodApi } from '@remixproject/plugin-utils';
 import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor } from "vscode";
 
-const profile = {
-  name: "editor",
-  displayName: "Native Editor plugin for Remix vscode plugin",
-  description: "Provides communication between vscode editor and remix-plugin",
-  kind: "editor",
-  permission: true,
-  location: "sidePanel",
-  documentation: "https://remix-ide.readthedocs.io/en/latest/solidity_editor.html",
-  version: "0.0.1",
-  methods: ["highlight", "discardHighlight", "addAnnotation", "clearAnnotations"],
-};
 interface EditorOptions extends PluginOptions {
   language: string;
 }
-export default class EditorPlugin extends CommandPlugin {
+export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   private decoration: TextEditorDecorationType;
   private diagnosticCollection: DiagnosticCollection;
   private editorOpts: EditorOptions;
   constructor(options: EditorOptions) {
-    super(profile);
+    super(editorProfile);
     this.setOptions(options);
   }
   setOptions(options: EditorOptions) {
@@ -38,7 +28,7 @@ export default class EditorPlugin extends CommandPlugin {
   onDeactivation() {
     this.decoration.dispose();
   }
-  highlight(position: HighlightPosition, filePath: string, hexColor: string): void {
+  async highlight(position: HighlightPosition, filePath: string, hexColor: string): Promise<void> {
     const editors = window.visibleTextEditors;
     // Parse `filePath` to ensure if a valid file path was supplied
     const editor = editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path);
@@ -57,15 +47,17 @@ export default class EditorPlugin extends CommandPlugin {
       throw new Error(`Could not find file ${filePath}`);
     }
   }
-  discardHighlight(): void {
+  async discardHighlight(): Promise<void> {
     return this.decoration.dispose();
   }
-  discardHighlightAt(line: number, filePath: string): void {}
+  async discardHighlightAt(line: number, filePath: string): Promise<void> {
+    return this.decoration.dispose();
+  }
   private getEditor(filePath?: string): TextEditor {
     const editors = window.visibleTextEditors;
     return filePath ? editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path) : window.activeTextEditor
   }
-  addAnnotation(annotation: Annotation, filePath?: string): void {
+  async addAnnotation(annotation: Annotation, filePath?: string): Promise<void> {
     // This function should append to existing map
     // Ref: https://code.visualstudio.com/api/language-extensions/programmatic-language-features#provide-diagnostics
     // const fileUri = window.activeTextEditor ? window.activeTextEditor.document.uri : undefined; // TODO: we might want to supply path to addAnnotation function
@@ -87,7 +79,7 @@ export default class EditorPlugin extends CommandPlugin {
     });
     return;
   }
-  clearAnnotations(): void {
+  async clearAnnotations(): Promise<void> {
     return this.diagnosticCollection.clear();
   }
 }
