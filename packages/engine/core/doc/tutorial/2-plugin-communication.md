@@ -5,7 +5,7 @@
 Each plugin can call methods exposed by other plugin. Let's see how to expose a method from one plugin and call it from another.
 
 1. Create Plugin that exposes a method
-You can extends the `Plugin` class to create your own plugin. The list of exposed methods are defined in the field `methods` of the profile: 
+You can extend the `Plugin` class to create your own plugin. The list of exposed methods are defined in the field `methods` of the profile: 
 ```typescript
 class FirstPlugin extends Plugin {
   constructor() {
@@ -20,7 +20,7 @@ class FirstPlugin extends Plugin {
 ```
 
 2. Create a Plugin that calls the `getVersion`
-The `Plugin` class provides a `call` method to make a request to other plugin's methods
+The `Plugin` class provides a `call` method to make a request to another plugin's methods
 
 > The `call` method is available only when the plugin is activated by the plugin manager
 
@@ -60,11 +60,11 @@ const firstVersion = await second.getFirstPluginVersion()
 
 ### Events
 
-Ever plugin can emit and listen events with : 
+Every plugin can emit and listen to events with : 
 - `emit`: Broadcast an event to all plugins listening.
-- `on`: Listen to one event of another plugin.
+- `on`: Listen to an event from another plugin.
 - `once`: Listen once to one event of another plugin.
-- `off`: Stop listening on an event the plugin was listening to.
+- `off`: Stop listening on an event that the plugin was listening to.
 
 ```typescript
 // Listen and broadcast "count" event

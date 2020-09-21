@@ -46,7 +46,7 @@ const endpoint = await client.network.getEndpoint()
 const endpoint = await client.call('network', 'getEndpoint')
 ```
 
-`detectNetwork`: Get the current network used.
+`detectNetwork`: Get the current network being used.
 ```typescript
 const network = await client.network.detectNetwork()
 // OR
@@ -68,7 +68,7 @@ await client.call('network', 'removeNetwork', 'local')
 ```
 
 ## Types
-`NetworkProvider`: A string litteral : `vm`, `injected` or `web3`.
+`NetworkProvider`: A string literal : `vm`, `injected` or `web3`.
 `Network`: A simple object with the `name` and `id` of the network.
 `CustomNetwork`: A simple object with a `name` and `url`.
 

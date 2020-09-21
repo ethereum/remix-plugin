@@ -1,8 +1,8 @@
 # Plugin Manager
 
-The `PluginManager` deals with activation and deactivation of other plugins. It also manage the permission layer between two plugins.
+The `PluginManager` deals with activation and deactivation of other plugins. It also manages the permission layer between two plugins.
 
-You can use it as it with a very loose permission, or inherit from it to create a custom set of permission rules.
+You can use it with a very loose permissions, or inherit from it to create a custom set of permission rules.
 
 ```typescript
 class RemixManager extends PluginManager {
@@ -25,19 +25,19 @@ class RemixManager extends PluginManager {
 ```typescript
 this.on('manager', 'profileAdded', (profile: Profile) => { ... })
 ```
-Emitted when a plugin have been registered by the `Engine`. 
+Emitted when a plugin has been registered by the `Engine`. 
 
 ### profileUpdated
 ```typescript
 this.on('manager', 'profileUpdated', (profile: Profile) => { ... })
 ```
-Emitted when a plugin update it's profile through the `updateProfile` method.
+Emitted when a plugin updates its profile through the `updateProfile` method.
 
 ### pluginActivated
 ```typescript
 this.on('manager', 'pluginActivated', (profile: Profile) => { ... })
 ```
-Emitted when a plugin have been activated, either with `activatePlugin` or `toggleActive`.
+Emitted when a plugin has been activated, either with `activatePlugin` or `toggleActive`.
 
 > If the plugin was already active, the event won't be triggered.
 
@@ -45,13 +45,13 @@ Emitted when a plugin have been activated, either with `activatePlugin` or `togg
 ```typescript
 this.on('manager', 'pluginDeactivated', (profile: Profile) => { ... })
 ```
-Emitted when a plugin have been deactivated, either with `deactivatePlugin` or `toggleActive`.
+Emitted when a plugin has been deactivated, either with `deactivatePlugin` or `toggleActive`.
 
 > If the plugin was already deactivated, the event won't be triggered.
 
 
 ## Constructor
-Create a new instance of `PluginManager`. You can specify the profile of the manager to extend the default one.
+Used to create a new instance of `PluginManager`. You can specify the profile of the manager to extend the default one.
 
 _The property `name` of the profile must be `manager`._
 
@@ -63,14 +63,14 @@ const manager = new RemixManager(profile)
 ## Properties
 
 ### requestFrom
-Return the name of the caller. If no request provided, this mean that the method has been called from the IDE so we use "manager". 
+Return the name of the caller. If no request was provided, it means that the method has been called from the IDE - so we use "manager". 
 
 _Use this method when you expose custom methods from the Plugin Manager._
 
 ## Methods
 
 ### getProfile
-Get the profile if it's registered.
+Get the profile if its registered.
 
 ```typescript
 const profile = manager.getProfile('solidity')
@@ -96,7 +96,7 @@ const isActive = await manager.isActive('solidity')
 ```
 
 ### activatePlugin
-Check if caller can activate plugin and activate it if authorized.
+Check if caller can activate a plugin and activate it if authorized.
 
 _This method call `canActivate` under the hood._
 
@@ -133,7 +133,7 @@ class EthDoc extends Plugin {
 }
 ```
 
-> Deactivating a plugin can have side effect on other. We recommand to limit the access to this methods to a small set of plugins if any (see `canDeactivate`).
+> Deactivating a plugin can have side effect on other plugins that depend on it. We recommend limiting the access to this method to a small set of plugins -if any (see `canDeactivate`).
 
 ### toggleActive
 Activate or deactivate by bypassing permission.
@@ -192,16 +192,16 @@ class RemixManager extends PluginManager {
 
 
 ### canCall
-Check if a plugin can call a method of another.
+Check if a plugin can call a method of another plugin.
 
 **Params**
 - `from`: Name of the caller plugin
 - `to`: Name of the target plugin
-- `method`: Method targetted by the caller
+- `method`: Method targeted by the caller
 - `message`: Optional Message to display to the user
 
 
-This method can be called from a plugin to protect the access to one of it's method.
+This method can be called from a plugin to protect the access to one of its methods.
 Every plugin implements a helper function that takes care of `from` & `to`
 ```typescript
 class SensitivePlugin extends Plugin {
@@ -247,7 +247,7 @@ class RemixManager extends PluginManager {
 }
 ```
 
-> You might consider keep the preferences in the localstorage for a better user experience.
+> Consider keeping the preferences in the localstorage for a better user experience.
 
 ## Activation Hooks
 `PluginManager` provides an interface to react to changes of its state.
