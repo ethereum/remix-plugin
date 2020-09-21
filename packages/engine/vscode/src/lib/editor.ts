@@ -4,7 +4,7 @@ import { window, Range, TextEditorDecorationType, Position, languages, Diagnosti
 import { PluginOptions } from "@remixproject/engine";
 import { CommandPlugin } from "./command";
 
-interface EditorOptions extends PluginOptions {
+export interface EditorOptions extends PluginOptions {
   language: string;
 }
 export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
