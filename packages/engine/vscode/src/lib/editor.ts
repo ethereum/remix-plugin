@@ -69,20 +69,17 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     // const fileUri = window.activeTextEditor ? window.activeTextEditor.document.uri : undefined; // TODO: we might want to supply path to addAnnotation function
     const editor = getEditor(filePath);
     const canonicalFile: string = editor.document.uri.fsPath;
-    const diagnosticMap: Map<string, Diagnostic[]> = new Map();
+    const diagnostics: Diagnostic[] = [];
     const range = new Range(annotation.row - 1, annotation.column, annotation.row - 1, annotation.column);
-    const diagnostics = diagnosticMap.get(canonicalFile) ? diagnosticMap.get(canonicalFile) : [];
     const diagnosticSeverity: Record<string, DiagnosticSeverity> = {
       'error': DiagnosticSeverity.Error,
       'warning': DiagnosticSeverity.Warning,
       'information': DiagnosticSeverity.Information
     };
     const severity = diagnosticSeverity[annotation.type];
-    diagnostics.push(new Diagnostic(range, annotation.text, severity));
-    diagnosticMap.set(canonicalFile, diagnostics);
-    diagnosticMap.forEach((diags, file) => {
-      this.diagnosticCollection.set(Uri.file(file), diags);
-    });
+    const diagnostic: Diagnostic = new Diagnostic(range, annotation.text, severity);
+    diagnostics.push(diagnostic);
+    this.diagnosticCollection.set(Uri.file(canonicalFile), diagnostics);
   }
   async clearAnnotations(): Promise<void> {
     return this.diagnosticCollection.clear();
