@@ -73,6 +73,11 @@ This uses nx's affected:build to only update what has been changes since last bu
 npm run build
 ```
 
+## Build `engine-vscode`
+```
+npx nx build engine-vscode --with-deps
+```
+
 ## Test
 This uses nx's affected:test to only update what has been changes since last test.
 ```
