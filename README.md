@@ -73,7 +73,12 @@ This uses nx's affected:build to only update what has been changes since last bu
 npm run build
 ```
 
-## Build `engine-vscode`
+## Build a specific project
+```
+npx nx build ${projectName} --with-deps
+```
+
+**Example for engine-vscode :**
 ```
 npx nx build engine-vscode --with-deps
 ```
