@@ -1,15 +1,22 @@
 import { editorProfile, IEditor, Annotation, HighlightPosition } from '@remixproject/plugin-api';
 import { MethodApi } from '@remixproject/plugin-utils';
 import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor } from "vscode";
-import { PluginOptions } from "@remixproject/engine";
-import { CommandPlugin } from "./command";
+import { CommandPlugin, CommandOptions } from "./command";
 
-export interface EditorOptions extends PluginOptions {
+function getEditor(filePath?: string): TextEditor {
+  const editors = window.visibleTextEditors;
+  return filePath ? editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path) : window.activeTextEditor
+}
+
+export interface EditorOptions extends CommandOptions {
   language: string;
 }
+
 export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   private decoration: TextEditorDecorationType;
   private diagnosticCollection: DiagnosticCollection;
+  public options: EditorOptions;
+
   constructor(options: EditorOptions) {
     super(editorProfile);
     super.setOptions(options);
@@ -22,7 +29,6 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
       backgroundColor: 'editor.lineHighlightBackground',
       isWholeLine: true,
     });
-    // @ts-ignore
     this.diagnosticCollection = languages.createDiagnosticCollection(this.options.language);
   }
   onDeactivation() {
@@ -32,7 +38,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     const editors = window.visibleTextEditors;
     // Parse `filePath` to ensure if a valid file path was supplied
     const editor = editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path);
-    if(editor) {
+    if (editor) {
       const start: Position = new Position(position.start.line, position.start.column);
       const end: Position = new Position(position.end.line, position.end.column);
       const newDecoration = { range: new Range(start, end) };
@@ -42,7 +48,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
           isWholeLine: true,
         });
       }
-      return editor.setDecorations(this.decoration, [newDecoration]);
+      editor.setDecorations(this.decoration, [newDecoration]);
     } else {
       throw new Error(`Could not find file ${filePath}`);
     }
@@ -50,18 +56,18 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   async discardHighlight(): Promise<void> {
     return this.decoration.dispose();
   }
-  async discardHighlightAt(line: number, filePath: string): Promise<void> {
+  /**
+   * Alisas of  discardHighlight
+   * Required to match the standard interface of editor
+   */
+  async discardHighlightAt(): Promise<void> {
     return this.decoration.dispose();
-  }
-  private getEditor(filePath?: string): TextEditor {
-    const editors = window.visibleTextEditors;
-    return filePath ? editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path) : window.activeTextEditor
   }
   async addAnnotation(annotation: Annotation, filePath?: string): Promise<void> {
     // This function should append to existing map
     // Ref: https://code.visualstudio.com/api/language-extensions/programmatic-language-features#provide-diagnostics
     // const fileUri = window.activeTextEditor ? window.activeTextEditor.document.uri : undefined; // TODO: we might want to supply path to addAnnotation function
-    const editor = this.getEditor(filePath);
+    const editor = getEditor(filePath);
     const canonicalFile: string = editor.document.uri.fsPath;
     const diagnosticMap: Map<string, Diagnostic[]> = new Map();
     const range = new Range(annotation.row - 1, annotation.column, annotation.row - 1, annotation.column);
