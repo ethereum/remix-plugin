@@ -11,7 +11,7 @@ export interface PluginBase<T extends Api = any, App extends ApiMap = any> {
     cb: EventCallback<App[Name], Key>,
   ): void
 
-  /** Listen once an event from another plugin then remove event listener */
+  /** Listen one time on an event from another plugin, then remove event listener */
   once<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
     name: Name,
     key: Key,

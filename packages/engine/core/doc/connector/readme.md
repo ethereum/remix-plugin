@@ -1,7 +1,7 @@
 # Connector
-The engine exposes connector to manage communications with plugins that are not running in the engine main process.
+The engine exposes the **connector** to manage communications with plugins that are not running in the engine's main process.
 
-Those connectors depends on the platform on which the engine is operating.
+The choice of connectors depends upon the platform that the engine is operating on.
 
 For example an engine running on the web can have connectors with : 
 - Iframes
@@ -14,18 +14,19 @@ On the other hand an engine running in a node environment will have :
 - ...
 
 ## Create a Connector
-A connector is a simple wrapper on both side of a communication for layer, it should implement : 
+A connector is a simple wrapper on both sides of a communication layer. 
+It should implement : 
 - `ClientConnector`: Connector used by the plugin (client).
 - `PluginConnector`: Connector used by the engine.
 
-> From a user point of view the plugin is the "client" even if it's running in a server.
+> From a user point of view, the plugin is the "client" even if it's running in a server.
 
 Let's create a connector for [socket.io](https://socket.io/) where : 
 - `ClientConnector`: Plugin code that runs the server.
 - `PluginConnector`: Engine recipient that runs in a browser
 
 ### ClientConnector
-The connector connection on the plugin side implements the `ClientConnector` interface: 
+The **connector**'s connection on the plugin side implements the `ClientConnector` interface: 
 
 ```typescript
 export interface ClientConnector {
@@ -94,7 +95,7 @@ export class SocketIOPlugin extends PluginConnector {
 Let's take a look : 
 - `connect` will be called when the plugin is activated.
 - `disconnect` will be called when the plugin is deactivated.
-- `send` will be callde when another plugin when to call the plugin's methods (on the server).
+- `send` will be called when another plugin calls the plugin's methods (on the server).
 - `getMessage` should be called whenever a message arrives.
 
 Checkout how to [publish your plugin connector on npm](plugin-connector.md).

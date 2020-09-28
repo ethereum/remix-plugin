@@ -104,9 +104,9 @@ export type OutputType =
 /**
  * The following can be used to select desired outputs.
  * If this field is omitted, then the compiler loads and does type checking, but will not generate any outputs apart from errors.
- * The first level key is the file name and the second is the contract name, where empty contract name refers to the file itself,
- * while the star refers to all of the contracts.
- * Note that using a using `evm`, `evm.bytecode`, `ewasm`, etc. will select every
+ * The first level key is the file name and the second is the contract name. An empty contract name refers to the file itself,
+ * while an astrisk (star) refers to all of the contracts.
+ * Note that using `evm`, `evm.bytecode`, `ewasm`, etc. will select every
  * target part of that output. Additionally, `*` can be used as a wildcard to request everything.
  */
 export interface CompilerOutputSelection {

@@ -26,7 +26,7 @@ const ethdoc = new IframePlugin({
 
 For the `WebsocketPlugin` you just need to specify the `url` as there is no UI to display.
 
-> This plugin is very usefull to connect to a local server like remixD, and an external API
+> This plugin is very useful for connecting to a local server like remixD, and an external API
 
 ```typescript
 const remixd = new WebsocketPlugin({
@@ -35,4 +35,4 @@ const remixd = new WebsocketPlugin({
 })
 ```
 
-In the future we'll implement more communication connection like REST, GraphQL, JSON RPC, gRPC, ...
+In the future, we'll implement more communication connection like REST, GraphQL, JSON RPC, gRPC, ...

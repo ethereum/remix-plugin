@@ -171,11 +171,11 @@ export type ABIDescription = FunctionDescription | EventDescription
 export interface FunctionDescription {
   /** Type of the method. default is 'function' */
   type?: 'function' | 'constructor' | 'fallback'
-  /** The name of the function. Constructor and fallback function never have name */
+  /** The name of the function. Constructor and fallback functions never have a name */
   name?: string
-  /** List of parameters of the method. Fallback function doesn’t have inputs. */
+  /** List of parameters of the method. Fallback functions don’t have inputs. */
   inputs?: ABIParameter[]
-  /** List of the outputs parameters for the method, if any */
+  /** List of the output parameters for the method, if any */
   outputs?: ABIParameter[]
   /** State mutability of the method */
   stateMutability: 'pure' | 'view' | 'nonpayable' | 'payable'

@@ -33,14 +33,14 @@ register(plugins: Plugin | Plugin[]): string | string[]
 
 Register one or several plugins into the engine and return their names.
 
-A plugin **must be register before beeing activated**.
+A plugin **must be register before being activated**.
 
 ### isRegistered
 ```typescript
 isRegistered(name: string): boolean
 ```
 
-Check if a plugin with this name is registered by the engine currently.
+Checks if a plugin with this name has already been registered by the engine.
 
 ## Hooks
 
@@ -49,4 +49,4 @@ Check if a plugin with this name is registered by the engine currently.
 onRegistration(plugin: Plugin) {}
 ```
 
-Method triggered when a plugin is registered.
+This method triggered when a plugin is registered.
