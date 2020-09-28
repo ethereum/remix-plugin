@@ -4,7 +4,7 @@ import { Disposable, commands } from "vscode"
 
 export const transformCmd = (name: string, method: string) => `${name}.${method}`
 
-interface CommandOptions extends PluginOptions {
+export interface CommandOptions extends PluginOptions {
   transformCmd: (name: string, method: string) => string
 }
 
