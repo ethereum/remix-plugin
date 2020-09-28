@@ -77,7 +77,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
       'information': DiagnosticSeverity.Information
     };
     const severity = diagnosticSeverity[annotation.type];
-    const diagnostic: Diagnostic = new Diagnostic(range, annotation.text, severity);
+    const diagnostic = new Diagnostic(range, annotation.text, severity);
     diagnostics.push(diagnostic);
     this.diagnosticCollection.set(Uri.file(canonicalFile), diagnostics);
   }
