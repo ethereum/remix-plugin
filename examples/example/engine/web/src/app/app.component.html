@@ -1,5 +1,12 @@
 <nav>
-
+  <ul>
+    <li class="active" *ngFor="let profile of actives$ | async">
+      {{ profile.name }} (active)
+    </li>
+    <li class="idle" *ngFor="let profile of idles$ | async">
+      {{ profile.name }} (idle)
+    </li>
+  </ul>
 </nav>
 
 <main host="main"></main>

@@ -8,6 +8,9 @@ import { Engine, Manager, Theme } from './plugins';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  actives$ = this.manager.activeProfiles$;
+  idles$ = this.manager.idleProfiles$;
+
   constructor(
     private engine: Engine,
     private manager: Manager,

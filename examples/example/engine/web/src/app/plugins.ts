@@ -1,9 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Engine as PluginEngine, PluginManager } from '@remixproject/engine';
 import { ThemePlugin } from '@remixproject/engine-web';
+import { Profile } from '@remixproject/plugin-utils';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class Manager extends PluginManager {}
+export class Manager extends PluginManager {
+  private activeProfiles = new BehaviorSubject<Profile[]>([]);
+  private idleProfiles = new BehaviorSubject<Profile[]>([]);
+  public activeProfiles$ = this.activeProfiles.asObservable();
+  public idleProfiles$ = this.idleProfiles.asObservable();
+
+  private async updateProfiles() {
+    const actives = [];
+    const idles = [];
+    for (const profile of Object.values(this.profiles)) {
+      await this.isActive(profile.name)
+        ? actives.push(profile)
+        : idles.push(profile)
+    }
+    this.activeProfiles.next(actives);
+    this.idleProfiles.next(idles);
+  }
+
+  onPluginActivated() {
+    this.updateProfiles();
+  }
+  onPluginDeactivated() {
+    this.updateProfiles();
+  }
+}
 
 @Injectable({ providedIn: 'root' })
 export class Engine extends PluginEngine {
