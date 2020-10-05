@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { IRemixApi, remixProfiles } from '@remixproject/plugin-api'
-import { callEvent, listenEvent, createService, activateService } from '@remixproject/plugin-utils'
+import { callEvent, listenEvent, createService, activateService, GetPluginService } from '@remixproject/plugin-utils'
 import type {
   Api,
   PluginRequest,
@@ -174,7 +174,10 @@ export class PluginClient<T extends Api = any, App extends ApiMap = Readonly<IRe
    * @param name The name of the service
    * @param service The service
    */
-  async createService<S extends Record<string, any>>(name: string, service: IPluginService<S>) {
+  async createService<S extends Record<string, any>, Service extends IPluginService<S>>(
+    name: string,
+    service: Service
+  ): Promise<GetPluginService<Service>> {
     if (this.methods && this.methods.includes(name)) {
       throw new Error('A service cannot have the same name as an exposed method')
     }
