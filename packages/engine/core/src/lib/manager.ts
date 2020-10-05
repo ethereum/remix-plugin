@@ -22,6 +22,29 @@ interface ManagerProfile extends Profile {
   name: 'manager',
 }
 
+/** 
+ * Wait for all promises to settle
+ * catch if one of them fail
+ */
+function catchAllPromises(promises: Promise<any>[]) {
+  return new Promise((res, rej) => {
+    const resolved = [];
+    const rejected = [];
+    let ended = 0;
+    const settle = (value: any, err: any) => {
+      if (err) rejected.push(err)
+      if (value) resolved.push(value)
+      if (++ended === promises.length) {
+        rejected.length ? rej(resolved) : res(rejected);
+      }
+    }
+    for (const promise of promises) {
+      promise
+      .then(value => settle(value, null))
+      .catch(err => settle(null, err))
+    }
+  })
+}
 
 export class PluginManager extends Plugin implements BasePluginManager {
   /** Run engine activation. Implemented by Engine */
@@ -117,7 +140,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
         throw new Error(`Plugin ${this.requestFrom} has no right to activate plugin ${name}`)
       }
     }
-    return Array.isArray(names) ? Promise.all(names.map(activate)) : activate(names)
+    return Array.isArray(names) ? catchAllPromises(names.map(activate)) : activate(names)
   }
 
   /**
@@ -139,7 +162,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
         throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
       }
     }
-    return Array.isArray(names) ? Promise.all(names.map(deactivate)) : deactivate(names)
+    return Array.isArray(names) ? catchAllPromises(names.map(deactivate)) : deactivate(names)
   }
 
   /**

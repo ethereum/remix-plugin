@@ -56,10 +56,10 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     this.profile.methods = methods
   }
 
-  activate() {
+  activate(): any | Promise<any> {
     if (this.onActivation) this.onActivation()
   }
-  deactivate() {
+  deactivate(): any | Promise<any> {
     if (this.onDeactivation) this.onDeactivation()
   }
 

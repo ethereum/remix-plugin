@@ -21,6 +21,11 @@ class MockIframe extends IframePlugin {
     super({ name: 'iframe', location: 'sidePanel', methods: [], url: 'https://url' })
   }
 
+  async connect(url: string) {
+    super.connect(url);  // don't wait for the returned value as it's waiting for handshake
+    return true
+  }
+
   // Mock methods after activation
   onActivation() {
     this.call = jest.fn(async () => true)

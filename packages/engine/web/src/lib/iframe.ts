@@ -22,14 +22,29 @@ export class IframePlugin extends PluginConnector {
   /** Implement "activate" of the ViewPlugin */
   connect(url: string) {
     this.url = url
-    this.call(this.profile.location, 'addView', this.profile, this.render())
+    const iframe = this.render()
+    return new Promise((res, rej) => {
+      // Wait for the iframe to load and handshake
+      iframe.onload = async () => {
+        if (!iframe.contentWindow) {
+          rej(new Error(`${this.name} plugin cannot find url ${this.profile.url}`))
+        }
+        this.origin = new URL(iframe.src).origin
+        this.source = iframe.contentWindow
+        window.addEventListener(...this.listener)
+        this.handshake()
+          .then(res)
+          .catch(rej)
+      }
+      this.call(this.profile.location, 'addView', this.profile, iframe).catch(rej)
+    })
   }
 
   /** Implement "deactivate" of the ViewPlugin */
   disconnect() {
     this.iframe.remove()
     window.removeEventListener(...this.listener)
-    this.call(this.profile.location, 'removeView', this.profile)
+    return this.call(this.profile.location, 'removeView', this.profile)
   }
 
   /** Get message from the iframe */
@@ -60,16 +75,6 @@ export class IframePlugin extends PluginConnector {
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.setAttribute('id', `plugin-${this.name}`)
     this.iframe.src = this.url
-    // Wait for the iframe to load and handshake
-    this.iframe.onload = async () => {
-      if (!this.iframe.contentWindow) {
-        throw new Error(`${this.name} plugin is cannot find url ${this.profile.url}`)
-      }
-      this.origin = new URL(this.iframe.src).origin
-      this.source = this.iframe.contentWindow
-      window.addEventListener(...this.listener)
-      this.handshake()
-    }
     return this.iframe
   }
 }
