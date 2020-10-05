@@ -16,7 +16,6 @@ export type BasePluginManager = {
   canActivate(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
-export const managerMethods = ['getProfile', 'updateProfile', 'activatePlugin', 'deactivatePlugin', 'isActive', 'canCall']
 
 interface ManagerProfile extends Profile {
   name: 'manager',
@@ -53,7 +52,6 @@ export class PluginManager extends Plugin implements BasePluginManager {
   private engineDeactivatePlugin: (name: string) => Promise<any>
   protected profiles: Record<string, Profile> = {}
   protected actives: string[] = []
-  public methods = managerMethods
 
   protected onPluginActivated?(profile: Profile): any
   protected onPluginDeactivated?(profile: Profile): any

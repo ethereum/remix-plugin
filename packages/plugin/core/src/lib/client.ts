@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { RemixApi, remixProfiles, } from '@remixproject/plugin-api'
+import { IRemixApi, remixProfiles } from '@remixproject/plugin-api'
 import { callEvent, listenEvent, createService, activateService } from '@remixproject/plugin-utils'
 import type {
   Api,
@@ -53,7 +53,7 @@ export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
 }
 
 
-export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> implements PluginBase<T, App> {
+export class PluginClient<T extends Api = any, App extends ApiMap = Readonly<IRemixApi>> implements PluginBase<T, App> {
   private id = 0
   public isLoaded = false
   public events = new EventEmitter()

@@ -1,6 +1,6 @@
 import type { Message, Api, ApiMap } from '@remixproject/plugin-utils'
 import { PluginClient, ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin'
-import { RemixApi } from '@remixproject/plugin-api'
+import { IRemixApi } from '@remixproject/plugin-api'
 
 
 export interface WS {
@@ -55,7 +55,7 @@ export class WebsocketConnector implements ClientConnector {
  */
 export const createClient = <
   P extends Api,
-  App extends ApiMap = RemixApi
+  App extends ApiMap = Readonly<IRemixApi>
 >(websocket: WS, client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
   const c = client as any
   connectClient(new WebsocketConnector(websocket), c)
