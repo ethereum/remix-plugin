@@ -1,6 +1,5 @@
 module.exports = {
-  name: 'plugin-vscode',
-  preset: '../../../jest.config.js',
+  preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest',
@@ -8,4 +7,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
   coverageDirectory: '../../../coverage/packages/plugin/vscode',
   globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
+  displayName: 'plugin-vscode',
 };

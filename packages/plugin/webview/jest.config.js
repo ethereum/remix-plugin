@@ -1,6 +1,5 @@
 module.exports = {
-  name: 'plugin-webview',
-  preset: '../../../jest.config.js',
+  preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
@@ -12,4 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
   coverageDirectory: '../../../coverage/packages/plugin/webview',
+  displayName: 'plugin-webview',
 };
