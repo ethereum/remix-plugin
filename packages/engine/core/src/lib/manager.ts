@@ -105,7 +105,10 @@ export class PluginManager extends Plugin implements BasePluginManager {
       throw new Error(`Plugin ${profile.name} already exist`)
     }
     this.profiles[profile.name] = profile
-    this.emit('profileAdded', profile)
+    // emit only if manager is already activated
+    if (this.actives.includes('manager')) {
+      this.emit('profileAdded', profile)
+    }
     if (this.onProfileAdded) {
       this.onProfileAdded(profile)
     }

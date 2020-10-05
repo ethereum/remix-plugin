@@ -150,9 +150,10 @@ export class Engine {
     }
 
     // Check if method is exposed
-    if (!to.methods.includes(method)) {
+    const methods = to.methods || []
+    if (!methods.includes(method)) {
       const notExposedMsg = `Cannot call method "${method}" of "${target}" from "${caller}", because "${method}" is not exposed.`
-      const exposedMethodsMsg = `Here is the list of exposed methods: ${to.methods.map(m => `"${m}"`).join(',')}`
+      const exposedMethodsMsg = `Here is the list of exposed methods: ${methods.map(m => `"${m}"`).join(',')}`
       throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
     }
 
