@@ -11,8 +11,6 @@ export interface ClientConnector {
   on(cb: (message: Partial<Message>) => void): void
 }
 
-type CreateConnector = (client: PluginClient) => ClientConnector
-
 /** Check if a message is an handshake */
 export function isHandshake(message: Partial<Message>) {
   return message.key === 'handshake' && (message.action === 'request' || message.action === 'call')

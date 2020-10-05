@@ -11,7 +11,6 @@ import {
 } from '@remixproject/plugin'
 import { Theme } from '@remixproject/plugin-api';
 
-declare const acquireVsCodeApi: any
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
 function toKebabCase(text: string) {
@@ -27,9 +26,9 @@ export class WebviewConnector implements ClientConnector {
   isVscode: boolean
 
   constructor(private options: PluginOptions<any>) {
-    this.isVscode = !!acquireVsCodeApi
+    this.isVscode = ('acquireVsCodeApi' in window)
     // Check the parent source here
-    this.source = this.isVscode ? acquireVsCodeApi() : window.parent
+    this.source = this.isVscode ? window['acquireVsCodeApi']() : window.parent
   }
 
 
