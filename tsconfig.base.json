@@ -27,9 +27,8 @@
       "@remixproject/plugin-api": [
         "packages/api/src/index.ts"
       ],
-      "@remixproject/engine": [
-        "packages/engine/core/src/index.ts"
-      ],
+      "@remixproject/engine": ["packages/engine/core/src/index.ts"],
+      "@remixproject/engine-web": ["packages/engine/web/src/index.ts"],
       "@remixproject/plugin": [
         "packages/plugin/core/src/index.ts"
       ],
