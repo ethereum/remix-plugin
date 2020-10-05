@@ -76,6 +76,16 @@ export class PluginManager extends Plugin implements BasePluginManager {
     return this.profiles[name]
   }
 
+  /** Get all the profiles of the manager */
+  getProfiles() {
+    return Object.values(this.profiles)
+  }
+
+  /** Get all active profiles of the manager */
+  getActiveProfiles() {
+    return this.actives.map(name => this.profiles[name])
+  }
+
   /**
    * Update the profile of the plugin
    * @param profile The Updated version of the plugin
