@@ -12,5 +12,7 @@ module.exports = {
     '<rootDir>/packages/plugin/child-process',
     '<rootDir>/packages/plugin/ws',
     '<rootDir>/packages/plugin/webview',
+    '<rootDir>/examples/example/engine/web',
+    '<rootDir>/examples/example/plugin/webview',
   ],
 };

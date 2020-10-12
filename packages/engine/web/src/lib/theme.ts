@@ -49,7 +49,7 @@ export function createTheme(params: DeepPartial<Theme> = {}): Theme {
 }
 
 export class ThemePlugin extends Plugin implements API<ITheme> {
-  protected theme: Theme
+  protected theme: Theme = createTheme()
   constructor() {
     super(themeProfile)
   }

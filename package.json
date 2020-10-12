@@ -28,11 +28,17 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
   },
   "private": true,
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1001.3",
+    "@angular/compiler-cli": "^10.1.0",
+    "@angular/language-service": "^10.1.0",
+    "@nrwl/angular": "^10.3.0",
     "@nrwl/cli": "10.3.0",
+    "@nrwl/cypress": "10.3.0",
     "@nrwl/eslint-plugin-nx": "10.3.0",
     "@nrwl/jest": "10.3.0",
     "@nrwl/node": "10.3.0",
@@ -43,10 +49,14 @@
     "@types/vscode": "^1.47.0",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
+    "codelyzer": "~5.0.1",
+    "cypress": "^4.1.0",
     "dotenv": "6.2.0",
     "eslint": "7.10.0",
     "eslint-config-prettier": "6.0.0",
+    "eslint-plugin-cypress": "^2.10.3",
     "jest": "26.2.2",
+    "jest-preset-angular": "8.3.1",
     "lerna": "^3.22.1",
     "prettier": "2.0.4",
     "ts-jest": "26.4.0",
@@ -54,5 +64,16 @@
     "tslint": "~6.0.0",
     "typescript": "4.0.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@angular/animations": "^10.1.0",
+    "@angular/common": "^10.1.0",
+    "@angular/compiler": "^10.1.0",
+    "@angular/core": "^10.1.0",
+    "@angular/forms": "^10.1.0",
+    "@angular/platform-browser": "^10.1.0",
+    "@angular/platform-browser-dynamic": "^10.1.0",
+    "@angular/router": "^10.1.0",
+    "rxjs": "~6.5.5",
+    "zone.js": "^0.10.2"
+  }
 }
