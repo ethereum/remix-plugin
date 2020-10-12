@@ -50,4 +50,6 @@ export type PluginApi<T extends ApiMap> = {
 }
 
 // The interface that a Plugin should implement
-export type API<T extends Api> = { [M in keyof T['methods']]: T['methods'][M] }
+export type API<T extends Api> = {
+  [M in keyof T['methods']]: T['methods'][M] | Promise<T['methods'][M]>
+}

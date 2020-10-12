@@ -566,6 +566,7 @@
       }
     },
     "examples": {
+      "projectType": "library",
       "root": "root/is/required/or/it/fails",
       "architect": {
         "serve": {

@@ -31,16 +31,17 @@ export function connectClient(connector: ClientConnector, client: PluginClient =
 
   connector.on(async ({ action, key, name, payload, id, requestInfo, error }) => {
     try {
-
       // If handshake set isLoaded
-      if (!isLoaded && isHandshake({ action, key })) {
-        isLoaded = true
-        client.events.on('send', (msg: Message) => connector.send(msg))
-        client.events.emit('loaded')
-        client.name = payload[0]
-        // Send back the list of methods exposed by the plugin
-        const message = {action: 'response', name, key, id, payload: client.methods} as const
-        connector.send(message)
+      if (isHandshake({ action, key })) {
+        if (!isLoaded) {
+          isLoaded = true
+          client.events.on('send', (msg: Message) => connector.send(msg))
+          client.events.emit('loaded')
+          client.name = payload[0]
+          // Send back the list of methods exposed by the plugin
+          const message = {action: 'response', name, key, id, payload: client.methods} as const
+          connector.send(message)
+        }
         return
       }
 

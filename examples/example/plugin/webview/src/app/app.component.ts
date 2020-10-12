@@ -12,6 +12,7 @@ export class AppComponent {
   ngOnInit() {
     const client = createClient<any, RemixApi>();
     client.onload(() => {
+      console.log('Client connected to engine');
       client.on('theme', 'themeChanged', (theme) => console.log('theme', theme));
     });
   }
