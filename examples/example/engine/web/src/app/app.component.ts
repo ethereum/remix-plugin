@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IframePlugin } from '@remixproject/engine-web';
-import { Engine, Manager, Theme, Window } from './plugins';
+import { Engine, Manager, Window } from './plugins';
+import { Theme } from './theme';
 
 @Component({
   selector: 'engine-root',
