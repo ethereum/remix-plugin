@@ -32,11 +32,17 @@ class ComponentHostPlugin extends HostPlugin {
   }
 
   removeView(profile: Profile<any>): void {
-    const child = this.children[profile.name];
-    this.renderer.removeChild(this.parent, child);
+    delete this.children[profile.name];
   }
 
+  async onDeactivation() {
+    const names = Object.keys(this.children);
+    await this.call('manager', 'deactivatePlugin', names);
+  }
 
+  async canActivate(from: Profile, method: string) {
+    return method !== 'removeView';
+  }
 }
 
 
@@ -51,15 +57,19 @@ export class HostDirective {
     private renderer: Renderer2,
   ) {}
 
+  get name() {
+    return this.host;
+  }
+
   ngAfterViewInit() {
-    const name = this.host;
+    const name = this.name;
     this.plugin = new ComponentHostPlugin({ name }, this.el.nativeElement, this.renderer);
     this.engine.register(this.plugin);
   }
 
   async ngOnDestroy() {
-    await this.manager.deactivatePlugin(this.host);
-    // this.engine.remove(this.host);
+    await this.manager.deactivatePlugin(this.name);
+    this.engine.remove(this.name);
   }
 
 

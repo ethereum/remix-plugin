@@ -1,11 +1,15 @@
 <nav>
   <ul>
-    <li class="active" *ngFor="let profile of actives$ | async">
-      {{ profile.name }} (active)
-    </li>
-    <li class="idle" *ngFor="let profile of idles$ | async">
-      {{ profile.name }} (idle)
-    </li>
+    <ng-container *ngFor="let profile of actives$ | async">
+      <li class="active" (click)="deactivate(profile.name)">
+        {{ profile.name }} (active)
+      </li>
+    </ng-container>
+    <ng-container *ngFor="let profile of idles$ | async">
+      <li class="idle" (click)="activate(profile.name)">
+        {{ profile.name }} (idle)
+      </li>
+    </ng-container>
   </ul>
 </nav>
 
