@@ -73,6 +73,7 @@ export function connectClient(connector: ClientConnector, client: PluginClient =
         }
       }
     } catch (err) {
+      console.error(err)
       const message = { action: action === 'request' ? 'response' : action, name, key, id, error: err.message || err } as const
       connector.send(message)
     }

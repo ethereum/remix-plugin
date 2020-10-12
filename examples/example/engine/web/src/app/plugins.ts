@@ -4,6 +4,8 @@ import { ThemePlugin } from '@remixproject/engine-web';
 import { Profile } from '@remixproject/plugin-utils';
 import { BehaviorSubject } from 'rxjs';
 
+const localPlugins = ['manager', 'main'];
+
 @Injectable({ providedIn: 'root' })
 export class Manager extends PluginManager {
   private activeProfiles = new BehaviorSubject<Profile[]>([]);
@@ -26,8 +28,13 @@ export class Manager extends PluginManager {
   onPluginActivated() {
     this.updateProfiles();
   }
+
   onPluginDeactivated() {
     this.updateProfiles();
+  }
+
+  async canDeactivatePlugin(from: Profile, to: Profile) {
+    return localPlugins.includes(from.name);
   }
 }
 

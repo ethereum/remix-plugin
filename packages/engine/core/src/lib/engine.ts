@@ -140,9 +140,11 @@ export class Engine {
 
     // Check if plugin FROM can activate plugin TO
     const isActive = await this.manager.isActive(target)
+    
     if (!isActive) {
-      const canActivate = await this.manager.canActivate(from, to)
-      if (canActivate) {
+      const managerCanActivate = await this.manager.canActivatePlugin(from, to, method)
+      const pluginCanActivate = await this.plugins[to.name]?.canActivate(to, method)
+      if (managerCanActivate && pluginCanActivate) {
         await this.manager.toggleActive(target)
       } else {
         throw new Error(`${from.name} cannot call ${method} of ${target}, because ${target} is not activated yet`)
@@ -150,7 +152,8 @@ export class Engine {
     }
 
     // Check if method is exposed
-    const methods = to.methods || []
+    // note: native methods go here
+    const methods = [...(to.methods || []), 'canDeactivate']
     if (!methods.includes(method)) {
       const notExposedMsg = `Cannot call method "${method}" of "${target}" from "${caller}", because "${method}" is not exposed.`
       const exposedMethodsMsg = `Here is the list of exposed methods: ${methods.map(m => `"${m}"`).join(',')}`
@@ -308,7 +311,19 @@ export class Engine {
       if (this.onRegistration) this.onRegistration(plugin)
       return plugin.name
     }
-    return Array.isArray(plugins) ? plugins.map(plugin => register(plugin)) : register(plugins)
+    return Array.isArray(plugins) ? plugins.map(register) : register(plugins)
+  }
+
+  /** Remove plugin(s) from engine */
+  remove(names: string | string[]) {
+    const remove = async (name: string) => {
+      await this.manager.deactivatePlugin(name)
+      delete this.listeners[name]
+      delete this.plugins[name]
+    }
+    return Array.isArray(names)
+      ? Promise.all(names.map(remove))
+      : remove(names);
   }
 
   /**

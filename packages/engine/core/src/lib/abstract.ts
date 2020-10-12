@@ -136,6 +136,23 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     }
   }
 
+  /**
+   * Called by the engine when a plugin try to activate it
+   * @param from the profile of the plugin activating this plugin
+   * @param method method used to activate this plugin if any
+   */
+  async canActivate(from: Profile, method?: string): Promise<boolean> {
+    return true
+  }
+
+  /**
+   * Called by the engine when a plugin try to deactivate it
+   * @param from the profile of the plugin deactivating this plugin
+   */
+  async canDeactivate(from: Profile): Promise<boolean> {
+    return true
+  }
+
   /////////////
   // SERVICE //
   /////////////
