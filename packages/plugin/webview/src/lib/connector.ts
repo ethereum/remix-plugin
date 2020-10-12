@@ -11,7 +11,6 @@ import {
 } from '@remixproject/plugin'
 import { Theme } from '@remixproject/plugin-api';
 
-declare const acquireVsCodeApi: any
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
 function toKebabCase(text: string) {
@@ -27,9 +26,9 @@ export class WebviewConnector implements ClientConnector {
   isVscode: boolean
 
   constructor(private options: PluginOptions<any>) {
-    this.isVscode = !!acquireVsCodeApi
+    this.isVscode = ('acquireVsCodeApi' in window)
     // Check the parent source here
-    this.source = this.isVscode ? acquireVsCodeApi() : window.parent
+    this.source = this.isVscode ? window['acquireVsCodeApi']() : window.parent
   }
 
 
@@ -85,15 +84,24 @@ export const createClient = <
 
 /** Set the theme variables in the :root */
 function applyTheme(theme: Theme) {
-  document.documentElement.style.setProperty(`--brightness`, theme.brightness);
-  for (const [key, value] of Object.entries(theme.colors)) {
-    document.documentElement.style.setProperty(`--${toKebabCase(key)}`, value);
+  const brightness = theme.brightness || theme.quality;
+  document.documentElement.style.setProperty(`--brightness`, brightness);
+  if (theme.colors) {
+    for (const [key, value] of Object.entries(theme.colors)) {
+      document.documentElement.style.setProperty(`--${toKebabCase(key)}`, value);
+    }
   }
-  for (const [key, value] of Object.entries(theme.breakpoints)) {
-    document.documentElement.style.setProperty(`--breakpoint-${key}`, `${value}px`);
+  if (theme.breakpoints) {
+    for (const [key, value] of Object.entries(theme.breakpoints)) {
+      document.documentElement.style.setProperty(`--breakpoint-${key}`, `${value}px`);
+    }
   }
-  document.documentElement.style.setProperty(`--font-family`, theme.fontFamily);
-  document.documentElement.style.setProperty(`--space`, `${theme.space}px`);
+  if (theme.fontFamily) {
+    document.documentElement.style.setProperty(`--font-family`, theme.fontFamily);
+  }
+  if (theme.space) {
+    document.documentElement.style.setProperty(`--space`, `${theme.space}px`);
+  }
 }
 
 /** Start listening on theme changed */
@@ -102,7 +110,7 @@ async function listenOnThemeChanged(client: PluginClient) {
   // Memorized the css link but only create it when needed
   const getLink = () => {
     if (!cssLink) {
-      const cssLink = document.createElement('link')
+      cssLink = document.createElement('link')
       cssLink.setAttribute('rel', 'stylesheet')
       document.head.prepend(cssLink)
     }

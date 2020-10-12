@@ -1,5 +1,5 @@
 import type { Message, Api, ApiMap } from '@remixproject/plugin-utils';
-import { RemixApi } from '@remixproject/plugin-api';
+import { IRemixApi } from '@remixproject/plugin-api';
 import {
   ClientConnector,
   connectClient,
@@ -67,7 +67,7 @@ export class IframeConnector implements ClientConnector {
  */
 export const createClient = <
   P extends Api,
-  App extends ApiMap = RemixApi
+  App extends ApiMap = Readonly<IRemixApi>
 >(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
   const c = client as any
   const options = client.options

@@ -1,9 +1,16 @@
 module.exports = {
-  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
-  transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest',
-  },
-  resolver: '@nrwl/jest/plugins/resolver',
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageReporters: ['html'],
+  projects: [
+    '<rootDir>/packages/engine/core',
+    '<rootDir>/packages/engine/node',
+    '<rootDir>/packages/engine/web',
+    '<rootDir>/packages/engine/vscode',
+    '<rootDir>/packages/utils',
+    '<rootDir>/packages/api',
+    '<rootDir>/packages/plugin/core',
+    '<rootDir>/packages/plugin/iframe',
+    '<rootDir>/packages/plugin/vscode',
+    '<rootDir>/packages/plugin/child-process',
+    '<rootDir>/packages/plugin/ws',
+    '<rootDir>/packages/plugin/webview',
+  ],
 };

@@ -1,5 +1,5 @@
 import type { Message, Api, ApiMap, PluginApi } from '@remixproject/plugin-utils'
-import type { RemixApi } from '@remixproject/plugin-api';
+import type { IRemixApi } from '@remixproject/plugin-api';
 import { listenEvent, callEvent, getMethodPath } from '@remixproject/plugin-utils'
 import { PluginClient } from './client'
 import { createApi } from './api'
@@ -10,8 +10,6 @@ export interface ClientConnector {
   /** Get message from the engine */
   on(cb: (message: Partial<Message>) => void): void
 }
-
-type CreateConnector = (client: PluginClient) => ClientConnector
 
 /** Check if a message is an handshake */
 export function isHandshake(message: Partial<Message>) {
@@ -119,7 +117,7 @@ export function applyApi(client: PluginClient) {
  */
 export const createConnectorClient = <
   P extends Api,
-  App extends ApiMap = RemixApi
+  App extends ApiMap = Readonly<IRemixApi>
 >(
   connector: ClientConnector,
   client: PluginClient<P, App> = new PluginClient()

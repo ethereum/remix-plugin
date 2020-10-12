@@ -8,14 +8,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/engine/core/tsconfig.lib.json",
-              "packages/engine/core/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/core/**/*"]
+            "lintFilePatterns": [
+              "packages/engine/core/**/*.ts",
+              "packages/engine/core/**/*.spec.ts",
+              "packages/engine/core/**/*.spec.tsx",
+              "packages/engine/core/**/*.spec.js",
+              "packages/engine/core/**/*.spec.jsx",
+              "packages/engine/core/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -33,7 +35,8 @@
             "packageJson": "packages/engine/core/package.json",
             "main": "packages/engine/core/src/index.ts",
             "assets": ["packages/engine/core/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\engine\\core\\src"
           }
         },
         "publish": {
@@ -52,14 +55,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/engine/node/tsconfig.lib.json",
-              "packages/engine/node/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/node/**/*"]
+            "lintFilePatterns": [
+              "packages/engine/node/**/*.ts",
+              "packages/engine/node/**/*.spec.ts",
+              "packages/engine/node/**/*.spec.tsx",
+              "packages/engine/node/**/*.spec.js",
+              "packages/engine/node/**/*.spec.jsx",
+              "packages/engine/node/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -77,7 +82,8 @@
             "packageJson": "packages/engine/node/package.json",
             "main": "packages/engine/node/src/index.ts",
             "assets": ["packages/engine/node/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\engine\\node\\src"
           }
         },
         "publish": {
@@ -96,14 +102,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/engine/web/tsconfig.lib.json",
-              "packages/engine/web/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/web/**/*"]
+            "lintFilePatterns": [
+              "packages/engine/web/**/*.ts",
+              "packages/engine/web/**/*.spec.ts",
+              "packages/engine/web/**/*.spec.tsx",
+              "packages/engine/web/**/*.spec.js",
+              "packages/engine/web/**/*.spec.jsx",
+              "packages/engine/web/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -121,7 +129,8 @@
             "packageJson": "packages/engine/web/package.json",
             "main": "packages/engine/web/src/index.ts",
             "assets": ["packages/engine/web/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\engine\\web\\src"
           }
         },
         "publish": {
@@ -140,14 +149,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/engine/vscode/tsconfig.lib.json",
-              "packages/engine/vscode/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/vscode/**/*"]
+            "lintFilePatterns": [
+              "packages/engine/vscode/**/*.ts",
+              "packages/engine/vscode/**/*.spec.ts",
+              "packages/engine/vscode/**/*.spec.tsx",
+              "packages/engine/vscode/**/*.spec.js",
+              "packages/engine/vscode/**/*.spec.jsx",
+              "packages/engine/vscode/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -165,7 +176,8 @@
             "packageJson": "packages/engine/vscode/package.json",
             "main": "packages/engine/vscode/src/index.ts",
             "assets": ["packages/engine/vscode/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\engine\\vscode\\src"
           }
         },
         "publish": {
@@ -184,14 +196,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/utils/tsconfig.lib.json",
-              "packages/utils/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/utils/**/*"]
+            "lintFilePatterns": [
+              "packages/utils/**/*.ts",
+              "packages/utils/**/*.spec.ts",
+              "packages/utils/**/*.spec.tsx",
+              "packages/utils/**/*.spec.js",
+              "packages/utils/**/*.spec.jsx",
+              "packages/utils/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -209,7 +223,8 @@
             "packageJson": "packages/utils/package.json",
             "main": "packages/utils/src/index.ts",
             "assets": ["packages/utils/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\utils\\src"
           }
         },
         "publish": {
@@ -228,14 +243,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/api/tsconfig.lib.json",
-              "packages/api/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/api/**/*"]
+            "lintFilePatterns": [
+              "packages/api/**/*.ts",
+              "packages/api/**/*.spec.ts",
+              "packages/api/**/*.spec.tsx",
+              "packages/api/**/*.spec.js",
+              "packages/api/**/*.spec.jsx",
+              "packages/api/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -253,7 +270,8 @@
             "packageJson": "packages/api/package.json",
             "main": "packages/api/src/index.ts",
             "assets": ["packages/api/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\api\\src"
           }
         },
         "publish": {
@@ -272,14 +290,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/core/tsconfig.lib.json",
-              "packages/plugin/core/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/plugin/core/**/*"]
+            "lintFilePatterns": [
+              "packages/plugin/core/**/*.ts",
+              "packages/plugin/core/**/*.spec.ts",
+              "packages/plugin/core/**/*.spec.tsx",
+              "packages/plugin/core/**/*.spec.js",
+              "packages/plugin/core/**/*.spec.jsx",
+              "packages/plugin/core/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -297,7 +317,8 @@
             "packageJson": "packages/plugin/core/package.json",
             "main": "packages/plugin/core/src/index.ts",
             "assets": ["packages/plugin/core/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\core\\src"
           }
         },
         "publish": {
@@ -316,14 +337,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/iframe/tsconfig.lib.json",
-              "packages/plugin/iframe/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/plugin/iframe/**/*"]
+            "lintFilePatterns": [
+              "packages/plugin/iframe/**/*.ts",
+              "packages/plugin/iframe/**/*.spec.ts",
+              "packages/plugin/iframe/**/*.spec.tsx",
+              "packages/plugin/iframe/**/*.spec.js",
+              "packages/plugin/iframe/**/*.spec.jsx",
+              "packages/plugin/iframe/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -341,7 +364,8 @@
             "packageJson": "packages/plugin/iframe/package.json",
             "main": "packages/plugin/iframe/src/index.ts",
             "assets": ["packages/plugin/iframe/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\iframe\\src"
           }
         },
         "publish": {
@@ -360,14 +384,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/vscode/tsconfig.lib.json",
-              "packages/plugin/vscode/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/plugin/vscode/**/*"]
+            "lintFilePatterns": [
+              "packages/plugin/vscode/**/*.ts",
+              "packages/plugin/vscode/**/*.spec.ts",
+              "packages/plugin/vscode/**/*.spec.tsx",
+              "packages/plugin/vscode/**/*.spec.js",
+              "packages/plugin/vscode/**/*.spec.jsx",
+              "packages/plugin/vscode/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -385,7 +411,8 @@
             "packageJson": "packages/plugin/vscode/package.json",
             "main": "packages/plugin/vscode/src/index.ts",
             "assets": ["packages/plugin/vscode/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\vscode\\src"
           }
         },
         "publish": {
@@ -404,16 +431,15 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/child-process/tsconfig.lib.json",
-              "packages/plugin/child-process/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!packages/plugin/child-process/**/*"
+            "lintFilePatterns": [
+              "packages/plugin/child-process/**/*.ts",
+              "packages/plugin/child-process/**/*.spec.ts",
+              "packages/plugin/child-process/**/*.spec.tsx",
+              "packages/plugin/child-process/**/*.spec.js",
+              "packages/plugin/child-process/**/*.spec.jsx",
+              "packages/plugin/child-process/**/*.d.ts"
             ]
           }
         },
@@ -432,7 +458,8 @@
             "packageJson": "packages/plugin/child-process/package.json",
             "main": "packages/plugin/child-process/src/index.ts",
             "assets": ["packages/plugin/child-process/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\child-process\\src"
           }
         },
         "publish": {
@@ -451,14 +478,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/ws/tsconfig.lib.json",
-              "packages/plugin/ws/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/plugin/ws/**/*"]
+            "lintFilePatterns": [
+              "packages/plugin/ws/**/*.ts",
+              "packages/plugin/ws/**/*.spec.ts",
+              "packages/plugin/ws/**/*.spec.tsx",
+              "packages/plugin/ws/**/*.spec.js",
+              "packages/plugin/ws/**/*.spec.jsx",
+              "packages/plugin/ws/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -476,7 +505,8 @@
             "packageJson": "packages/plugin/ws/package.json",
             "main": "packages/plugin/ws/src/index.ts",
             "assets": ["packages/plugin/ws/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\ws\\src"
           }
         },
         "publish": {
@@ -495,21 +525,22 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "packages/plugin/webview/tsconfig.lib.json",
-              "packages/plugin/webview/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/plugin/webview/**/*"]
+            "lintFilePatterns": [
+              "packages/plugin/webview/**/*.ts",
+              "packages/plugin/webview/**/*.spec.ts",
+              "packages/plugin/webview/**/*.spec.tsx",
+              "packages/plugin/webview/**/*.spec.js",
+              "packages/plugin/webview/**/*.spec.jsx",
+              "packages/plugin/webview/**/*.d.ts"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/plugin/webview/jest.config.js",
-            "tsConfig": "packages/plugin/webview/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -521,7 +552,8 @@
             "packageJson": "packages/plugin/webview/package.json",
             "main": "packages/plugin/webview/src/index.ts",
             "assets": ["packages/plugin/webview/*.md"],
-            "externalDependencies": "none"
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages\\plugin\\webview\\src"
           }
         },
         "publish": {
