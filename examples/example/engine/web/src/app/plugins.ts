@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Engine as PluginEngine, PluginManager } from '@remixproject/engine';
-import { ThemePlugin } from '@remixproject/engine-web';
+import { ThemePlugin, WindowPlugin } from '@remixproject/engine-web';
 import { Profile } from '@remixproject/plugin-utils';
 import { BehaviorSubject } from 'rxjs';
 
@@ -48,6 +48,14 @@ export class Engine extends PluginEngine {
 
 @Injectable({ providedIn: 'root' })
 export class Theme extends ThemePlugin {
+  constructor(private engine: Engine) {
+    super()
+    this.engine.register(this);
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class Window extends WindowPlugin {
   constructor(private engine: Engine) {
     super()
     this.engine.register(this);

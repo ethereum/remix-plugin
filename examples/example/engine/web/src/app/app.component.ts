@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IframePlugin } from '@remixproject/engine-web';
-import { Engine, Manager, Theme } from './plugins';
+import { Engine, Manager, Theme, Window } from './plugins';
 
 @Component({
   selector: 'engine-root',
@@ -15,6 +15,7 @@ export class AppComponent {
   constructor(
     private engine: Engine,
     private manager: Manager,
+    private window: Window,
     private theme: Theme
   ) {}
 
