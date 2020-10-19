@@ -9,9 +9,8 @@ export async function getOriginsFromUrl(url: string) {
   return res.json()
 }
 
-/** Get all the origins */
-export async function getAllOrigins(options: Partial<PluginOptions<any>>): Promise<string[]> {
-  const { devMode, allowOrigins } = options
+
+export function getDevmodeOrigins({ devMode }: Partial<PluginOptions<any>>) {
   const localhost = devMode.port ? [
     `http://127.0.0.1:${devMode.port}`,
     `http://localhost:${devMode.port}`,
@@ -21,9 +20,9 @@ export async function getAllOrigins(options: Partial<PluginOptions<any>>): Promi
   const devOrigins = devMode.origins
     ? (typeof devMode.origins === 'string') ? [devMode.origins] : devMode.origins
     : []
-  const defaultOrigins = await getOriginsFromUrl(allowOrigins as string)
-  return [ ...defaultOrigins, ...localhost, ...devOrigins]
+  return [ ...localhost, ...devOrigins ]
 }
+
 
 /**
  * Check if the sender has the right origin
@@ -31,13 +30,19 @@ export async function getAllOrigins(options: Partial<PluginOptions<any>>): Promi
  * @param options client plugin options
  */
 export async function checkOrigin(origin: string, options: Partial<PluginOptions<any>> = {}) {
+  let origins = []
   if (options.allowOrigins) {
     if (Array.isArray(options.allowOrigins)) {
-      return options.allowOrigins.includes(origin)
+      origins = origins.concat(options.allowOrigins)
     } else {
-      const allOrigins = await getAllOrigins(options)
-      return allOrigins.includes(origin)
+      const allOrigins = await getOriginsFromUrl(options.allowOrigins)
+      origins = origins.concat(allOrigins)
     }
+  } else if (options.devMode) {
+    const devModes = getDevmodeOrigins(options)
+    origins = origins.concat(devModes)
+  } else {
+    return true
   }
-  return true;
+  return origins.includes(origin)
 }

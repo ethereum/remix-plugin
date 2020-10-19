@@ -26,7 +26,7 @@ describe('Origin', () => {
     global.fetch = jest.fn().mockImplementation(() => mockFetchPromise)
 
     expect(await checkOrigin(goodOrigin)).toBeTruthy()
-    expect(await checkOrigin(wrongOrigin)).toBeFalsy()
+    expect(await checkOrigin(wrongOrigin)).toBeTruthy() // Check origin only with devmode & allowOrigins
     expect(await checkOrigin(goodLocalOrigin, { allowOrigins })).toBeTruthy()
     expect(await checkOrigin(wrongLocalOrigin, { allowOrigins })).toBeFalsy()
     expect(await checkOrigin(goodExternalOrigin, { allowOrigins })).toBeTruthy()
