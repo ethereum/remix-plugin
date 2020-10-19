@@ -21,11 +21,13 @@ export class AppComponent {
   ) {}
 
   ngAfterViewInit() {
-    const iframe = new IframePlugin({ name: 'iframe', url: 'http://localhost:4201', location: 'main' });
-    this.engine.onload(() => {
+    try {
+      const iframe = new IframePlugin({ name: 'iframe', url: 'http://localhost:4201', location: 'main' });
       this.engine.register(iframe);
       this.manager.activatePlugin('iframe');
-    });
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   deactivate(name: string) {

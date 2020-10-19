@@ -132,15 +132,12 @@ The `ViewPlugin` will add itself into its `HostPlugin` once activated.
 
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const sidePanel = new SidePanel()
-const hosted = new HostedPlugin()
-
-// wait for the manager to be loaded
-await engine.onload()
+const hosted = new Host
 
 // Register both plugins
-engine.register([sidePanel, hosted])
+engine.register([manager, sidePanel, hosted])
 
 // Activate both plugins: ViewPlugin will automatically be added to the view
 // The order here is important

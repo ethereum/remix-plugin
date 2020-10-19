@@ -35,13 +35,12 @@ describe('View Plugin', () => {
   let manager: MockManager
   let host: MockHost
   let view: MockView
-  beforeEach(async () => {
+  beforeEach(() => {
     view = new MockView()
     host = new MockHost()
     manager = new MockManager()
-    const engine = new MockEngine(manager)
-    await engine.onload()
-    engine.register([view, host])
+    const engine = new MockEngine()
+    engine.register([manager, view, host])
   })
 
   test('Activate View call host addView', async () => {

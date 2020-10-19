@@ -16,8 +16,8 @@ export class MockManager extends PluginManager {
   onPluginActivated = jest.fn()
   onPluginDeactivated = jest.fn()
   onProfileAdded = jest.fn()
-  canActivate = jest.fn(async () => true)
-  canDeactivate = jest.fn(async (from) => from.name === 'manager' ? true : false)
+  canActivatePlugin = jest.fn(async () => true)
+  canDeactivatePlugin = jest.fn(async (from) => from.name === 'manager' ? true : false)
   canCall = jest.fn(async () => true)
   constructor() {
     super(pluginManagerProfile)
@@ -56,45 +56,36 @@ export class MockFileManager extends Plugin {
 
 describe('Registration with Engine', () => {
 
-  test('Manager is registered', async () => {
+  test('Manager is registered', () => {
     const manager = new MockManager()
-    const engine = new MockEngine(manager)
-    await engine.onload()
+    const engine = new MockEngine()
+    engine.register(manager)
     expect(engine.isRegistered('manager')).toBeTruthy()
   })
 
-  test('Manager emit onActivation', async () => {
+  test('Manager emits onRegistration for itself', async () => {
     const manager = new MockManager()
-    const engine = new MockEngine(manager)
-    await engine.onload()
-    expect(manager.onActivation).toHaveBeenCalledTimes(1)
-  })
-
-  test('Manager does not emit onRegistration for itself', async () => {
-    const manager = new MockManager()
-    const engine = new MockEngine(manager)
-    await engine.onload()
-    expect(manager.onRegistration).toHaveBeenCalledTimes(0)
-    expect(engine.onRegistration).toHaveBeenCalledTimes(0)
+    const engine = new MockEngine()
+    engine.register(manager)
+    expect(manager.onRegistration).toHaveBeenCalledTimes(1)
+    expect(engine.onRegistration).toHaveBeenCalledTimes(1)
   })
 
   test('Call onRegistration for other plugins', async () => {
     const manager = new MockManager()
-    const engine = new MockEngine(manager)
     const solidity = new MockSolidity()
-    await engine.onload()
-    engine.register([solidity, new MockFileManager()])
-    expect(engine.onRegistration).toHaveBeenCalledTimes(2)
-    expect(manager.onProfileAdded).toHaveBeenCalledTimes(2)
+    const engine = new MockEngine()
+    engine.register([manager, solidity, new MockFileManager()])
+    expect(engine.onRegistration).toHaveBeenCalledTimes(3)
+    expect(manager.onProfileAdded).toHaveBeenCalledTimes(3)
     expect(solidity.onRegistration).toHaveBeenCalledTimes(1)
   })
 
   test('Call setPluginOption on registration', async () => {
     const manager = new MockManager()
-    const engine = new MockEngine(manager)
+    const engine = new MockEngine()
     const solidity = new MockSolidity()
-    await engine.onload()
-    engine.register([solidity, new MockFileManager()])
+    engine.register([manager, solidity, new MockFileManager()])
     expect(engine.setPluginOption).toHaveBeenCalledWith(solidity.profile)
     expect(solidity['options'].queueTimeout).toBe(10000)
   })
@@ -110,21 +101,23 @@ describe('Manager', () => {
     solidity = new MockSolidity()
     fileManager = new MockFileManager()
     manager = new MockManager()
-    engine = new MockEngine(manager)
-    await engine.onload()
-    engine.register([solidity, fileManager])
+    engine = new MockEngine()
+    engine.register([manager, solidity, fileManager])
   })
 
   test('Activation', async () => {
+    await manager.activatePlugin('manager')
     const spyEmit = spyOn(manager, 'emit')
     await manager.activatePlugin('solidity')
     expect(manager.onPluginActivated).toHaveBeenCalledTimes(2)  // manager + solidity
+    expect(manager.onActivation).toBeCalledTimes(1)
     expect(solidity.onActivation).toBeCalledTimes(1)
     expect(await manager.isActive('solidity')).toBeTruthy()
     expect(spyEmit).toHaveBeenCalledWith('pluginActivated', solidity.profile)
   })
 
   test('Deactivation', async () => {
+    await manager.activatePlugin('manager')
     const spyEmit = spyOn(manager, 'emit')
     await manager.activatePlugin('solidity')
     await manager.deactivatePlugin('solidity')
@@ -135,6 +128,7 @@ describe('Manager', () => {
   })
 
   test('Toggle activation', async () => {
+    await manager.activatePlugin('manager')
     const onActivation = spyOn(solidity, 'onActivation')
     const onDeactivation = spyOn(solidity, 'onDeactivation')
     await manager.toggleActive('solidity')
@@ -152,13 +146,12 @@ describe('Remix Engine', () => {
   let fileManager: MockFileManager
   let engine: Engine
 
-  beforeEach(async () => {
+  beforeEach(() => {
     solidity = new MockSolidity()
     fileManager = new MockFileManager()
     manager = new MockManager()
-    engine = new MockEngine(manager)
-    await engine.onload()
-    engine.register([solidity, fileManager])
+    engine = new MockEngine()
+    engine.register([manager, solidity, fileManager])
   })
 
   test('Listening to event should add a event record', async () => {
@@ -197,13 +190,12 @@ describe('Plugin interaction', () => {
   let fileManager: MockFileManager
   let engine: Engine
 
-  beforeEach(async () => {
+  beforeEach(() => {
     solidity = new MockSolidity()
     fileManager = new MockFileManager()
     manager = new MockManager()
-    engine = new MockEngine(manager)
-    await engine.onload()
-    engine.register([solidity, fileManager])
+    engine = new MockEngine()
+    engine.register([manager, solidity, fileManager])
   })
 
   // Call
@@ -243,7 +235,7 @@ describe('Plugin interaction', () => {
     await solidity.call('manager', 'activatePlugin', 'fileManager')
     const isActive = await manager.isActive('fileManager')
     expect(manager.activatePlugin).toHaveBeenCalledWith('fileManager')
-    expect(manager.canActivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
+    expect(manager.canActivatePlugin).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
     expect(isActive).toBeTruthy()
   })
 
@@ -254,18 +246,18 @@ describe('Plugin interaction', () => {
     } catch (err) {
       expect(err.message).toEqual('Plugin solidity has no right to deactivate plugin fileManager')
       const isActive = await manager.isActive('fileManager')
-      expect(manager.canDeactivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
+      expect(manager.canDeactivatePlugin).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
       expect(isActive).toBeTruthy()
     }
   })
 
   test('Plugin can deactivate another if permitted', async () => {
-    manager.canDeactivate = jest.fn(async (from) => true)
+    manager.canDeactivatePlugin = jest.fn(async (from) => true)
     await manager.activatePlugin(['solidity', 'fileManager'])
     await solidity.call('manager', 'deactivatePlugin', 'fileManager')
     const isActive = await manager.isActive('fileManager')
     expect(manager.deactivatePlugin).toHaveBeenCalledWith('fileManager')
-    expect(manager.canDeactivate).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
+    expect(manager.canDeactivatePlugin).toHaveBeenCalledWith(solidity.profile, fileManager.profile)
     expect(isActive).toBeFalsy()
   })
 

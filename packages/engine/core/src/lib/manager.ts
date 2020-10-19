@@ -12,7 +12,7 @@ export type BasePluginManager = {
   canCall(from: Profile, to: Profile, method: string): Promise<boolean>
   // Internal
   toggleActive(name: string): any
-  addProfile(profile: Partial<Profile>): any
+  addProfile(profiles: Partial<Profile> | Partial<Profile>[]): any
   canActivatePlugin(from: Profile, to: Profile, method?: string): Promise<boolean>
   canDeactivatePlugin(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
@@ -47,10 +47,6 @@ function catchAllPromises(promises: Promise<any>[]) {
 }
 
 export class PluginManager extends Plugin implements BasePluginManager {
-  /** Run engine activation. Implemented by Engine */
-  private engineActivatePlugin: (name: string) => Promise<any>
-  /** Run engine deactivation. Implemented by Engine */
-  private engineDeactivatePlugin: (name: string) => Promise<any>
   protected profiles: Record<string, Profile> = {}
   protected actives: string[] = []
 
@@ -60,12 +56,25 @@ export class PluginManager extends Plugin implements BasePluginManager {
 
   constructor(profile: ManagerProfile = pluginManagerProfile) {
     super(profile)
-    this.profiles[profile.name] = profile // Initialise with own profile (cannot use addProfile because manager is not activated yet)
   }
 
   /** Return the name of the caller. If no request provided, this mean that the method has been called from the IDE so we use "manager" */
   get requestFrom() {
     return this.currentRequest ? this.currentRequest.from : 'manager'
+  }
+
+  /** Run engine activation. Implemented by Engine */
+  private engineActivatePlugin(name: string): Promise<any> {
+    const error = `You cannot activate plugin "${name}", manager plugin is not register yet. `
+    const solution = 'Run "engine.register(manager)" first'
+    throw new Error(error + solution)
+  }
+
+  /** Run engine deactivation. Implemented by Engine */
+  private engineDeactivatePlugin(name: string): Promise<any> {
+    const error = `You cannot deactivate plugin "${name}", manager plugin is not register yet. `
+    const solution = 'Run "engine.register(manager)" first'
+    throw new Error(error + solution)
   }
 
   /**
@@ -111,18 +120,21 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param profile The profile to add
    * @note This method should only be used by the engine
    */
-  addProfile(profile: Profile) {
-    if (this.profiles[profile.name]) {
-      throw new Error(`Plugin ${profile.name} already exist`)
+  addProfile(profiles: Profile | Profile[]) {
+    const add = (profile: Profile) => {
+      if (this.profiles[profile.name]) {
+        throw new Error(`Plugin ${profile.name} already exist`)
+      }
+      this.profiles[profile.name] = profile
+      // emit only if manager is already activated
+      if (this.actives.includes('manager')) {
+        this.emit('profileAdded', profile)
+      }
+      if (this.onProfileAdded) {
+        this.onProfileAdded(profile)
+      }
     }
-    this.profiles[profile.name] = profile
-    // emit only if manager is already activated
-    if (this.actives.includes('manager')) {
-      this.emit('profileAdded', profile)
-    }
-    if (this.onProfileAdded) {
-      this.onProfileAdded(profile)
-    }
+    return Array.isArray(profiles) ?  profiles.map(add) : add(profiles)
   }
 
   /**
@@ -138,6 +150,9 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param name The name of the plugin to activate
    */
   async activatePlugin(names: string | string[]) {
+    if (!this.actives.includes('manager')) {
+      await this.toggleActive('manager');
+    }
     const activate = async (name: string) => {
       const isActive = await this.isActive(name)
       if (isActive) return

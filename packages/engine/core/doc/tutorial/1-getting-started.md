@@ -16,26 +16,23 @@ The engine manages the communication between plugins. It requires a `PluginManag
 import { PluginManager, Engine } from '@remixproject/engine';
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 ```
 
 3. Register a plugin
 
 We need to register a plugin before activating it. This is done by the `Engine`.
 
-> ⚠️ **IMPORTANT** You need to wait for the manager to be loaded before registering a plugin.
+> ⚠️ **IMPORTANT** You need to register the "manager" before beeing able to activate a plugin
 ```typescript
 import { PluginManager, Engine, Plugin } from '@remixproject/engine';
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const plugin = new Plugin({ name: 'plugin-name' })
 
-// Wait for the manager to be loaded
-await engine.onload()
-
 // Register plugin
-engine.register(plugin)
+engine.register([manager, plugin])
 ```
 
 4. Activate a plugin
@@ -43,14 +40,11 @@ engine.register(plugin)
 *Once your plugin is registered* you can activate it. This is done by the `PluginManager`
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const plugin = new Plugin({ name: 'plugin-name' })
 
-// Wait for the manager to be loaded
-await engine.onload()
-
 // Register plugins
-engine.register(plugin)
+engine.register([manager, plugin])
 
 // Activate plugins
 manager.activatePlugin('plugin-name')

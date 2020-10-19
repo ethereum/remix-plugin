@@ -13,6 +13,11 @@ export class Manager extends PluginManager {
   public activeProfiles$ = this.activeProfiles.asObservable();
   public idleProfiles$ = this.idleProfiles.asObservable();
 
+  constructor(engine: Engine) {
+    super()
+    engine.register(this)
+  }
+
   private async updateProfiles() {
     const actives = [];
     const idles = [];
@@ -40,8 +45,8 @@ export class Manager extends PluginManager {
 
 @Injectable({ providedIn: 'root' })
 export class Engine extends PluginEngine {
-  constructor(manager: Manager) {
-    super(manager);
+  constructor() {
+    super();
   }
 }
 

@@ -30,10 +30,9 @@ describe('Connector', () => {
 
   beforeEach(async () => {
     manager = new PluginManager(pluginManagerProfile)
-    const engine = new Engine(manager)
-    await engine.onload()
+    const engine = new Engine()
     plugin = new MockPlugin()
-    engine.register(plugin)
+    engine.register([manager, plugin])
     plugin.createMock()
   })
 

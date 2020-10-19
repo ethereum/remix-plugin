@@ -15,10 +15,7 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-  })
+  const engine = new Engine();
 }
 ```
 
@@ -35,20 +32,16 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-    const webview = new WebviewPlugin({
-      name: 'webview-plugin',
-      url: 'https://my-plugin-path.com',
-      methods: ['getData']
-    }, { context }) // We need to pass the context as scond parameter
-
-    engine.register(webview);
-    // This will create the webview and inject the code inside
-    await manager.activatePlugin('webview-plugin');
-    const data = manager.call('webview-plugin', 'getData');
-  })
+  const engine = new Engine();
+  const webview = new WebviewPlugin({
+    name: 'webview-plugin',
+    url: 'https://my-plugin-path.com',
+    methods: ['getData']
+  }, { context }) // We need to pass the context as scond parameter
+  engine.register([manager, webview]);
+  // This will create the webview and inject the code inside
+  await manager.activatePlugin('webview-plugin');
+  const data = manager.call('webview-plugin', 'getData');
 }
 ```
 
@@ -74,16 +67,13 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-    const terminal = new TerminalPlugin()
+  const engine = new Engine();
+  const terminal = new TerminalPlugin()
 
-    engine.register(terminal);
-    await manager.activatePlugin('terminal');
-    // Execute "npm run build" in the terminal
-    manager.call('terminal', 'exec', 'npm run build');
-  })
+  engine.register([manager, terminal]);
+  await manager.activatePlugin('terminal');
+  // Execute "npm run build" in the terminal
+  manager.call('terminal', 'exec', 'npm run build');
 }
 ```
 
@@ -97,16 +87,13 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-    const window = new WindowPlugin()
+  const engine = new Engine();
+  const window = new WindowPlugin()
 
-    engine.register(window);
-    await manager.activatePlugin('window');
-    // Open a prompt to the user
-    const fortyTwo = await manager.call('window', 'prompt', 'What is The Answer to the Ultimate Question of Life, the Universe, and Everything');
-  })
+  engine.register([manager, window]);
+  await manager.activatePlugin('window');
+  // Open a prompt to the user
+  const fortyTwo = await manager.call('window', 'prompt', 'What is The Answer to the Ultimate Question of Life, the Universe, and Everything');
 }
 ```
 
@@ -118,17 +105,14 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-    const fs = new FileManagerPlugin()
+  const engine = new Engine();
+  const fs = new FileManagerPlugin()
 
-    engine.register(fs);
-    await manager.activatePlugin('filemanager');
-    // Open a file into vscode
-    // If path is relative it will look at the root of the open folder in vscode
-    await manager.call('filemanager', 'open', 'package.json');
-  })
+  engine.register([manager, fs]);
+  await manager.activatePlugin('filemanager');
+  // Open a file into vscode
+  // If path is relative it will look at the root of the open folder in vscode
+  await manager.call('filemanager', 'open', 'package.json');
 }
 ```
 
@@ -142,13 +126,11 @@ import { Engine, Manager } from '@remixproject/engine';
 
 export async function activate(context: ExtensionContext) {
   const manager = new Manager();
-  const engine = new Engine(manager);
-  engine.onload(() => {
-    // register your plugins here
-    const theme = new ThemePlugin()
-    engine.register(fs);
-    await manager.activatePlugin('theme');
-    // Now your webview can listen on themeChanged event from the theme plugin
-  })
+  const engine = new Engine();
+  const theme = new ThemePlugin();
+
+  engine.register([manager, fs]);
+  await manager.activatePlugin('theme');
+  // Now your webview can listen on themeChanged event from the theme plugin
 }
 ```

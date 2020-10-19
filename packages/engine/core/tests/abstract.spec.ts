@@ -10,6 +10,7 @@ class MockPlugin extends Plugin {
     super(p)
   }
 
+  // @ts-ignore
   get currentRequest() {
     return this._currentRequest
   }

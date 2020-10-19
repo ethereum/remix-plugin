@@ -41,11 +41,10 @@ describe('Websocket plugin', () => {
   let plugin: MockSocket
 
   beforeEach(async () => {
+    const engine = new Engine()
     manager = new PluginManager(pluginManagerProfile)
-    const engine = new Engine(manager)
-    await engine.onload()
     plugin = new MockSocket()
-    engine.register(plugin)
+    engine.register([manager, plugin])
   })
 
   test('Activation', async () => {

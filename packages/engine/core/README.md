@@ -48,14 +48,14 @@ The engine works a with two classes :
 import { PluginManager, Engine, Plugin } from '@remixproject/engine'
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const plugin = new Plugin({ name: 'plugin-name' })
 
 // Wait for the manager to be loaded
 await engine.onload()
 
 // Register plugins
-engine.register(plugin)
+engine.register([manager, plugin])
 
 // Activate plugins
 manager.activatePlugin('plugin-name')
@@ -131,15 +131,12 @@ class Console extends Plugin {
 }
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const emptyPlugin = new Plugin({ name: 'empty' })
 const consolePlugin = new Console()
 
-// Wait for the manager to be loaded
-await engine.onload()
-
 // Register plugins
-engine.register([plugin, consolePlugin])
+engine.register([manager, plugin, consolePlugin])
 
 // Activate plugins
 manager.activatePlugin(['empty', 'console'])

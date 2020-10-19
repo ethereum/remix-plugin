@@ -12,6 +12,7 @@ describe('Origin', () => {
     const wrongLocalOrigin = `http://localhost:${port + 1}`
     const wrongExternalOrigin = `${origins}wrong`
     const goodExternalOrigin = origins
+    const allowOrigins = [goodLocalOrigin, goodExternalOrigin]
 
     // Mock fetch api
     const mockFetchPromise = Promise.resolve({
@@ -25,10 +26,10 @@ describe('Origin', () => {
     global.fetch = jest.fn().mockImplementation(() => mockFetchPromise)
 
     expect(await checkOrigin(goodOrigin)).toBeTruthy()
-    expect(await checkOrigin(wrongOrigin)).toBeFalsy()
-    expect(await checkOrigin(goodLocalOrigin, { port })).toBeTruthy()
-    expect(await checkOrigin(wrongLocalOrigin, { port })).toBeFalsy()
-    expect(await checkOrigin(goodExternalOrigin, { origins })).toBeTruthy()
-    expect(await checkOrigin(wrongExternalOrigin, { origins })).toBeFalsy()
+    expect(await checkOrigin(wrongOrigin)).toBeTruthy() // Check origin only with devmode & allowOrigins
+    expect(await checkOrigin(goodLocalOrigin, { allowOrigins })).toBeTruthy()
+    expect(await checkOrigin(wrongLocalOrigin, { allowOrigins })).toBeFalsy()
+    expect(await checkOrigin(goodExternalOrigin, { allowOrigins })).toBeTruthy()
+    expect(await checkOrigin(wrongExternalOrigin, { allowOrigins })).toBeFalsy()
   })
 })
