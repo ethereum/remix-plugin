@@ -1,5 +1,5 @@
 import { Plugin } from '@remixproject/engine'
-import { API } from '@remixproject/plugin-utils'
+import { MethodApi } from '@remixproject/plugin-utils'
 import { ITheme, Theme, themeProfile } from '@remixproject/plugin-api'
 
 type DeepPartial<T> = {
@@ -48,7 +48,7 @@ export function createTheme(params: DeepPartial<Theme> = {}): Theme {
   }
 }
 
-export class ThemePlugin extends Plugin implements API<ITheme> {
+export class ThemePlugin extends Plugin implements MethodApi<ITheme> {
   protected theme: Theme = createTheme()
   constructor() {
     super(themeProfile)
@@ -61,7 +61,7 @@ export class ThemePlugin extends Plugin implements API<ITheme> {
   }
 
   /** External API to get the current theme */
-  currentTheme(): Theme {
+  async currentTheme(): Promise<Theme> {
     return this.theme
   }
 

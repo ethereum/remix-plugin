@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { IRemixApi, remixProfiles } from '@remixproject/plugin-api'
-import { callEvent, listenEvent, createService, activateService, GetPluginService } from '@remixproject/plugin-utils'
+import { callEvent, listenEvent, createService, activateService, GetPluginService, Profile } from '@remixproject/plugin-utils'
 import type {
   Api,
   PluginRequest,
@@ -100,6 +100,15 @@ export class PluginClient<T extends Api = any, App extends ApiMap = Readonly<IRe
     } else {
       return Promise.resolve(false)
     }
+  }
+
+  /**
+   * Called before deactivating the plugin
+   * @param from profile of plugin asking to deactivate
+   * @note PluginManager will always be able to deactivate
+   */
+  canDeactivate(from: Profile) {
+    return true
   }
 
   //////////////////////

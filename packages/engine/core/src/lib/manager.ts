@@ -5,15 +5,16 @@ import { Plugin } from "./abstract"
 export type BasePluginManager = {
   // Exposed methods
   getProfile(name: string): Promise<Profile>
-  updateProfile(profile: Partial<Profile>): any
-  activatePlugin(name: string): any
-  deactivatePlugin(name: string): any
+  updateProfile(profile: Partial<Profile>): Promise<any>
+  activatePlugin(name: string): Promise<any>
+  deactivatePlugin(name: string): Promise<any>
   isActive(name: string): Promise<boolean>
   canCall(from: Profile, to: Profile, method: string): Promise<boolean>
   // Internal
   toggleActive(name: string): any
   addProfile(profile: Partial<Profile>): any
-  canActivate(from: Profile, to: Profile): Promise<boolean>
+  canActivatePlugin(from: Profile, to: Profile, method?: string): Promise<boolean>
+  canDeactivatePlugin(from: Profile, to: Profile): Promise<boolean>
 } & Plugin
 
 
@@ -144,7 +145,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
         this.getProfile(name),
         this.getProfile(this.requestFrom)
       ])
-      const canActivate = await this.canActivate(from, to)
+      const canActivate = await this.canActivatePlugin(from, to)
       if (canActivate) {
         await this.toggleActive(name)
       } else {
@@ -166,9 +167,14 @@ export class PluginManager extends Plugin implements BasePluginManager {
         this.getProfile(name),
         this.getProfile(this.requestFrom)
       ])
-      const canDeactivate = await this.canDeactivate(from, to)
-      if (canDeactivate) {
-        await this.toggleActive(name)
+      // Manager should have all right else plugin could totally block deactivation
+      if (from.name === 'manager') {
+        return this.toggleActive(name)
+      }
+      const managerCanDeactivate = await this.canDeactivatePlugin(from, to)
+      const pluginCanDeactivate = await this.call(to.name, 'canDeactivate', from)
+      if (managerCanDeactivate && pluginCanDeactivate) {
+        return this.toggleActive(name)
       } else {
         throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
       }
@@ -212,7 +218,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param to Profile of the target plugin
    * @note This method should be overrided
    */
-  async canActivate(from: Profile, to: Profile) {
+  async canActivatePlugin(from: Profile, to: Profile) {
     return true
   }
 
@@ -222,7 +228,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param to Profile of the target plugin
    * @note This method should be overrided
    */
-  async canDeactivate(from: Profile, to: Profile) {
+  async canDeactivatePlugin(from: Profile, to: Profile) {
     if (from.name === 'manager' || from.name === to.name) {
       return true
     }

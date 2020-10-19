@@ -11,7 +11,7 @@ export class AppComponent {
   title = 'example-plugin-webview';
   ngOnInit() {
     const client = createClient<any, RemixApi>();
-    client.onload(() => {
+    client.onload(async () => {
       client.on('theme', 'themeChanged', (theme) => console.log('theme', theme));
     });
   }

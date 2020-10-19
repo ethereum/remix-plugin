@@ -565,6 +565,22 @@
         }
       }
     },
+    "examples": {
+      "projectType": "library",
+      "root": "root/is/required/or/it/fails",
+      "architect": {
+        "serve": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx run example-engine-web:serve",
+              "nx run example-plugin-webview:serve --port 4201"
+            ],
+            "parallel": true
+          }
+        }
+      }
+    },
     "example-engine-web": {
       "projectType": "application",
       "schematics": {

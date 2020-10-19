@@ -9,6 +9,7 @@ export * from './lib/settings'
 export * from './lib/theme'
 export * from './lib/udapp'
 export * from './lib/unit-testing'
+export * from './lib/window'
 
 export * from './lib/remix-profile'
 export * from './lib/standard-profile'

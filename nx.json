@@ -64,6 +64,9 @@
     "plugin-webview": {
       "tags": []
     },
+    "examples": {
+      "tags": []
+    },
     "example-engine-web": {
       "tags": []
     },

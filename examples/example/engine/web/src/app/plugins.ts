@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Engine as PluginEngine, PluginManager } from '@remixproject/engine';
-import { ThemePlugin } from '@remixproject/engine-web';
+import { ThemePlugin, WindowPlugin } from '@remixproject/engine-web';
 import { Profile } from '@remixproject/plugin-utils';
 import { BehaviorSubject } from 'rxjs';
+
+const localPlugins = ['manager', 'main'];
 
 @Injectable({ providedIn: 'root' })
 export class Manager extends PluginManager {
@@ -26,8 +28,13 @@ export class Manager extends PluginManager {
   onPluginActivated() {
     this.updateProfiles();
   }
+
   onPluginDeactivated() {
     this.updateProfiles();
+  }
+
+  async canDeactivatePlugin(from: Profile, to: Profile) {
+    return localPlugins.includes(from.name);
   }
 }
 
@@ -40,7 +47,7 @@ export class Engine extends PluginEngine {
 
 
 @Injectable({ providedIn: 'root' })
-export class Theme extends ThemePlugin {
+export class Window extends WindowPlugin {
   constructor(private engine: Engine) {
     super()
     this.engine.register(this);

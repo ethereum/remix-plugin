@@ -41,11 +41,13 @@ export class IframePlugin extends PluginConnector {
   }
 
   /** Implement "deactivate" of the ViewPlugin */
-  disconnect() {
-    this.iframe.remove()
-    window.removeEventListener(...this.listener)
-    return this.call(this.profile.location, 'removeView', this.profile)
-  }
+disconnect() {
+  this.iframe.remove()
+  window.removeEventListener(...this.listener)
+  // @todo(#252) should be managed by an ErrorHandler instead
+  return this.call(this.profile.location, 'removeView', this.profile)
+    .catch(console.error)
+}
 
   /** Get message from the iframe */
   private async getEvent(event: MessageEvent) {

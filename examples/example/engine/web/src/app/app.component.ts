@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IframePlugin } from '@remixproject/engine-web';
-import { Engine, Manager, Theme } from './plugins';
+import { Engine, Manager, Window } from './plugins';
+import { Theme } from './theme';
 
 @Component({
   selector: 'engine-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   actives$ = this.manager.activeProfiles$;
@@ -14,6 +16,7 @@ export class AppComponent {
   constructor(
     private engine: Engine,
     private manager: Manager,
+    private window: Window,
     private theme: Theme
   ) {}
 
@@ -23,5 +26,13 @@ export class AppComponent {
       this.engine.register(iframe);
       this.manager.activatePlugin('iframe');
     });
+  }
+
+  deactivate(name: string) {
+    this.manager.deactivatePlugin(name);
+  }
+
+  activate(name: string) {
+    this.manager.activatePlugin(name);
   }
 }
