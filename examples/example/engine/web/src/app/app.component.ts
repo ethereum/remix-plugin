@@ -22,10 +22,8 @@ export class AppComponent {
 
   ngAfterViewInit() {
     const iframe = new IframePlugin({ name: 'iframe', url: 'http://localhost:4201', location: 'main' });
-    this.engine.onload(() => {
-      this.engine.register(iframe);
-      this.manager.activatePlugin('iframe');
-    });
+    this.engine.register(iframe);
+    this.manager.activatePlugin(['iframe', 'manager']);
   }
 
   deactivate(name: string) {
