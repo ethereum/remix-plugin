@@ -78,14 +78,11 @@ import { PluginManager, Engine, Plugin } from '@remixproject/engine'
 import { SocketIOPlugin } from 'plugin-connector-socket.io'
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const plugin = new SocketIOPlugin({ name: 'socket', url: 'http://localhost:3000' })
 
-// Wait for the manager to be loaded
-await engine.onload()
-
 // Register plugins
-engine.register(plugin)
+engine.register([manager, plugin])
 
 // Activate plugins
 manager.activatePlugin('socket')

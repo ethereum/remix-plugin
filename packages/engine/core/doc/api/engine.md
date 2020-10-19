@@ -9,22 +9,10 @@ The `Engine` depends on the plugin manager for the permission system.
 
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
-await engine.onload() // Wait for the manager to be fully loaded
+const engine = new Engine()
+engine.register(manager)
 ```
 
-> Always wait for the engine to be loaded before running any other plugin related operation.
-
-## Methods
-
-### onload
-```typescript
-await engine.onload()
-// OR
-engine.onload(() => {})
-```
-
-Wait for the manager to be fully loaded. As most of the API is asynchronous, this is important to wait for the manager to be loaded to avoid initialization errors.
 
 ### register
 ```typescript

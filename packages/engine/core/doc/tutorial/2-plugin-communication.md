@@ -41,7 +41,7 @@ class SecondPlugin extends Plugin {
 `Engine` & `PluginManager` can register & activate a list of plugins at once.
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const first = new FirstPlugin()
 const second = new SecondPlugin()
 
@@ -49,7 +49,7 @@ const second = new SecondPlugin()
 await engine.onload()
 
 // Register both plugins 
-engine.register([first, second])
+engine.register([manager, first, second])
 
 // Activate both plugins
 await manager.activatePlugin(['first', 'second'])
@@ -105,15 +105,12 @@ class SecondPlugin extends Plugin {
 
 
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const first = new FirstPlugin()
 const second = new SecondPlugin()
 
-// wait for the manager to be loaded
-await engine.onload()
-
 // Register both plugins 
-engine.register([first, second])
+engine.register([manager, first, second])
 
 // Activate both plugins
 await manager.activatePlugin(['first', 'second'])

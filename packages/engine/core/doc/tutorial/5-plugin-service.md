@@ -6,13 +6,11 @@ Let's look at a "Command Line Interface" plugin that would expose a "git" servic
 
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const cmd = new Plugin({ name: 'cmd' })
 const plugin = new Plugin({ name: 'caller' })
 
-// wait for the manager to be loaded
-await engine.onload()
-engine.register([cmd, plugin])
+engine.register([manager, cmd, plugin])
 await manager.activatePlugin(['cmd', 'caller'])
 
 // Create a service inside cmd
@@ -129,13 +127,11 @@ In this example, we activate the service on activation, but **only the first tim
 Now let's register the plugin : 
 ```typescript
 const manager = new PluginManager()
-const engine = new Engine(manager)
+const engine = new Engine()
 const plugin = new Plugin({ name: 'caller' })
 const cmd = new CmdPlugin()
 
-// wait for the manager to be loaded
-await engine.onload()
-engine.register([cmd, plugin])
+engine.register([manager, cmd, plugin])
 await manager.activatePlugin(['cmd', 'caller'])
 
 // Service is already created by the `onActivation` hook.
