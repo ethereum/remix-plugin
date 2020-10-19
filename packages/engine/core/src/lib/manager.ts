@@ -150,7 +150,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
    * @param name The name of the plugin to activate
    */
   async activatePlugin(names: string | string[]) {
-    if (!this.isActive('manager')) {
+    if (!this.actives.includes('manager')) {
       await this.toggleActive('manager');
     }
     const activate = async (name: string) => {
@@ -218,7 +218,6 @@ export class PluginManager extends Plugin implements BasePluginManager {
       } else {
         await this.engineActivatePlugin(name)
         this.actives.push(name)
-        console.log('deactivate', profile)
         this.emit('pluginActivated', profile)
         if (this.onPluginActivated) {
           this.onPluginActivated(profile)
