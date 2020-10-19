@@ -8,40 +8,12 @@ export class Engine {
   private events: Record<string, any> = {}
   private listeners: Record<string, any> = {}
   private eventMemory: Record<string, any> = {}
-  private isLoaded = false
+  private manager: BasePluginManager
 
-  private managerLoaded: () => void
   onRegistration?(plugin: Plugin): void
   /** Update the options of the plugin when being registered */
   setPluginOption?(profile: Profile): PluginOptions
 
-  constructor(private manager: BasePluginManager) {
-    this.plugins['manager'] = manager
-    // Activate the Engine & start listening on activation and deactivation
-    this.manager['engineActivatePlugin'] = (name: string) => this.activatePlugin(name)
-    this.manager['engineDeactivatePlugin'] = (name: string) => this.deactivatePlugin(name)
-    manager.activatePlugin('manager').then(() => {
-      this.isLoaded = true
-      // Run callback on `onload` if any
-      if (this.managerLoaded) this.managerLoaded()
-    })
-  }
-
-  /** Wait for the engine to have loaded the manager */
-  async onload(cb?: () => void): Promise<void> {
-    return new Promise((res, rej) => {
-      if (this.isLoaded) { // If already loaded resolve
-        res()
-        if (cb) cb()
-      } else { // Else store the callback
-        this.managerLoaded = () => {
-          res()
-          if (cb) cb()
-          delete this.managerLoaded // Cleanup once it's loaded
-        }
-      }
-    })
-  }
 
   /**
    * Broadcast an event to the plugin listening
@@ -268,9 +240,10 @@ export class Engine {
    * @param plugin The deactivated plugin to update the methods from
    */
   private updateErrorHandler(plugin: Plugin) {
+    const name = plugin.name
     // SET ERROR MESSAGE FOR call, on, once, off, emit
     const deactivatedWarning = (message: string) => {
-      return `Plugin ${name} is currently deactivated. ${message}. Activate ${name} first.`
+      return `Plugin "${name}" is currently deactivated. ${message}. Activate "${name}" first.`
     }
     plugin['call'] = (target: string, key: string, ...payload: any[]) => {
       throw new Error(deactivatedWarning(`It cannot call method ${key} of plugin ${target}.`))
@@ -298,8 +271,11 @@ export class Engine {
       if (this.plugins[plugin.name]) {
         throw new Error(`Plugin ${plugin.name} is already register.`)
       }
+      if (plugin.name === 'manager') {
+        this.registerManager(plugin as BasePluginManager)
+      }
       this.plugins[plugin.name] = plugin
-      this.manager.addProfile(plugin.profile)
+      this.manager?.addProfile(plugin.profile)
       // Update Error Handling for better debug
       this.updateErrorHandler(plugin)
       // SetPluginOption is before onRegistration to let plugin update it's option inside onRegistration
@@ -311,7 +287,18 @@ export class Engine {
       if (this.onRegistration) this.onRegistration(plugin)
       return plugin.name
     }
-    return Array.isArray(plugins) ? plugins.map(register) : register(plugins)
+    return Array.isArray(plugins) ? plugins.map(register) : register(plugins);
+  }
+
+  /** Register the manager */
+  private registerManager(manager: BasePluginManager) {
+    this.manager = manager
+    // Activate the Engine & start listening on activation and deactivation
+    this.manager['engineActivatePlugin'] = (name: string) => this.activatePlugin(name)
+    this.manager['engineDeactivatePlugin'] = (name: string) => this.deactivatePlugin(name)
+    // Add all previous profiles
+    const profiles = Object.values(this.plugins).map(p => p.profile)
+    this.manager.addProfile(profiles)
   }
 
   /** Remove plugin(s) from engine */
