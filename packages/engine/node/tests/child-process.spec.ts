@@ -53,11 +53,10 @@ describe('ChildProcess plugin', () => {
   let plugin: MockChildProcess
 
   beforeEach(async () => {
+    const engine = new Engine()
     manager = new PluginManager(pluginManagerProfile)
-    const engine = new Engine(manager)
-    await engine.onload()
     plugin = new MockChildProcess()
-    engine.register(plugin)
+    engine.register([manager, plugin])
   })
 
   test('Activation', async () => {

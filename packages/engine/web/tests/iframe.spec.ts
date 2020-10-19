@@ -42,12 +42,11 @@ describe('Iframe Plugin', () => {
   let host: MockHost
 
   beforeEach(async () => {
+    const engine = new Engine()
     manager = new PluginManager(pluginManagerProfile)
-    const engine = new Engine(manager)
-    await engine.onload()
     iframe = new MockIframe()
     host = new MockHost()
-    engine.register([iframe, host])
+    engine.register([manager, iframe, host])
     await manager.activatePlugin(['sidePanel', 'iframe'])
   })
 
