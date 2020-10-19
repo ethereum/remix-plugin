@@ -23,9 +23,8 @@ describe('Abstract Plugin', () => {
     anotherFrom = new Plugin({ name: 'anotherFrom' })
     to = new To()
     manager = new MockManager()
-    const engine = new Engine(manager)
-    await engine.onload()
-    engine.register([from, to, anotherFrom])
+    const engine = new Engine()
+    engine.register([manager, from, to, anotherFrom])
     await manager.activatePlugin(['from', 'to', 'anotherFrom'])
   })
 

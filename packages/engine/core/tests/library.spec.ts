@@ -50,13 +50,12 @@ describe('Library Plugin', () => {
   let library: MockLibrary
   let lib: Lib
 
-  beforeEach(async () => {
+  beforeEach(() => {
     lib = createLib()
     manager = new PluginManager(pluginManagerProfile)
-    const engine = new Engine(manager)
-    await engine.onload()
     library = new MockLibrary(lib)
-    engine.register([ library ])
+    const engine = new Engine()
+    engine.register([ manager, library ])
   })
 
   test('Activation', async () => {
