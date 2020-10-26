@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IframePlugin } from '@remixproject/engine-web';
-import { Engine, Manager, Window } from './plugins';
-import { Theme } from './theme';
+import { Theme, Manager, Window, Library } from './plugins';
+import { Engine } from './engine';
 
 @Component({
   selector: 'engine-root',
@@ -17,7 +17,8 @@ export class AppComponent {
     private engine: Engine,
     private manager: Manager,
     private window: Window,
-    private theme: Theme
+    private theme: Theme,
+    private library: Library
   ) {}
 
   ngAfterViewInit() {
