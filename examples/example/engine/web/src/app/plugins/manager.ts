@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Engine } from '../engine';
 
 
-const localPlugins = ['manager', 'main'];
+const localPlugins = ['manager', 'main', 'theme', 'window'];
 
 @Injectable({ providedIn: 'root' })
 export class Manager extends PluginManager {
@@ -31,7 +31,11 @@ export class Manager extends PluginManager {
     this.idleProfiles.next(idles);
   }
 
-  onPluginActivated() {
+  onProfileAdded() {
+    this.updateProfiles();
+  }
+
+  onPluginActivated(profile: Profile) {
     this.updateProfiles();
   }
 
