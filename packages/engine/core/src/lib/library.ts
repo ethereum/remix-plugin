@@ -1,15 +1,11 @@
+import type { EventEmitter } from 'events'
 import type { Api, Profile, LibraryProfile, LocationProfile } from '@remixproject/plugin-utils'
 import { Plugin } from './abstract'
 
 export type LibraryApi<T extends Api, P extends Profile> = {
   [method in P['methods'][number]]: T['methods'][method]
 } & {
-  events?: {
-    on: (name: string, cb: (...args: any[]) => void) => void
-    once?: (name: string, cb: (...args: any[]) => void) => void
-    off?: (name: string) => void
-    emit: (name: string, ...args: any[]) => void
-  }
+  events?: EventEmitter
 } & {
   render?(): Element
 }
@@ -46,7 +42,7 @@ export class LibraryPlugin<
     if (this.isView) {
       await this.call((this.profile as LibraryViewProfile).location, 'addView', this.profile, this['render']())
     }
-    super.activate()
+
     // Forward event to the library
     if (this.profile.notifications) {
       if (!this.library.events || !this.library.events.emit) {
@@ -67,6 +63,8 @@ export class LibraryPlugin<
         this.library.events.on(event, (...payload) => this.emit(event, ...payload))
       })
     }
+    // Start listening before running onActivation
+    super.activate()
   }
 
   deactivate() {
@@ -80,9 +78,7 @@ export class LibraryPlugin<
       })
     }
     // Stop listening on events from the library
-    if (this.profile.events && this.library.events.off) {
-      this.profile.events.forEach(event => this.library.events.off(event))
-    }
+    this.profile.events?.forEach(e => this.library.events?.removeAllListeners(e))
     super.deactivate()
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ThemePlugin } from '@remixproject/engine-web';
-import { Engine } from './plugins';
+import { Engine } from '../engine';
 
 const light = {
   brightness: 'light',
@@ -57,4 +57,7 @@ export class Theme extends ThemePlugin {
     this.setTheme(theme);
   }
 
+  onActivation() {
+    this.selectTheme('dark');
+  }
 }

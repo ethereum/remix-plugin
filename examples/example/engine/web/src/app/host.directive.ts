@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 import { HostPlugin } from '@remixproject/engine';
 import { Profile } from '@remixproject/plugin-utils';
-import { Engine, Manager } from './plugins';
+import { Manager } from './plugins';
+import { Engine } from './engine';
 
 class ComponentHostPlugin extends HostPlugin {
   private selected: string;
