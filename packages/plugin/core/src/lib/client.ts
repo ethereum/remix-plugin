@@ -41,7 +41,6 @@ export interface PluginOptions<T extends ApiMap> {
 export const defaultOptions: Partial<PluginOptions<any>> = {
   customTheme: false,
   customApi: remixProfiles,
-  devMode: { port: 8080, origins: [] },
 }
 
 /** Throw an error if client try to send a message before connection */
