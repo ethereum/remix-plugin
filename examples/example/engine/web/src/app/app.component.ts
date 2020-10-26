@@ -25,7 +25,6 @@ export class AppComponent {
     try {
       const iframe = new IframePlugin({ name: 'iframe', url: 'http://localhost:4201', location: 'main' });
       this.engine.register(iframe);
-      this.manager.activatePlugin('iframe');
     } catch (err) {
       console.error(err)
     }
