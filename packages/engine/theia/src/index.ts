@@ -1,1 +1,3 @@
-export * from './lib/engine-theia';
+export * from './lib/command';
+export * from './lib/file_manager';
+
