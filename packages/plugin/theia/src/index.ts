@@ -1,1 +1,1 @@
-export * from './lib/plugin-theia';
+export * from './lib/webview';

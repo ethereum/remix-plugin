@@ -16,5 +16,7 @@ module.exports = {
     '<rootDir>/examples/example/plugin/webview',
     '<rootDir>/packages/engine/theia',
     '<rootDir>/packages/plugin/theia',
+    '<rootDir>/examples/example/example-theia-app',
+    '<rootDir>/packages/example/example-theia-plugin',
   ],
 };
