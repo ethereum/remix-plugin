@@ -1,6 +1,6 @@
 {
   "name": "remix-plugin",
-  "version": "0.0.0",
+  "version": "0.3.1",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -67,10 +67,12 @@
   },
   "dependencies": {
     "@angular/animations": "^10.1.0",
+    "@angular/cdk": "^10.2.6",
     "@angular/common": "^10.1.0",
     "@angular/compiler": "^10.1.0",
     "@angular/core": "^10.1.0",
     "@angular/forms": "^10.1.0",
+    "@angular/material": "^10.2.6",
     "@angular/platform-browser": "^10.1.0",
     "@angular/platform-browser-dynamic": "^10.1.0",
     "@angular/router": "^10.1.0",
