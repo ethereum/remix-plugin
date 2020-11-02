@@ -10,34 +10,21 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@remixproject/plugin-utils": [
-        "packages/utils/src/index.ts"
-      ],
-      "@remixproject/plugin-api": [
-        "packages/api/src/index.ts"
-      ],
+      "@remixproject/plugin-utils": ["packages/utils/src/index.ts"],
+      "@remixproject/plugin-api": ["packages/api/src/index.ts"],
       "@remixproject/engine": ["packages/engine/core/src/index.ts"],
       "@remixproject/engine-web": ["packages/engine/web/src/index.ts"],
-      "@remixproject/plugin": [
-        "packages/plugin/core/src/index.ts"
-      ],
+      "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
       "@remixproject/plugin/ws": ["packages/plugin/ws/src/index.ts"],
-      "@remixproject/plugin-webview": ["packages/plugin/webview/src/index.ts"]
+      "@remixproject/plugin-webview": ["packages/plugin/webview/src/index.ts"],
+      "@remixproject:engine-theia": ["packages/engine/theia/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }
