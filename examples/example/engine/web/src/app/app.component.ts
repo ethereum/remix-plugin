@@ -29,7 +29,7 @@ export class AppComponent {
   ngAfterViewInit() {
     try {
       const iframes = profiles.map(profile => new IframePlugin(profile));
-      const worker = new WebWorkerPlugin({ name: 'worker', url: '/assets/web.worker.js' })
+      const worker = new WebWorkerPlugin({ name: 'worker', url: '/assets/web.worker.js', methods: ['execute'] })
       this.engine.register([...iframes, worker]);
     } catch (err) {
       console.error(err)

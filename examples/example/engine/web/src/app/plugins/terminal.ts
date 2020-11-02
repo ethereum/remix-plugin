@@ -11,7 +11,10 @@ export class Terminal extends Plugin {
   }
 
   onActivation() {
-    console.log('Activate Terminal');
-    this.on('iframe', 'localEvent', console.log);
+    this.on('worker', 'log', (text) => console.log('Log', text));
+  }
+
+  run(text: string) {
+    this.call('worker', 'execute', text);
   }
 }
