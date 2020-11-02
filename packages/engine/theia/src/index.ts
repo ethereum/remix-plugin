@@ -6,4 +6,5 @@ export * from './lib/editor';
 export * from './lib/webview';
 export * from './lib/window';
 export * from './lib/terminal';
+export * from './lib/dynamic_list';
 
