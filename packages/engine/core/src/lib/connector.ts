@@ -78,12 +78,18 @@ export abstract class PluginConnector extends Plugin {
   /** Perform handshake with the client if not loaded yet */
   protected async handshake() {
     if (!this.loaded) {
-      const methods: string[] = await this.callPluginMethod('handshake', [this.profile.name])
+      this.loaded = true
+      let methods: string[];
+      try {
+        methods = await this.callPluginMethod('handshake', [this.profile.name])
+      } catch (err) {
+        this.loaded = false
+        throw err;
+      }
       if (methods) {
         this.profile.methods = methods
+        await this.call('manager', 'updateProfile', this.profile)
       }
-      await this.call('manager', 'updateProfile', this.profile)
-      this.loaded = true
     } else {
       // If there is a broken connection we want send back the handshake to the plugin client
       return this.callPluginMethod('handshake', [this.profile.name])
