@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { IRemixApi, remixProfiles } from '@remixproject/plugin-api'
+import { RemixApi, remixProfiles } from '@remixproject/plugin-api'
 import { callEvent, listenEvent, createService, activateService, GetPluginService, Profile } from '@remixproject/plugin-utils'
 import type {
   Api,
@@ -52,7 +52,7 @@ export function handleConnectionError(devMode?: Partial<PluginDevMode>) {
 }
 
 
-export class PluginClient<T extends Api = any, App extends ApiMap = Readonly<IRemixApi>> implements PluginBase<T, App> {
+export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> implements PluginBase<T, App> {
   private id = 0
   public isLoaded = false
   public events = new EventEmitter()
@@ -62,12 +62,17 @@ export class PluginClient<T extends Api = any, App extends ApiMap = Readonly<IRe
   public methods: string[]
   public activateService: Record<string, () => Promise<any>> = {}
 
+  onActivation?(): void
+
   constructor(options: Partial<PluginOptions<App>> = {}) {
     this.options = {
       ...defaultOptions,
       ...options
     } as PluginOptions<App>
-    this.events.once('loaded', () => this.isLoaded = true)
+    this.events.once('loaded', () => {
+      this.isLoaded = true
+      if (this.onActivation) this.onActivation()
+    })
   }
 
   // Wait until this connection is settled

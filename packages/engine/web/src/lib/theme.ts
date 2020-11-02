@@ -57,7 +57,7 @@ export class ThemePlugin extends Plugin implements MethodApi<ITheme> {
   /** Internal API to set the current theme */
   setTheme(theme: DeepPartial<Theme>) {
     this.theme = createTheme(theme)
-    this.emit('themeChanged', theme)
+    this.emit('themeChanged', this.theme)
   }
 
   /** External API to get the current theme */

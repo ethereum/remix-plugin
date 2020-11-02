@@ -1,4 +1,4 @@
-import type { Message, Api, ApiMap } from '@remixproject/plugin-utils'
+import type { Message, Api, ApiMap, PluginApi } from '@remixproject/plugin-utils'
 import {
   ClientConnector,
   connectClient,
@@ -9,7 +9,7 @@ import {
   PluginOptions,
   checkOrigin
 } from '@remixproject/plugin'
-import { Theme } from '@remixproject/plugin-api';
+import { RemixApi, Theme } from '@remixproject/plugin-api';
 
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
@@ -68,10 +68,11 @@ export class WebviewConnector implements ClientConnector {
  * @param client An optional websocket plugin client to connect to the engine.
  */
 export const createClient = <
-  P extends Api,
-  App extends ApiMap
->(client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
-  const c = client as any
+  P extends Api = any,
+  App extends ApiMap = RemixApi,
+  C extends PluginClient<P, App> = any
+>(client: C): C & PluginApi<App> => {
+  const c = client as any || new PluginClient<P, App>()
   const options = client.options
   const connector = new WebviewConnector(options)
   connectClient(connector, c)
