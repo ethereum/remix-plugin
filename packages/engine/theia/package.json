@@ -1,4 +1,27 @@
 {
-  "name": "@remixproject:engine-theia",
-  "version": "0.0.1"
+  "name": "@remixproject/engine-theia",
+  "version": "0.3.0",
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/node#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "author": {
+    "name": "GrandSchtroumpf",
+    "email": "francois.guezengar@hotmail.fr"
+  },
+  "contributors": [
+    {
+      "name": "Yann Levreau",
+      "email": "yann@ethdev.com"
+    },
+    {
+      "name": "Florian Antony",
+      "email": "florian.antony@itemis.de"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "license": "MIT"
 }

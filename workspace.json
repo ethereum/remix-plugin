@@ -822,13 +822,9 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "packages/engine/theia/tsconfig.lib.json",
-              "packages/engine/theia/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!packages/engine/theia/**/*"]
+            "lintFilePatterns": ["packages/engine/theia/**/*.ts"]
           }
         },
         "test": {
