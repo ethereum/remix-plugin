@@ -3,8 +3,13 @@ import { PluginClient } from '@remixproject/plugin';
 import { createClient } from '@remixproject/plugin-webview';
 
 export class Client extends PluginClient {
+  methods = ['execute'];
   constructor() {
     super({ customTheme: true })
+  }
+
+  execute(value: string) {
+    this.emit('localEvent', value)
   }
 
   onActivation() {
