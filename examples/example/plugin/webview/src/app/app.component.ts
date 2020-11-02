@@ -7,7 +7,6 @@ import { Client, CLIENT } from './client';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'example-plugin-webview';
+  title = 'Remix Plugin Example';
   constructor(@Inject(CLIENT) private client: Client) {}
-
 }

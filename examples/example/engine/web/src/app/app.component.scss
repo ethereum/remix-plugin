@@ -8,9 +8,19 @@ nav {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-right: solid 1px black;
 }
 
 main {
   height: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  section {
+    flex: 1;
+  }
+  footer {
+    height: 300px;
+  }
 }

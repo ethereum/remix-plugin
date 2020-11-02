@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  height: 100%;
+  border-top: solid 1px black;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 100%;
+  width: 100%;
+  border: none;
+  box-sizing: border-box;
+}
