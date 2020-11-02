@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { RemixApi } from '@remixproject/plugin-api';
-import { createClient } from '@remixproject/plugin-webview';
+import { Component, Inject } from '@angular/core';
+import { Client, CLIENT } from './client';
 
 @Component({
   selector: 'engine-root',
@@ -9,10 +8,6 @@ import { createClient } from '@remixproject/plugin-webview';
 })
 export class AppComponent {
   title = 'example-plugin-webview';
-  ngOnInit() {
-    const client = createClient<any, RemixApi>();
-    client.onload(async () => {
-      client.on('theme', 'themeChanged', (theme) => console.log('theme', theme));
-    });
-  }
+  constructor(@Inject(CLIENT) private client: Client) {}
+
 }
