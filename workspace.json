@@ -565,6 +565,44 @@
         }
       }
     },
+    "plugin-webworker": {
+      "root": "packages/plugin/webworker",
+      "sourceRoot": "packages/plugin/webworker/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/plugin/webworker/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/webworker/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/webworker",
+            "tsConfig": "packages/plugin/webworker/tsconfig.lib.json",
+            "packageJson": "packages/plugin/webworker/package.json",
+            "main": "packages/plugin/webworker/src/index.ts",
+            "assets": ["packages/plugin/webworker/*.md"]
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/webworker"
+          }
+        }
+      }
+    },
     "examples": {
       "projectType": "library",
       "root": "root/is/required/or/it/fails",

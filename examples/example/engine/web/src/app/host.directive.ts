@@ -21,15 +21,21 @@ class ComponentHostPlugin extends HostPlugin {
   }
 
   focus(name: string): void {
+    if (this.selected) {
+      this.children[this.selected].style.display = 'none';
+    }
     this.selected = name;
+    this.children[this.selected].style.display = 'block';
   }
 
   addView(profile: Profile<any>, view: HTMLElement): void {
     view.style.width = '100%';
     view.style.height = '100%';
     view.style.border = 'none';
+    view.style.display = 'none';
     this.children[profile.name] = view;
     this.renderer.appendChild(this.parent, view);
+    this.focus(profile.name);
   }
 
   removeView(profile: Profile<any>): void {
