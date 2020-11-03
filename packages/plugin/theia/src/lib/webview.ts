@@ -20,11 +20,11 @@ import * as theia from '@theia/plugin';
 export class WebviewConnector implements ClientConnector {
   source: { showInformationMessage: (message: string , ...items:string[]) => void }
   origin: string
-  isVscode: boolean
+  isTheia: boolean
 
   constructor(private options: Partial<PluginOptions<any>> = {}) {
-    this.isVscode = !!theia
-    if(!this.isVscode){
+    this.isTheia = !!theia
+    if(!this.isTheia){
       throw new Error("Must run in Theia")
     }
     this.source = theia.window;
@@ -33,7 +33,7 @@ export class WebviewConnector implements ClientConnector {
 
   /** Send a message to the engine */
   send(message: Partial<Message>) {
-    if (this.isVscode) {
+    if (this.isTheia) {
       this.source.showInformationMessage(message.toString())
     } else if (this.origin || isHandshake(message)) {
       const origin = this.origin || '*'
@@ -43,18 +43,18 @@ export class WebviewConnector implements ClientConnector {
 
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
-    window.addEventListener('message', async (event: MessageEvent) => {
-      if (!event.source) throw new Error('No source')
-      if (!event.data) throw new Error('No data')
-      // Support for iframe
-      if (!this.isVscode) {
-        if (isHandshake(event.data)) {
-          this.origin = event.origin
-        }
-      }
-      cb(event.data)
+    // window.addEventListener('message', async (event: MessageEvent) => {
+    //   if (!event.source) throw new Error('No source')
+    //   if (!event.data) throw new Error('No data')
+    //   // Support for iframe
+    //   if (!this.isTheia) {
+    //     if (isHandshake(event.data)) {
+    //       this.origin = event.origin
+    //     }
+    //   }
+    //   cb(event.data)
 
-    }, false)
+    // }, false)
   }
 }
 

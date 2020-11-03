@@ -6,7 +6,7 @@
       ],
       "version": "0.3.0",
       "license": "none",
-      
+
       "files": [
         "src"
       ],
@@ -25,16 +25,16 @@
         "clean": "rimraf lib",
         "format-code": "tsfmt -r",
         "watch": "tsc -watch",
-        "compile": "tsc", 
+        "compile": "tsc",
         "build": "yarn run format-code && yarn run compile && theia-plugin pack"
       },
       "engines": {
         "theiaPlugin": "next"
       },
       "theiaPlugin": {
-          
-          
-            "backend": "../../../dist/main.js"
-          
+
+
+            "backend": "../../../dist/examples/example/example-theia-app/main.js"
+
       }
 }
