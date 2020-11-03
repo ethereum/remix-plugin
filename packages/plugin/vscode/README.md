@@ -1,5 +1,8 @@
 # Plugin vscode
 This library provides connectors to run plugin in a vscode environment. Use this connector if you have a web based plugin that needs to run inside vscode.
+
+**Except if you want your plugin to ONLY work on vscode, prefer [@remixproject/plugin-webview](../webview/readme.md)**
+
 ```
 npm install @remixproject/plugin-vscode
 ```
