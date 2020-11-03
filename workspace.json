@@ -876,89 +876,6 @@
           }
         }
       }
-    },
-    "example-example-theia-app": {
-      "root": "examples/example/example-theia-app",
-      "sourceRoot": "examples/example/example-theia-app/src",
-      "projectType": "application",
-      "prefix": "example-example-theia-app",
-      "schematics": {},
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "options": {
-            "outputPath": "dist/examples/example/example-theia-app",
-            "main": "examples/example/example-theia-app/src/main.ts",
-            "tsConfig": "examples/example/example-theia-app/tsconfig.app.json",
-            "assets": ["examples/example/example-theia-app/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "examples/example/example-theia-app/src/environments/environment.ts",
-                  "with": "examples/example/example-theia-app/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "example-example-theia-app:build"
-          }
-        },
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["examples/example/example-theia-app/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "examples/example/example-theia-app/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "example-example-theia-plugin": {
-      "root": "packages/example/example-theia-plugin",
-      "sourceRoot": "packages/example/example-theia-plugin/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "packages/example/example-theia-plugin/**/*.ts"
-            ]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "packages/example/example-theia-plugin/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/example/example-theia-plugin",
-            "tsConfig": "packages/example/example-theia-plugin/tsconfig.lib.json",
-            "packageJson": "packages/example/example-theia-plugin/package.json",
-            "main": "packages/example/example-theia-plugin/src/index.ts",
-            "assets": ["packages/example/example-theia-plugin/*.md"]
-          }
-        }
-      }
     }
   },
   "cli": {
@@ -1030,6 +947,5 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  },
-  "defaultProject": "example-example-theia-app"
+  }
 }
