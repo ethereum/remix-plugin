@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-node",
-  "version": "0.3.1",
+  "version": "0.3.0",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/node#readme",
   "repository": {
     "type": "git",

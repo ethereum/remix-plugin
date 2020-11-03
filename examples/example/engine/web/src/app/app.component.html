@@ -1,19 +1,17 @@
-<aside>
-  <mat-action-list dense>
+<nav>
+  <ul>
     <ng-container *ngFor="let profile of actives$ | async">
-      <button mat-list-item class="active" (click)="deactivate(profile.name)">
-        <mat-icon mat-list-icon>signal_cellular_4_bar</mat-icon>
-        <span mat-line>{{ profile.name }}</span>
-      </button >
+      <li class="active" (click)="deactivate(profile.name)">
+        {{ profile.name }} (active)
+      </li>
     </ng-container>
     <ng-container *ngFor="let profile of idles$ | async">
-      <button mat-list-item class="idle" (click)="activate(profile.name)">
-        <mat-icon mat-list-icon>signal_cellular_off</mat-icon>
-        <span mat-line>{{ profile.name }}</span>
-      </button >
+      <li class="idle" (click)="activate(profile.name)">
+        {{ profile.name }} (idle)
+      </li>
     </ng-container>
-  </mat-action-list>
-</aside>
+  </ul>
+</nav>
 
 <main>
   <section host="main"></section>
