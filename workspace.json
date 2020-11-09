@@ -876,39 +876,6 @@
           }
         }
       }
-    },
-    "example-example-theia-plugin": {
-      "root": "packages/example/example-theia-plugin",
-      "sourceRoot": "packages/example/example-theia-plugin/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "packages/example/example-theia-plugin/**/*.ts"
-            ]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "packages/example/example-theia-plugin/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/example/example-theia-plugin",
-            "tsConfig": "packages/example/example-theia-plugin/tsconfig.lib.json",
-            "packageJson": "packages/example/example-theia-plugin/package.json",
-            "main": "packages/example/example-theia-plugin/src/index.ts",
-            "assets": ["packages/example/example-theia-plugin/*.md"]
-          }
-        }
-      }
     }
   },
   "cli": {
@@ -980,6 +947,5 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  },
-  "defaultProject": "example-example-theia-app"
+  }
 }

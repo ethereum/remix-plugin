@@ -86,9 +86,6 @@
     },
     "plugin-theia": {
       "tags": []
-    },
-    "example-example-theia-plugin": {
-      "tags": []
     }
   },
   "workspaceLayout": {
