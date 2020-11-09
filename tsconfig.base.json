@@ -25,7 +25,8 @@
       "@remixproject/plugin-webview": ["packages/plugin/webview/src/index.ts"],
       "@remixproject/plugin-webworker": [
         "packages/plugin/webworker/src/index.ts"
-      ]
+      ],
+      "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

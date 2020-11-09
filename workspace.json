@@ -854,6 +854,46 @@
           }
         }
       }
+    },
+    "engine-theia": {
+      "root": "packages/engine/theia",
+      "sourceRoot": "packages/engine/theia/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/engine/theia/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/engine/theia/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/engine/theia",
+            "tsConfig": "packages/engine/theia/tsconfig.lib.json",
+            "packageJson": "packages/engine/theia/package.json",
+            "main": "packages/engine/theia/src/index.ts",
+            "assets": ["packages/engine/theia/*.md"],
+            "srcRootForCompilationRoot": "packages/engine/theia/src",
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/theia"
+           }
+        }
+      }
     }
   },
   "cli": {
