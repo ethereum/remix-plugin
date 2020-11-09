@@ -87,9 +87,6 @@
     "plugin-theia": {
       "tags": []
     },
-    "example-example-theia-app": {
-      "tags": []
-    },
     "example-example-theia-plugin": {
       "tags": []
     }
