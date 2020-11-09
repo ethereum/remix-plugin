@@ -64,6 +64,9 @@
     "plugin-webview": {
       "tags": []
     },
+    "plugin-webworker": {
+      "tags": []
+    },
     "examples": {
       "tags": []
     },

@@ -1,7 +1,7 @@
 {
-  "name": "@remixproject/plugin-webview",
+  "name": "@remixproject/plugin-webworker",
   "version": "0.3.2",
-  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/webview#readme",
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/webworker#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ethereum/remix-plugin.git"
@@ -10,11 +10,7 @@
     "name": "GrandSchtroumpf",
     "email": "francois.guezengar@hotmail.fr"
   },
-  "dependencies": {
-
-  },
   "bugs": {
     "url": "https://github.com/ethereum/remix-plugin/issues"
-  },
-  "gitHead": "ca5c69be64ec4eaf7fe5d1d362726e75cb3b5726"
+  }
 }

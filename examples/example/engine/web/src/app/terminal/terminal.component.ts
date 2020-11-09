@@ -17,7 +17,7 @@ export class TerminalComponent {
 
   async submit() {
     await this.manager.activatePlugin('terminal');
-    this.terminal.call('iframe', 'execute', this.form.value);
+    this.terminal.run(this.form.value);
     this.form.reset();
   }
 
