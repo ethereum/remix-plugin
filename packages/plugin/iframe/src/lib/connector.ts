@@ -13,9 +13,6 @@ import {
 
 import { listenOnThemeChanged } from './theme'
 
-function warn() {
-  console.warn()
-}
 
 export class IframeConnector implements ClientConnector {
   source: Window

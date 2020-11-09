@@ -3,7 +3,6 @@ import {
   ClientConnector,
   connectClient,
   applyApi,
-  Client,
   PluginClient,
   isHandshake,
   PluginOptions,
