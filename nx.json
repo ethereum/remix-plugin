@@ -64,6 +64,9 @@
     "plugin-webview": {
       "tags": []
     },
+    "plugin-webworker": {
+      "tags": []
+    },
     "examples": {
       "tags": []
     },
@@ -80,9 +83,6 @@
     "example/plugin-webview-e2e": {
       "tags": [],
       "implicitDependencies": ["example-plugin-webview"]
-    },
-    "plugin-webworker": {
-      "tags": ["plugin"]
     }
   },
   "workspaceLayout": {

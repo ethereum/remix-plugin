@@ -36,7 +36,7 @@
             "main": "packages/engine/core/src/index.ts",
             "assets": ["packages/engine/core/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\engine\\core\\src"
+            "srcRootForCompilationRoot": "packages/engine/core/src"
           }
         },
         "publish": {
@@ -83,7 +83,7 @@
             "main": "packages/engine/node/src/index.ts",
             "assets": ["packages/engine/node/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\engine\\node\\src"
+            "srcRootForCompilationRoot": "packages/engine/node/src"
           }
         },
         "publish": {
@@ -130,7 +130,7 @@
             "main": "packages/engine/web/src/index.ts",
             "assets": ["packages/engine/web/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\engine\\web\\src"
+            "srcRootForCompilationRoot": "packages/engine/web/src"
           }
         },
         "publish": {
@@ -177,7 +177,7 @@
             "main": "packages/engine/vscode/src/index.ts",
             "assets": ["packages/engine/vscode/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\engine\\vscode\\src"
+            "srcRootForCompilationRoot": "packages/engine/vscode/src"
           }
         },
         "publish": {
@@ -224,7 +224,7 @@
             "main": "packages/utils/src/index.ts",
             "assets": ["packages/utils/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\utils\\src"
+            "srcRootForCompilationRoot": "packages/utils/src"
           }
         },
         "publish": {
@@ -271,7 +271,7 @@
             "main": "packages/api/src/index.ts",
             "assets": ["packages/api/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\api\\src"
+            "srcRootForCompilationRoot": "packages/api/src"
           }
         },
         "publish": {
@@ -318,7 +318,7 @@
             "main": "packages/plugin/core/src/index.ts",
             "assets": ["packages/plugin/core/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\core\\src"
+            "srcRootForCompilationRoot": "packages/plugin/core/src"
           }
         },
         "publish": {
@@ -365,7 +365,7 @@
             "main": "packages/plugin/iframe/src/index.ts",
             "assets": ["packages/plugin/iframe/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\iframe\\src"
+            "srcRootForCompilationRoot": "packages/plugin/iframe/src"
           }
         },
         "publish": {
@@ -412,7 +412,7 @@
             "main": "packages/plugin/vscode/src/index.ts",
             "assets": ["packages/plugin/vscode/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\vscode\\src"
+            "srcRootForCompilationRoot": "packages/plugin/vscode/src"
           }
         },
         "publish": {
@@ -459,7 +459,7 @@
             "main": "packages/plugin/child-process/src/index.ts",
             "assets": ["packages/plugin/child-process/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\child-process\\src"
+            "srcRootForCompilationRoot": "packages/plugin/child-process/src"
           }
         },
         "publish": {
@@ -506,7 +506,7 @@
             "main": "packages/plugin/ws/src/index.ts",
             "assets": ["packages/plugin/ws/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\ws\\src"
+            "srcRootForCompilationRoot": "packages/plugin/ws/src"
           }
         },
         "publish": {
@@ -553,7 +553,7 @@
             "main": "packages/plugin/webview/src/index.ts",
             "assets": ["packages/plugin/webview/*.md"],
             "externalDependencies": "none",
-            "srcRootForCompilationRoot": "packages\\plugin\\webview\\src"
+            "srcRootForCompilationRoot": "packages/plugin/webview/src"
           }
         },
         "publish": {
@@ -591,7 +591,9 @@
             "tsConfig": "packages/plugin/webworker/tsconfig.lib.json",
             "packageJson": "packages/plugin/webworker/package.json",
             "main": "packages/plugin/webworker/src/index.ts",
-            "assets": ["packages/plugin/webworker/*.md"]
+            "assets": ["packages/plugin/webworker/*.md"],
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages/plugin/webworker/src"
           }
         },
         "publish": {
