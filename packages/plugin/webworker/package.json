@@ -1,4 +1,16 @@
 {
   "name": "@remixproject/plugin-webworker",
-  "version": "0.0.1"
+  "version": "0.3.2",
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/webworker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "author": {
+    "name": "GrandSchtroumpf",
+    "email": "francois.guezengar@hotmail.fr"
+  },
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  }
 }
