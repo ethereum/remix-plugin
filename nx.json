@@ -83,6 +83,9 @@
     "example/plugin-webview-e2e": {
       "tags": [],
       "implicitDependencies": ["example-plugin-webview"]
+    },
+    "plugin-theia": {
+      "tags": []
     }
   },
   "workspaceLayout": {
