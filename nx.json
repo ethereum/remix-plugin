@@ -86,6 +86,9 @@
     },
     "plugin-theia": {
       "tags": []
+    },
+    "engine-theia": {
+      "tags": []
     }
   },
   "workspaceLayout": {
