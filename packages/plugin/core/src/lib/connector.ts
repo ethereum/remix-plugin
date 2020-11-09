@@ -16,6 +16,12 @@ export function isHandshake(message: Partial<Message>) {
   return message.key === 'handshake' && (message.action === 'request' || message.action === 'call')
 }
 
+/** Check if an event.data is a plugin message is an handshake */
+export function isPluginMessage(message: any): message is Message {
+  return 'action' in message && 'name' in message;
+}
+
+
 /**
  * Connect a plugin to the engine for a specific connector
  * @param connector The connector for this plugin
