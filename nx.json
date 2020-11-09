@@ -84,6 +84,9 @@
       "tags": [],
       "implicitDependencies": ["example-plugin-webview"]
     },
+    "plugin-theia": {
+      "tags": []
+    },
     "engine-theia": {
       "tags": []
     }

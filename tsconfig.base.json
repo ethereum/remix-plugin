@@ -26,6 +26,7 @@
       "@remixproject/plugin-webworker": [
         "packages/plugin/webworker/src/index.ts"
       ],
+      "@remixproject/plugin-theia": ["packages/plugin/theia/src/index.ts"],
       "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"]
     }
   },

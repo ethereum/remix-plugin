@@ -471,6 +471,46 @@
         }
       }
     },
+    "plugin-theia": {
+      "root": "packages/plugin/theia",
+      "sourceRoot": "packages/plugin/theia/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/plugin/theia/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/plugin/theia/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/theia",
+            "tsConfig": "packages/plugin/theia/tsconfig.lib.json",
+            "packageJson": "packages/plugin/theia/package.json",
+            "main": "packages/plugin/theia/src/index.ts",
+            "assets": ["packages/plugin/theia/*.md"],
+            "externalDependencies": "none",
+            "srcRootForCompilationRoot": "packages/plugin/theia/src"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/theia"
+          }
+        }
+      }
+    },
     "plugin-ws": {
       "root": "packages/plugin/ws",
       "sourceRoot": "packages/plugin/ws/src",
