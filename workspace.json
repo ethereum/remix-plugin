@@ -34,7 +34,9 @@
             "tsConfig": "packages/engine/core/tsconfig.lib.json",
             "packageJson": "packages/engine/core/package.json",
             "main": "packages/engine/core/src/index.ts",
-            "assets": ["packages/engine/core/*.md"],
+            "assets": [
+              "packages/engine/core/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/engine/core/src"
           }
@@ -42,7 +44,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/engine/core"
           }
         }
@@ -81,7 +85,9 @@
             "tsConfig": "packages/engine/node/tsconfig.lib.json",
             "packageJson": "packages/engine/node/package.json",
             "main": "packages/engine/node/src/index.ts",
-            "assets": ["packages/engine/node/*.md"],
+            "assets": [
+              "packages/engine/node/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/engine/node/src"
           }
@@ -89,7 +95,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/engine/node"
           }
         }
@@ -128,7 +136,9 @@
             "tsConfig": "packages/engine/web/tsconfig.lib.json",
             "packageJson": "packages/engine/web/package.json",
             "main": "packages/engine/web/src/index.ts",
-            "assets": ["packages/engine/web/*.md"],
+            "assets": [
+              "packages/engine/web/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/engine/web/src"
           }
@@ -136,7 +146,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/engine/web"
           }
         }
@@ -175,7 +187,9 @@
             "tsConfig": "packages/engine/vscode/tsconfig.lib.json",
             "packageJson": "packages/engine/vscode/package.json",
             "main": "packages/engine/vscode/src/index.ts",
-            "assets": ["packages/engine/vscode/*.md"],
+            "assets": [
+              "packages/engine/vscode/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/engine/vscode/src"
           }
@@ -183,8 +197,56 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/engine/vscode"
+          }
+        }
+      }
+    },
+    "engine-theia": {
+      "root": "packages/engine/theia",
+      "sourceRoot": "packages/engine/theia/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "packages/engine/theia/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/engine/theia/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/engine/theia",
+            "tsConfig": "packages/engine/theia/tsconfig.lib.json",
+            "packageJson": "packages/engine/theia/package.json",
+            "main": "packages/engine/theia/src/index.ts",
+            "assets": [
+              "packages/engine/theia/*.md"
+            ],
+            "srcRootForCompilationRoot": "packages/engine/theia/src",
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
+            "cwd": "dist/packages/engine/theia"
           }
         }
       }
@@ -222,7 +284,9 @@
             "tsConfig": "packages/utils/tsconfig.lib.json",
             "packageJson": "packages/utils/package.json",
             "main": "packages/utils/src/index.ts",
-            "assets": ["packages/utils/*.md"],
+            "assets": [
+              "packages/utils/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/utils/src"
           }
@@ -230,7 +294,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/utils"
           }
         }
@@ -269,7 +335,9 @@
             "tsConfig": "packages/api/tsconfig.lib.json",
             "packageJson": "packages/api/package.json",
             "main": "packages/api/src/index.ts",
-            "assets": ["packages/api/*.md"],
+            "assets": [
+              "packages/api/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/api/src"
           }
@@ -277,7 +345,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/api"
           }
         }
@@ -316,7 +386,9 @@
             "tsConfig": "packages/plugin/core/tsconfig.lib.json",
             "packageJson": "packages/plugin/core/package.json",
             "main": "packages/plugin/core/src/index.ts",
-            "assets": ["packages/plugin/core/*.md"],
+            "assets": [
+              "packages/plugin/core/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/core/src"
           }
@@ -324,7 +396,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/core"
           }
         }
@@ -363,7 +437,9 @@
             "tsConfig": "packages/plugin/iframe/tsconfig.lib.json",
             "packageJson": "packages/plugin/iframe/package.json",
             "main": "packages/plugin/iframe/src/index.ts",
-            "assets": ["packages/plugin/iframe/*.md"],
+            "assets": [
+              "packages/plugin/iframe/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/iframe/src"
           }
@@ -371,7 +447,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/iframe"
           }
         }
@@ -410,7 +488,9 @@
             "tsConfig": "packages/plugin/vscode/tsconfig.lib.json",
             "packageJson": "packages/plugin/vscode/package.json",
             "main": "packages/plugin/vscode/src/index.ts",
-            "assets": ["packages/plugin/vscode/*.md"],
+            "assets": [
+              "packages/plugin/vscode/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/vscode/src"
           }
@@ -418,7 +498,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/vscode"
           }
         }
@@ -457,7 +539,9 @@
             "tsConfig": "packages/plugin/child-process/tsconfig.lib.json",
             "packageJson": "packages/plugin/child-process/package.json",
             "main": "packages/plugin/child-process/src/index.ts",
-            "assets": ["packages/plugin/child-process/*.md"],
+            "assets": [
+              "packages/plugin/child-process/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/child-process/src"
           }
@@ -465,7 +549,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/child-process"
           }
         }
@@ -480,7 +566,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/plugin/theia/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/plugin/theia/**/*.ts"
+            ]
           }
         },
         "test": {
@@ -497,7 +585,9 @@
             "tsConfig": "packages/plugin/theia/tsconfig.lib.json",
             "packageJson": "packages/plugin/theia/package.json",
             "main": "packages/plugin/theia/src/index.ts",
-            "assets": ["packages/plugin/theia/*.md"],
+            "assets": [
+              "packages/plugin/theia/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/theia/src"
           }
@@ -505,7 +595,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/theia"
           }
         }
@@ -544,7 +636,9 @@
             "tsConfig": "packages/plugin/ws/tsconfig.lib.json",
             "packageJson": "packages/plugin/ws/package.json",
             "main": "packages/plugin/ws/src/index.ts",
-            "assets": ["packages/plugin/ws/*.md"],
+            "assets": [
+              "packages/plugin/ws/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/ws/src"
           }
@@ -552,7 +646,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/ws"
           }
         }
@@ -591,7 +687,9 @@
             "tsConfig": "packages/plugin/webview/tsconfig.lib.json",
             "packageJson": "packages/plugin/webview/package.json",
             "main": "packages/plugin/webview/src/index.ts",
-            "assets": ["packages/plugin/webview/*.md"],
+            "assets": [
+              "packages/plugin/webview/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/webview/src"
           }
@@ -599,7 +697,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/webview"
           }
         }
@@ -614,7 +714,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/plugin/webworker/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/plugin/webworker/**/*.ts"
+            ]
           }
         },
         "test": {
@@ -631,7 +733,9 @@
             "tsConfig": "packages/plugin/webworker/tsconfig.lib.json",
             "packageJson": "packages/plugin/webworker/package.json",
             "main": "packages/plugin/webworker/src/index.ts",
-            "assets": ["packages/plugin/webworker/*.md"],
+            "assets": [
+              "packages/plugin/webworker/*.md"
+            ],
             "externalDependencies": "none",
             "srcRootForCompilationRoot": "packages/plugin/webworker/src"
           }
@@ -639,7 +743,9 @@
         "publish": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["npm publish --tag={tag}"],
+            "commands": [
+              "npm publish --tag={tag}"
+            ],
             "cwd": "dist/packages/plugin/webworker"
           }
         }
@@ -685,7 +791,9 @@
               "examples/example/engine/web/src/favicon.ico",
               "examples/example/engine/web/src/assets"
             ],
-            "styles": ["examples/example/engine/web/src/styles.scss"],
+            "styles": [
+              "examples/example/engine/web/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -739,7 +847,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["examples/example/engine/web/src/**/*.ts"]
+            "lintFilePatterns": [
+              "examples/example/engine/web/src/**/*.ts"
+            ]
           }
         },
         "test": {
@@ -772,7 +882,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["examples/example/engine/web-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "examples/example/engine/web-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
@@ -801,7 +913,9 @@
               "examples/example/plugin/webview/src/favicon.ico",
               "examples/example/plugin/webview/src/assets"
             ],
-            "styles": ["examples/example/plugin/webview/src/styles.scss"],
+            "styles": [
+              "examples/example/plugin/webview/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -855,7 +969,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["examples/example/plugin/webview/src/**/*.ts"]
+            "lintFilePatterns": [
+              "examples/example/plugin/webview/src/**/*.ts"
+            ]
           }
         },
         "test": {
@@ -895,43 +1011,61 @@
         }
       }
     },
-    "engine-theia": {
-      "root": "packages/engine/theia",
-      "sourceRoot": "packages/engine/theia/src",
-      "projectType": "library",
+    "example-engine-vscode": {
+      "root": "examples/example/engine/vscode",
+      "sourceRoot": "examples/example/engine/vscode/src",
+      "projectType": "application",
+      "prefix": "engine-vscode",
       "schematics": {},
       "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/examples/example/engine/vscode",
+            "main": "examples/example/engine/vscode/src/main.ts",
+            "tsConfig": "examples/example/engine/vscode/tsconfig.app.json",
+            "assets": [
+              "examples/example/engine/vscode/src/assets",
+              "examples/example/engine/vscode/src/package.json"
+            ],
+            "externalDependencies": [
+              "vscode"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "examples/example/engine/vscode/src/environments/environment.ts",
+                  "with": "examples/example/engine/vscode/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "example-engine-vscode:build"
+          }
+        },
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/engine/theia/**/*.ts"]
+            "lintFilePatterns": [
+              "examples/example/engine/vscode/**/*.ts"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "packages/engine/theia/jest.config.js",
+            "jestConfig": "examples/example/engine/vscode/jest.config.js",
             "passWithNoTests": true
           }
-        },
-        "build": {
-          "builder": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/engine/theia",
-            "tsConfig": "packages/engine/theia/tsconfig.lib.json",
-            "packageJson": "packages/engine/theia/package.json",
-            "main": "packages/engine/theia/src/index.ts",
-            "assets": ["packages/engine/theia/*.md"],
-            "srcRootForCompilationRoot": "packages/engine/theia/src",
-            "externalDependencies": "none"
-          }
-        },
-        "publish": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": ["npm publish --tag={tag}"],
-            "cwd": "dist/packages/engine/theia"
-           }
         }
       }
     }
@@ -1005,5 +1139,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "example-engine-vscode"
 }

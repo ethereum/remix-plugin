@@ -1,0 +1,29 @@
+{
+  "name": "remix",
+  "displayName": "Remix Example",
+  "version": "0.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "keywords": [],
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:remix.start"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Remix Vscode"
+    },
+    "commands": [
+      {
+        "command": "remix.start",
+        "title": "Start"
+      }
+    ],
+    "viewsContainers": {},
+    "views": {},
+    "menus": {}
+  }
+}

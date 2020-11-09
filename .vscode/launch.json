@@ -12,6 +12,32 @@
       "runtimeArgs": ["test"],
       "cwd": "${workspaceFolder}",
       "console": "internalConsole"
+    },
+    {
+      "name": "Vscode Example",
+      "request": "launch",
+      "type": "extensionHost",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/dist/examples/example/engine/vscode"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/dist/examples/example/engine/vscode"
+      ],
+    },
+    
+    {
+      "name": "Vscode Example 2",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/dist/examples/example/engine/vscode"
+      ],
+      "trace": "false",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "outFiles": [
+        "${workspaceFolder}/dist/examples/example/engine/vscode"
+      ]
     }
   ]
 }

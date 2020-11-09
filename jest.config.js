@@ -12,10 +12,11 @@ module.exports = {
     '<rootDir>/packages/plugin/child-process',
     '<rootDir>/packages/plugin/ws',
     '<rootDir>/packages/plugin/webview',
-    '<rootDir>/examples/example/engine/web',
-    '<rootDir>/examples/example/plugin/webview',
     '<rootDir>/packages/plugin/webworker',
     '<rootDir>/packages/plugin/theia',
     '<rootDir>/packages/engine/theia',
+    '<rootDir>/examples/example/engine/web',
+    '<rootDir>/examples/example/plugin/webview',
+    '<rootDir>/examples/example/engine/vscode',
   ],
 };

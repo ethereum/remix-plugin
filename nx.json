@@ -45,6 +45,9 @@
     "engine-vscode": {
       "tags": []
     },
+    "engine-theia": {
+      "tags": []
+    },
     "plugin-core": {
       "tags": ["plugin"],
       "implicitDependency": ["utils", "api"]
@@ -67,6 +70,9 @@
     "plugin-webworker": {
       "tags": []
     },
+    "plugin-theia": {
+      "tags": []
+    },
     "examples": {
       "tags": []
     },
@@ -84,10 +90,7 @@
       "tags": [],
       "implicitDependencies": ["example-plugin-webview"]
     },
-    "plugin-theia": {
-      "tags": []
-    },
-    "engine-theia": {
+    "example-engine-vscode": {
       "tags": []
     }
   },

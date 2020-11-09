@@ -10,6 +10,7 @@
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
     "build:affected": "nx affected:build  --parallel --maxParallel=3",
+    "watch:vscode": "nx build example-engine-vscode --watch",
     "version": "lerna version",
     "publish:latest": "nx run-many --target=publish --access=public --all --tag=latest",
     "publish:canary": "nx run-many --target=publish --access=public --all --tag=canary",
