@@ -7,6 +7,7 @@ import {
   Client,
   PluginClient,
   isHandshake,
+  isPluginMessage,
   PluginOptions,
   checkOrigin
 } from '@remixproject/plugin'
@@ -32,8 +33,9 @@ export class IframeConnector implements ClientConnector {
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
     window.addEventListener('message', async (event: MessageEvent) => {
-      if (!event.source) return console.warn('No source in message', event)
-      if (!event.data) return console.warn('No data provided in message', event)
+      if (!event.source) return
+      if (!event.data) return
+      if (!isPluginMessage(event.data)) return
       // Check that the origin is the right one
       const isGoodOrigin = await checkOrigin(event.origin, this.options)
       if (!isGoodOrigin) return console.warn('Origin provided is not allow in message', event)

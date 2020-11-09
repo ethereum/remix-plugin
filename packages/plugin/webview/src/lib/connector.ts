@@ -6,7 +6,8 @@ import {
   PluginClient,
   isHandshake,
   PluginOptions,
-  checkOrigin
+  checkOrigin,
+  isPluginMessage
 } from '@remixproject/plugin'
 import { RemixApi, Theme } from '@remixproject/plugin-api';
 
@@ -44,8 +45,9 @@ export class WebviewConnector implements ClientConnector {
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
     window.addEventListener('message', async (event: MessageEvent) => {
-      if (!event.source) return console.warn('No source in message', event)
-      if (!event.data) return console.warn('No data provided in message', event)
+      if (!event.source) return
+      if (!event.data) return
+      if (!isPluginMessage(event.data)) return
       // Support for iframe
       if (!this.isVscode) {
         // Check that the origin is the right one (if any defined in the options)
