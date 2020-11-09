@@ -37,8 +37,8 @@ export class WebviewConnector implements ClientConnector {
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
     window.addEventListener('message', async (event: MessageEvent) => {
-      if (!event.source) throw new Error('No source')
-      if (!event.data) throw new Error('No data')
+      if (!event.source) return console.warn('No source in message', event)
+      if (!event.data) return console.warn('No data provided in message', event)
       // Support for iframe
       if (!this.isVscode) {
         if (isHandshake(event.data)) {

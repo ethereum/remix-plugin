@@ -13,6 +13,9 @@ import {
 
 import { listenOnThemeChanged } from './theme'
 
+function warn() {
+  console.warn()
+}
 
 export class IframeConnector implements ClientConnector {
   source: Window
@@ -32,11 +35,11 @@ export class IframeConnector implements ClientConnector {
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
     window.addEventListener('message', async (event: MessageEvent) => {
-      if (!event.source) throw new Error('No source')
+      if (!event.source) return console.warn('No source in message', event)
+      if (!event.data) return console.warn('No data provided in message', event)
       // Check that the origin is the right one
       const isGoodOrigin = await checkOrigin(event.origin, this.options)
-      if (!isGoodOrigin) return
-      if (!event.data) throw new Error('No data')
+      if (!isGoodOrigin) return console.warn('Origin provided is not allow in message', event)
       if (isHandshake(event.data)) {
         this.source = event.source as Window
         this.origin = event.origin
