@@ -19,7 +19,7 @@
     "commands": [
       {
         "command": "remix.start",
-        "title": "Start"
+        "title": "Remix Start"
       }
     ],
     "viewsContainers": {},
