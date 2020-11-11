@@ -1,0 +1,16 @@
+{
+  "name": "remix-plugnmanager-theia",
+  "keywords": [
+    "theia-extension"
+  ],
+  "version": "0.3.2",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/remix-theia-frontend-module"
+    }
+  ]
+}

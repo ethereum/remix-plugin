@@ -89,6 +89,13 @@
     },
     "engine-theia": {
       "tags": []
+    },
+    "example-engine-theia": {
+      "tags": []
+    },
+    "example/engine-theia-e2e": {
+      "tags": [],
+      "implicitDependencies": ["example-engine-theia"]
     }
   },
   "workspaceLayout": {

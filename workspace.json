@@ -931,7 +931,74 @@
           "options": {
             "commands": ["npm publish --tag={tag}"],
             "cwd": "dist/packages/engine/theia"
-           }
+          }
+        }
+      }
+    },
+    "example-engine-theia": {
+      "root": "examples/example/engine/theia",
+      "sourceRoot": "examples/example/engine/theia/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+            ]
+          },
+          "configurations": {
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+            ]
+          },
+          "configurations": {
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["examples/example/engine/theia/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "examples/example/engine/theia/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "example/engine-theia-e2e": {
+      "root": "examples/example/engine/theia-e2e",
+      "sourceRoot": "examples/example/engine/theia-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "examples/example/engine/theia-e2e/cypress.json",
+            "tsConfig": "examples/example/engine/theia-e2e/tsconfig.e2e.json",
+            "devServerTarget": "example-engine-theia:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "example-engine-theia:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "examples/example/engine/theia-e2e/**/*.{js,ts}"
+            ]
+          }
         }
       }
     }
@@ -1005,5 +1072,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "example-engine-theia"
 }
