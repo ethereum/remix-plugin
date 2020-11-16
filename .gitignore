@@ -6,6 +6,9 @@
 /.cache
 /out-tsc
 
+# compiled output for theia-extension
+/examples/example/engine/theia/lib
+
 # dependencies
 /node_modules
 

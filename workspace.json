@@ -945,7 +945,27 @@
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-            ]
+              {
+                "command": "tsc"
+              }
+            ],
+            "outputPath" : "examples/example/engine/theia/lib",
+            "cwd": "examples/example/engine/theia",
+            "parallel": false
+          },
+          "configurations": {
+          }
+        },
+        "clean": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "rimraf lib"
+              }
+            ],
+            "cwd": "examples/example/engine/theia",
+            "parallel": false
           },
           "configurations": {
           }

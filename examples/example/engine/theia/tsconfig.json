@@ -2,5 +2,10 @@
   "extends": "../../../../tsconfig.base.json",
   "files": [],
   "include": ["src"],
+  "compilerOptions": {
+    "target": "es6",
+    "rootDir": "src",
+    "outDir": "lib"
+  },
   "references": []
 }
