@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-webview",
-  "version": "0.3.3-alpha",
+  "version": "0.3.3",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/webview#readme",
   "repository": {
     "type": "git",
