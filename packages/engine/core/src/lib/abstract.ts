@@ -80,17 +80,13 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   /** Add a request to the list of current requests */
   protected addRequest(request: PluginRequest, method: Profile<T>['methods'][number], args: any[]) {
     return new Promise((resolve, reject) => {
-      // @todo() profiles should be manage by the plugin manager
-      // if (!this.profile.methods || !this.profile.methods.includes(method)) {
-      //   reject(new Error(`Method ${method} is not exposed by ${this.profile.name}`))
-      // }
       // Add a new request to the queue
       this.requestQueue.push(async () => {
         this.currentRequest = request
         let timedout = false
         const letcontinue = () => {
-          if (timedout) reject(`call to plugin has timed out ${this.profile.name} - ${method} - ${JSON.stringify(this.currentRequest)}`)
           delete this.currentRequest
+          if (timedout) reject(`call to plugin has timed out ${this.profile.name} - ${method} - ${JSON.stringify(this.currentRequest)}`)
           // Remove current request and call next
           this.requestQueue.shift()
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
@@ -99,8 +95,8 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
         const ref = setTimeout(() => { timedout = true, letcontinue() }, this.options.queueTimeout || 10000)
         try {
           const result = await this.callPluginMethod(method, args)
-          if (timedout) return
           delete this.currentRequest
+          if (timedout) return
           resolve(result)
         } catch (err) {
           reject(err)

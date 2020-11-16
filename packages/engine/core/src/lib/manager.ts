@@ -60,7 +60,7 @@ export class PluginManager extends Plugin implements BasePluginManager {
 
   /** Return the name of the caller. If no request provided, this mean that the method has been called from the IDE so we use "manager" */
   get requestFrom() {
-    return this.currentRequest ? this.currentRequest.from : 'manager'
+    return this.currentRequest?.from || 'manager'
   }
 
   /** Run engine activation. Implemented by Engine */
