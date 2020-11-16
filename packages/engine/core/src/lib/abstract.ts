@@ -69,7 +69,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
 
   /** Call a method from this plugin */
   protected callPluginMethod(key: string, args: any[]) {
-    const path = this.currentRequest && this.currentRequest.path
+    const path = this.currentRequest?.path
     const method = getMethodPath(key, path)
     if (!(method in this)) {
       throw new Error(`Method ${method} is not implemented by ${this.profile.name}`)
@@ -86,13 +86,22 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
         let timedout = false
         const letcontinue = () => {
           delete this.currentRequest
-          if (timedout) reject(`call to plugin has timed out ${this.profile.name} - ${method} - ${JSON.stringify(this.currentRequest)}`)
+          if (timedout) {
+            const { from } = this.currentRequest
+            const params = args.map(arg => JSON.stringify(arg)).join(', ')
+            const error = `[TIMED OUT]: Call to method "${method}" from "${from}" to plugin "${this.profile.name}" has timed out with arguments ${params}."`
+            reject(error)
+          }
           // Remove current request and call next
           this.requestQueue.shift()
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
 
-        const ref = setTimeout(() => { timedout = true, letcontinue() }, this.options.queueTimeout || 10000)
+        const ref = setTimeout(() => {
+          timedout = true
+          letcontinue()
+        }, this.options.queueTimeout || 10000)
+
         try {
           const result = await this.callPluginMethod(method, args)
           delete this.currentRequest

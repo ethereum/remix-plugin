@@ -1,5 +1,5 @@
 import type { Profile } from '@remixproject/plugin-utils'
-import { Plugin } from './abstract'
+import { Plugin } from '@remixproject/engine'
 
 // @todo(#250): move this into engine-web
 export abstract class HostPlugin extends Plugin {

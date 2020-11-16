@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
-import { HostPlugin } from '@remixproject/engine';
+import { HostPlugin } from '@remixproject/engine-web';
 import { Profile } from '@remixproject/plugin-utils';
 import { Manager } from './plugins';
 import { Engine } from './engine';
