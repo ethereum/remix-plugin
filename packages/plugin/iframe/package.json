@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-iframe",
-  "version": "0.3.2",
+  "version": "0.3.3-alpha",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/iframe#readme",
   "repository": {
     "type": "git",
