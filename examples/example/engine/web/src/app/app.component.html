@@ -1,5 +1,5 @@
 <aside>
-  <mat-action-list dense>
+  <mat-action-list dense testId="plugin-list">
     <ng-container *ngFor="let profile of actives$ | async">
       <button mat-list-item class="active" (click)="deactivate(profile.name)">
         <mat-icon mat-list-icon>signal_cellular_4_bar</mat-icon>
