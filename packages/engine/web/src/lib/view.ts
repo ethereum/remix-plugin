@@ -1,5 +1,5 @@
 import type { Profile, LocationProfile } from '@remixproject/plugin-utils'
-import { Plugin } from './abstract'
+import { Plugin } from '@remixproject/engine'
 
 
 export function isView<P extends Profile>(profile: Profile): profile is (ViewProfile & P) {
