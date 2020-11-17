@@ -1,5 +1,7 @@
 import { injectable } from 'inversify';
-import {Engine, PluginManager, Plugin } from '@remixproject/engine';
+import {Engine, PluginManager } from '@remixproject/engine';
+import { FileManagerPlugin } from './filemanager';
+import { TerminalPlugin } from './terminal';
 
 @injectable()
 export class RemixEngineService {
@@ -10,10 +12,12 @@ export class RemixEngineService {
     }
 
     async startEngine(){
-        this.engine = new Engine();
-        this.manager = new PluginManager;
-    
-        this.engine.register([this.manager])
+        this.engine = new Engine
+        this.manager = new PluginManager
+        let fileManager = new FileManagerPlugin
+        let terminal = new TerminalPlugin;
+
+        this.engine.register([this.manager, fileManager, terminal])
     }
     
     async call(plugin:string,method:string, ...payload: any[]) {
