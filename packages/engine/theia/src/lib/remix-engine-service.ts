@@ -14,16 +14,16 @@ export class RemixEngineService {
     async startEngine(){
         this.engine = new Engine
         this.manager = new PluginManager
-        let fileManager = new FileManagerPlugin
-        let terminal = new TerminalPlugin;
+        const fileManager = new FileManagerPlugin
+        const terminal = new TerminalPlugin;
 
         this.engine.register([this.manager, fileManager, terminal])
     }
     
-    async call(plugin:string,method:string, ...payload: any[]) {
+    async call(plugin:string,method:string, ...payload: any[]):Promise<any> {
         if (this.manager == undefined) {
             await this.startEngine()
         }
-        this.manager.call(plugin, method, payload);
+        return this.manager.call(plugin, method, payload);
     }
 }
