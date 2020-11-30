@@ -205,7 +205,7 @@ Example :
 const fs = new FileSystemPlugin()
 const manager = new PluginManager()
 ...
-fs.call('manager', 'activatePlugin', 'terminal')  // At this point `currentRequest` on manager is "fs"
+fs.call('manager', 'activatePlugin', 'terminal')  // At this point `currentRequest` in manager is "fs"
 manager.deactivatePlugin('editor')  // This will fail
 ```
 
