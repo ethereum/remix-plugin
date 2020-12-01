@@ -1,6 +1,10 @@
 module.exports = {
   displayName: 'engine-theia',
+  testEnvironment: 'node',
   preset: '../../../jest.preset.js',
+  transformIgnorePatterns: [
+    "<rootDir>/node_modules/(?!theia/plugin/.*)"
+  ],
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
