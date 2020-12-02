@@ -26,8 +26,6 @@ export interface IFileSystem {
     mkdir(path: string): void
     /** Get the list of files in the directory */
     readdir(path: string): string[]
-    /** Removes a file or directory recursively */
-    remove(path: string): void
     /** Get the name of the file currently focused if any */
     getCurrentFile(): string
     // Old API
