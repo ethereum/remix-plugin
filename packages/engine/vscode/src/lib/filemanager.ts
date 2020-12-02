@@ -36,6 +36,12 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     const uri = Uri.file(absPath);
     return workspace.fs.readFile(uri).then(content => Buffer.from(content).toString("utf-8"));
   }
+  /** Remove a file */
+  async remove(path: string): Promise<void> {
+    const absPath = absolutePath(path);
+    const uri = Uri.file(absPath);
+    return workspace.fs.delete(uri)
+  }
   /** Change the path of a file */
   async rename(oldPath: string, newPath: string): Promise<void> {
     const source = Uri.file(absolutePath(oldPath));
