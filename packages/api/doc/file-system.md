@@ -13,6 +13,7 @@
 |_event_  |`fileRenamed`          |Triggered when a file is removed.
 |_event_  |`fileClosed`           |Triggered when a file is closed.
 |_event_  |`noFileSelected`       |Triggered when no file is selected.
+|_method_ |`getCurrentFile`       |Get the name of the current file selected.
 |_method_ |`open`                 |Open the content of the file in the context (eg: Editor).
 |_method_ |`writeFile`            |Set the content of a specific file.
 |_method_ |`readFile`             |Return the content of a specific file.
