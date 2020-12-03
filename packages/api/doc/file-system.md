@@ -6,7 +6,13 @@
 
 |Type     |Name                   |Description |
 |---------|-----------------------|------------|
-|_event_  |`currentFileChanged`   |Triggered when a file changes.
+|_event_  |`currentFileChanged`   |Triggered when the user opens another file.
+|_event_  |`fileSaved`            |Triggered when a file is saved.
+|_event_  |`fileAdded`            |Triggered when a file is added.
+|_event_  |`fileRemoved`          |Triggered when a file is removed.
+|_event_  |`fileRenamed`          |Triggered when a file is removed.
+|_event_  |`fileClosed`           |Triggered when a file is closed.
+|_event_  |`noFileSelected`       |Triggered when no file is selected.
 |_method_ |`getCurrentFile`       |Get the name of the current file selected.
 |_method_ |`open`                 |Open the content of the file in the context (eg: Editor).
 |_method_ |`writeFile`            |Set the content of a specific file.
