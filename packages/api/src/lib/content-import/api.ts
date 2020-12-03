@@ -5,5 +5,6 @@ export interface IContentImport {
   events: {} & StatusEvents
   methods: {
     resolve(path: string): ContentImport
+    resolveAndSave (url:string, targetPath: string): string
   }
 }
