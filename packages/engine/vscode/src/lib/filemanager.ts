@@ -1,13 +1,20 @@
 import { filSystemProfile, IFileSystem } from '@remixproject/plugin-api'
 import { MethodApi } from '@remixproject/plugin-utils';
-import { isAbsolute, join } from 'path';
+import { isAbsolute, join, resolve } from 'path';
 import { window, workspace, Uri, commands } from 'vscode';
 import { CommandPlugin } from './command';
 
 function absolutePath(path: string) {
   const root = workspace.workspaceFolders[0].uri.fsPath;
-  if (isAbsolute(path) || !root) {
+  // vscode API will never get permission to WriteFile outside of its workspace directory
+  if(!root) {
     return path;
+  }
+  if (isAbsolute(path)) {
+    return join(root, path);
+  }
+  if(!isAbsolute(path)) {
+    return join(root, resolve(path));
   }
   return join(root, path);
 }
