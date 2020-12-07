@@ -1,6 +1,6 @@
 # Plugin frame
 
-**Except if you want your plugin to ONLY work on the web, prefer [@remixproject/plugin-webview](../webview/readme.md)**
+**Except if you want your plugin to ONLY work on the web, prefer [@remixproject/plugin-webview](../webview)**
 
 This library provides connectors to connect a plugin to an engine running in a web environment.
 ```
