@@ -1,6 +1,6 @@
 import { filSystemProfile, IFileSystem } from '@remixproject/plugin-api'
 import { MethodApi } from '@remixproject/plugin-utils';
-import { isAbsolute, join, resolve } from 'path';
+import { isAbsolute, join, resolve, relative } from 'path';
 import { window, workspace, Uri, commands } from 'vscode';
 import { CommandPlugin } from './command';
 
@@ -10,13 +10,14 @@ function absolutePath(path: string) {
   if(!root) {
     return path;
   }
-  if (isAbsolute(path)) {
-    return join(root, path);
+  if(path.startsWith(root)) {
+    path = relative(root, path);
   }
-  if(!isAbsolute(path)) {
-    return join(root, resolve(path));
+  const result = join(root, path);
+  if (!result.startsWith(root)) {
+    throw new Error(`Resolved path is should be inside the open workspace : "${root}". Got "${result}`);
   }
-  return join(root, path);
+  return result;
 }
 
 export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
