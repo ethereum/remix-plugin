@@ -108,6 +108,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
           if (timedout) return
           resolve(result)
         } catch (err) {
+          delete this.currentRequest
           reject(err)
         }
         clearTimeout(ref)
