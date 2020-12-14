@@ -2,7 +2,7 @@
 // SOURCES //
 /////////////
 export interface CompilationFileSources {
-  [fileName: string]: string
+  [fileName: string]: { content: string }
 }
 
 
