@@ -17,6 +17,11 @@ function toKebabCase(text: string) {
   return text.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
 };
 
+declare global {
+  function acquireTheiaApi(): any;
+}
+
+
 /**
  * This Webview connector
  */
@@ -26,9 +31,16 @@ export class WebviewConnector implements ClientConnector {
   isVscode: boolean
 
   constructor(private options: PluginOptions<any>) {
-    this.isVscode = ('acquireVsCodeApi' in window)
+    // @todo(#295) check if we can merge this statement in `this.isVscode = acquireVsCodeApi !== undefined`
+    this.isVscode = ('acquireVsCodeApi' in window) || acquireTheiaApi !== undefined
     // Check the parent source here
-    this.source = this.isVscode ? window['acquireVsCodeApi']() : window.parent
+    if ('acquireVsCodeApi' in window) {
+      this.source = window['acquireVsCodeApi']()
+    } else if (acquireTheiaApi !== undefined) {
+      this.source = acquireTheiaApi()
+    } else {
+      this.source = window.parent
+    }
   }
 
 
