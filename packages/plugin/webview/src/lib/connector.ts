@@ -11,6 +11,9 @@ import {
 } from '@remixproject/plugin'
 import { RemixApi, Theme } from '@remixproject/plugin-api';
 
+declare global {
+  function acquireTheiaApi(): any;
+}
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
 function toKebabCase(text: string) {
@@ -24,11 +27,16 @@ export class WebviewConnector implements ClientConnector {
   source: { postMessage: (message: any, origin?: string) => void }
   origin: string
   isVscode: boolean
+  isTheia: boolean
 
   constructor(private options: PluginOptions<any>) {
     this.isVscode = ('acquireVsCodeApi' in window)
+    // TODO acquireTheiaApi is also available as acquireVsCodeApi in Theia. Can we check for global acquireVsCodeApi in both cases?
+    this.isTheia = acquireTheiaApi != undefined
     // Check the parent source here
-    this.source = this.isVscode ? window['acquireVsCodeApi']() : window.parent
+    this.source = this.isVscode ? window['acquireVsCodeApi']()
+      : this.isTheia ? acquireTheiaApi()
+        : window.parent
   }
 
 
