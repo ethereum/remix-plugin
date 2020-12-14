@@ -29,9 +29,7 @@ export class WebviewPlugin extends PluginConnector {
   }
 
   protected send(message: Partial<Message>): void {
-    if (this.panel) {
-      this.panel.webview.postMessage(message)
-    }
+    this.panel?.webview.postMessage(message)
   }
 
   protected connect(url: string): void {
