@@ -38,8 +38,8 @@ export interface CompilationResult {
 }
 
 export interface lastCompilationResult {
-    data: CompilationResult | null;
-    source: SourceWithTarget | null | undefined;
+    data: CompilationResult | null
+    source: SourceWithTarget | null | undefined
 } 
 
 ///////////
