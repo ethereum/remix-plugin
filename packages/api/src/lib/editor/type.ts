@@ -10,8 +10,8 @@ export interface HighlightPosition {
 }
 
 export interface Annotation extends Error {
-  row: number;
-  column: number;
-  text: string;
-  type: "error" | "warning" | "information";
+    row: number;
+    column: number;
+    text: string;
+    type: "error" | "warning" | "info";
 }
