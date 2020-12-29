@@ -9,7 +9,7 @@ export interface HighlightPosition {
   }
 }
 
-export interface Annotation extends Error {
+export interface Annotation {
     row: number;
     column: number;
     text: string;
