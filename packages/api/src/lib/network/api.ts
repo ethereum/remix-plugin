@@ -1,10 +1,10 @@
-import { Network, CustomNetwork, NetworkProvider } from './type'
-import { StatusEvents } from '@remixproject/plugin-utils'
+import { NetworkProvider, Network, CustomNetwork } from './type';
 
-export interface INetwork {
+/** @deprecated: current version in Remix IDE. To improve to match standard JSON RPC methods */
+export interface NetworkApi {
   events: {
     providerChanged: (provider: NetworkProvider) => void
-  } & StatusEvents
+  }
   methods: {
     getNetworkProvider(): NetworkProvider
     detectNetwork(): Network | Partial<CustomNetwork>
