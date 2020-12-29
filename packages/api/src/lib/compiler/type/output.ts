@@ -2,9 +2,20 @@
 // SOURCES //
 /////////////
 export interface CompilationFileSources {
-  [fileName: string]: { content: string }
+    [fileName: string]:
+        {
+        // Optional: keccak256 hash of the source file
+        keccak256?: string,
+        // Required (unless "urls" is used): literal contents of the source file
+        content: string,
+        urls?: string[]
+        }
 }
 
+export interface SourceWithTarget {
+    sources?: CompilationFileSources,
+    target?: string | null | undefined
+}
 
 ////////////
 // RESULT //
@@ -25,6 +36,11 @@ export interface CompilationResult {
     }
   }
 }
+
+export interface lastCompilationResult {
+    data: CompilationResult | null
+    source: SourceWithTarget | null | undefined
+} 
 
 ///////////
 // ERROR //
