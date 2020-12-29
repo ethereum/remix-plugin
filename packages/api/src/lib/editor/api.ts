@@ -10,7 +10,9 @@ export interface IEditor {
       hexColor: string,
     ): void
     discardHighlight(): void
+    discardHighlightAt(line: number, filePath: string): void
     addAnnotation(annotation: Annotation): void
+    clearAnnotations(): void
   }
 
 }
