@@ -1,9 +1,17 @@
 export interface CompilationInput {
   /** Source code language */
-  language: 'Solidity' | 'Vyper' | 'lll' | 'assembly'
+  language: 'Solidity' | 'Vyper' | 'lll' | 'assembly' | 'yul'
   sources: SourcesInput
   settings?: CompilerSettings
   outputSelection?: CompilerOutputSelection
+}
+
+export interface CondensedCompilationInput {
+  language: 'Solidity' | 'Vyper' | 'lll' | 'assembly' | 'yul'
+  optimize: boolean
+  /** e.g: 0.6.8+commit.0bbfe453 */
+  version: string
+  evmVersion?: 'istanbul' | 'petersburg' | 'constantinople' | 'byzantium' | 'spuriousDragon' | 'tangerineWhistle' | 'homestead'
 }
 
 /////////////
@@ -50,7 +58,7 @@ export interface CompilerSettings {
   /** Metadata settings */
   metadata?: CompilerMetadata
   /** Addresses of the libraries. If not all libraries are given here, it can result in unlinked objects whose output data is different. */
-  libraries: CompilerLibrarie
+  libraries: CompilerLibraries
 }
 
 export interface CompilerOptimizer {
@@ -73,7 +81,7 @@ export interface CompilerMetadata {
  * If remappings are used, this source file should match the global path after remappings were applied.
  * If this key is an empty string, that refers to a global level.
  */
-export interface CompilerLibrarie {
+export interface CompilerLibraries {
   [contractName: string]: {
     [libName: string]: string
   }
@@ -85,7 +93,6 @@ export interface CompilerLibrarie {
 export type OutputType =
   | 'abi'
   | 'ast'
-  | 'legacyAST'
   | 'devdoc'
   | 'userdoc'
   | 'metadata'
@@ -104,9 +111,9 @@ export type OutputType =
 /**
  * The following can be used to select desired outputs.
  * If this field is omitted, then the compiler loads and does type checking, but will not generate any outputs apart from errors.
- * The first level key is the file name and the second is the contract name. An empty contract name refers to the file itself,
- * while an astrisk (star) refers to all of the contracts.
- * Note that using `evm`, `evm.bytecode`, `ewasm`, etc. will select every
+ * The first level key is the file name and the second is the contract name, where empty contract name refers to the file itself,
+ * while the star refers to all of the contracts.
+ * Note that using a using `evm`, `evm.bytecode`, `ewasm`, etc. will select every
  * target part of that output. Additionally, `*` can be used as a wildcard to request everything.
  */
 export interface CompilerOutputSelection {

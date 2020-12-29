@@ -1,4 +1,4 @@
-import { CompilationResult, CompilationFileSources, lastCompilationResult } from './type'
+import { CompilationResult, CompilationFileSources, lastCompilationResult, CondensedCompilationInput, SourcesInput } from './type'
 import { StatusEvents, Api } from '@remixproject/plugin-utils'
 
 export interface ICompiler extends Api {
@@ -13,5 +13,7 @@ export interface ICompiler extends Api {
   methods: {
     getCompilationResult(): lastCompilationResult
     compile(fileName: string): void
+    setCompilerConfig(settings: CondensedCompilationInput): void
+    compileWithParameters(targets: SourcesInput, settings: CondensedCompilationInput): CompilationResult
   }
 }
