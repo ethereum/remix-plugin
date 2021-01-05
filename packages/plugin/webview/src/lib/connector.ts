@@ -32,15 +32,20 @@ export class WebviewConnector implements ClientConnector {
 
   constructor(private options: PluginOptions<any>) {
     // @todo(#295) check if we can merge this statement in `this.isVscode = acquireVsCodeApi !== undefined`
-    this.isVscode = ('acquireVsCodeApi' in window) || acquireTheiaApi !== undefined
-    // Check the parent source here
     if ('acquireVsCodeApi' in window) {
+      this.isVscode = true
       this.source = window['acquireVsCodeApi']()
-    } else if (acquireTheiaApi !== undefined) {
-      this.source = acquireTheiaApi()
-    } else {
-      this.source = window.parent
+      return
     }
+    try {
+      this.isVscode = acquireTheiaApi !== undefined
+      this.source = acquireTheiaApi()
+      return
+    } catch (e) {
+      this.isVscode = false
+    }
+    // fallback to window parent (iframe)
+    this.source = window.parent
   }
 
 
