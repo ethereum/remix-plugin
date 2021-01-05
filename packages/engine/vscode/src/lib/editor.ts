@@ -13,6 +13,7 @@ export interface EditorOptions extends CommandOptions {
 }
 
 export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
+  private decorations: Array<TextEditorDecorationType>;
   private decoration: TextEditorDecorationType;
   private diagnosticCollection: DiagnosticCollection;
   public options: EditorOptions;
@@ -20,15 +21,12 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   constructor(options: EditorOptions) {
     super(editorProfile);
     super.setOptions(options);
+    this.decorations = [];
   }
   setOptions(options: EditorOptions) {
     super.setOptions(options);
   }
   onActivation() {
-    this.decoration = window.createTextEditorDecorationType({
-      backgroundColor: 'editor.lineHighlightBackground',
-      isWholeLine: true,
-    });
     this.diagnosticCollection = languages.createDiagnosticCollection(this.options.language);
   }
   onDeactivation() {
@@ -42,25 +40,28 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
       const start: Position = new Position(position.start.line, position.start.column);
       const end: Position = new Position(position.end.line, position.end.column);
       const newDecoration = { range: new Range(start, end) };
-      if (hexColor) {
-        this.decoration = window.createTextEditorDecorationType({
-          backgroundColor: hexColor,
-          isWholeLine: true,
-        });
-      }
+      this.decoration = window.createTextEditorDecorationType({
+        backgroundColor: hexColor || 'editor.lineHighlightBackground',
+        isWholeLine: true,
+      });
+      this.decorations.push(this.decoration);
       editor.setDecorations(this.decoration, [newDecoration]);
     } else {
       throw new Error(`Could not find file ${filePath}`);
     }
   }
+  async discardDecorations(): Promise<void> {
+    return this.decorations?.forEach(decoration => decoration.dispose());
+  }
   async discardHighlight(): Promise<void> {
-    return this.decoration.dispose();
+    return this.decorations?.forEach(decoration => decoration.dispose());
   }
   /**
    * Alisas of  discardHighlight
    * Required to match the standard interface of editor
    */
   async discardHighlightAt(): Promise<void> {
+    // effectively will dispose last decoration
     return this.decoration.dispose();
   }
   async addAnnotation(annotation: Annotation, filePath?: string): Promise<void> {
