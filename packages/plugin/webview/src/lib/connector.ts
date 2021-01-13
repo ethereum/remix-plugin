@@ -91,14 +91,14 @@ export const createClient = <
   C extends PluginClient<P, App> = any
 >(client: C): C & PluginApi<App> => {
   const c = client as any || new PluginClient<P, App>()
-  const options = client.options
+  const options = c.options
   const connector = new WebviewConnector(options)
   connectClient(connector, c)
   applyApi(c)
   if (!options.customTheme) {
     listenOnThemeChanged(c)
   }
-  return client as any
+  return c as any
 }
 
 /** Set the theme variables in the :root */
