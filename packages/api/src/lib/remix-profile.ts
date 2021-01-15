@@ -4,6 +4,7 @@ import { filSystemProfile, IFileSystem } from './file-system'
 import { editorProfile, IEditor } from './editor'
 import { networkProfile, INetwork } from './network'
 import { udappProfile, IUdapp } from './udapp'
+import { terminalProfile, ITerminal } from './terminal'
 import { themeProfile, ITheme } from './theme'
 import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
@@ -18,7 +19,8 @@ export interface IRemixApi {
   solidityUnitTesting: IUnitTesting
   editor: IEditor
   network: INetwork
-  udapp: IUdapp
+  udapp: IUdapp,
+  terminal: ITerminal,
   contentImport: IContentImport
   settings: ISettings
   theme: ITheme
@@ -35,6 +37,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   editor: editorProfile,
   network: networkProfile,
   udapp: udappProfile,
+  terminal: terminalProfile,
   contentImport: contentImportProfile,
   settings: settingsProfile,
   theme: themeProfile,
@@ -50,6 +53,7 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   editor: editorProfile,
   network: networkProfile,
   udapp: udappProfile,
+  terminal: terminalProfile,
   contentImport: contentImportProfile,
   settings: settingsProfile,
   theme: themeProfile
