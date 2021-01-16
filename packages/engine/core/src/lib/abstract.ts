@@ -85,7 +85,6 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
         this.currentRequest = request
         let timedout = false
         const letcontinue = () => {
-          delete this.currentRequest
           if (timedout) {
             const { from } = this.currentRequest
             const params = args.map(arg => JSON.stringify(arg)).join(', ')
@@ -93,6 +92,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
             reject(error)
           }
           // Remove current request and call next
+          delete this.currentRequest
           this.requestQueue.shift()
           if (this.requestQueue.length !== 0) this.requestQueue[0]()
         }
