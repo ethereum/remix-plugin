@@ -1,6 +1,6 @@
 import { editorProfile, IEditor, Annotation, HighlightPosition } from '@remixproject/plugin-api';
 import { MethodApi } from '@remixproject/plugin-utils';
-import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor } from "vscode";
+import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor, ThemeColor } from "vscode";
 import { CommandPlugin, CommandOptions } from "./command";
 
 function getEditor(filePath?: string): TextEditor {
@@ -32,7 +32,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   onDeactivation() {
     this.decoration.dispose();
   }
-  async highlight(position: HighlightPosition, filePath: string, hexColor: string): Promise<void> {
+  async highlight(position: HighlightPosition, filePath: string, themeColor: string): Promise<void> {
     const editors = window.visibleTextEditors;
     // Parse `filePath` to ensure if a valid file path was supplied
     const editor = editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path);
@@ -41,9 +41,10 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
       const end: Position = new Position(position.end.line, position.end.column);
       const newDecoration = { range: new Range(start, end) };
       this.decoration = window.createTextEditorDecorationType({
-        backgroundColor: hexColor || 'editor.lineHighlightBackground',
+        backgroundColor: new ThemeColor(themeColor),
         isWholeLine: true,
       });
+      
       this.decorations.push(this.decoration);
       editor.setDecorations(this.decoration, [newDecoration]);
     } else {
@@ -67,7 +68,6 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   async addAnnotation(annotation: Annotation, filePath?: string): Promise<void> {
     // This function should append to existing map
     // Ref: https://code.visualstudio.com/api/language-extensions/programmatic-language-features#provide-diagnostics
-    // const fileUri = window.activeTextEditor ? window.activeTextEditor.document.uri : undefined; // TODO: we might want to supply path to addAnnotation function
     const editor = getEditor(filePath);
     const canonicalFile: string = editor.document.uri.fsPath;
     const diagnostics: Diagnostic[] = [];

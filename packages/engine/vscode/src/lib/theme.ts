@@ -12,21 +12,22 @@ export function getVscodeTheme(color: ColorTheme, urls: Partial<ThemeUrls> = {})
   const brightness = color.kind === ColorThemeKind.Dark ? 'dark' : 'light';
   return {
     brightness,
+    // https://code.visualstudio.com/api/references/theme-color
     colors: {
-      surface: 'var(--vscode-tab-inactiveBackground)',
-      background: 'var(--vscode-sidebar-background)',
-      foreground: 'var(--vscode-sideBar-foreground)',
-      primary: 'var(--vscode-button-background)',
-      primaryContrast: 'var(--vscode-button-foreground)',
-      secondary: 'var(--vscode-button-secondaryBackground)',
-      secondaryContrast: 'var(--vscode-button-secondaryForeground)',
-      success: 'var(--vscode-button-background)', // Same as primary: no success color in vscode
-      successContrast: 'var(--vscode-button-foreground)',
-      warn: 'var(--vscode-inputValidation-warningBackground)',
-      warnContrast: 'var(--vscode-inputValidation-warningForeground)',
-      error: 'var(--vscode-inputValidation-errorBackground)',
-      errorContrast: 'var(--vscode-inputValidation-errorForeground)',
-      disabled: 'var(--vscode-debugIcon-breakpointDisabledForeground)',
+      surface: 'tab.inactiveBackground',
+      background: 'sidebar.background',
+      foreground: 'sideBar.foreground',
+      primary: 'button.background',
+      primaryContrast: 'button.foreground',
+      secondary: 'button.secondaryBackground',
+      secondaryContrast: 'button.secondaryForeground',
+      success: 'button.background', // Same as primary: no success color in vscode
+      successContrast: 'button.foreground',
+      warn: 'inputValidation.warningBackground',
+      warnContrast: 'inputValidation.warningForeground',
+      error: 'inputValidation.errorBackground',
+      errorContrast: 'inputValidation.errorForeground',
+      disabled: 'debugIcon.breakpointDisabledForeground',
     },
     breakpoints: {
       xs: 0,
