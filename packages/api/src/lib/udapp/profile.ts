@@ -3,6 +3,6 @@ import { LibraryProfile } from '@remixproject/plugin-utils'
 
 export const udappProfile: LibraryProfile<IUdapp> = {
   name: 'udapp',
-  methods: ['createVMAccount', 'getAccounts', 'sendTransaction'],
+  methods: ['createVMAccount', 'getAccounts', 'sendTransaction', 'getSettings'],
   events: ['newTransaction']
 }
