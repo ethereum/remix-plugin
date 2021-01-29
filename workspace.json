@@ -931,7 +931,117 @@
           "options": {
             "commands": ["npm publish --tag={tag}"],
             "cwd": "dist/packages/engine/theia"
-           }
+          }
+        }
+      }
+    },
+    "example-node": {
+      "root": "examples/example/node",
+      "sourceRoot": "examples/example/node/src",
+      "projectType": "application",
+      "prefix": "example-node",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/examples/example/node",
+            "main": "examples/example/node/src/main.ts",
+            "tsConfig": "examples/example/node/tsconfig.app.json",
+            "assets": ["examples/example/node/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "examples/example/node/src/environments/environment.ts",
+                  "with": "examples/example/node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "example-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["examples/example/node/**/*.ts"]
+          }
+        }
+      }
+    },
+    "example-child-process-client": {
+      "root": "examples/example/child-process-client",
+      "sourceRoot": "examples/example/child-process-client/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/examples/example/child-process-client",
+            "index": "examples/example/child-process-client/src/index.html",
+            "main": "examples/example/child-process-client/src/main.ts",
+            "polyfills": "examples/example/child-process-client/src/polyfills.ts",
+            "tsConfig": "examples/example/child-process-client/tsconfig.app.json",
+            "assets": [
+              "examples/example/child-process-client/src/favicon.ico",
+              "examples/example/child-process-client/src/assets"
+            ],
+            "styles": ["examples/example/child-process-client/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "examples/example/child-process-client/src/environments/environment.ts",
+                  "with": "examples/example/child-process-client/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "example-child-process-client:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "example-child-process-client:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "examples/example/child-process-client/**/*.ts"
+            ]
+          }
         }
       }
     }
@@ -1005,5 +1115,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "example-node"
 }

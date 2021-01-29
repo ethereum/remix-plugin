@@ -23,11 +23,10 @@
       "@remixproject/plugin": ["packages/plugin/core/src/index.ts"],
       "@remixproject/plugin/ws": ["packages/plugin/ws/src/index.ts"],
       "@remixproject/plugin-webview": ["packages/plugin/webview/src/index.ts"],
-      "@remixproject/plugin-webworker": [
-        "packages/plugin/webworker/src/index.ts"
-      ],
+      "@remixproject/plugin-webworker": ["packages/plugin/webworker/src/index.ts"],
       "@remixproject/plugin-theia": ["packages/plugin/theia/src/index.ts"],
-      "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"]
+      "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"],
+      "@remixproject/engine-node": ["packages/engine/node/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

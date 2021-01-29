@@ -89,6 +89,12 @@
     },
     "engine-theia": {
       "tags": []
+    },
+    "example-node": {
+      "tags": []
+    },
+    "example-child-process-client": {
+      "tags": []
     }
   },
   "workspaceLayout": {
