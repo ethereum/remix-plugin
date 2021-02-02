@@ -3,7 +3,7 @@ import { API } from '@remixproject/plugin-utils'
 import { ITheme, Theme, ThemeUrls, themeProfile } from '@remixproject/plugin-api'
 import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
 
-interface ThemeOptions extends PluginOptions {
+export interface ThemeOptions extends PluginOptions {
   urls?: Partial<ThemeUrls>
 }
 

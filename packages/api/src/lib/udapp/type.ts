@@ -56,8 +56,9 @@ export interface VMAccount {
   privateKey: string
   balance: string
 }
+
 export interface UdappSettings {
   selectedAccount:string
   selectedEnvMode: 'vm' | 'injected' | 'web3'
-  netWorkEnvironment: string
+  networkEnvironment: string
 }
