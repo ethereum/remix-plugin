@@ -20,6 +20,15 @@ function absolutePath(path: string) {
   return result;
 }
 
+function relativePath(path) {
+    const root = workspace.workspaceFolders[0].uri.fsPath;
+    // vscode API will never get permission to WriteFile outside of its workspace directory
+    if (!root) {
+        return path;
+    }
+    return relative(root, path);;
+}
+
 export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
   constructor() {
     super(filSystemProfile);
@@ -71,12 +80,12 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async readdir(path: string): Promise<string[]> {
     const absPath = absolutePath(path);
     const uri = Uri.file(absPath);
-    return workspace.fs.readDirectory(uri).then(data => data.map(([path]) => path));
+    return workspace.fs.readDirectory(uri).then(data => data.map(([path]) => relativePath(path)));
   }
 
   async getCurrentFile() {
     const fileName = window.activeTextEditor ? window.activeTextEditor.document.fileName : undefined;
-    return fileName;
+    return relativePath(fileName);
   }
   // ------------------------------------------
   // Legacy API. To be removed.
