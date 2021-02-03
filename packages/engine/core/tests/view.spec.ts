@@ -1,4 +1,5 @@
-import { Engine, ViewPlugin, PluginManager, HostPlugin } from '../src'
+import { Engine, PluginManager } from '../src'
+import { HostPlugin, ViewPlugin } from '../../web/src'
 import { pluginManagerProfile } from '@remixproject/plugin-api'
 
 export class MockEngine extends Engine {
