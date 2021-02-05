@@ -24,11 +24,11 @@ app.get('/', (req: Request, res: Response) => {
 // listen to port
 app.listen(port, () => {
     console.log(`Listening at http://localhost:${port}/`)
+    const plugin = new ChildProcessPlugin({
+        name: 'child_process',
+        url: './dist/examples/example/plugin/child-process/main.js'
+    })
+    
+    engine.register(plugin)
+    manager.activatePlugin('child_process')
 })
-
-const plugin = new ChildProcessPlugin({
-    name: 'child_process',
-    url: `http://localhost:${port}/`
-})
-
-engine.register(plugin)

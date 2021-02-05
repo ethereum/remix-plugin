@@ -90,10 +90,10 @@
     "engine-theia": {
       "tags": []
     },
-    "example-node": {
+    "example-engine-node": {
       "tags": []
     },
-    "example-child-process-client": {
+    "example-plugin-child-process": {
       "tags": []
     }
   },
