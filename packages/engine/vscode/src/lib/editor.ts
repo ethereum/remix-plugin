@@ -46,9 +46,8 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
       const start: Position = new Position(position.start.line, position.start.column);
       const end: Position = new Position(position.end.line, position.end.column);
       const newDecoration = { range: new Range(start, end) };
-      const codeThemeColor: string = extractColor(themeColor);
       this.decoration = window.createTextEditorDecorationType({
-        backgroundColor: new ThemeColor(codeThemeColor),
+        backgroundColor: new ThemeColor('editor.wordHighlightStrongBackground'),
         isWholeLine: true,
       });
       this.decorations.push(this.decoration);
