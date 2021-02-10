@@ -1,33 +1,8 @@
 import { filSystemProfile, IFileSystem } from '@remixproject/plugin-api'
 import { MethodApi } from '@remixproject/plugin-utils'
-import { isAbsolute, join, resolve, relative } from 'path'
 import { window, workspace, Uri, commands } from 'vscode'
 import { CommandPlugin } from './command'
-
-function absolutePath(path: string) {
-  const root = workspace.workspaceFolders[0].uri.fsPath
-  // vscode API will never get permission to WriteFile outside of its workspace directory
-  if(!root) {
-    return path
-  }
-  if(path.startsWith(root)) {
-    path = relative(root, path)
-  }
-  const result = join(root, path)
-  if (!result.startsWith(root)) {
-    throw new Error(`Resolved path is should be inside the open workspace : "${root}". Got "${result}`)
-  }
-  return result
-}
-
-function relativePath(path) {
-    const root = workspace.workspaceFolders[0].uri.fsPath
-    // vscode API will never get permission to WriteFile outside of its workspace directory
-    if (!root) {
-        return path
-    }
-    return relative(root, path)
-}
+import { absolutePath, relativePath } from '../util/path'
 
 export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
   constructor() {
@@ -80,7 +55,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async readdir(path: string): Promise<string[]> {
     const absPath = absolutePath(path)
     const uri = Uri.file(absPath)
-    return workspace.fs.readDirectory(uri).then(data => data.map(([path]) => relativePath(path)))
+    return workspace.fs.readDirectory(uri).then(data => data.map(([path]) => path))
   }
 
   async getCurrentFile() {
