@@ -9,5 +9,6 @@ export interface IUdapp {
     getAccounts(): string[]
     createVMAccount(vmAccount: VMAccount): string
     getSettings(): UdappSettings
+    setEnvironmentMode(env: 'vm' | 'injected' | 'web3'): void
   }
 }
