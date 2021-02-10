@@ -36,7 +36,7 @@ export function getVscodeTheme(color: ColorTheme, urls: Partial<ThemeUrls> = {})
       xl: 1920
     },
     fontFamily: 'Segoe WPC,Segoe UI,sans-serif',
-    space: 5,
+    space: 1,
     url: urls[brightness]
   }
 }
