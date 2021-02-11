@@ -1,5 +1,5 @@
-import { PluginClient } from '@remixproject/plugin'
-import { listenEvent, callEvent } from '@remixproject/plugin-utils'
+import { PluginClient } from '../../core/src'
+import { listenEvent, callEvent } from '../../../utils/src'
 import { createClient } from '../src'
 
 declare const global  // Needed to mock fetch
