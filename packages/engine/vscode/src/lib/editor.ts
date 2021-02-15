@@ -2,6 +2,7 @@ import { editorProfile, IEditor, Annotation, HighlightPosition } from '@remixpro
 import { MethodApi } from '@remixproject/plugin-utils';
 import { window, Range, TextEditorDecorationType, Position, languages, DiagnosticCollection, Diagnostic, Uri, DiagnosticSeverity, TextEditor, ThemeColor } from "vscode";
 import { CommandPlugin, CommandOptions } from "./command";
+import { absolutePath } from '../util/path'
 
 function getEditor(filePath?: string): TextEditor {
   const editors = window.visibleTextEditors;
@@ -39,6 +40,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     this.decoration.dispose();
   }
   async highlight(position: HighlightPosition, filePath: string, themeColor: string): Promise<void> {
+    filePath = absolutePath(filePath)
     const editors = window.visibleTextEditors;
     // Parse `filePath` to ensure if a valid file path was supplied
     const editor = editors.find(editor => editor.document.uri.path === Uri.parse(filePath).path);
@@ -73,6 +75,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
     // This function should append to existing map
     // Ref: https://code.visualstudio.com/api/language-extensions/programmatic-language-features#provide-diagnostics
     // const fileUri = window.activeTextEditor ? window.activeTextEditor.document.uri : undefined; // TODO: we might want to supply path to addAnnotation function
+    filePath = absolutePath(filePath)
     const editor = getEditor(filePath);
     const canonicalFile: string = editor.document.uri.fsPath;
     const diagnostics: Diagnostic[] = [];
