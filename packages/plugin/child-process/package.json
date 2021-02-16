@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-child-process",
-  "version": "0.3.5",
+  "version": "0.3.8",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/child_process#readme",
   "repository": {
     "type": "git",
