@@ -7,3 +7,4 @@ export * from './lib/window';
 export * from './lib/filemanager';
 export * from './lib/editor';
 export * from './lib/terminal';
+export * from './lib/contentimport';
