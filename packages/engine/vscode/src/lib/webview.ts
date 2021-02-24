@@ -6,7 +6,7 @@ import { promises as fs, watch } from 'fs'
 import { get } from 'https'
 import { parse as parseUrl } from 'url'
 
-interface WebviewOptions extends PluginConnectorOptions {
+export interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
   context: ExtensionContext
   relativeTo?: 'workspace' | 'extension'
