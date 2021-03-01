@@ -10,12 +10,12 @@ export function getOpenedTextEditor() {
 
 export function getTextEditorWithDocumentType(type: string) {
   const editors: TextEditor[] = window.visibleTextEditors;
-  const fileeditor: TextEditor = editors.find(
+  const fileEditor: TextEditor = editors.find(
     (editor) =>
       editor.document &&
       editor.document.uri &&
       editor.document.uri.scheme &&
       editor.document.uri.scheme == type
   );
-  return fileeditor;
+  return fileEditor;
 }
