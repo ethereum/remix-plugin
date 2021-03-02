@@ -177,7 +177,6 @@ async function getWebviewContent(url: string, profile: Profile, options: Webview
             // Else extension -> webview
             pframe.contentWindow.postMessage(event.data, '${serverUri}');
         } else {
-            console.log("WEBVIEW -> EXT", event)
             // If iframe -> webview
             if(event.data.action == 'keydown'){
                 // incoming keyboard event
