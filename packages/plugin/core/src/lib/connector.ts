@@ -43,7 +43,7 @@ export function connectClient(connector: ClientConnector, client: PluginClient =
           isLoaded = true
           client.events.on('send', (msg: Message) => connector.send(msg))
           client.events.emit('loaded')
-          client.name = payload[0]
+          client.name = payload[0].name
         }
         // Send back the list of methods exposed by the plugin
         const message = {action: 'response', name, key, id, payload: client.methods} as const
