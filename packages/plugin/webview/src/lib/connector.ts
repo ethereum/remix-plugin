@@ -9,7 +9,7 @@ import {
   checkOrigin,
   isPluginMessage
 } from '@remixproject/plugin'
-import { RemixApi, Theme } from '@remixproject/plugin-api';
+import { IRemixApi, Theme } from '@remixproject/plugin-api';
 
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
@@ -103,7 +103,7 @@ export class WebviewConnector implements ClientConnector {
  */
 export const createClient = <
   P extends Api = any,
-  App extends ApiMap = RemixApi,
+  App extends ApiMap = Readonly<IRemixApi>,
   C extends PluginClient<P, App> = any
 >(client: C): C & PluginApi<App> => {
   const c = client as any || new PluginClient<P, App>()
