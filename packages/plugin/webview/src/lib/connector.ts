@@ -32,11 +32,6 @@ export class WebviewConnector implements ClientConnector {
 
   constructor(private options: PluginOptions<any>) {
     // @todo(#295) check if we can merge this statement in `this.isVscode = acquireVsCodeApi !== undefined`
-    if ('acquireVsCodeApi' in window) {
-      this.isVscode = true
-      this.source = window['acquireVsCodeApi']()
-      return
-    }
     try {
       this.isVscode = acquireTheiaApi !== undefined
       this.source = acquireTheiaApi()
@@ -73,12 +68,33 @@ export class WebviewConnector implements ClientConnector {
         if (isHandshake(event.data)) {
           this.origin = event.origin
           this.source = event.source as Window
+          if(event.data.payload[0] && event.data.payload[0].engine && event.data.payload[0].engine == 'vscode') this.forwardKeyBoardEvents()
         }
       }
       cb(event.data)
 
     }, false)
   }
+
+  // vscode specific, webview iframe requires forwarding of keyboard events
+  forwardKeyBoardEvents(){
+    document.addEventListener('keydown', e => {
+        const obj = {
+            altKey: e.altKey,
+            code: e.code,
+            ctrlKey: e.ctrlKey,
+            isComposing: e.isComposing,
+            key: e.key,
+            location: e.location,
+            metaKey: e.metaKey,
+            repeat: e.repeat,
+            shiftKey: e.shiftKey,
+            action: 'keydown'
+        }
+        window.parent.postMessage( obj, '*')
+    })
+  }
+
 }
 
 /**

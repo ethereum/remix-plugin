@@ -17,6 +17,7 @@ export interface PluginConnectorOptions extends PluginOptions {
   /** Usally used to reload the plugin on changes */
   devMode?: boolean
   transformUrl?: (profile: Profile & ExternalProfile) => string
+  engine?:string
 }
 
 
@@ -81,7 +82,7 @@ export abstract class PluginConnector extends Plugin {
       this.loaded = true
       let methods: string[];
       try {
-        methods = await this.callPluginMethod('handshake', [this.profile.name])
+        methods = await this.callPluginMethod('handshake', [{name: this.profile.name, engine: this.options?.engine}])
       } catch (err) {
         this.loaded = false
         throw err;
@@ -92,7 +93,7 @@ export abstract class PluginConnector extends Plugin {
       }
     } else {
       // If there is a broken connection we want send back the handshake to the plugin client
-      return this.callPluginMethod('handshake', [this.profile.name])
+      return this.callPluginMethod('handshake', [{name: this.profile.name, engine: this.options?.engine}])
     }
   }
 

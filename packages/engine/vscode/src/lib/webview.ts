@@ -21,6 +21,7 @@ export class WebviewPlugin extends PluginConnector {
 
   constructor(profile: Profile & ExternalProfile, options: WebviewOptions) {
     super(profile)
+    options.engine = 'vscode'
     this.setOptions(options)
   }
 
@@ -172,9 +173,7 @@ async function getWebviewContent(url: string, profile: Profile, options: Webview
       const pframe = document.createElement('iframe')
       // forward messages
       window.addEventListener('message', event => {
-        console.log("MESSAGE",event)
         if (event.origin.indexOf('vscode-webview:')>-1) {
-            console.log("EXT -> WEBVIEW", event, pframe, event.data)
             // Else extension -> webview
             pframe.contentWindow.postMessage(event.data, '${serverUri}');
         } else {
@@ -182,7 +181,6 @@ async function getWebviewContent(url: string, profile: Profile, options: Webview
             // If iframe -> webview
             if(event.data.action == 'keydown'){
                 // incoming keyboard event
-                console.log("incoming KEY", event)
                 window.dispatchEvent(new KeyboardEvent('keydown', event.data));
             }else{
                 // forward message to vscode extension
