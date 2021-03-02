@@ -1,6 +1,6 @@
 {
   "name": "remix-plugin",
-  "version": "0.3.8",
+  "version": "0.3.9-alpha.7",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
