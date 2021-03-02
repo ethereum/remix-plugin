@@ -1,8 +1,9 @@
 import { filSystemProfile, IFileSystem } from '@remixproject/plugin-api'
 import { MethodApi } from '@remixproject/plugin-utils'
-import { window, workspace, Uri, commands } from 'vscode'
+import { window, workspace, Uri, commands, ViewColumn } from 'vscode'
 import { CommandPlugin } from './command'
 import { absolutePath, relativePath } from '../util/path'
+import { getOpenedTextEditor } from '../util/editor'
 
 export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileSystem> {
   constructor() {
@@ -12,7 +13,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async open(path: string): Promise<void> {
     const absPath = absolutePath(path)
     const uri = Uri.file(absPath)
-    return commands.executeCommand('vscode.open', uri)
+    return commands.executeCommand('vscode.open', uri, { viewColumn: ( getOpenedTextEditor()?.viewColumn || ViewColumn.One ) })
   }
   /** Set the content of a specific file */
   async writeFile(path: string, data: string): Promise<void> {
@@ -59,7 +60,8 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   }
 
   async getCurrentFile() {
-    const fileName = window.activeTextEditor ? window.activeTextEditor.document.fileName : undefined
+    const fileName = (getOpenedTextEditor()?.document?.fileName || undefined)
+    if(!fileName) throw new Error("No current file found.")
     return relativePath(fileName)
   }
   // ------------------------------------------
