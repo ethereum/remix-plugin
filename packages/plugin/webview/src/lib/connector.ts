@@ -68,7 +68,7 @@ export class WebviewConnector implements ClientConnector {
         if (isHandshake(event.data)) {
           this.origin = event.origin
           this.source = event.source as Window
-          if(event.data.payload[0] && event.data.payload[0].engine && event.data.payload[0].engine == 'vscode') this.forwardKeyBoardEvents()
+          if(event.data.payload[1] && event.data.payload[1] == 'vscode') this.forwardKeyBoardEvents()
         }
       }
       cb(event.data)
