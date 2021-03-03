@@ -155,7 +155,7 @@ async function listenOnThemeChanged(client: PluginClient) {
   // If there is a url in the theme, use it
   const setLink = (theme: Theme) => {
     if (theme.url) {
-      getLink().setAttribute('href', theme.url)
+      getLink().setAttribute('href', theme.url.replace(/^http:/,"").replace(/^https:/,""))
       document.documentElement.style.setProperty('--theme', theme.quality)
     }
   }
