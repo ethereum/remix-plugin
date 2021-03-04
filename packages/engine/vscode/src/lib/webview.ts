@@ -3,8 +3,8 @@ import { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
 import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable, workspace, env } from 'vscode'
 import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
-import { get } from 'https'
 import { parse as parseUrl } from 'url'
+
 
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
@@ -44,6 +44,13 @@ export class WebviewPlugin extends PluginConnector {
     } else {
       throw new Error(`WebviewPlugin "${this.name}" `)
     }
+  }
+
+  async getMessage(message: Message) {
+    if(message.action == 'emit' && message.payload.href){
+      env.openExternal(Uri.parse(message.payload.href))
+    }else
+    super.getMessage(message)
   }
 
   protected disconnect(): void {

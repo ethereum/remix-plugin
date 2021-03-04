@@ -68,7 +68,7 @@ export class WebviewConnector implements ClientConnector {
         if (isHandshake(event.data)) {
           this.origin = event.origin
           this.source = event.source as Window
-          if(event.data.payload[1] && event.data.payload[1] == 'vscode') this.forwardKeyBoardEvents()
+          if(event.data.payload[1] && event.data.payload[1] == 'vscode') this.forwardEvents()
         }
       }
       cb(event.data)
@@ -76,8 +76,8 @@ export class WebviewConnector implements ClientConnector {
     }, false)
   }
 
-  // vscode specific, webview iframe requires forwarding of keyboard events
-  forwardKeyBoardEvents(){
+  // vscode specific, webview iframe requires forwarding of keyboard events & links clicked 
+  forwardEvents(){
     document.addEventListener('keydown', e => {
         const obj = {
             altKey: e.altKey,
@@ -93,8 +93,22 @@ export class WebviewConnector implements ClientConnector {
         }
         window.parent.postMessage( obj, '*')
     })
+    document.body.onclick = function (e:any) {
+      if (e.target && e.target.tagName && e.target.tagName.toLowerCase() == 'a') {
+          const href = e.target.getAttribute('href');
+          if (href != '#') {
+              window.parent.postMessage({
+                  action: 'emit',
+                  payload: {
+                      href: href,
+                  },
+              }, '*');
+              return false;
+          }
+      }
+      return true;
+    };
   }
-
 }
 
 /**
