@@ -94,8 +94,9 @@ export class WebviewConnector implements ClientConnector {
         window.parent.postMessage( obj, '*')
     })
     document.body.onclick = function (e:any) {
-      if (e.target && e.target.tagName && e.target.tagName.toLowerCase() == 'a') {
-          const href = e.target.getAttribute('href');
+      const closest = e.target?.closest("a");
+      if (closest) {
+          const href = closest.getAttribute('href');
           if (href != '#') {
               window.parent.postMessage({
                   action: 'emit',
