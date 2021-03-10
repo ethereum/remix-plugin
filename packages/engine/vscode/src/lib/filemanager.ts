@@ -41,7 +41,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async rename(oldPath: string, newPath: string): Promise<void> {
     const source = Uri.file(absolutePath(oldPath))
     const target = Uri.file(absolutePath(newPath))
-    window.showInformationMessage(this.currentRequest.from + ' is renaming ' + path)
+    window.showInformationMessage(this.currentRequest.from + ' is renaming ' + oldPath + ' to ' + newPath)
     return workspace.fs.rename(source, target)
   }
   /** Upsert a file with the content of the source file */
