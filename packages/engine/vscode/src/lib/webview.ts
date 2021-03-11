@@ -1,10 +1,10 @@
 import { PluginConnector, PluginConnectorOptions} from '@remixproject/engine'
 import { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
-import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable, workspace } from 'vscode'
+import { ExtensionContext, ViewColumn, Webview, WebviewPanel, window, Uri, Disposable, workspace, env } from 'vscode'
 import { join, isAbsolute, parse as parsePath } from 'path'
 import { promises as fs, watch } from 'fs'
-import { get } from 'https'
 import { parse as parseUrl } from 'url'
+
 
 interface WebviewOptions extends PluginConnectorOptions {
   /** Extension Path */
@@ -21,6 +21,7 @@ export class WebviewPlugin extends PluginConnector {
 
   constructor(profile: Profile & ExternalProfile, options: WebviewOptions) {
     super(profile)
+    options.engine = 'vscode'
     this.setOptions(options)
   }
 
@@ -32,9 +33,9 @@ export class WebviewPlugin extends PluginConnector {
     this.panel?.webview.postMessage(message)
   }
 
-  protected connect(url: string): void {
+  protected async connect(url: string): Promise<void> {
     if (this.options.context) {
-      this.panel = createWebview(this.profile, url, this.options)
+      this.panel = await createWebview(this.profile, url, this.options)
       this.listeners = [
         this.panel.webview.onDidReceiveMessage(msg => this.getMessage(msg)),
         this.panel.onDidDispose(_ => this.call('manager', 'deactivatePlugin', this.name)),
@@ -43,6 +44,13 @@ export class WebviewPlugin extends PluginConnector {
     } else {
       throw new Error(`WebviewPlugin "${this.name}" `)
     }
+  }
+
+  async getMessage(message: Message) {
+    if(message.action == 'emit' && message.payload.href){
+      env.openExternal(Uri.parse(message.payload.href))
+    }else
+    super.getMessage(message)
   }
 
   protected disconnect(): void {
@@ -55,14 +63,13 @@ function isHttpSource(protocol: string) {
   return protocol === 'https:' || protocol === 'http:'
 }
 
-
 /** Create a webview */
-export function createWebview(profile: Profile, url: string, options: WebviewOptions) {
+export async function createWebview(profile: Profile, url: string, options: WebviewOptions) {
   const { protocol, path } = parseUrl(url)
   const isRemote = isHttpSource(protocol)
 
   if (isRemote) {
-    return remoteHtml(url, profile, options)
+    return await getWebviewContent(url, profile, options)
   } else {
     const relativeTo = options.relativeTo || 'extension';
     let fullPath: string;
@@ -133,59 +140,68 @@ async function setLocalHtml(webview: Webview, baseUrl: string) {
   webview.html = html.replace(matchLinks, toUri)
 }
 
-
-
-
-////////////////
+///////////////
 // REMOTE URL //
-////////////////
-/** Create panel webview based on remote HTML source */
-function remoteHtml(url: string, profile: Profile, options: WebviewOptions) {
-  const { ext } = parsePath(url)
-  const baseUrl = ext === '.html' ? parsePath(url).dir : url
+///////////////
+async function getWebviewContent(url: string, profile: Profile, options: WebviewOptions) {
+  // Use asExternalUri to get the URI for the web server
+  const uri = Uri.parse(url);
+  const serverUri = await env.asExternalUri(uri);
+
+  // Create the webview
   const panel = window.createWebviewPanel(
     profile.name,
     profile.displayName || profile.name,
     options.column || window.activeTextEditor?.viewColumn || ViewColumn.One,
-    { enableScripts: true }
-  )
-  setRemoteHtml(panel.webview, baseUrl)
-  return panel
-}
-
-
-
-/** Fetch remote ressource with http */
-function fetch(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    get(url, res => {
-      let text = ''
-      res.on('data', data => text += data)
-      res.on('end', _ => resolve(text))
-      res.on('error', err => reject(err))
-    })
-  })
-}
-
-
-/** Get code from remote source */
-async function setRemoteHtml(webview: Webview, baseUrl: string) {
-  const matchLinks = /(href|src)="([^"]*)"/g
-  const index = `${baseUrl}/index.html`
-
-
-  // Vscode requires URI format from the extension root to work
-  const toRemoteUrl = (original: any, prefix: 'href' | 'src', link: string) => {
-    // For: <base href="#" /> && remote url : <link href="https://cdn..."/>
-    const isRemote = isHttpSource(parseUrl(link).protocol)
-    if (link === '#' || isRemote) {
-      return original
+    {
+      enableScripts: true
     }
-    // For scripts & links
-    const path = join(baseUrl, link)
-    return `${prefix}="${path}"`
-  }
+  );
 
-  const html = await fetch(index)
-  webview.html = html.replace(matchLinks, toRemoteUrl)
+  const cspSource = panel.webview.cspSource;
+  const content = {
+    'default-src': `none 'unsafe-inline'`,
+    'frame-src': `${serverUri} ${cspSource} https`,
+    'img-src': `${cspSource} https:`,
+    'script-src': `${cspSource} ${serverUri} 'unsafe-inline'`,
+    'style-src': `${cspSource} ${serverUri} 'unsafe-inline'`,
+  };
+  const contentText = Object.entries(content).map(([key, value]) => `${key} ${value}`).join(';')
+  panel.webview.html = `
+    <!DOCTYPE html>
+    <head>
+      <meta http-equiv="Content-Security-Policy" content="${contentText}" />
+    </head>
+    <body  style='padding:0px; position:absolute; width:100%; height:100%;'>
+    </body>
+
+    <script>
+      const vscode = acquireVsCodeApi();
+      const pframe = document.createElement('iframe')
+      // forward messages
+      window.addEventListener('message', event => {
+        if (event.origin.indexOf('vscode-webview:')>-1) {
+            // Else extension -> webview
+            pframe.contentWindow.postMessage(event.data, '${serverUri}');
+        } else {
+            // If iframe -> webview
+            if(event.data.action == 'keydown'){
+                // incoming keyboard event
+                window.dispatchEvent(new KeyboardEvent('keydown', event.data));
+            }else{
+                // forward message to vscode extension
+                vscode.postMessage(event.data)
+            }
+        }
+      });
+      
+      pframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-downloads allow-forms allow-top-navigation')
+      pframe.setAttribute('seamless', 'true')
+      pframe.src = '${serverUri}?r=${Math.random()}'
+      pframe.setAttribute('id', 'plugin-${profile.name}')
+      document.body.appendChild(pframe);
+      pframe.setAttribute('style', 'height: 100%; width: 100%; border: 0px; display: block;')
+    </script>
+    </html>`;
+  return panel
 }

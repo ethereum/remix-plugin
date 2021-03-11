@@ -2,6 +2,7 @@ import { join, relative } from 'path'
 import { workspace, } from 'vscode'
 
 export function absolutePath(path: string) {
+  path = path.replace(/^\/browser\//,"").replace(/^browser\//,"")
   const root = workspace.workspaceFolders[0].uri.fsPath
   // vscode API will never get permission to WriteFile outside of its workspace directory
   if(!root) {
