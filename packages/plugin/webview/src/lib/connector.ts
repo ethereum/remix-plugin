@@ -9,7 +9,7 @@ import {
   checkOrigin,
   isPluginMessage
 } from '@remixproject/plugin'
-import { RemixApi, Theme } from '@remixproject/plugin-api';
+import { IRemixApi, Theme } from '@remixproject/plugin-api';
 
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
@@ -32,11 +32,6 @@ export class WebviewConnector implements ClientConnector {
 
   constructor(private options: PluginOptions<any>) {
     // @todo(#295) check if we can merge this statement in `this.isVscode = acquireVsCodeApi !== undefined`
-    if ('acquireVsCodeApi' in window) {
-      this.isVscode = true
-      this.source = window['acquireVsCodeApi']()
-      return
-    }
     try {
       this.isVscode = acquireTheiaApi !== undefined
       this.source = acquireTheiaApi()
@@ -73,11 +68,47 @@ export class WebviewConnector implements ClientConnector {
         if (isHandshake(event.data)) {
           this.origin = event.origin
           this.source = event.source as Window
+          if(event.data.payload[1] && event.data.payload[1] == 'vscode') this.forwardEvents()
         }
       }
       cb(event.data)
 
     }, false)
+  }
+
+  // vscode specific, webview iframe requires forwarding of keyboard events & links clicked 
+  forwardEvents(){
+    document.addEventListener('keydown', e => {
+        const obj = {
+            altKey: e.altKey,
+            code: e.code,
+            ctrlKey: e.ctrlKey,
+            isComposing: e.isComposing,
+            key: e.key,
+            location: e.location,
+            metaKey: e.metaKey,
+            repeat: e.repeat,
+            shiftKey: e.shiftKey,
+            action: 'keydown'
+        }
+        window.parent.postMessage( obj, '*')
+    })
+    document.body.onclick = function (e:any) {
+      const closest = e.target?.closest("a");
+      if (closest) {
+          const href = closest.getAttribute('href');
+          if (href != '#') {
+              window.parent.postMessage({
+                  action: 'emit',
+                  payload: {
+                      href: href,
+                  },
+              }, '*');
+              return false;
+          }
+      }
+      return true;
+    };
   }
 }
 
@@ -87,7 +118,7 @@ export class WebviewConnector implements ClientConnector {
  */
 export const createClient = <
   P extends Api = any,
-  App extends ApiMap = RemixApi,
+  App extends ApiMap = Readonly<IRemixApi>,
   C extends PluginClient<P, App> = any
 >(client: C): C & PluginApi<App> => {
   const c = client as any || new PluginClient<P, App>()
@@ -139,7 +170,7 @@ async function listenOnThemeChanged(client: PluginClient) {
   // If there is a url in the theme, use it
   const setLink = (theme: Theme) => {
     if (theme.url) {
-      getLink().setAttribute('href', theme.url)
+      getLink().setAttribute('href', theme.url.replace(/^http:/,"").replace(/^https:/,""))
       document.documentElement.style.setProperty('--theme', theme.quality)
     }
   }
