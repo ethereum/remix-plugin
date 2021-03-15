@@ -14,6 +14,7 @@ export interface ICompiler extends Api {
     getCompilationResult(): lastCompilationResult
     compile(fileName: string): void
     setCompilerConfig(settings: CondensedCompilationInput): void
+    getCompilerConfig(): CondensedCompilationInput
     compileWithParameters(targets: SourcesInput, settings: CondensedCompilationInput): lastCompilationResult
   }
 }

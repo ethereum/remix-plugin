@@ -12,6 +12,7 @@ export interface CondensedCompilationInput {
   /** e.g: 0.6.8+commit.0bbfe453 */
   version: string
   evmVersion?: 'istanbul' | 'petersburg' | 'constantinople' | 'byzantium' | 'spuriousDragon' | 'tangerineWhistle' | 'homestead'
+  runs?: number
 }
 
 /////////////
