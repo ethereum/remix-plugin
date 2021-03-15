@@ -187,7 +187,8 @@ async function getWebviewContent(url: string, profile: Profile, options: Webview
             // If iframe -> webview
             if(event.data.action == 'keydown'){
                 // incoming keyboard event
-                window.dispatchEvent(new KeyboardEvent('keydown', event.data));
+                if(navigator.platform.toLowerCase().indexOf('mac') === 0)
+                  window.dispatchEvent(new KeyboardEvent('keydown', event.data));
             }else{
                 // forward message to vscode extension
                 vscode.postMessage(event.data)
