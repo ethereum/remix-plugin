@@ -156,21 +156,25 @@ function applyTheme(theme: Theme) {
 
 /** Start listening on theme changed */
 async function listenOnThemeChanged(client: PluginClient) {
-  let cssLink: HTMLLinkElement;
+  let cssHttpLink: HTMLLinkElement;
+  let cssHttpsLink: HTMLLinkElement;
   // Memorized the css link but only create it when needed
-  const getLink = () => {
-    if (!cssLink) {
-      cssLink = document.createElement('link')
-      cssLink.setAttribute('rel', 'stylesheet')
-      document.head.prepend(cssLink)
+  const getLink = (element) => {
+    if (!element) {
+      element = document.createElement('link')
+      element.setAttribute('rel', 'stylesheet')
+      document.head.prepend(element)
     }
-    return cssLink;
+    return element;
   }
 
   // If there is a url in the theme, use it
   const setLink = (theme: Theme) => {
     if (theme.url) {
-      getLink().setAttribute('href', theme.url.replace(/^http:/,"").replace(/^https:/,""))
+      const url = theme.url.replace(/^http:/, "protocol:").replace(/^https:/, "protocol:");
+      console.log("URL", url, url.replace(/^protocol:/, "https:"), url.replace(/^protocol:/, "http:"))
+      getLink(cssHttpLink).setAttribute('href', url.replace(/^protocol:/, "http:"));
+      getLink(cssHttpsLink).setAttribute('href', url.replace(/^protocol:/, "https:"));
       document.documentElement.style.setProperty('--theme', theme.quality)
     }
   }
@@ -186,6 +190,6 @@ async function listenOnThemeChanged(client: PluginClient) {
     setLink(theme);
     applyTheme(theme);
   })
-  return cssLink
+  return cssHttpsLink
 }
 
