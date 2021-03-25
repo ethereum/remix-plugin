@@ -1,34 +1,65 @@
-import type { Message, Api, ApiMap } from '@remixproject/plugin-utils'
-import { PluginClient, ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin'
-import { IRemixApi } from '@remixproject/plugin-api'
-
+import {
+  Message,
+  Api,
+  ApiMap,
+  getMethodPath,
+} from '@remixproject/plugin-utils';
+import {
+  PluginClient,
+  ClientConnector,
+  connectClient,
+  applyApi,
+  Client,
+  isHandshake,
+} from '@remixproject/plugin';
+import { IRemixApi } from '@remixproject/plugin-api';
 
 export interface WS {
-  send(data: string): void
-  on(type: 'message', cb: (event: string) => any): this
+  send(data: string): void;
+  on(type: 'message', cb: (event: string) => any): this;
 }
 
 /**
  * This Websocket connector works with the library `ws`
  */
 export class WebsocketConnector implements ClientConnector {
-
+  private client: PluginClient;
   constructor(private websocket: WS) {}
+
+  setClient(client: PluginClient) {
+    this.client = client;
+  }
 
   /** Send a message to the engine */
   send(message: Partial<Message>) {
-    this.websocket.send(JSON.stringify(message))
+    this.websocket.send(JSON.stringify(message));
   }
 
-  /** Get messae from the engine */
+  /** Get message from the engine */
   on(cb: (message: Partial<Message>) => void) {
-    this.websocket.on('message', (event) => { 
+    this.websocket.on('message', (event) => {
       try {
-        cb(JSON.parse(event))
+        const parsedEvent = JSON.parse(event);
+        if (!isHandshake(parsedEvent)) {
+          if (
+            parsedEvent.action &&
+            (parsedEvent.action === 'request' || parsedEvent.action === 'call')
+          ) {
+            const path =
+              parsedEvent.requestInfo && parsedEvent.requestInfo.path;
+            const method = getMethodPath(parsedEvent.key, path);
+            if (this.client.methods && !this.client.methods.includes(method)) {
+              throw new Error(
+                `${method} is not in the list of allowed methods.`
+              );
+            }
+          }
+        }
+        cb(JSON.parse(event));
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
-     })
+    });
   }
 }
 
@@ -62,9 +93,14 @@ export class WebsocketConnector implements ClientConnector {
 export const createClient = <
   P extends Api,
   App extends ApiMap = Readonly<IRemixApi>
->(websocket: WS, client: PluginClient<P, App> = new PluginClient()): Client<P, App> => {
-  const c = client as any
-  connectClient(new WebsocketConnector(websocket), c)
-  applyApi(c)
-  return c
-}
+>(
+  websocket: WS,
+  client: PluginClient<P, App> = new PluginClient()
+): Client<P, App> => {
+  const c = client as any;
+  const websocketConnector:WebsocketConnector = new WebsocketConnector(websocket)
+  connectClient(websocketConnector, c);
+  applyApi(c);
+  websocketConnector.setClient(c)
+  return c;
+};
