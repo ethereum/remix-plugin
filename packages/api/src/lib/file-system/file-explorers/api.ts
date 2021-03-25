@@ -1,5 +1,4 @@
 import { StatusEvents } from '@remixproject/plugin-utils'
-
 export interface IFileExplorer {
     events: {
         setWorkspace: (workspace:any) => void
