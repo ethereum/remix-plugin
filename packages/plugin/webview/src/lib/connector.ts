@@ -172,7 +172,6 @@ async function listenOnThemeChanged(client: PluginClient) {
   const setLink = (theme: Theme) => {
     if (theme.url) {
       const url = theme.url.replace(/^http:/, "protocol:").replace(/^https:/, "protocol:");
-      console.log("URL", url, url.replace(/^protocol:/, "https:"), url.replace(/^protocol:/, "http:"))
       getLink(cssHttpLink).setAttribute('href', url.replace(/^protocol:/, "http:"));
       getLink(cssHttpsLink).setAttribute('href', url.replace(/^protocol:/, "https:"));
       document.documentElement.style.setProperty('--theme', theme.quality)
