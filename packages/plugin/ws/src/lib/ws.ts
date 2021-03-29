@@ -22,7 +22,13 @@ export class WebsocketConnector implements ClientConnector {
 
   /** Get messae from the engine */
   on(cb: (message: Partial<Message>) => void) {
-    this.websocket.on('message', (event) => cb(JSON.parse(event)))
+    this.websocket.on('message', (event) => { 
+      try {
+        cb(JSON.parse(event))
+      } catch (e) {
+        console.error(e)
+      }
+     })
   }
 }
 
