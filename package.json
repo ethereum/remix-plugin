@@ -79,6 +79,7 @@
     "@remix-project/remix-url-resolver": "0.0.19",
     "axios": "^0.21.1",
     "ethereumjs-util": "^7.0.9",
+    "randombytes": "^2.1.0",
     "rxjs": "~6.5.5",
     "stream": "0.0.2",
     "zone.js": "^0.10.2"
