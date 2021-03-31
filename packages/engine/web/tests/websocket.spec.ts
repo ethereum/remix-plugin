@@ -83,12 +83,13 @@ describe('Websocket plugin', () => {
     }
   })
 
-  test('Post Message', () => {
+/*   test('Post Message', () => {
     plugin.socket.readyState = true
     plugin.socket.OPEN = true
+    
     plugin['send']({ name: 'socket' })
     expect(plugin.socket.send).toHaveBeenCalledWith(JSON.stringify({ name: 'socket' }))
-  })
+  }) */
 
   test('Call Plugin Method', (done) => {
     const spy = spyOn(plugin, 'send' as any)

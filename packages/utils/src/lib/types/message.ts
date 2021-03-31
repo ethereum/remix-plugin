@@ -23,4 +23,6 @@ export interface Message {
   payload: any
   requestInfo: PluginRequest
   error?: Error | string
+  signature?: string
+  verifier?: string
 }

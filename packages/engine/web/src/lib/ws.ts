@@ -1,5 +1,6 @@
 import type { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
 import { PluginConnector, PluginConnectorOptions } from '@remixproject/engine'
+import { privateToAddress, ecsign, toRpcSig, keccak256, toBuffer } from 'ethereumjs-util'
 
 export interface WebsocketOptions extends PluginConnectorOptions {
   /** Time (in ms) to wait before reconnection after connection closed */
@@ -7,6 +8,7 @@ export interface WebsocketOptions extends PluginConnectorOptions {
 }
 
 export class WebsocketPlugin extends PluginConnector {
+  private account: Buffer
   // Listener is needed to remove the listener
   private readonly listeners = {
     message: ['message', (e: MessageEvent) => this.getEvent(e), false] as const,
@@ -50,7 +52,11 @@ export class WebsocketPlugin extends PluginConnector {
     this.socket = new WebSocket(this.url)
     this.socket.addEventListener('open', async () => {
       this.socket.addEventListener(...this.listeners.message)
-      this.handshake()
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const randomBytes = require('randombytes');
+      this.account = randomBytes(32)
+      const address = privateToAddress(this.account)
+      this.handshake([address.toString('hex')])
     })
   }
 
@@ -58,6 +64,10 @@ export class WebsocketPlugin extends PluginConnector {
     if (this.socket.readyState !== this.socket.OPEN) {
       throw new Error('Websocket connection is not open yet')
     }
+    const verifier = `0x${parseInt(Date.now().toString(),16).toString()}`
+    const sign = ecsign(keccak256(toBuffer(verifier)), this.account)
+    message.verifier = verifier
+    message.signature = toRpcSig(sign.v, sign.r, sign.s)
     this.socket.send(JSON.stringify(message))
   }
 

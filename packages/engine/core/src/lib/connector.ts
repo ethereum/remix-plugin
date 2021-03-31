@@ -20,7 +20,6 @@ export interface PluginConnectorOptions extends PluginOptions {
   engine?:string
 }
 
-
 export abstract class PluginConnector extends Plugin {
   protected loaded: boolean
   protected id = 0
@@ -77,12 +76,12 @@ export abstract class PluginConnector extends Plugin {
   }
 
   /** Perform handshake with the client if not loaded yet */
-  protected async handshake() {
+  protected async handshake(handshakeSpecificPayload?: string[]) {
     if (!this.loaded) {
       this.loaded = true
       let methods: string[];
       try {
-        methods = await this.callPluginMethod('handshake', [this.profile.name, this.options?.engine])
+       methods = await this.callPluginMethod('handshake', [this.profile.name, this.options?.engine, ...handshakeSpecificPayload])
       } catch (err) {
         this.loaded = false
         throw err;
