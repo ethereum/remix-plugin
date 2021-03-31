@@ -1,7 +1,7 @@
 import type { Message, Api, ApiMap } from '@remixproject/plugin-utils'
 import { PluginClient, ClientConnector, connectClient, applyApi, Client } from '@remixproject/plugin'
 import { IRemixApi } from '@remixproject/plugin-api'
-import { ecrecover, fromRpcSig, toBuffer } from 'ethereumjs-util'
+import { ecrecover, fromRpcSig, keccak256, pubToAddress, toBuffer } from 'ethereumjs-util'
 
 
 export interface WS {
@@ -34,7 +34,7 @@ export class WebsocketConnector implements ClientConnector {
       }
       if (message.signature) {
         const sign = fromRpcSig(message.signature)
-        const address = ecrecover(toBuffer(message.verifier), sign.v, sign.r, sign.s).toString('hex')
+        const address = pubToAddress(ecrecover(keccak256(toBuffer(message.verifier)), sign.v, sign.r, sign.s)).toString('hex')
         if (address !== this.account) {
           const error = { action: message.action === 'request' ? 'response' : message.action, name: message.name, key: message.key, id: message.id, error: 'sender doesn\'t match' }
           return this.send(error)          
