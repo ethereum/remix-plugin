@@ -7,7 +7,7 @@ export interface IFileExplorer {
         createWorkspace: (workspace:any) => void
     } & StatusEvents
     methods: {
-        getCurrentWorkspace(): string
+        getCurrentWorkspace(): { name: string, isLocalhost: boolean }
         getWorkspaces(): string[]
         createWorkspace(name:string): void
         renameWorkspace(oldName:string, newName:string): void
