@@ -10,6 +10,7 @@ export interface Profile<T extends Api = any> {
   description?: string
   documentation?: string
   version?: string
+  kind?: string
 }
 
 export interface LocationProfile {
