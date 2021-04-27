@@ -5,7 +5,6 @@ export interface IVScodeExtAPI {
   } & StatusEvents
   methods: {
     // Priority
-    activate(): string
-    deploy(): string
+    exec(extName: string, cmdName: string, payload: Array<any>): string
   }
 }
