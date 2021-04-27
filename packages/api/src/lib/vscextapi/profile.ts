@@ -1,7 +1,7 @@
 import { IVScodeExtAPI } from './api'
 import { LibraryProfile } from '@remixproject/plugin-utils'
 
-export const gitProfile: LibraryProfile<IVScodeExtAPI> = {
+export const vscodeExtProfile: LibraryProfile<IVScodeExtAPI> = {
   name: 'vscextapi',
   methods: ['activate']
 }

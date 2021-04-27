@@ -1,4 +1,4 @@
-import type { Message, Api, ApiMap, PluginApi } from '@remixproject/plugin-utils'
+import type { Message, Api, ApiMap, PluginApi } from '@remixproject/plugin-utils';
 import {
   ClientConnector,
   connectClient,
@@ -8,7 +8,7 @@ import {
   PluginOptions,
   checkOrigin,
   isPluginMessage
-} from '@remixproject/plugin'
+} from '@remixproject/plugin';
 import { IRemixApi, Theme } from '@remixproject/plugin-api';
 import axios from 'axios'
 
@@ -16,7 +16,7 @@ import axios from 'axios'
 /** Transform camelCase (JS) text into kebab-case (CSS) */
 function toKebabCase(text: string) {
   return text.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-};
+}
 
 declare global {
   function acquireTheiaApi(): any;

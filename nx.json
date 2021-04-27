@@ -30,11 +30,11 @@
     },
     "api": {
       "tags": ["utils"],
-      "implicitDependency": ["utils"]
+      "implicitDependencies": ["utils"]
     },
     "engine-core": {
       "tags": ["engine"],
-      "implicitDependency": ["utils", "api"]
+      "implicitDependencies": ["utils", "api"]
     },
     "engine-node": {
       "tags": []
@@ -46,8 +46,7 @@
       "tags": []
     },
     "plugin-core": {
-      "tags": ["plugin"],
-      "implicitDependency": ["utils", "api"]
+      "tags": ["plugin"]
     },
     "plugin-iframe": {
       "tags": []
