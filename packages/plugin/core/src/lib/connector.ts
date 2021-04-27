@@ -69,9 +69,6 @@ export function connectClient(connector: ClientConnector, client: PluginClient =
         case 'request': {
           const path = requestInfo && requestInfo.path
           const method = getMethodPath(key, path)
-          if (!client.methods) {
-            throw new Error(`Client should define a list of methods to make available`)
-          }
           if (!client[method]) {
             throw new Error(`Method ${method} doesn't exist on plugin ${name}`)
           }

@@ -10,6 +10,7 @@ import {
   isPluginMessage
 } from '@remixproject/plugin'
 import { IRemixApi, Theme } from '@remixproject/plugin-api';
+import axios from 'axios'
 
 
 /** Transform camelCase (JS) text into kebab-case (CSS) */
@@ -167,10 +168,33 @@ async function listenOnThemeChanged(client: PluginClient) {
     return cssLink;
   }
 
+  const setAttribute = (url, backupUrl = null) => {
+    // there is no way to know if it will load unless it's loaded first
+    axios.get(url).then(() => {
+        getLink().setAttribute('href', url);
+    }).catch(() => {
+        if(backupUrl) getLink().setAttribute('href', backupUrl);
+    });
+  }
+
   // If there is a url in the theme, use it
   const setLink = (theme: Theme) => {
     if (theme.url) {
-      getLink().setAttribute('href', theme.url.replace(/^http:/,"").replace(/^https:/,""))
+      const url = theme.url.replace(/^http:/, "protocol:").replace(/^https:/, "protocol:");
+      const regexp = /^https:/;
+      const httpsUrl = url.replace(/^protocol:/, "https:");
+      const httpUrl = url.replace(/^protocol:/, "http:") 
+      
+      // if host is https, https will always work
+      // if host is http, but plugin is https, try both but first https, http will always fail if https css is not found
+      // if host is localhost, https plugins can load http resource but will throw error for https first
+      if (regexp.test(theme.url) || (!regexp.test(theme.url) && regexp.test(window.location.href))) {
+          setAttribute(httpsUrl, httpUrl);
+      }
+      // both are http load http, ie localhost 
+      if (!regexp.test(theme.url) && !regexp.test(window.location.href)) {
+          setAttribute(httpUrl);
+      }
       document.documentElement.style.setProperty('--theme', theme.quality)
     }
   }
