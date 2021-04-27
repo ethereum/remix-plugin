@@ -9,6 +9,7 @@ import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
 import { ISettings, settingsProfile } from './settings'
 import { gitProfile, IGitSystem } from './git';
+import { IVScodeExtAPI } from './vscextapi';
 import { IPluginManager, pluginManagerProfile } from './plugin-manager'
 
 export interface IRemixApi {
@@ -22,6 +23,7 @@ export interface IRemixApi {
   contentImport: IContentImport
   settings: ISettings
   theme: ITheme
+  vscodeExtAPI: IVScodeExtAPI
 }
 
 export type RemixApi = Readonly<IRemixApi>
