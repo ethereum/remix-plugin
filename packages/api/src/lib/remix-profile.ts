@@ -9,6 +9,7 @@ import { unitTestProfile, IUnitTesting } from './unit-testing'
 import { contentImportProfile, IContentImport } from './content-import'
 import { ISettings, settingsProfile } from './settings'
 import { gitProfile, IGitSystem } from './git';
+import { IVScodeExtAPI, vscodeExtProfile } from './vscextapi';
 import { IPluginManager, pluginManagerProfile } from './plugin-manager'
 
 export interface IRemixApi {
@@ -22,6 +23,7 @@ export interface IRemixApi {
   contentImport: IContentImport
   settings: ISettings
   theme: ITheme
+  vscodeExtAPI: IVScodeExtAPI
 }
 
 export type RemixApi = Readonly<IRemixApi>
@@ -38,6 +40,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   contentImport: contentImportProfile,
   settings: settingsProfile,
   theme: themeProfile,
+  vscodeExtAPI: vscodeExtProfile,
 })
 
 /** Profiles of all the remix's Native Plugins */
@@ -52,5 +55,6 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   udapp: udappProfile,
   contentImport: contentImportProfile,
   settings: settingsProfile,
-  theme: themeProfile
+  theme: themeProfile,
+  vscodeExtAPI: vscodeExtProfile,
 })
