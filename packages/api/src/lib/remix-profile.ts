@@ -10,14 +10,14 @@ import { contentImportProfile, IContentImport } from './content-import'
 import { ISettings, settingsProfile } from './settings'
 import { gitProfile, IGitSystem } from './git';
 import { IPluginManager, pluginManagerProfile } from './plugin-manager'
-import { fileExplorerProfile, IFileExplorer } from './file-system/file-explorers'
+import { filePanelProfile, IFilePanel } from './file-system/file-panel'
 import { dGitProfile, IDgitSystem } from './dgit'
 
 export interface IRemixApi {
   manager: IPluginManager,
   solidity: ICompiler
   fileManager: IFileSystem
-  fileExplorers: IFileExplorer
+  filePanel: IFilePanel
   dGitProvider: IDgitSystem
   solidityUnitTesting: IUnitTesting
   editor: IEditor
@@ -36,7 +36,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   solidity: { ...compilerProfile, name: 'solidity' } as Profile<ICompiler>,
   fileManager: { ...filSystemProfile, name: 'fileManager' } as Profile<IFileSystem>,
   dGitProvider: dGitProfile,
-  fileExplorers: fileExplorerProfile,
+  filePanel: filePanelProfile,
   solidityUnitTesting: { ...unitTestProfile, name: 'solidityUnitTesting' } as Profile<IUnitTesting>,
   editor: editorProfile,
   network: networkProfile,
@@ -53,6 +53,7 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   fileManager: { ...filSystemProfile, name: 'fileManager' } as Profile<IFileSystem>,
   git: { ...gitProfile, name: 'git' } as Profile<IGitSystem>,
   dGitProvider: dGitProfile,
+  filePanel: filePanelProfile,
   solidityUnitTesting: { ...unitTestProfile, name: 'solidityUnitTesting' } as Profile<IUnitTesting>,
   editor: editorProfile,
   network: networkProfile,

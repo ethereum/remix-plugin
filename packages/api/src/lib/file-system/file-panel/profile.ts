@@ -1,8 +1,8 @@
-import { IFileExplorer } from './api'
+import { IFilePanel as IFilePanel } from './api'
 import { LocationProfile, Profile } from '@remixproject/plugin-utils'
 
-export const fileExplorerProfile: Profile<IFileExplorer> & LocationProfile = {
-  name: "fileExplorers",
+export const filePanelProfile: Profile<IFilePanel> & LocationProfile = {
+  name: "filePanel",
   displayName: "File explorers",
   description: "Provides communication between remix file explorers and remix-plugin",
   location: "sidePanel",

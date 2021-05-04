@@ -1,5 +1,5 @@
 import { StatusEvents } from '@remixproject/plugin-utils'
-export interface IFileExplorer {
+export interface IFilePanel {
     events: {
         setWorkspace: (workspace:any) => void
         renameWorkspace: (workspace:any) => void
