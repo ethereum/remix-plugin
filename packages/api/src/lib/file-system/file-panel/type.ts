@@ -1,13 +1,10 @@
 export interface customAction {
-    id: 'customAction',
+    id: string,
     name: string,
-    type?: customActionType[],
-    path?: string[],
-    extension?: string[],
-    pattern?: string[]
+    type: customActionType[],
+    path: string[],
+    extension: string[],
+    pattern: string[]
 }
 
-export enum customActionType {
-    "file",
-    "folder"
-}
+export type customActionType = 'file' | 'folder'
