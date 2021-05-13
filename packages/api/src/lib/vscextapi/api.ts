@@ -4,6 +4,6 @@ export interface IVScodeExtAPI {
   events: {
   } & StatusEvents
   methods: {
-    executeCommand(extension: string, command: string, payload: Array<any>): any
+    executeCommand(extension: string, command: string, payload?: any[]): any
   }
 }
