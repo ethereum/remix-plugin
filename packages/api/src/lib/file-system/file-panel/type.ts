@@ -4,7 +4,8 @@ export interface customAction {
     type: customActionType[],
     path: string[],
     extension: string[],
-    pattern: string[]
+    pattern: string[],
+    sticky?: boolean
 }
 
 export type customActionType = 'file' | 'folder'
