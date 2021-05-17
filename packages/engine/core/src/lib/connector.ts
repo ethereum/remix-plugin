@@ -89,7 +89,7 @@ export abstract class PluginConnector extends Plugin {
       }
       if (methods) {
         this.profile.methods = methods
-        await this.call('manager', 'updateProfile', this.profile)
+        this.call('manager', 'updateProfile', this.profile)
       }
     } else {
       // If there is a broken connection we want send back the handshake to the plugin client
