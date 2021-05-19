@@ -13,6 +13,7 @@ import { IVScodeExtAPI, vscodeExtProfile } from './vscextapi';
 import { IPluginManager, pluginManagerProfile } from './plugin-manager'
 import { filePanelProfile, IFilePanel } from './file-system/file-panel'
 import { dGitProfile, IDgitSystem } from './dgit'
+import { ITerminal, terminalProfile } from './terminal'
 
 export interface IRemixApi {
   manager: IPluginManager,
@@ -28,6 +29,7 @@ export interface IRemixApi {
   settings: ISettings
   theme: ITheme
   vscodeExtAPI: IVScodeExtAPI
+  terminal: ITerminal
 }
 
 export type RemixApi = Readonly<IRemixApi>
@@ -47,6 +49,7 @@ export const remixApi: ProfileMap<RemixApi> = Object.freeze({
   settings: settingsProfile,
   theme: themeProfile,
   vscodeExtAPI: vscodeExtProfile,
+  terminal: terminalProfile
 })
 
 /** Profiles of all the remix's Native Plugins */
@@ -65,4 +68,5 @@ export const remixProfiles: ProfileMap<RemixApi> = Object.freeze({
   settings: settingsProfile,
   theme: themeProfile,
   vscodeExtAPI: vscodeExtProfile,
+  terminal: terminalProfile
 })
