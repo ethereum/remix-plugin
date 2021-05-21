@@ -9,7 +9,7 @@ export interface IFilePanel {
         customAction: (cmd: customAction) => void
     } & StatusEvents
     methods: {
-        getCurrentWorkspace(): { name: string, isLocalhost: boolean }
+        getCurrentWorkspace(): { name: string, isLocalhost: boolean, workSpacesPath: string }
         getWorkspaces(): string[]
         createWorkspace(name:string): void
         renameWorkspace(oldName:string, newName:string): void
