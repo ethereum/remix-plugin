@@ -1,6 +1,6 @@
 import { ProfileMap, Profile, ApiMap } from '@remixproject/plugin-utils'
 import { compilerProfile, ICompiler } from './compiler'
-import { filSystemProfile, IFileSystem } from './file-system'
+import { filSystemProfile, IFileSystem } from './file-system/file-manager'
 import { editorProfile, IEditor } from './editor'
 import { networkProfile, INetwork } from './network'
 import { udappProfile, IUdapp } from './udapp'

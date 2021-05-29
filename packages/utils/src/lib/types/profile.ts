@@ -5,6 +5,7 @@ export interface Profile<T extends Api = any> {
   name: string
   displayName?: string
   methods?: MethodKey<T>[]
+  events?: EventKey<T>[]
   permission?: boolean
   hash?: string
   description?: string
