@@ -179,21 +179,39 @@ async function getWebviewContent(url: string, profile: Profile, options: Webview
       const vscode = acquireVsCodeApi();
       const pframe = document.createElement('iframe')
       // forward messages
-      window.addEventListener('message', event => {
-        if (event.origin.indexOf('vscode-webview:')>-1) {
-            // Else extension -> webview
-            pframe.contentWindow.postMessage(event.data, '${serverUri}');
-        } else {
-            // If iframe -> webview
-            if(event.data.action == 'keydown'){
-                // incoming keyboard event
-                if(navigator.platform.toLowerCase().indexOf('mac') === 0)
-                  window.dispatchEvent(new KeyboardEvent('keydown', event.data));
-            }else{
-                // forward message to vscode extension
-                vscode.postMessage(event.data)
+
+        window.addEventListener('paste', function (evt) {
+            pframe.contentWindow.postMessage({action:"paste", data:evt.clipboardData.getData('text/plain')},'${serverUri}');
+        });
+
+        window.addEventListener('copy', function (evt) {
+            pframe.contentWindow.postMessage({action:"copy"},'${serverUri}');
+        });  
+
+        window.addEventListener('message', event => {
+            if (event.origin.indexOf('vscode-webview:')>-1) {
+                // Else extension -> webview
+                pframe.contentWindow.postMessage(event.data, '${serverUri}');
+            } else {
+                // If iframe -> webview
+                if(event.data.action == 'keydown'){
+                    // incoming keyboard event
+                    if(navigator.platform.toLowerCase().indexOf('mac') === 0)
+                        window.dispatchEvent(new KeyboardEvent('keydown', event.data));
+                }else if(event.data.action == 'copy'){
+                    // put data in clipboard
+                    if(navigator.platform.toLowerCase().indexOf('mac') === 0){
+                        navigator.permissions.query({name: "clipboard-write"}).then(result => {
+                            if (result.state == "granted" || result.state == "prompt") {
+                              navigator.clipboard.writeText(event.data.data)
+                            }
+                        });
+                    }  
+                }else{
+                    // forward message to vscode extension
+                    vscode.postMessage(event.data)
+                }
             }
-        }
       });
       
       pframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-downloads allow-forms allow-top-navigation')
