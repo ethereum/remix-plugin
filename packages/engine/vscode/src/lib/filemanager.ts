@@ -21,7 +21,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     const uri = Uri.file(absPath)
     const encoder = new TextEncoder()
     const uint8Array = encoder.encode(data)
-    window.showInformationMessage(this.currentRequest.from + ' is modifying ' + path)
+    this.logMessage(' is modifying ' + path)
     return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array))
   }
   /** Return the content of a specific file */
@@ -34,14 +34,14 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async remove(path: string): Promise<void> {
     const absPath = absolutePath(path)
     const uri = Uri.file(absPath)
-    window.showInformationMessage(this.currentRequest.from + ' is removing ' + path)
+    this.logMessage(' is removing ' + path)
     return workspace.fs.delete(uri)
   }
   /** Change the path of a file */
   async rename(oldPath: string, newPath: string): Promise<void> {
     const source = Uri.file(absolutePath(oldPath))
     const target = Uri.file(absolutePath(newPath))
-    window.showInformationMessage(this.currentRequest.from + ' is renaming ' + oldPath + ' to ' + newPath)
+    this.logMessage(' is renaming ' + oldPath + ' to ' + newPath)
     return workspace.fs.rename(source, target)
   }
   /** Upsert a file with the content of the source file */
@@ -53,7 +53,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   /** Create a directory */
   async mkdir(path: string): Promise<void> {
     const uri = Uri.file(absolutePath(path))
-    window.showInformationMessage(this.currentRequest.from + ' is creating ' + path)
+    this.logMessage(' is creating ' + path)
     return workspace.fs.createDirectory(uri)
   }
   /** Get the list of files in the directory */
@@ -67,6 +67,11 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     const fileName = (getOpenedTextEditor()?.document?.fileName || undefined)
     if(!fileName) throw new Error("No current file found.")
     return relativePath(fileName)
+  }
+
+  logMessage(message){
+    if(this.currentRequest && this.currentRequest.from)
+      window.showInformationMessage(this.currentRequest.from + message);
   }
   // ------------------------------------------
   // Legacy API. To be removed.
