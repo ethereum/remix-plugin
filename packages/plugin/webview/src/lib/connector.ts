@@ -16,7 +16,7 @@ import axios from 'axios'
 /** Transform camelCase (JS) text into kebab-case (CSS) */
 function toKebabCase(text: string) {
   return text.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-};
+}
 
 declare global {
   function acquireTheiaApi(): any;
@@ -60,6 +60,23 @@ export class WebviewConnector implements ClientConnector {
     window.addEventListener('message', async (event: MessageEvent) => {
       if (!event.source) return
       if (!event.data) return
+      // copy paste events from vscode
+      if (event.origin.indexOf('vscode-webview:') > -1) {
+        if (event.data.action && event.data.action === 'paste') {
+            this.pasteClipBoard(event);
+            return;
+        }
+        if (event.data.action && event.data.action === 'copy') {
+            const selection = document.getSelection();
+            const event = {
+                action: 'copy',
+                data: selection.toString()
+            }
+            window.parent.postMessage(event, '*')
+            return;
+        }
+      }
+      // plugin messages
       if (!isPluginMessage(event.data)) return
       // Support for iframe
       if (!this.isVscode) {
@@ -78,6 +95,28 @@ export class WebviewConnector implements ClientConnector {
   }
 
   // vscode specific, webview iframe requires forwarding of keyboard events & links clicked 
+  pasteClipBoard(event) {
+    this.insertAtCursor(document.activeElement, event.data.data);
+  }
+
+  insertAtCursor(element:any, value:any) {
+      const lastValue:any = element.value;
+      if (element.selectionStart || element.selectionStart == '0') {
+          element.value = element.value.substring(0, element.selectionStart)
+              + value
+              + element.value.substring(element.selectionEnd, element.value.length);
+      } else {
+          element.value += value;
+      }
+      // this takes care of triggering the change on React components
+      const event:any = new Event('input', { bubbles: true });
+      event.simulated = true;
+      const tracker:any = element._valueTracker;
+      if (tracker) {
+        tracker.setValue(lastValue);
+      }
+      element.dispatchEvent(event);
+  }
   forwardEvents(){
     document.addEventListener('keydown', e => {
         const obj = {
