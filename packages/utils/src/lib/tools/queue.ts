@@ -13,7 +13,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
     private isRunning: boolean
     private args: any[]
 
-    public method: string
+    public method:  Profile<T>['methods'][number]
     public timedout: boolean
     public canceled: boolean
     public finished: boolean
