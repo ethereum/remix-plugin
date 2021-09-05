@@ -10,7 +10,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
     private resolve: (value:unknown) => void
     private reject: (reason:any) => void
     private timer: any
-    private isRunning: boolean
+    private running: boolean
     private args: any[]
 
     public method:  Profile<T>['methods'][number]
@@ -29,7 +29,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
         this.timedout = false
         this.canceled = false
         this.finished = false
-        this.isRunning = false
+        this.running = false
         this.args = args
         this.options = options
     }
@@ -50,7 +50,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
         this.canceled = true
         clearTimeout(this.timer)
         this.reject(`[CANCEL] Canceled call ${this.method} from ${this.request.from}`)
-        if(this.isRunning)
+        if(this.running)
             this.letContinue()
     }
 
@@ -65,7 +65,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
             this.letContinue()
         }, this.options.queueTimeout || 10000)
 
-        this.isRunning = true
+        this.running = true
         this.setCurrentRequest(this.request)
         try{
             const result = await this.callMethod(this.method, this.args)
@@ -75,7 +75,7 @@ export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
             this.reject(err)
         }
         this.finished = true
-        this.isRunning = false
+        this.running = false
         clearTimeout(this.timer)
         this.letContinue();
     }
