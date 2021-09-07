@@ -1,3 +1,4 @@
+import { time, timeEnd } from 'console'
 import { Plugin } from '../src/lib/abstract'
 
 const profile = { name: 'mock', methods: ['mockMethod', 'slowMockMethod', 'slowMockMethodTwo','failingMockMethod'] }
@@ -27,18 +28,18 @@ class MockPlugin extends Plugin {
       reject('fail')
     })
   })
-  slowMockMethod = jest.fn((num:number | undefined) => {
+  slowMockMethod = jest.fn((num: any) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
-      }, num | 1000)
+      }, num || 1000)
     })
   })
-  slowMockMethodTwo = jest.fn((num:number | undefined) => {
+  slowMockMethodTwo = jest.fn((num:any) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
-      }, num | 1000)
+      }, num || 1000)
     })
   })
   onActivation = jest.fn()
@@ -108,6 +109,13 @@ describe('Abstract Plugin', () => {
       done()
     })
   });
+
+  test('addRequest should not timeout', async () => {
+    plugin.setOptions({ queueTimeout: 1000 })
+    const result = await plugin['addRequest']({ from: 'fake' }, 'slowMockMethod', [500])
+    expect(result).toBeTruthy()
+  });
+
 
   test('first addRequest should timeout, second one should succeed', async (done) => {
     plugin.setOptions({ queueTimeout: 10 })
@@ -209,5 +217,42 @@ describe('Abstract Plugin', () => {
       done()
     })
   })
+
+  test('one should timeout, one is canceled, and one succeeds', async (done) => {
+    plugin.setOptions({ queueTimeout: 500 })
+    setTimeout(() => {
+      plugin['cancelRequests']({ from: 'fake' }, 'slowMockMethod')
+    }, 200)
+    plugin['addRequest']({ from: 'fake' }, 'slowMockMethod', []).catch((err) => {
+      expect(err).toBe('[CANCEL] Canceled call slowMockMethod from fake')
+    })
+    plugin['addRequest']({ from: 'fake3' }, 'slowMockMethodTwo', [100]).then((x) => {
+      expect(x).toBeTruthy()
+    })
+    plugin['addRequest']({ from: 'fake2' }, 'slowMockMethod', [600]).catch((err) => {
+      expect(err).toBe('[TIMEOUT] Timeout for call slowMockMethod from fake2')
+      done()
+    })
+  });
+
+  test('one should timeout, one is canceled, and one succeeds, one fails', async (done) => {
+    plugin.setOptions({ queueTimeout: 500 })
+    plugin['addRequest']({ from: 'fake' }, 'failingMockMethod', []).catch((err) => {
+      expect(err).toBe('fail')
+    })
+    setTimeout(() => {
+      plugin['cancelRequests']({ from: 'fake' }, 'slowMockMethod')
+    }, 200)
+    plugin['addRequest']({ from: 'fake' }, 'slowMockMethod', []).catch((err) => {
+      expect(err).toBe('[CANCEL] Canceled call slowMockMethod from fake')
+    })
+    plugin['addRequest']({ from: 'fake3' }, 'slowMockMethodTwo', [100]).then((x) => {
+      expect(x).toBeTruthy()
+    })
+    plugin['addRequest']({ from: 'fake2' }, 'slowMockMethod', [600]).catch((err) => {
+      expect(err).toBe('[TIMEOUT] Timeout for call slowMockMethod from fake2')
+      done()
+    })
+  });
 
 })
