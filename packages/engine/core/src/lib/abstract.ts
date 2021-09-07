@@ -67,7 +67,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     this.options = { ...this.options, ...options }
   }
 
-  /** Call a method from this plugin */
+  /** Call a method on this plugin */
   protected callPluginMethod(key: string, args: any[]) {
     const path = this.currentRequest?.path
     const method = getMethodPath(key, path)
