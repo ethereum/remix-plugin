@@ -1,4 +1,3 @@
-import { time, timeEnd } from 'console'
 import { Plugin } from '../src/lib/abstract'
 
 const profile = { name: 'mock', methods: ['mockMethod', 'slowMockMethod', 'slowMockMethodTwo','failingMockMethod'] }
@@ -28,14 +27,14 @@ class MockPlugin extends Plugin {
       reject('fail')
     })
   })
-  slowMockMethod = jest.fn((num: any) => {
+  slowMockMethod = jest.fn((num: number) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
       }, num || 1000)
     })
   })
-  slowMockMethodTwo = jest.fn((num:any) => {
+  slowMockMethodTwo = jest.fn((num: number) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
