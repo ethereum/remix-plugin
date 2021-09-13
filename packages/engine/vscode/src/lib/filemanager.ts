@@ -69,6 +69,14 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     return relativePath(fileName)
   }
 
+  async closeFile() {
+    return null
+  }
+
+  async closeAllFiles() {
+    return null
+  }
+
   logMessage(message){
     if(this.currentRequest && this.currentRequest.from)
       window.showInformationMessage(this.currentRequest.from + message);
