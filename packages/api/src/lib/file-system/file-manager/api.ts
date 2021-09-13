@@ -30,6 +30,10 @@ export interface IFileSystem {
     remove(path: string): void
     /** Get the name of the file currently focused if any */
     getCurrentFile(): string
+    /** close all files */
+    closeAllFiles(): void
+    /** close a file */
+    closeFile(): void
     // Old API
     /** @deprecated Use readdir */
     getFolder(path: string): Folder
