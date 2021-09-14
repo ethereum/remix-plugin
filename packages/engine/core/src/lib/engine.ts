@@ -145,7 +145,7 @@ export class Engine {
   private async cancelMethod(caller: string, path: string, method: string) {
     const target = path.split('.').shift()
     if (!this.plugins[target]) {
-      throw new Error(`Cannot call ${target} from ${caller}, because ${target} is not registered`)
+      throw new Error(`Cannot cancel ${method} on ${target} from ${caller}, because ${target} is not registered`)
     }
 
     // Get latest version of the profiles
@@ -158,13 +158,7 @@ export class Engine {
     const isActive = await this.manager.isActive(target)
     
     if (!isActive) {
-      const managerCanActivate = await this.manager.canActivatePlugin(from, to, method)
-      const pluginCanActivate = await this.plugins[to.name]?.canActivate(to, method)
-      if (managerCanActivate && pluginCanActivate) {
-        await this.manager.toggleActive(target)
-      } else {
-        throw new Error(`${from.name} cannot cancel ${method} of ${target}, because ${target} is not activated yet`)
-      }
+        throw new Error(`${from.name} cannot cancel ${method} of ${target}, because ${target} is not activated`)
     }
 
     // Check if method is exposed

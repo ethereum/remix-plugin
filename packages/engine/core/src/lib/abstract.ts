@@ -18,7 +18,7 @@ import {
   createService,
   activateService,
   getMethodPath,
-  PluginQueue,
+  PluginQueueItem,
 } from '@remixproject/plugin-utils'
 
 export interface RequestParams {
@@ -36,7 +36,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   /** Give access to all the plugins registered by the engine */
   protected app: PluginApi<App>
   protected options: PluginOptions = {}
-  protected queue: PluginQueue[] = []
+  protected queue: PluginQueueItem[] = []
   // Lifecycle hooks
   onRegistration?(): void
   onActivation?(): void
@@ -95,7 +95,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
   /** Add a request to the list of current requests */
   protected addRequest(request: PluginRequest, method: Profile<T>['methods'][number], args: any[]) {
     return new Promise((resolve, reject) => {
-      const queue = new PluginQueue(resolve, reject, request, method, this.options, args)
+      const queue = new PluginQueueItem(resolve, reject, request, method, this.options, args)
       queue['setCurrentRequest'] = (request: PluginRequest) => this.setCurrentRequest(request)
       queue['callMethod'] = async (method: string, args: any[]) => this.callPluginMethod(method, args)
       queue['letContinue'] = () => this.letContinue()
@@ -221,7 +221,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     throw new Error(`Cannot use method "call" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
-  /** Call a method of another plugin */
+  /** Cancel a method of another plugin */
   async cancel<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
     name: Name,
     key: Key,

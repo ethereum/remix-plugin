@@ -6,7 +6,7 @@ import { Profile } from '../types/profile'
 import { Api } from '../types/api'
 import { PluginOptions } from '@remixproject/plugin-utils'
 
-export class PluginQueue<T extends Api = any> implements PluginQueueInterface {
+export class PluginQueueItem<T extends Api = any> implements PluginQueueInterface {
     private resolve: (value:unknown) => void
     private reject: (reason:any) => void
     private timer: any
