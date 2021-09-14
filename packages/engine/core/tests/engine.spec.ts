@@ -38,7 +38,7 @@ export class MockSolidity extends Plugin {
   })
   getCompilationResult = jest.fn()
   constructor() {
-    super({ ...compilerProfile, name: 'solidity', methods:['slowMockMethod'] })
+    super({ ...compilerProfile, name: 'solidity', methods:['slowMockMethod', ...compilerProfile.methods] })
   }
 }
 
