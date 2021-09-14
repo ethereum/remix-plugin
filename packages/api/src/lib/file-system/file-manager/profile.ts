@@ -22,5 +22,7 @@ export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
     "copyFile",
     "mkdir",
     "readdir",
+    "closeAllFiles",
+    "closeFile"
   ],
 };

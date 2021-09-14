@@ -11,12 +11,14 @@ import type {
   PluginApi,
   PluginBase,
   IPluginService,
+  PluginOptions,
 } from '@remixproject/plugin-utils'
 
-import { 
+import {
   createService,
   activateService,
   getMethodPath,
+  PluginQueueItem,
 } from '@remixproject/plugin-utils'
 
 export interface RequestParams {
@@ -25,18 +27,15 @@ export interface RequestParams {
   payload: any[]
 }
 
-export interface PluginOptions {
-  /** The time to wait for a call to be executed before going to next call in the queue */
-  queueTimeout?: number
-}
+
 
 export class Plugin<T extends Api = any, App extends ApiMap = any> implements PluginBase<T, App> {
   activateService: Record<string, () => Promise<any>> = {}
-  protected requestQueue: Array<() => Promise<any>> = []
   protected currentRequest: PluginRequest
   /** Give access to all the plugins registered by the engine */
   protected app: PluginApi<App>
   protected options: PluginOptions = {}
+  protected queue: PluginQueueItem[] = []
   // Lifecycle hooks
   onRegistration?(): void
   onActivation?(): void
@@ -67,7 +66,7 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     this.options = { ...this.options, ...options }
   }
 
-  /** Call a method from this plugin */
+  /** Call a method on this plugin */
   protected callPluginMethod(key: string, args: any[]) {
     const path = this.currentRequest?.path
     const method = getMethodPath(key, path)
@@ -77,48 +76,39 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     return this[method](...args)
   }
 
+  protected setCurrentRequest(request: PluginRequest) {
+    this.currentRequest = request
+  }
+
+  protected letContinue() {
+    delete this.currentRequest
+    this.queue = this.queue.filter((value) => {
+      return value.canceled === false && value.timedout === false && value.finished === false
+    })
+    const next = this.queue.find((value) => {
+      return value.canceled === false && value.timedout === false && value.finished === false
+    })
+    if (next) next.run()
+  }
+
   /** Add a request to the list of current requests */
   protected addRequest(request: PluginRequest, method: Profile<T>['methods'][number], args: any[]) {
     return new Promise((resolve, reject) => {
-      // Add a new request to the queue
-      this.requestQueue.push(async () => {
-        this.currentRequest = request
-        let timedout = false
-        const letcontinue = () => {
-          if (timedout) {
-            const { from } = this.currentRequest
-            const params = args.map(arg => JSON.stringify(arg)).join(', ')
-            const error = `[TIMED OUT]: Call to method "${method}" from "${from}" to plugin "${this.profile.name}" has timed out with arguments ${params}."`
-            reject(error)
-          }
-          // Remove current request and call next
-          delete this.currentRequest
-          this.requestQueue.shift()
-          if (this.requestQueue.length !== 0) this.requestQueue[0]()
-        }
+      const queue = new PluginQueueItem(resolve, reject, request, method, this.options, args)
+      queue['setCurrentRequest'] = (request: PluginRequest) => this.setCurrentRequest(request)
+      queue['callMethod'] = async (method: string, args: any[]) => this.callPluginMethod(method, args)
+      queue['letContinue'] = () => this.letContinue()
+      this.queue.push(queue)
+      if (this.queue.length === 1)
+        this.queue[0].run();
+    }
+    )
+  }
 
-        const ref = setTimeout(() => {
-          timedout = true
-          letcontinue()
-        }, this.options.queueTimeout || 10000)
-
-        try {
-          const result = await this.callPluginMethod(method, args)
-          delete this.currentRequest
-          if (timedout) return
-          resolve(result)
-        } catch (err) {
-          delete this.currentRequest
-          reject(err)
-        }
-        clearTimeout(ref)
-        letcontinue()
-      })
-      // If there is only one request waiting, call it
-      if (this.requestQueue.length === 1) {
-        this.requestQueue[0]()
-      }
-    })
+  protected cancelRequests(request: PluginRequest, method: Profile<T>['methods'][number]) {
+    for (const queue of this.queue) {
+      if (queue.request.from == request.from && (method ? queue.method == method : true)) queue.cancel()
+    }
   }
 
 
@@ -228,6 +218,14 @@ export class Plugin<T extends Api = any, App extends ApiMap = any> implements Pl
     ...payload: MethodParams<App[Name], Key>
   ): Promise<ReturnType<App[Name]['methods'][Key]>> {
     throw new Error(`Cannot use method "call" from plugin "${this.name}". It is not registered in the engine yet.`)
+  }
+
+  /** Cancel a method of another plugin */
+  async cancel<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
+    name: Name,
+    key: Key,
+  ): Promise<ReturnType<App[Name]['methods'][Key]>> {
+    throw new Error(`Cannot use method "cancel" from plugin "${this.name}". It is not registered in the engine yet.`)
   }
 
   /** Emit an event */

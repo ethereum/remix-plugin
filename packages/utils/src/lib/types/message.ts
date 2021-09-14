@@ -10,7 +10,7 @@ export interface PluginRequest {
   path?: string
 }
 
-type MessageActions = 'on' | 'off' | 'once' | 'call' | 'response' | 'emit'
+type MessageActions = 'on' | 'off' | 'once' | 'call' | 'response' | 'emit' | 'cancel'
 
 /** @deprecated Use `MessageAcitons` instead */
 type OldMessageActions = 'notification' | 'request' | 'response' | 'listen'

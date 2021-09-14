@@ -2,7 +2,7 @@ import type { IPluginService } from './service'
 import { EventCallback, MethodParams, MethodKey, EventKey, Api, ApiMap, EventParams } from './api'
 
 export interface PluginBase<T extends Api = any, App extends ApiMap = any> {
-  methods: string[]
+  methods: string[],
   activateService: Record<string, () => Promise<IPluginService>>
   /** Listen on an event from another plugin */
   on<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
@@ -30,6 +30,13 @@ export interface PluginBase<T extends Api = any, App extends ApiMap = any> {
     key: Key,
     ...payload: MethodParams<App[Name], Key>
   ): Promise<any>
+
+  /** Clear calls in queue of a plugin called by plugin */
+  cancel<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
+      name: Name,
+      key: Key,
+  ): void
+
   /** Emit an event */
   emit<Key extends EventKey<T>>(key: Key, ...payload: EventParams<T, Key>): void
 }

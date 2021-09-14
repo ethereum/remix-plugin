@@ -1,5 +1,5 @@
-import type { ExternalProfile, Profile, Message } from '@remixproject/plugin-utils'
-import { Plugin, PluginOptions } from './abstract'
+import type { ExternalProfile, Profile, Message, PluginOptions } from '@remixproject/plugin-utils'
+import { Plugin } from './abstract'
 
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
@@ -148,6 +148,10 @@ export abstract class PluginConnector extends Plugin {
           this.send({ ...message, action, payload, error })
         }
         break
+      }
+      case 'cancel': {
+        const payload = this.cancel(message.name, message.key)
+        break;
       }
       // Return result from exposed method
       case 'response': {
