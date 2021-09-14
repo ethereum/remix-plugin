@@ -236,6 +236,25 @@ describe('Plugin interaction', () => {
     }
   })
 
+  test('Plugin cannot cancel an unknown method on another plugin', async () => {
+    await manager.activatePlugin(['solidity', 'fileManager'])
+    try {
+      await fileManager.cancel('solidity', 'unknownMethod')
+    } catch (err) {
+      console.log(err.message)
+      expect(err.message).toBe('Cannot cancel "unknownMethod" of "solidity" from "fileManager", because "unknownMethod" is not exposed. Here is the list of exposed methods: "slowMockMethod","compile","getCompilationResult","canDeactivate"')
+    }
+  })
+
+  test('Plugin cannot cancel another plugin that is not activated without a method specified', async () => {
+    await manager.activatePlugin(['fileManager'])
+    try {
+      await fileManager.cancel('solidity', '')
+    } catch(err) {
+      expect(err.message).toBe('fileManager cannot cancel calls onsolidity, because solidity is not activated')
+    }
+  })
+
   test('Current Request has been updated during call', async () => {
     await manager.activatePlugin(['solidity', 'fileManager'])
     let _currentRequest: Plugin['currentRequest']

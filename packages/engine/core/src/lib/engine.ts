@@ -158,7 +158,7 @@ export class Engine {
     const isActive = await this.manager.isActive(target)
     
     if (!isActive) {
-        throw new Error(`${from.name} cannot cancel ${method} of ${target}, because ${target} is not activated`)
+        throw new Error(`${from.name} cannot cancel ${method?`${method} of `:'calls on'}${target}, because ${target} is not activated`)
     }
 
     // Check if method is exposed
