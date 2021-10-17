@@ -93,4 +93,7 @@ export class EditorPlugin extends CommandPlugin implements MethodApi<IEditor> {
   async clearAnnotations(): Promise<void> {
     return this.diagnosticCollection.clear();
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async gotoLine(line: number, col: number) { }
 }
