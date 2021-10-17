@@ -23,6 +23,8 @@ export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
     "mkdir",
     "readdir",
     "closeAllFiles",
-    "closeFile"
+    "closeFile",
+    "remove",
   ],
+  events: ['currentFileChanged', 'fileAdded', 'fileClosed', 'fileRemoved', 'fileRenamed', 'fileSaved', 'noFileSelected']
 };

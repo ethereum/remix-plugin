@@ -2,7 +2,7 @@ import { HighlightPosition, Annotation } from './type'
 import { StatusEvents } from '@remixproject/plugin-utils'
 
 export interface IEditor {
-  events: {} & StatusEvents
+  events: StatusEvents
   methods: {
     highlight(
       position: HighlightPosition,
@@ -13,6 +13,7 @@ export interface IEditor {
     discardHighlightAt(line: number, filePath: string): void
     addAnnotation(annotation: Annotation): void
     clearAnnotations(): void
+    gotoLine(line:number, col:number): void
   }
 
 }
