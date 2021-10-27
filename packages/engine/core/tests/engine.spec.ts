@@ -241,7 +241,7 @@ describe('Plugin interaction', () => {
     try {
       await fileManager.cancel('solidity', 'unknownMethod')
     } catch (err) {
-      expect(err.message).toBe('Cannot cancel "unknownMethod" of "solidity" from "fileManager", because "unknownMethod" is not exposed. Here is the list of exposed methods: "slowMockMethod","compile","getCompilationResult","canDeactivate"')
+      expect(err.message).toBe('Cannot cancel "unknownMethod" of "solidity" from "fileManager", because "unknownMethod" is not exposed. Here is the list of exposed methods: "slowMockMethod","compile","getCompilationResult","compileWithParameters","setCompilerConfig","canDeactivate"')
     }
   })
 
