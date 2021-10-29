@@ -9,6 +9,10 @@ export interface HighlightPosition {
   }
 }
 
+export interface HighLightOptions {
+  focus: boolean
+}
+
 export interface Annotation {
     row: number;
     column: number;
