@@ -1,5 +1,5 @@
-import type { Message, Profile, ExternalProfile } from '@remixproject/plugin-utils'
-import { PluginConnector, PluginOptions } from '@remixproject/engine'
+import type { Message, Profile, ExternalProfile, PluginOptions } from '@remixproject/plugin-utils'
+import { PluginConnector } from '@remixproject/engine'
 
 type WebworkerOptions = WorkerOptions & PluginOptions
 

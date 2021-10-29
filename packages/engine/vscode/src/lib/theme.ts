@@ -1,5 +1,5 @@
-import { Plugin, PluginOptions } from '@remixproject/engine'
-import { API } from '@remixproject/plugin-utils'
+import { Plugin } from '@remixproject/engine'
+import { API, PluginOptions } from '@remixproject/plugin-utils'
 import { ITheme, Theme, ThemeUrls, themeProfile } from '@remixproject/plugin-api'
 import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
 
