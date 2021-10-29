@@ -15,11 +15,18 @@ export interface IDgitSystem {
         checkout(cmd: any): void
         branches(): string[]
         currentbranch(): string
-        push(): string
+        push(cmd: any): string
         pull(cmd: any): void
         setIpfsConfig(config:any): boolean
         zip():void
         setItem(name:string, content:string):void
-        getItem(name:string):string
+        getItem(name: string): string
+        import(cmd: any): void
+        export(cmd: any): void
+        remotes(): any[]
+        addremote(cmd: any): void
+        delremote(cmd: any): void
+        clone(cmd: any): void
+        localStorageUsed(): any
     };
 }

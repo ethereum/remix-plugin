@@ -11,7 +11,8 @@ export interface IFilePanel {
     methods: {
         getCurrentWorkspace(): { name: string, isLocalhost: boolean, absolutePath: string }
         getWorkspaces(): string[]
-        createWorkspace(name:string): void
+        deleteWorkspace(name:string): void
+        createWorkspace(name:string, isEmpty:boolean): void
         renameWorkspace(oldName:string, newName:string): void
         registerContextMenuItem(cmd: customAction): void
     }
