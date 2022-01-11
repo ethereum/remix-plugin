@@ -12,7 +12,8 @@ export interface Profile<T extends Api = any> {
   documentation?: string
   version?: string
   kind?: string,
-  canActivate?: string[]
+  canActivate?: string[],
+  icon?: string
 }
 
 export interface LocationProfile {
