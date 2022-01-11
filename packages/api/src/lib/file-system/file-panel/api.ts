@@ -3,9 +3,9 @@ import { customAction } from './type';
 export interface IFilePanel {
     events: {
         setWorkspace: (workspace:any) => void
-        renameWorkspace: (workspace:any) => void
-        deleteWorkspace: (workspace:any) => void
-        createWorkspace: (workspace:any) => void
+        workspaceRenamed: (workspace:any) => void
+        workspaceDeleted: (workspace:any) => void
+        workspaceCreated: (workspace:any) => void
         customAction: (cmd: customAction) => void
     } & StatusEvents
     methods: {

@@ -8,6 +8,6 @@ export const filePanelProfile: Profile<IFilePanel> & LocationProfile = {
   location: "sidePanel",
   documentation: "",
   version: "0.0.1",
-  methods: ['getCurrentWorkspace', 'getWorkspaces', 'createWorkspace', 'renameWorkspace', 'registerContextMenuItem'],
-  events: ['setWorkspace', 'renameWorkspace', 'deleteWorkspace', 'createWorkspace', 'customAction']
+  methods: ['getCurrentWorkspace', 'getWorkspaces', 'createWorkspace', 'registerContextMenuItem', 'renameWorkspace'],
+  events: ['setWorkspace', 'workspaceRenamed', 'workspaceDeleted', 'workspaceCreated'],
 };
