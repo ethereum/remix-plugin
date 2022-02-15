@@ -26,5 +26,5 @@ export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
     "closeFile",
     "remove",
   ],
-  events: ['currentFileChanged', 'fileAdded', 'fileClosed', 'fileRemoved', 'fileRenamed', 'fileSaved', 'noFileSelected']
+  events: ['currentFileChanged', 'fileAdded', 'fileClosed', 'fileRemoved', 'fileRenamed', 'fileSaved', 'noFileSelected', 'folderAdded']
 };
