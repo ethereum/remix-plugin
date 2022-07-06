@@ -6,6 +6,7 @@ export interface IFileSystem {
     currentFileChanged: (file: string) => void
     fileSaved: (file: string) => void
     fileAdded: (file: string) => void
+    folderAdded: (file: string) => void
     fileRemoved: (file: string) => void
     fileClosed: (file: string) => void
     noFileSelected: ()=> void
