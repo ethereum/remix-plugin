@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-ws",
-  "version": "0.3.8",
+  "version": "0.3.29",
   "peerDependencies": {
     "ws": "^7.3.1"
   },

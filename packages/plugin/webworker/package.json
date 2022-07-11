@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-webworker",
-  "version": "0.3.8",
+  "version": "0.3.29",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/webworker#readme",
   "repository": {
     "type": "git",
