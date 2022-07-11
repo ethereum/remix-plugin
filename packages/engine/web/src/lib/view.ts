@@ -9,7 +9,7 @@ export function isView<P extends Profile>(profile: Profile): profile is (ViewPro
 export type ViewProfile = Profile & LocationProfile
 
 export abstract class ViewPlugin extends Plugin {
-  abstract render(): Element
+  abstract render(): any
 
   constructor(public profile: ViewProfile) {
     super(profile)
