@@ -13,6 +13,11 @@ export interface Profile<T extends Api = any> {
   version?: string
   kind?: string,
   canActivate?: string[]
+  icon?: string
+  maintainedBy?: string,
+  author?: string
+  repo?: string
+  authorContact?: string
 }
 
 export interface LocationProfile {

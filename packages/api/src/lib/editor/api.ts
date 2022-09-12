@@ -1,5 +1,6 @@
 import { HighlightPosition, Annotation } from './type'
 import { StatusEvents } from '@remixproject/plugin-utils'
+import { HighLightOptions } from '@remixproject/plugin-api'
 
 export interface IEditor {
   events: StatusEvents
@@ -8,6 +9,7 @@ export interface IEditor {
       position: HighlightPosition,
       filePath: string,
       hexColor: string,
+      opt?: HighLightOptions
     ): void
     discardHighlight(): void
     discardHighlightAt(line: number, filePath: string): void
