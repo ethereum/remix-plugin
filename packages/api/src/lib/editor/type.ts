@@ -9,9 +9,13 @@ export interface HighlightPosition {
   }
 }
 
-export interface Annotation extends Error {
-  row: number;
-  column: number;
-  text: string;
-  type: "error" | "warning" | "information";
+export interface HighLightOptions {
+  focus: boolean
+}
+
+export interface Annotation {
+    row: number;
+    column: number;
+    text: string;
+    type: "error" | "warning" | "info";
 }

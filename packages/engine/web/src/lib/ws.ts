@@ -27,8 +27,12 @@ export class WebsocketPlugin extends PluginConnector {
   }
 
   private async getEvent(event: MessageEvent) {
-    const message: Message = JSON.parse(event.data)
-    this.getMessage(message)
+    try {
+      const message: Message = JSON.parse(event.data)
+      this.getMessage(message)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
 

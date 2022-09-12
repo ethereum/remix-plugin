@@ -3,5 +3,5 @@ import { LibraryProfile } from '@remixproject/plugin-utils'
 
 export const contentImportProfile: LibraryProfile<IContentImport> = {
   name: 'contentImport',
-  methods: ['resolve'],
+  methods: ['resolve','resolveAndSave'],
 }

@@ -1,4 +1,5 @@
-import { Engine, PluginManager, HostPlugin } from '@remixproject/engine'
+import { Engine, PluginManager } from '@remixproject/engine'
+import { HostPlugin } from '../src'
 import { pluginManagerProfile } from '@remixproject/plugin-api'
 import { IframePlugin } from '../src'
 

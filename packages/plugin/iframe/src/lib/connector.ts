@@ -67,6 +67,7 @@ export class IframeConnector implements ClientConnector {
  * const client = createClient(new MyPlugin())
  * ```
  */
+
 export const createClient = <
   P extends Api,
   App extends ApiMap = Readonly<IRemixApi>

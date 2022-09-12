@@ -186,13 +186,17 @@ export class PluginManager extends Plugin implements BasePluginManager {
       if (from.name === 'manager') {
         return this.toggleActive(name)
       }
+      // Check manager rules
       const managerCanDeactivate = await this.canDeactivatePlugin(from, to)
-      const pluginCanDeactivate = await this.call(to.name, 'canDeactivate', from)
-      if (managerCanDeactivate && pluginCanDeactivate) {
-        return this.toggleActive(name)
-      } else {
+      if (!managerCanDeactivate) {
         throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
       }
+      // Ask plugin, if it wasn't the one which called on the first place
+      const pluginCanDeactivate = from.name !== to.name ? await this.call(to.name, 'canDeactivate', from) : true
+      if (!pluginCanDeactivate) {
+        throw new Error(`Plugin ${this.requestFrom} has no right to deactivate plugin ${name}`)
+      }
+      return this.toggleActive(name)
     }
     return Array.isArray(names) ? catchAllPromises(names.map(deactivate)) : deactivate(names)
   }

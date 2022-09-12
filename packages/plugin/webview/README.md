@@ -18,7 +18,7 @@ client.onload(async () => {
 If you need to expose an API to other plugin you need to extends the class: 
 ```typescript
 import { createClient } from '@remixproject/plugin-webview'
-import { PluginClient } from '@rexmixproject/plugin'
+import { PluginClient } from '@remixproject/plugin'
 
 class MyPlugin extends PluginClient {
   methods = ['hello']

@@ -1,10 +1,14 @@
 import { Plugin } from '@remixproject/engine'
-import { API } from '@remixproject/plugin-utils'
-import { ITheme, Theme, themeProfile } from '@remixproject/plugin-api'
+import { API, PluginOptions } from '@remixproject/plugin-utils'
+import { ITheme, Theme, ThemeUrls, themeProfile } from '@remixproject/plugin-api'
 import { window, ColorThemeKind, Disposable, ColorTheme } from 'vscode'
 
+export interface ThemeOptions extends PluginOptions {
+  urls?: Partial<ThemeUrls>
+}
+
 // There is no way to get the value from the theme so the best solution is to reference the css varibles in webview
-function getTheme(color: ColorTheme): Theme {
+export function getVscodeTheme(color: ColorTheme, urls: Partial<ThemeUrls> = {}): Theme {
   const brightness = color.kind === ColorThemeKind.Dark ? 'dark' : 'light';
   return {
     brightness,
@@ -32,18 +36,28 @@ function getTheme(color: ColorTheme): Theme {
       xl: 1920
     },
     fontFamily: 'Segoe WPC,Segoe UI,sans-serif',
-    space: 5,
+    space: 1,
+    url: urls[brightness]
   }
 }
 
 export class ThemePlugin extends Plugin implements API<ITheme> {
+  protected getTheme = getVscodeTheme;
+  protected options: ThemeOptions
   listener: Disposable
-  constructor() {
+  constructor(options: Partial<ThemeOptions> = {}) {
     super(themeProfile)
+    super.setOptions(options)
+  }
+
+  setOptions(options: Partial<ThemeOptions>) {
+    super.setOptions(options)
   }
 
   onActivation() {
-    this.listener = window.onDidChangeActiveColorTheme(color => this.emit('themeChanged', getTheme(color)))
+    this.listener = window.onDidChangeActiveColorTheme(color => {
+      this.emit('themeChanged', this.getTheme(color, this.options.urls))
+    })
   }
 
   onDeactivation() {
@@ -51,7 +65,7 @@ export class ThemePlugin extends Plugin implements API<ITheme> {
   }
 
   currentTheme(): Theme {
-    return getTheme(window.activeColorTheme)
+    return this.getTheme(window.activeColorTheme, this.options.urls)
   }
 
 }

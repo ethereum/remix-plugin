@@ -144,3 +144,74 @@ manager.activatePlugin(['empty', 'console'])
 // Plugin communication
 emptyPlugin.call('console', 'print', 'My message')
 ```
+
+--------------
+
+## Permission
+The Engine comes with a permission system to protect the user from hostile plugins.
+There are two levels: 
+- **Global**: at the `PluginManager` level.
+- **Local**: at the `Plugin` level.
+
+### Global Permission
+Communication between plugins goes through the `PluginManager`'s permission system : 
+
+```typescript
+canActivatePlugin(from: Profile, to: Profile): Promise<boolean>
+```
+Used when a plugin attempts to activate another one. By default when plugin "A" calls plugin "B", if "B" is not deactivated, "A" will attempt to active it before performing the call.
+
+```typescript
+canDeactivatePlugin(from: Profile, to: Profile): Promise<boolean>
+```
+Used when a plugin attempts to deactivate another one. By default only the `manager` and the plugin itself can deactivate a plugin.
+
+```typescript
+canCall(from: Profile, to: Profile, method: string, message: string): Promise<boolean>
+```
+Used by a plugin to protect a method (see Local Permission below).
+
+**Tip**: Each method returns a `Promise`. It's good practice to ask the user's permission through a GUI.
+
+
+### Local Permission
+A plugin can protect some critical API by asking for user's permission:
+
+```typescript
+askUserPermission(method: string, message: string): Promise<boolean>
+```
+This method will call the `canCall` method from the `PluginManager` under the hood with the right params.
+
+In this example, a FileSystem plugin protects the `write` method :
+```typescript
+class FileSystemPlugin extends Plugin {
+
+  async write() {
+    const from = this.currentRequest
+    const canCall = await this.askUserPermission('write')
+    if (!canCall) {
+      throw new Error('You do not have the permission to call method "canCall" from "fs"')
+    }
+  }
+}
+```
+
+### ⚠️ When currentRequest is Mistaken ⚠️
+The permission system heavily relies on a queue of calls managed by the `Engine` and the property `currentRequest`.
+If you're calling a method from the plugin directly (without using the `Engine`) it will bypass the permission system. In this case, the results of `currentRequest` may **NOT** be correct.
+
+Example : 
+```typescript
+const fs = new FileSystemPlugin()
+const manager = new PluginManager()
+...
+fs.call('manager', 'activatePlugin', 'terminal')  // At this point `currentRequest` in manager is "fs"
+manager.deactivatePlugin('editor')  // This will fail
+```
+
+In the code above :
+1. call to "activatePlugin" to enter the queue of the manager.
+2. manager's `currentRequest` is "fs".
+3. manager calls its own `deactivatePlugin` method. 
+4. **as the call doesn't use the Engine, it doesn't enter in the queue**: so `currentRequest` is still "fs".
+5. `deactivatePlugin` checks the `currentRequest`. So now `currentRequest` incorrectly thinks that "fs" is trying to deactivate "terminal" and will not allow it.

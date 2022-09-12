@@ -1,7 +1,7 @@
-import type { PluginApi, Profile } from '@remixproject/plugin-utils'
+import type { PluginApi, Profile, PluginOptions } from '@remixproject/plugin-utils'
 import { listenEvent } from '@remixproject/plugin-utils'
 import { BasePluginManager } from "./manager"
-import { Plugin, PluginOptions } from './abstract'
+import { Plugin } from './abstract'
 
 export class Engine {
   private plugins: Record<string, Plugin> = {}
@@ -137,6 +137,44 @@ export class Engine {
   }
 
   /**
+   * Cancels calls from a plugin to another
+   * @param caller The name of the plugin that calls the method
+   * @param path The path of the plugin that manages the method
+   * @param method The name of the method to be cancelled, if is empty cancels all calls from plugin
+   */
+  private async cancelMethod(caller: string, path: string, method: string) {
+    const target = path.split('.').shift()
+    if (!this.plugins[target]) {
+      throw new Error(`Cannot cancel ${method} on ${target} from ${caller}, because ${target} is not registered`)
+    }
+
+    // Get latest version of the profiles
+    const [to, from] = await Promise.all([
+      this.manager.getProfile(target),
+      this.manager.getProfile(caller),
+    ])
+
+    // Check if plugin FROM can activate plugin TO
+    const isActive = await this.manager.isActive(target)
+    
+    if (!isActive) {
+        throw new Error(`${from.name} cannot cancel ${method?`${method} of `:'calls on'}${target}, because ${target} is not activated`)
+    }
+
+    // Check if method is exposed
+    // note: native methods go here
+    const methods = [...(to.methods || []), 'canDeactivate']
+    if (!methods.includes(method) && method) {
+      const notExposedMsg = `Cannot cancel "${method}" of "${target}" from "${caller}", because "${method}" is not exposed.`
+      const exposedMethodsMsg = `Here is the list of exposed methods: ${methods.map(m => `"${m}"`).join(',')}`
+      throw new Error(`${notExposedMsg} ${exposedMethodsMsg}`)
+    }
+
+    const request = { from: caller, path }
+    return this.plugins[target]['cancelRequests'](request, method)
+  }
+
+  /**
    * Create an object to easily access any registered plugin
    * @param name Name of the caller plugin
    * @note This method creates a snapshot at the time of activation
@@ -186,6 +224,9 @@ export class Engine {
     }
     plugin['call'] = (target: string, method: string, ...payload: any[]): Promise<any> => {
       return this.callMethod(name, target, method, ...payload)
+    }
+    plugin['cancel'] = (target: string, method: string): Promise<any> => {
+      return this.cancelMethod(name, target, method)
     }
 
     // GIVE ACCESS TO APP
@@ -247,6 +288,9 @@ export class Engine {
     }
     plugin['call'] = (target: string, key: string, ...payload: any[]) => {
       throw new Error(deactivatedWarning(`It cannot call method ${key} of plugin ${target}.`))
+    }
+    plugin['cancel'] = (target: string, key: string, ...payload: any[]) => {
+      throw new Error(deactivatedWarning(`It cannot cancel method ${key} of plugin ${target}.`))
     }
     plugin['on'] = (target: string, event: string) => {
       throw new Error(deactivatedWarning(`It cannot listen on event ${event} of plugin ${target}.`))

@@ -22,5 +22,9 @@ export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
     "copyFile",
     "mkdir",
     "readdir",
+    "closeAllFiles",
+    "closeFile",
+    "remove",
   ],
+  events: ['currentFileChanged', 'fileAdded', 'fileClosed', 'fileRemoved', 'fileRenamed', 'fileSaved', 'noFileSelected', 'folderAdded']
 };
