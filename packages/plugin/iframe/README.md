@@ -20,7 +20,7 @@ client.onload(async () => {
 If you need to expose an API to other plugin you need to extends the class: 
 ```typescript
 import { createClient } from '@remixproject/plugin-iframe'
-import { PluginClient } from '@rexmixproject/plugin'
+import { PluginClient } from '@remixproject/plugin'
 
 class MyPlugin extends PluginClient {
   methods = ['hello']
@@ -28,7 +28,7 @@ class MyPlugin extends PluginClient {
     console.log('Hello World')
   }
 }
-const client = createClient()
+const client = createClient(new MyPlugin())
 client.onload(async () => {
   const data = client.call('filemanager', 'readFile', 'ballot.sol')
 })
