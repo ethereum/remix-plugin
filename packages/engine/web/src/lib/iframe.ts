@@ -16,7 +16,7 @@ export class IframePlugin extends PluginConnector {
   private url: string
   private allowSame0rigin: boolean
 
-  constructor(public profile: IframeProfile, private allowSame0rigin: boolean = true) {
+  constructor(public profile: IframeProfile, private allowSame0rigin?: boolean = true) {
     super(profile)
     this.allowSame0rigin = allowSame0rigin
   }
