@@ -14,11 +14,9 @@ export class IframePlugin extends PluginConnector {
   private origin: string
   private source: Window
   private url: string
-  private allowSame0rigin: boolean
 
-  constructor(public profile: IframeProfile, private allowSame0rigin: boolean = true) {
+  constructor(public profile: IframeProfile) {
     super(profile)
-    this.allowSame0rigin = allowSame0rigin
   }
 
   /** Implement "activate" of the ViewPlugin */
@@ -75,7 +73,7 @@ disconnect() {
     if (this.iframe.contentWindow) {
       throw new Error(`${this.name} plugin is already rendered`)
     }
-    this.iframe.setAttribute('sandbox', `allow-popups allow-scripts ${this.allowSame0rigin ? 'allow-same-origin' : ''} allow-forms allow-top-navigation`)
+    this.iframe.setAttribute('sandbox', 'allow-popups allow-scripts allow-same-origin allow-forms allow-top-navigation')
     this.iframe.setAttribute('seamless', 'true')
     this.iframe.setAttribute('id', `plugin-${this.name}`)
     this.iframe.src = this.url
