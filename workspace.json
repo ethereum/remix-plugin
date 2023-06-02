@@ -934,6 +934,72 @@
            }
         }
       }
+    },
+    "engine-electron": {
+      "root": "packages/engine/electron",
+      "sourceRoot": "packages/engine/electron/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/engine/electron/**/*.ts"]
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/engine/electron",
+            "tsConfig": "packages/engine/electron/tsconfig.lib.json",
+            "packageJson": "packages/engine/electron/package.json",
+            "main": "packages/engine/electron/src/index.ts",
+            "assets": ["packages/engine/electron/*.md"],
+            "srcRootForCompilationRoot": "packages/engine/electron",
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/engine/electron"
+           }
+        }
+      }
+    },
+    "plugin-electron": {
+      "root": "packages/plugin/electron",
+      "sourceRoot": "packages/plugin/electron/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/plugin/electron/**/*.ts"]
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/plugin/electron",
+            "tsConfig": "packages/plugin/electron/tsconfig.lib.json",
+            "packageJson": "packages/plugin/electron/package.json",
+            "main": "packages/plugin/electron/src/index.ts",
+            "assets": ["packages/plugin/electron/*.md"],
+            "srcRootForCompilationRoot": "packages/plugin/electron",
+            "externalDependencies": "none"
+          }
+        },
+        "publish": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["npm publish --tag={tag}"],
+            "cwd": "dist/packages/plugin/electron"
+           }
+        }
+      }
     }
   },
   "cli": {

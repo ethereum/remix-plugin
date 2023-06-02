@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-electron",
-  "version": "0.3.8",
+  "version": "0.3.34",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/node#readme",
   "repository": {
     "type": "git",

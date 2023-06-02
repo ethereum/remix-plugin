@@ -89,6 +89,12 @@
     },
     "engine-theia": {
       "tags": []
+    },
+    "engine-electron": {
+      "tags": []
+    },
+    "plugin-electron": {
+      "tags": []
     }
   },
   "workspaceLayout": {
