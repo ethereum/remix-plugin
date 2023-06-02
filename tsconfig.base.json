@@ -27,7 +27,9 @@
         "packages/plugin/webworker/src/index.ts"
       ],
       "@remixproject/plugin-theia": ["packages/plugin/theia/src/index.ts"],
-      "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"]
+      "@remixproject/engine-theia": ["packages/engine/theia/src/index.ts"],
+      "@remixproject/engine-electron": ["packages/engine/electron/src/index.ts"],
+      "@remixproject/plugin-electron": ["packages/plugin/electron/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
