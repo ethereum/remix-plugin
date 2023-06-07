@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/engine-vscode",
-  "version": "0.3.34",
+  "version": "0.3.35",
   "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/vscode#readme",
   "repository": {
     "type": "git",
