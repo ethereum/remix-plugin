@@ -1,6 +1,6 @@
 {
   "name": "@remixproject/plugin-utils",
-  "version": "0.3.35",
+  "version": "0.3.37",
   "dependencies": {
     "tslib": "2.0.1"
   },
