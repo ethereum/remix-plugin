@@ -2,8 +2,7 @@ version: 2
 jobs:
   remix-plugin:
     docker:
-        - image: circleci/node:12
-    environment:
+        - image: circleci/node:20
     working_directory: ~/repo
     steps:
       - checkout
