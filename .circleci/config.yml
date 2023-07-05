@@ -6,7 +6,6 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: node -v
       - run: npm install
       - run: npm run build
       - run: npm run test
