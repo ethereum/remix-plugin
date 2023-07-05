@@ -1,11 +1,14 @@
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@5.1.0
 jobs:
-  remix-plugin:
+  install-node-example:
     docker:
-        - image: circleci/node:20
+      - image: cimg/base:stable
     working_directory: ~/repo
     steps:
       - checkout
+      - run: node -v
       - run: npm install
       - run: npm run build
       - run: npm run test
