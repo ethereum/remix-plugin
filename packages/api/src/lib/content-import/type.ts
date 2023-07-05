@@ -1,5 +1,5 @@
 export interface ContentImport {
-  content: string
+  content: any
   cleanUrl: string
   type: 'github' | 'http' | 'https' | 'swarm' | 'ipfs'
   url: string

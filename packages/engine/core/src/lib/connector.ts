@@ -1,5 +1,5 @@
-import type { ExternalProfile, Profile, Message } from '@remixproject/plugin-utils'
-import { Plugin, PluginOptions } from './abstract'
+import type { ExternalProfile, Profile, Message, PluginOptions } from '@remixproject/plugin-utils'
+import { Plugin } from './abstract'
 
 /** List of available gateways for decentralised storage */
 export const defaultGateways = {
@@ -17,6 +17,7 @@ export interface PluginConnectorOptions extends PluginOptions {
   /** Usally used to reload the plugin on changes */
   devMode?: boolean
   transformUrl?: (profile: Profile & ExternalProfile) => string
+  engine?:string
 }
 
 
@@ -81,18 +82,18 @@ export abstract class PluginConnector extends Plugin {
       this.loaded = true
       let methods: string[];
       try {
-        methods = await this.callPluginMethod('handshake', [this.profile.name])
+        methods = await this.callPluginMethod('handshake', [this.profile.name, this.options?.engine])
       } catch (err) {
         this.loaded = false
         throw err;
       }
       if (methods) {
         this.profile.methods = methods
-        await this.call('manager', 'updateProfile', this.profile)
+        this.call('manager', 'updateProfile', this.profile)
       }
     } else {
       // If there is a broken connection we want send back the handshake to the plugin client
-      return this.callPluginMethod('handshake', [this.profile.name])
+      return this.callPluginMethod('handshake', [this.profile.name, this.options?.engine])
     }
   }
 
@@ -147,6 +148,10 @@ export abstract class PluginConnector extends Plugin {
           this.send({ ...message, action, payload, error })
         }
         break
+      }
+      case 'cancel': {
+        const payload = this.cancel(message.name, message.key)
+        break;
       }
       // Return result from exposed method
       case 'response': {

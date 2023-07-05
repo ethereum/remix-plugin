@@ -1,5 +1,4 @@
 export interface Theme {
-  /** @deprecated Use colors directly instead */
   url?: string
   /** @deprecated Use brightness instead */
   quality?: 'dark' | 'light'
@@ -30,4 +29,9 @@ export interface Theme {
   fontFamily: string
   /** A unit to multiply for margin & padding */
   space: number
+}
+
+export interface ThemeUrls {
+  light: string;
+  dark: string;
 }

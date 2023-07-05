@@ -138,6 +138,14 @@ export class PluginClient<T extends Api = any, App extends ApiMap = RemixApi> im
     })
   }
 
+  public cancel<Name extends Extract<keyof App, string>, Key extends MethodKey<App[Name]>>(
+    name: Name,
+    key?: Key | '',
+  ): void {
+    if (!this.isLoaded) handleConnectionError(this.options.devMode)
+    this.events.emit('send', { action: 'cancel', name, key })
+  }
+
   /** Listen on event from another plugin */
   public on<Name extends Extract<keyof App, string>, Key extends EventKey<App[Name]>>(
     name: Name,

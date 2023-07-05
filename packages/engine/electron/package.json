@@ -1,0 +1,20 @@
+{
+  "name": "@remixproject/engine-electron",
+  "version": "0.3.37",
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/engine/node#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/remix-plugin.git"
+  },
+  "author": {
+    "name": "bunsenstraat",
+    "email": "filip.mertens@ethereum.org"
+  },
+  "contributors": [
+  ],
+  "bugs": {
+    "url": "https://github.com/ethereum/remix-plugin/issues"
+  },
+  "license": "MIT",
+  "gitHead": "ca5c69be64ec4eaf7fe5d1d362726e75cb3b5726"
+}

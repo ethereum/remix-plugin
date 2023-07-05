@@ -5,11 +5,19 @@ export interface Profile<T extends Api = any> {
   name: string
   displayName?: string
   methods?: MethodKey<T>[]
+  events?: EventKey<T>[]
   permission?: boolean
   hash?: string
   description?: string
   documentation?: string
   version?: string
+  kind?: string,
+  canActivate?: string[]
+  icon?: string
+  maintainedBy?: string,
+  author?: string
+  repo?: string
+  authorContact?: string
 }
 
 export interface LocationProfile {

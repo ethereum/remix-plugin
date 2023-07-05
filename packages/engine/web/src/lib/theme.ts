@@ -49,14 +49,16 @@ export function createTheme(params: DeepPartial<Theme> = {}): Theme {
 }
 
 export class ThemePlugin extends Plugin implements MethodApi<ITheme> {
-  protected theme: Theme = createTheme()
+  protected getTheme = createTheme
+  protected theme: Theme
   constructor() {
     super(themeProfile)
+    this.theme = this.getTheme()
   }
 
   /** Internal API to set the current theme */
   setTheme(theme: DeepPartial<Theme>) {
-    this.theme = createTheme(theme)
+    this.theme = this.getTheme(theme)
     this.emit('themeChanged', this.theme)
   }
 

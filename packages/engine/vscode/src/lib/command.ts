@@ -1,8 +1,9 @@
-import { Plugin, PluginOptions } from "@remixproject/engine"
-import { Profile } from '@remixproject/plugin-utils'
-import { Disposable, commands } from "vscode"
+import { Plugin } from '@remixproject/engine'
+import { Profile, PluginOptions } from '@remixproject/plugin-utils'
+import { Disposable, commands } from 'vscode'
 
-export const transformCmd = (name: string, method: string) => `${name}.${method}`
+export const transformCmd = (name: string, method: string) =>
+  `remix.${name}.${method}`
 
 export interface CommandOptions extends PluginOptions {
   transformCmd: (name: string, method: string) => string
@@ -18,7 +19,9 @@ export class CommandPlugin extends Plugin {
 
   constructor(profile: Profile) {
     super(profile)
-    this.setOptions({ transformCmd })
+    this.setOptions({
+      transformCmd,
+    })
   }
 
   setOptions(options: Partial<CommandOptions>) {
@@ -26,15 +29,25 @@ export class CommandPlugin extends Plugin {
   }
 
   activate() {
-    this.subscriptions = this.profile.methods.map(method => {
-      const cmd = this.options.transformCmd(this.profile.name, method)
-      return commands.registerCommand(cmd, (...args) => this.callPluginMethod(method, args))
-    })
+    this.subscriptions = this.profile.methods
+      .map((method) => {
+        try {
+          const cmd = this.options.transformCmd(this.profile.name, method)
+          return commands.registerCommand(cmd, (...args) =>
+            this.callPluginMethod(method, args)
+          )
+        } catch (err) {
+          console.log(err)
+        }
+      })
+      .filter((command) => {
+        return command
+      })
     super.activate()
   }
 
   deactivate() {
     super.deactivate()
-    this.subscriptions.forEach(sub => sub.dispose())
+    this.subscriptions.forEach((sub) => sub.dispose())
   }
 }
