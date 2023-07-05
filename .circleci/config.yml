@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.0
 jobs:
-  install-node-example:
+  remix-plugin:
     docker:
       - image: cimg/base:stable
     working_directory: ~/repo
