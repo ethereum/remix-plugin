@@ -9,7 +9,7 @@ export function getOpenedTextEditor() {
 }
 
 export function getTextEditorWithDocumentType(type: string) {
-  const editors: TextEditor[] = window.visibleTextEditors;
+  const editors: any[] = window.visibleTextEditors as any;
   const fileEditor: TextEditor = editors.find(
     (editor) =>
       editor.document &&

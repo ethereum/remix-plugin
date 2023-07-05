@@ -1,10 +1,7 @@
 {
-  "name": "@remixproject/plugin-ws",
+  "name": "@remixproject/plugin-electron",
   "version": "0.3.37",
-  "peerDependencies": {
-    "ws": "^7.3.1"
-  },
-  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/ws#readme",
+  "homepage": "https://github.com/ethereum/remix-plugin/tree/master/packages/plugin/iframe#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ethereum/remix-plugin.git"
