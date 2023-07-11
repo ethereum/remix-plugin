@@ -33,7 +33,7 @@ npm install @remixproject/plugin-iframe
 
 or with a unpkg :
 ```html
-<script src="https://unpkg.com/@remixproject/plugin"></script>
+<script src="https://unpkg.com/@remixproject/plugin-iframe"></script>
 ```
 
 ### Plugin Client
@@ -41,7 +41,7 @@ The plugin client is how you connect your plugin to remix.
 
 To import ( the ES6 way) with NPM use:
 ```javascript
-import { createClient } from '@remixproject/plugin'
+import { createClient } from '@remixproject/plugin-iframe'
 const client = createClient()
 ```
 Or if you are using unpkg use:
