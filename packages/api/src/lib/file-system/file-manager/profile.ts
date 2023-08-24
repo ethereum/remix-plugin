@@ -17,6 +17,7 @@ export const filSystemProfile: Profile<IFileSystem> & LocationProfile = {
     // NextFileSystemAPI
     "open",
     "writeFile",
+    "writeMultipleFiles",
     "readFile",
     "rename",
     "copyFile",

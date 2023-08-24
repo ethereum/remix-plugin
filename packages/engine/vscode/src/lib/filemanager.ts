@@ -13,7 +13,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
   async open(path: string): Promise<void> {
     const absPath = absolutePath(path)
     const uri = Uri.file(absPath)
-    return commands.executeCommand('vscode.open', uri, { viewColumn: ( getOpenedTextEditor()?.viewColumn || ViewColumn.One ) })
+    return commands.executeCommand('vscode.open', uri, { viewColumn: (getOpenedTextEditor()?.viewColumn || ViewColumn.One) })
   }
   /** Set the content of a specific file */
   async writeFile(path: string, data: string): Promise<void> {
@@ -23,6 +23,17 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     const uint8Array = encoder.encode(data)
     this.logMessage(' is modifying ' + path)
     return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array))
+  }
+  /** Set the content of multiple files */
+  async writeMultipleFiles(filePaths: string[], fileData: string[], folderPath: string): Promise<void> {
+    this.logMessage(' is modifying ' + folderPath)
+    for (let i = 0; i < filePaths.length; i++) {
+      const absPath = absolutePath(filePaths[i])
+      const uri = Uri.file(absPath)
+      const encoder = new TextEncoder()
+      const uint8Array = encoder.encode(fileData[i])
+      return workspace.fs.writeFile(uri, Uint8Array.from(uint8Array))
+    }
   }
   /** Return the content of a specific file */
   async readFile(path: string): Promise<string> {
@@ -65,7 +76,7 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
 
   async getCurrentFile() {
     const fileName = (getOpenedTextEditor()?.document?.fileName || undefined)
-    if(!fileName) throw new Error("No current file found.")
+    if (!fileName) throw new Error("No current file found.")
     return relativePath(fileName)
   }
 
@@ -77,8 +88,8 @@ export class FileManagerPlugin extends CommandPlugin implements MethodApi<IFileS
     return null
   }
 
-  logMessage(message){
-    if(this.currentRequest && this.currentRequest.from)
+  logMessage(message) {
+    if (this.currentRequest && this.currentRequest.from)
       window.showInformationMessage(this.currentRequest.from + message);
   }
   // ------------------------------------------

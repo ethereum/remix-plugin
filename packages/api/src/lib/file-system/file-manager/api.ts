@@ -9,14 +9,16 @@ export interface IFileSystem {
     folderAdded: (file: string) => void
     fileRemoved: (file: string) => void
     fileClosed: (file: string) => void
-    noFileSelected: ()=> void
-    fileRenamed: (oldName: string, newName:string, isFolder: boolean) => void
+    noFileSelected: () => void
+    fileRenamed: (oldName: string, newName: string, isFolder: boolean) => void
   } & StatusEvents
   methods: {
     /** Open the content of the file in the context (eg: Editor) */
     open(path: string): void
     /** Set the content of a specific file */
     writeFile(path: string, data: string): void
+    /** Set the content of multiple files */
+    writeMultipleFiles(filePaths: string[], fileData: string[], folderPath: string) : void,
     /** Return the content of a specific file */
     readFile(path: string): string
     /** Change the path of a file */
