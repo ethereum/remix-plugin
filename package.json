@@ -33,7 +33,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1001.3",
+    "@angular-devkit/build-angular": "~15.1.5",
     "@angular/compiler-cli": "^10.1.0",
     "@angular/language-service": "^10.1.0",
     "@nrwl/angular": "^10.3.0",
@@ -42,7 +42,7 @@
     "@nrwl/eslint-plugin-nx": "10.3.0",
     "@nrwl/jest": "10.3.0",
     "@nrwl/node": "10.3.0",
-    "@nrwl/web": "10.3.0",
+    "@nrwl/web": "15.7.0",
     "@nrwl/workspace": "10.3.0",
     "@types/electron": "^1.6.10",
     "@types/events": "^3.0.0",
